@@ -1,0 +1,1019 @@
+# KDE icons for OpenOffice.org
+#
+# List of slots and the corresponding bitmaps for OOo.
+#
+# by Jan Holesovsky <kendy@suse.cz>, 2004
+# based on slotlist.csv by Rohit Kaoul <rohitkaul@sbcglobal.net>
+# See http://www.kde-look.org/content/show.php?content=7131
+
+########
+# Document types
+########
+
+mime-kpresenter_kpr	32x32	kdelibs/pics/crystalsvg	res/lo03123.png
+mime-kpresenter_kpr	32x32	kdelibs/pics/crystalsvg	res/lx03123.png:sfx2/res/ln0109.png:sfx2/res/ln062.png
+mime-kpresenter_kpr	16x16	kdelibs/pics/crystalsvg	res/so03123.png
+mime-kpresenter_kpr	16x16	kdelibs/pics/crystalsvg	res/sx03123.png:sfx2/res/sn0109.png:sfx2/res/sn062.png
+mime-kpresenter_kpr	32x32	kdelibs/pics/crystalsvg	res/lx03249.png
+mime-kpresenter_kpr	16x16	kdelibs/pics/crystalsvg	res/sx03249.png
+
+#03126 cr22-mime-kspread_ksp.png
+
+mime-spreadsheet	32x32	kdelibs/pics/crystalsvg	res/lo03126.png
+mime-spreadsheet	32x32	kdelibs/pics/crystalsvg	res/lx03126.png:sfx2/res/ln0103.png:sfx2/res/ln061.png
+mime-spreadsheet	16x16	kdelibs/pics/crystalsvg	res/so03126.png
+mime-spreadsheet	16x16	kdelibs/pics/crystalsvg	res/sx03126.png:sfx2/res/sn0103.png:sfx2/res/sn061.png
+mime-spreadsheet	32x32	kdelibs/pics/crystalsvg	res/lx03250.png
+mime-spreadsheet	16x16	kdelibs/pics/crystalsvg	res/sx03250.png
+
+mime-kpresenter_kpr	32x32	kdelibs/pics/crystalsvg	res/lo03130.png
+mime-kpresenter_kpr	32x32	kdelibs/pics/crystalsvg	res/lx03130.png
+mime-kpresenter_kpr	16x16	kdelibs/pics/crystalsvg	res/so03130.png
+mime-kpresenter_kpr	16x16	kdelibs/pics/crystalsvg	res/sx03130.png
+
+mime-html		32x32	kdelibs/pics/crystalsvg	res/lo03139.png
+mime-html		32x32	kdelibs/pics/crystalsvg	res/lx03139.png:sfx2/res/ln051.png
+mime-html		16x16	kdelibs/pics/crystalsvg	res/so03139.png
+mime-html		16x16	kdelibs/pics/crystalsvg	res/sx03139.png:sfx2/res/sn051.png
+# FIXME: The following is for XML Form, change it to something different than mime-html
+mime-html		32x32	kdelibs/pics/crystalsvg	res/lx03251.png
+mime-html		16x16	kdelibs/pics/crystalsvg	res/sx03251.png
+
+mime-image		32x32	kdelibs/pics/crystalsvg	res/lx03140.png:sfx2/res/ln052.png
+mime-image		16x16	kdelibs/pics/crystalsvg	res/sx03140.png
+
+mime-kformula_kfo	32x32	kdelibs/pics/crystalsvg	res/lo03144.png
+mime-kformula_kfo	32x32	kdelibs/pics/crystalsvg	res/lx03144.png:sfx2/res/ln072.png
+mime-kformula_kfo	16x16	kdelibs/pics/crystalsvg	res/so03144.png
+mime-kformula_kfo	16x16	kdelibs/pics/crystalsvg	res/sx03144.png:sfx2/res/sn072.png
+mime-kformula_kfo	32x32	kdelibs/pics/crystalsvg	res/lx03247.png
+mime-kformula_kfo	16x16	kdelibs/pics/crystalsvg	res/sx03247.png
+
+mime-empty		32x32	kdelibs/pics/crystalsvg	res/lx03150.png:sfx2/res/ln095.png
+mime-empty		16x16	kdelibs/pics/crystalsvg	res/sx03150.png
+
+mime-kword_kwd		32x32	kdelibs/pics/crystalsvg	res/lo03162.png
+mime-kword_kwd		32x32	kdelibs/pics/crystalsvg	res/lx03162.png:sfx2/res/ln0112.png:sfx2/res/ln064.png
+mime-kword_kwd		16x16	kdelibs/pics/crystalsvg	res/so03162.png
+mime-kword_kwd		16x16	kdelibs/pics/crystalsvg	res/sx03162.png:sfx2/res/sn0112.png:sfx2/res/sn064.png
+mime-kword_kwd		32x32	kdelibs/pics/crystalsvg	res/lx03251.png
+mime-kword_kwd		16x16	kdelibs/pics/crystalsvg	res/sx03251.png
+
+mime-vcard		32x32	kdelibs/pics/crystalsvg	res/lo03163.png
+mime-vcard		32x32	kdelibs/pics/crystalsvg	res/lx03163.png:sfx2/res/ln076.png
+mime-vcard		16x16	kdelibs/pics/crystalsvg	res/so03163.png
+mime-vcard		16x16	kdelibs/pics/crystalsvg	res/sx03163.png:sfx2/res/sn076.png
+mime-vcard		32x32	kdelibs/pics/crystalsvg	res/lx03255.png
+mime-vcard		16x16	kdelibs/pics/crystalsvg	res/sx03255.png
+
+mime-make		32x32	kdelibs/pics/crystalsvg	res/lo03216.png
+mime-make		32x32	kdelibs/pics/crystalsvg	res/lx03216.png:sfx2/res/ln058.png
+mime-make		16x16	kdelibs/pics/crystalsvg	res/so03216.png
+mime-make		16x16	kdelibs/pics/crystalsvg	res/sx03216.png:sfx2/res/sn058.png
+mime-make		32x32	kdelibs/pics/crystalsvg	res/lx03242.png
+mime-make		16x16	kdelibs/pics/crystalsvg	res/sx03242.png
+
+mime-image		32x32	kdelibs/pics/crystalsvg	res/lx03219.png:sfx2/res/ln057.png
+mime-image		16x16	kdelibs/pics/crystalsvg	res/sx03219.png
+
+mime-document		32x32	kdelibs/pics/crystalsvg	res/lo03226.png
+mime-document		32x32	kdelibs/pics/crystalsvg	res/lx03226.png:sfx2/res/ln068.png
+mime-document		16x16	kdelibs/pics/crystalsvg	res/so03226.png
+mime-document		16x16	kdelibs/pics/crystalsvg	res/sx03226.png:sfx2/res/sn068.png
+mime-document		32x32	kdelibs/pics/crystalsvg	res/lx03248.png
+mime-document		16x16	kdelibs/pics/crystalsvg	res/sx03248.png
+
+mime-krita_kra		32x32	kdelibs/pics/crystalsvg	res/lo03227.png
+mime-krita_kra		32x32	kdelibs/pics/crystalsvg	res/lx03227.png:sfx2/res/ln059.png
+mime-krita_kra		16x16	kdelibs/pics/crystalsvg	res/so03227.png
+mime-krita_kra		16x16	kdelibs/pics/crystalsvg	res/sx03227.png:sfx2/res/sn0105.png:sfx2/res/sn059.png
+mime-krita_kra		32x32	kdelibs/pics/crystalsvg	res/lx03246.png
+mime-krita_kra		16x16	kdelibs/pics/crystalsvg	res/sx03246.png
+
+
+########
+# Common
+########
+
+action-exit		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_quit.png:res/lc05300.png:res/lc05303.png
+action-exit		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_quit.png:res/sc05300.png:res/sc05303.png
+
+# FIXME: 05301 - icon for Help->About (the app's icon in KDE)
+# FIXME: 05301 cr22-modified-empty.png
+
+action-kdeprint_addprinter	22x22	kdelibs/kdeprint/pics	res/commandimagelist/lc_printersetup.png:res/lc05302.png
+action-kdeprint_addprinter	16x16	kdelibs/kdeprint/pics	res/commandimagelist/sc_previewprintoptions.png:res/commandimagelist/sc_printersetup.png:res/sc05302.png:sw/imglst/sc20250.png
+action-kdeprint_addprinter	22x22	kdelibs/kdeprint/pics	sc/res/imglst/apptbx/lc05302.png
+
+page_preview		22x22	OOo_toolbar	res/commandimagelist/lc_printpreview.png:res/lc05325.png
+page_preview		16x16	OOo_toolbar	res/commandimagelist/sc_printpreview.png:res/sc05325.png
+
+action-mail_send	22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_sendmail.png:res/lc05331.png
+action-mail_send	16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_sendmail.png:res/sc05331.png
+
+action-attach		22x22	kdelibs/pics/crystalsvg	res/lc05375.png
+action-attach		16x16	kdelibs/pics/crystalsvg	res/sc05375.png
+
+action-contents		22x22	kdelibs/pics/crystalsvg	res/lc05401.png
+action-contents		16x16	kdelibs/pics/crystalsvg	res/sc05401.png
+
+action-contexthelp	22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_extendedhelp.png:res/lc05402.png
+action-contexthelp	16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_extendedhelp.png:res/sc05402.png
+action-contexthelp	16x16	kdelibs/pics/crystalsvg	sc/res/imglst/apptbx/sc05402.png
+
+#05410 cr22-action-help.png
+
+action-filenew		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_newdoc.png:res/lc05500.png
+action-filenew		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_newdoc.png:res/sc05500.png
+
+action-fileopen		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_open.png:res/lc05501.png
+action-fileopen		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_open.png:res/sc05501.png:svx/res/id02.png
+
+action-filesaveas	22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_saveas.png:res/lc05502.png
+action-filesaveas	16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_saveas.png:res/sc05502.png:svx/res/id03.png
+
+action-fileclose	22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_closedoc.png:res/commandimagelist/lc_closedocs.png:res/lc05503.png
+action-fileclose	16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_closedoc.png:res/commandimagelist/sc_closedocs.png:res/sc05503.png
+
+action-fileprint	22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_print.png:res/lc05504.png
+action-fileprint	16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_print.png:res/sc05504.png
+
+action-filesave		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_save.png:res/lc05505.png
+action-filesave		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_save.png:res/sc05505.png
+
+action-reload		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_reload.png:res/lc05508.png
+action-reload		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_reload.png:res/sc05508.png:svx/res/reload.png
+
+action-filequickprint	22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_printdefault.png:res/lc05509.png
+action-filequickprint	16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_printdefault.png:res/sc05509.png
+
+action-compfile		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_insertdoc.png:res/lc05532.png
+action-compfile		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_insertdoc.png:res/sc05532.png
+
+action-info		22x22	kdenetwork/ksirc/icons	res/commandimagelist/lc_setdocumentproperties.png:res/lc05535.png
+action-info		16x16	kdenetwork/ksirc/icons	res/commandimagelist/sc_setdocumentproperties.png:res/sc05535.png
+
+action-filenew		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_adddirect.png:res/lc05537.png
+action-filenew		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_adddirect.png:res/sc05537.png
+
+action-state_edit	22x22	koffice/kexi/pics	res/commandimagelist/lc_designerdialog.png:res/lc05539.png
+action-state_edit	16x16	koffice/kexi/pics	res/commandimagelist/sc_designerdialog.png:res/sc05539.png
+
+action-fill		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_styleapply.png:res/lc05552.png
+action-fill		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_styleapply.png:res/commandimagelist/sc_stylewatercanmode.png:res/sc05552.png:res/sc05554.png
+
+action-fill		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_styleapply.png:res/commandimagelist/sc_stylewatercanmode.png:res/sc05552.png:res/sc05554.png
+
+#05561 original-OLE_object.png
+#05563 original-floating_frame.png
+
+action-window_fullscreen	22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_fullscreen.png:res/lc05627.png
+action-window_fullscreen	16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_fullscreen.png:res/sc05627.png
+
+#05672 original-plugin.png
+#05673 original-applet.png
+
+action-domtreeviewer	22x22	kdeaddons/konq-plugins/domtreeviewer	res/commandimagelist/lc_hyperlinkdialog.png:res/lc05678.png
+action-domtreeviewer	16x16	kdeaddons/konq-plugins/domtreeviewer	res/commandimagelist/sc_hyperlinkdialog.png:res/sc05678.png
+
+action-redo		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_redo.png:res/lc05700.png
+action-redo		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_redo.png:res/sc05700.png:svx/res/cd021.png:svx/res/id041.png
+
+action-undo		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_undo.png:res/lc05701.png
+action-undo		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_undo.png:res/sc05701.png:svx/res/cd020.png:svx/res/id040.png
+
+#05702 original-repeat.png
+
+action-editcut		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_cut.png:res/lc05710.png
+action-editcut		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_cut.png:res/commandimagelist/sc_helpmenu.png:res/sc05410.png:res/sc05710.png
+
+action-editcopy		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_copy.png:res/lc05711.png
+action-editcopy		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_copy.png:res/sc05711.png
+
+action-editpaste	22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_paste.png:res/lc05712.png
+action-editpaste	16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_paste.png:res/sc05712.png
+
+action-editdelete	22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_delete.png:res/lc05713.png
+action-editdelete	16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_delete.png:res/sc05713.png
+
+selectall		22x22	OOo_toolbar	res/commandimagelist/lc_selectall.png:res/lc05723.png
+selectall		16x16	OOo_toolbar	res/commandimagelist/sc_selectall.png:res/sc05723.png
+
+action-fileexport	22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_exportto.png:res/lc05829.png
+action-fileexport	16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_exportto.png:res/sc05829.png
+
+#action-dbgstep		22x22	kdelibs/khtml/pics	res/commandimagelist/lc_basicstepinto.png:res/lc05956.png
+#action-dbgstep		16x16	kdelibs/khtml/pics	res/commandimagelist/sc_basicstepinto.png:res/sc05956.png
+
+#action-dbgnext		22x22	kdelibs/khtml/pics	res/commandimagelist/lc_basicstepover.png:res/lc05957.png
+#action-dbgnext		16x16	kdelibs/khtml/pics	res/commandimagelist/sc_basicstepover.png:res/sc05957.png
+
+action-stop		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_basicstop.png:res/lc05958.png
+action-stop		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_basicstop.png:res/sc05958.png
+
+action-imagegallery	22x22	kdeaddons/konq-plugins/kimgalleryplugin	res/commandimagelist/lc_gallery.png:res/lc05960.png
+action-imagegallery	16x16	kdeaddons/konq-plugins/kimgalleryplugin	res/commandimagelist/sc_gallery.png:res/lc06694.png:res/sc05960.png:res/sc06694.png:res/sch06694.png
+
+action-find		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_helpsearch.png:res/commandimagelist/lc_searchdialog.png:res/lc05412.png:res/lc05961.png
+action-find		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_recsearch.png:res/commandimagelist/sc_searchdialog.png:res/sc05961.png:res/sc10725.png:res/sc10853.png
+
+action-ark_help		22x22	kdeutils/ark/pics	res/commandimagelist/lc_helperdialog.png:res/commandimagelist/lc_helpindex.png:res/lc05962.png
+action-ark_help		16x16	kdeutils/ark/pics	res/commandimagelist/sc_helperdialog.png:res/commandimagelist/sc_helpindex.png:res/sc05962.png
+
+
+########
+# Navigation
+########
+
+action-forward		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_browseforward.png:res/lc06300.png
+action-forward		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_browseforward.png:res/sc06300.png
+
+action-back		22x22	kdewebdev/kfilereplace/toolbar	res/commandimagelist/lc_browsebackward.png:res/lc06301.png
+action-back		16x16	kdewebdev/kfilereplace/toolbar	res/commandimagelist/sc_browsebackward.png:res/sc06301.png
+
+action-stop		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_stop.png:res/lc06302.png
+action-stop		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_stop.png:res/sc06302.png
+
+action-gohome		22x22	kdelibs/pics/crystalsvg	res/lc06303.png
+action-gohome		16x16	kdelibs/pics/crystalsvg	res/sc06303.png
+
+action-edit		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_dsbeditdoc.png:res/commandimagelist/lc_editdoc.png:res/lc06312.png
+action-edit		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_dsbeditdoc.png:res/commandimagelist/sc_editdoc.png:res/sc06312.png
+
+action-webexport	22x22	kdepim/korganizer/pixmaps	res/commandimagelist/lc_browseview.png:res/lc06313.png
+action-webexport	16x16	kdepim/korganizer/pixmaps	res/commandimagelist/sc_browseview.png:res/sc06313.png
+
+#06314 OOo_toolbar-frame_query.png
+#06314 original-plugin.png
+#06660 OOo_toolbar-view_text.png
+
+action-view_choose	22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_viewdatasourcebrowser.png:res/lc06660.png
+action-view_choose	16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_viewdatasourcebrowser.png:res/sc06660.png
+
+action-krec_record	22x22	kdemultimedia/krec/pics	res/commandimagelist/lc_macrorecorder.png:res/lc06669.png
+action-krec_record	16x16	kdemultimedia/krec/pics	res/commandimagelist/sc_macrorecorder.png:res/sc06669.png
+
+app-acroread		22x22	kdebase/pics/crystalsvg	res/commandimagelist/lc_exportdirecttopdf.png:res/lc06674.png
+app-acroread		16x16	kdebase/pics/crystalsvg	res/commandimagelist/sc_exportdirecttopdf.png:res/sc06674.png
+
+# FIXME: 06683 - icon for Help->Support
+# FIXME: 06683 cr22-modified-empty.png
+
+action-viewmag		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_zoom.png:res/lc10000.png
+action-viewmag		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_previewzoom.png:res/commandimagelist/sc_zoom.png:res/commandimagelist/sc_zoomtoolbox.png:res/sc10000.png:res/sc10096.png:sw/imglst/sc20251.png
+
+#font_names		22x22	modified	res/commandimagelist/lc_charfontname.png:res/lc10007.png
+#font_names		16x16	modified	res/commandimagelist/sc_charfontname.png:res/sc10007.png:starmath/res/sc30306.png
+
+action-text_italic	22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_italic.png:res/commandimagelist/*/lc_italic.png:res/lc10008.png
+action-text_italic	16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_italic.png:res/commandimagelist/*/sc_italic.png:res/sc10008.png
+
+action-text_bold	22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_bold.png:res/commandimagelist/*/lc_bold.png:res/lc10009.png
+action-text_bold	16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_bold.png:res/commandimagelist/*/sc_bold.png:res/sc10009.png
+
+action-text_under	22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_underline.png:res/commandimagelist/*/lc_underline.png:res/lc10014.png
+action-text_under	16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_underline.png:res/commandimagelist/*/sc_underline.png:res/sc10014.png
+
+#font_names		22x22	koffice/kugar/kudesigner_qt2/images	res/commandimagelist/lc_color.png:res/commandimagelist/lc_fontcolor.png:res/lc10017.png:res/lc10537.png
+#font_names		16x16	koffice/kugar/kudesigner_qt2/images	res/commandimagelist/sc_color.png:res/commandimagelist/sc_fontcolor.png:res/sc10017.png:res/sc10537.png
+
+
+# Text justification in writer
+#10028 cr22-action-text_left.png
+#10029 cr22-action-text_right.png
+
+leftjust		22x22	OOo_toolbar	res/commandimagelist/lc_alignleft.png:res/commandimagelist/lc_leftpara.png:res/lc10028.png:sc/res/imglst/apptbx/lc26371.png
+leftjust		16x16	OOo_toolbar	res/commandimagelist/sc_alignleft.png:res/commandimagelist/sc_leftpara.png:res/sc10028.png:sc/res/imglst/apptbx/sc26371.png
+
+rightjust		22x22	OOo_toolbar	res/commandimagelist/lc_alignright.png:res/commandimagelist/lc_rightpara.png:res/lc10029.png:sc/res/imglst/apptbx/lc26372.png
+rightjust		16x16	OOo_toolbar	res/commandimagelist/sc_alignright.png:res/commandimagelist/sc_rightpara.png:res/sc10029.png:sc/res/imglst/apptbx/sc26372.png
+
+action-text_center	22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_alignhorizontalcenter.png:res/commandimagelist/lc_centerpara.png:res/lc10030.png:sc/res/imglst/apptbx/lc26373.png
+action-text_center	16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_alignhorizontalcenter.png:res/commandimagelist/sc_centerpara.png:res/sc10030.png:sc/res/imglst/apptbx/sc26373.png
+
+action-text_block	22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_alignblock.png:res/commandimagelist/lc_justifypara.png:res/lc10031.png:sc/res/imglst/apptbx/lc26374.png
+action-text_block	16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_alignblock.png:res/commandimagelist/sc_justifypara.png:res/commandimagelist/sc_spacepara1.png:res/sc10031.png:res/sc10034.png:sc/res/imglst/apptbx/sc26374.png
+
+
+action-viewmag		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_zoomtoolbox.png:res/lc10096.png
+action-viewmag		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_previewzoom.png:res/commandimagelist/sc_zoom.png:res/commandimagelist/sc_zoomtoolbox.png:res/sc10000.png:res/sc10096.png:sw/imglst/sc20251.png
+
+action-viewmag+		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_zoomplus.png:res/lc10097.png
+action-viewmag+		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_zoomplus.png:res/sc10097.png
+
+action-viewmag-		22x22	kdelibs/pics/crystalsvg	res/lc10098.png
+action-viewmag-		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_zoomout.png:res/sc10098.png:sc/res/imglst/apptbx/sc26502.png
+
+action-viewmag1		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_zoom100percent.png:res/lc10099.png
+action-viewmag1		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_zoom100percent.png:res/sc10099.png
+
+action-viewmagfit	22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_zoompage.png:res/lc10100.png
+action-viewmagfit	16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_zoompage.png:res/sc10100.png
+
+
+# Geometric shapes
+
+#action-line		22x22	koffice/kpresenter/toolbar	res/commandimagelist/lc_line.png:res/lc10102.png
+#action-line		16x16	koffice/kpresenter/toolbar	res/commandimagelist/sc_line.png:res/sc10102.png
+
+#rectangle_filled	22x22	OOo_toolbar	res/commandimagelist/lc_rect.png:res/lc10104.png:res/lc10107.png
+#rectangle_filled	16x16	OOo_toolbar	res/commandimagelist/sc_rect.png:res/commandimagelist/sc_rectangletoolbox.png:res/sc10104.png:res/sc10107.png:res/sc10399.png:svx/res/cd06.png:svx/res/id05.png
+
+#round_rectangle_filled	22x22	OOo_toolbar	res/commandimagelist/lc_rect_rounded.png:res/lc10105.png
+#round_rectangle_filled	16x16	OOo_toolbar	res/commandimagelist/sc_rect_rounded.png:res/sc10105.png:res/sc10108.png
+
+#ellipse_filled		22x22	OOo_toolbar	res/commandimagelist/lc_ellipse.png:res/lc10110.png
+#ellipse_filled		16x16	OOo_toolbar	res/commandimagelist/sc_ellipse.png:res/commandimagelist/sc_ellipsetoolbox.png:res/sc10110.png:res/sc10111.png:res/sc10400.png:svx/res/cd07.png:svx/res/id06.png
+
+#ellipse_pie_filled	22x22	OOo_toolbar	res/commandimagelist/lc_pie.png:res/lc10112.png:res/lc10113.png
+#ellipse_pie_filled	16x16	OOo_toolbar	res/commandimagelist/sc_pie.png:res/sc10112.png:res/sc10113.png
+
+#circle_part_filled	22x22	OOo_toolbar	res/commandimagelist/lc_circlecut.png:res/lc10115.png
+#circle_part_filled	16x16	OOo_toolbar	res/commandimagelist/sc_circlecut.png:res/sc10115.png
+
+#draw-polygon-filled	22x22	OOo_toolbar	res/commandimagelist/lc_polygon.png:res/lc10117.png
+#draw-polygon-filled	16x16	OOo_toolbar	res/commandimagelist/sc_polygon.png:res/sc10117.png:svx/res/cd08.png:svx/res/id07.png
+
+#draw-curve-filled	22x22	OOo_toolbar	res/commandimagelist/lc_bezierfill.png:res/lc10118.png
+#draw-curve-filled	16x16	OOo_toolbar	res/commandimagelist/sc_bezierfill.png:res/sc10118.png
+
+
+action-select		22x22	koffice/pics/crystalsvg	res/commandimagelist/lc_selectobject.png:res/lc10128.png
+action-select		16x16	koffice/pics/crystalsvg	res/commandimagelist/sc_drawselect.png:res/commandimagelist/sc_selectmode.png:res/commandimagelist/sc_selectobject.png:res/sc10128.png:res/sc10198.png:res/sc10255.png:svx/res/cd05.png:svx/res/id04.png
+
+#10129 cr22-action-14_rotate.png
+
+14_rotate		22x22	OOo_toolbar	res/commandimagelist/lc_toggleobjectrotatemode.png:res/lc10129.png
+14_rotate		16x16	OOo_toolbar	res/commandimagelist/sc_advancedmode.png:res/commandimagelist/sc_toggleobjectrotatemode.png:res/sc10129.png:sd/res/imagelst/sc27095.png
+
+
+# Alignment of objects
+#10130 cr22-action-alignobjs.png
+
+action-aoleft		22x22	koffice/pics/crystalsvg	res/commandimagelist/lc_objectalign.png:res/commandimagelist/lc_objectalignleft.png:res/lc10130.png:res/lc10131.png
+action-aoleft		16x16	koffice/pics/crystalsvg	res/commandimagelist/sc_objectalign.png:res/commandimagelist/sc_objectalignleft.png:res/sc10130.png:res/sc10131.png
+
+action-aoleft		22x22	koffice/pics/crystalsvg	res/commandimagelist/lc_objectalign.png:res/commandimagelist/lc_objectalignleft.png:res/lc10130.png:res/lc10131.png
+action-aoleft		16x16	koffice/pics/crystalsvg	res/commandimagelist/sc_objectalign.png:res/commandimagelist/sc_objectalignleft.png:res/sc10130.png:res/sc10131.png
+
+action-aocenterh	22x22	broken_in_kde	res/commandimagelist/lc_aligncenter.png:res/lc10132.png
+action-aocenterh	16x16	broken_in_kde	res/commandimagelist/sc_aligncenter.png:res/sc10132.png
+
+action-aoright		22x22	koffice/pics/crystalsvg	res/commandimagelist/lc_objectalignright.png:res/lc10133.png
+action-aoright		16x16	koffice/pics/crystalsvg	res/commandimagelist/sc_objectalignright.png:res/sc10133.png
+
+action-aotop		22x22	koffice/pics/crystalsvg	res/commandimagelist/lc_alignup.png:res/lc10134.png
+action-aotop		16x16	koffice/pics/crystalsvg	res/commandimagelist/sc_alignup.png:res/sc10134.png
+
+action-aocenterv	22x22	broken_in_kde	res/commandimagelist/lc_alignmiddle.png:res/commandimagelist/lc_alignverticalcenter.png:res/lc10135.png
+action-aocenterv	16x16	broken_in_kde	res/commandimagelist/sc_alignmiddle.png:res/commandimagelist/sc_alignverticalcenter.png:res/sc10135.png
+
+action-aobottom		22x22	koffice/pics/crystalsvg	res/commandimagelist/lc_aligndown.png:res/lc10136.png
+action-aobottom		16x16	koffice/pics/crystalsvg	res/commandimagelist/sc_aligndown.png:res/sc10136.png
+
+
+action-pie		22x22	koffice/kpresenter/toolbar	res/lc10140.png
+action-pie		16x16	koffice/kpresenter/toolbar	res/commandimagelist/sc_drawchart.png:res/sc10140.png:sc/res/imglst/apptbx/sc26071.png:sc/res/imglst/navipi/nc05.png:sw/imglst/nc20004.png:sw/imglst/sr20010.png
+
+action-color_fill	22x22	koffice/pics/crystalsvg	res/commandimagelist/lc_formatarea.png:res/lc10142.png
+action-color_fill	16x16	koffice/pics/crystalsvg	res/commandimagelist/sc_fillstyle.png:res/commandimagelist/sc_formatarea.png:res/sc10142.png:res/sc10164.png
+
+linepen			22x22	modified	res/commandimagelist/lc_formatline.png:res/lc10143.png
+linepen			16x16	modified	res/commandimagelist/sc_formatline.png:res/commandimagelist/sc_linewidth.png:res/sc10143.png:res/sc10169.png:res/sc10171.png:res/sc10172.png
+
+kscreensaver		22x22	OOo_toolbar	res/commandimagelist/lc_presentation.png:res/lc10157.png
+kscreensaver		16x16	OOo_toolbar	res/commandimagelist/sc_presentation.png:res/sc10157.png
+
+impress-timing		22x22	OOo_toolbar	res/commandimagelist/lc_rehearsetimings.png:res/lc10159.png
+impress-timing		16x16	OOo_toolbar	res/commandimagelist/sc_rehearsetimings.png:res/sc10159.png
+
+action-clipart		22x22	broken_in_kde	res/commandimagelist/lc_choosepolygon.png:res/lc10162.png
+action-clipart		16x16	broken_in_kde	res/commandimagelist/sc_choosepolygon.png:res/sc10162.png
+
+linepen			22x22	modified	res/commandimagelist/lc_fillstyle.png:res/commandimagelist/lc_linewidth.png:res/lc10164.png:res/lc10169.png:res/lc10171.png:res/lc10172.png
+linepen			16x16	modified	res/commandimagelist/sc_fillstyle.png:res/commandimagelist/sc_formatarea.png:res/sc10142.png:res/sc10164.png
+linepen			16x16	modified	res/commandimagelist/sc_formatline.png:res/commandimagelist/sc_linewidth.png:res/commandimagelist/sc_xlinecolor.png:res/commandimagelist/sc_xlinestyle.png:res/sc10143.png:res/sc10169.png:res/sc10171.png:res/sc10172.png
+
+action-border_all	22x22	koffice/kspread/toolbar/crystalsvg	res/commandimagelist/lc_setborderstyle.png:res/lc10187.png
+action-border_all	16x16	koffice/kspread/toolbar/crystalsvg	res/commandimagelist/sc_setborderstyle.png:res/sc10187.png
+
+#10200 original-line_style.png
+#10241 OOo_toolbar-frame_image.png
+
+action-clipart_from_file	22x22	broken_in_kde	res/commandimagelist/lc_insertgraphic.png:res/lc10241.png:sc/res/imglst/apptbx/lc30774.png
+action-clipart_from_file	16x16	broken_in_kde	res/commandimagelist/sc_insertgraphic.png:res/sc10241.png
+
+#10242 original-auto_format.png
+
+action-spellcheck	22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_spelldialog.png:res/commandimagelist/lc_spelling.png:res/lc10243.png
+action-spellcheck	16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_spelldialog.png:res/commandimagelist/sc_spelling.png:res/sc10243.png
+
+#10244 OOo_toolbar-paintbush.png
+
+action-color_line	22x22	koffice/pics/crystalsvg	res/commandimagelist/lc_insertdraw.png:res/lc10244.png
+action-color_line	16x16	koffice/pics/crystalsvg	res/commandimagelist/sc_insertdraw.png:res/sc10244.png
+
+#10245 original-thesaurus.png
+#10253 cr22-action-tool_text.png
+
+#draw-text		22x22	OOo_toolbar	res/commandimagelist/lc_drawtext.png:res/lc10253.png
+#draw-text		16x16	OOo_toolbar	res/commandimagelist/sc_drawtext.png:res/commandimagelist/sc_text.png:res/commandimagelist/sc_texttoolbox.png:res/sc10006.png:res/sc10253.png:res/sc10398.png
+
+app-filetypes		22x22	kdebase/kcontrol/pics	res/commandimagelist/lc_drawcaption.png:res/lc10254.png
+app-filetypes		16x16	kdebase/kcontrol/pics	res/commandimagelist/sc_drawcaption.png:res/sc10254.png
+
+#10185 OOo_toolbar-para_back.png
+
+#font_names_bg		22x22	modified	res/commandimagelist/lc_backgroundcolor.png:res/lc10185.png
+#font_names_bg		16x16	modified	res/commandimagelist/sc_backgroundcolor.png:res/sc10185.png
+
+action-raise		22x22	koffice/pics/crystalsvg	res/commandimagelist/lc_bringtofront.png:res/lc10286.png
+action-raise		16x16	koffice/pics/crystalsvg	res/commandimagelist/sc_bringtofront.png:res/sc10286.png
+
+action-lower		22x22	koffice/pics/crystalsvg	res/commandimagelist/lc_sendtoback.png:res/lc10287.png
+action-lower		16x16	koffice/pics/crystalsvg	res/commandimagelist/sc_sendtoback.png:res/sc10287.png
+
+text_super		22x22	OOo_toolbar	res/commandimagelist/lc_superscript.png:res/lc10294.png:sw/imglst/lc20411.png
+text_super		16x16	OOo_toolbar	res/commandimagelist/sc_superscript.png:res/sc10294.png:sw/imglst/sc20411.png
+
+text_sub		22x22	OOo_toolbar	res/commandimagelist/lc_subscript.png:res/lc10295.png:sw/imglst/lc20412.png
+text_sub		16x16	OOo_toolbar	res/commandimagelist/sc_subscript.png:res/sc10295.png:sw/imglst/sc20412.png
+
+#10296 original-settings_character.png
+#10297 original-settings_paragraph.png
+#10299 OOo_toolbar-shadow.png
+
+#action-shadowRB		22x22	koffice/pics/crystalsvg	res/lc10299.png
+#action-shadowRB		16x16	koffice/pics/crystalsvg	res/sc10299.png
+
+
+arrowstyle		22x22	OOo_toolbar	res/commandimagelist/lc_lineendstyle.png:res/lc10301.png
+arrowstyle		16x16	OOo_toolbar	res/commandimagelist/sc_lineendstyle.png:res/sc10301.png
+
+#10366 OOo_toolbar-navigator.png
+
+#app-yast_suse_tour	22x22	cr22	res/commandimagelist/lc_navigator.png:res/lc10366.png
+#app-yast_suse_tour	16x16	cr22	res/commandimagelist/sc_navigator.png:res/sc10366.png
+
+#imageMap		22x22	OOo_toolbar	res/commandimagelist/lc_imagemapdialog.png:res/lc10371.png
+#imageMap		16x16	OOo_toolbar	res/commandimagelist/sc_imagemapdialog.png:res/sc10371.png
+
+#rectangle_empty		22x22	OOo_toolbar	res/commandimagelist/lc_rect_unfilled.png:res/lc10378.png
+#rectangle_empty		16x16	OOo_toolbar	res/commandimagelist/sc_rect_unfilled.png:res/sc10378.png
+
+#rectangle_crv_empty	22x22	OOo_toolbar	res/commandimagelist/lc_rect_rounded_unfilled.png:res/lc10379.png
+#rectangle_crv_empty	16x16	OOo_toolbar	res/commandimagelist/sc_rect_rounded_unfilled.png:res/sc10379.png
+
+#square_filled		22x22	OOo_toolbar	res/commandimagelist/lc_square.png:res/lc10380.png
+#square_filled		16x16	OOo_toolbar	res/commandimagelist/sc_square.png:res/sc10380.png
+
+#square_crv_filled	22x22	OOo_toolbar	res/commandimagelist/lc_square_rounded.png:res/lc10381.png
+#square_crv_filled	16x16	OOo_toolbar	res/commandimagelist/sc_square_rounded.png:res/sc10381.png
+
+#square_empty		22x22	OOo_toolbar	res/commandimagelist/lc_square_unfilled.png:res/lc10382.png
+#square_empty		16x16	OOo_toolbar	res/commandimagelist/sc_square_unfilled.png:res/sc10382.png
+
+#square_crv_empty	22x22	OOo_toolbar	res/commandimagelist/lc_square_rounded_unfilled.png:res/lc10383.png
+#square_crv_empty	16x16	OOo_toolbar	res/commandimagelist/sc_square_rounded_unfilled.png:res/sc10383.png
+
+#ellipse_empty		22x22	OOo_toolbar	res/commandimagelist/lc_ellipse_unfilled.png:res/lc10384.png
+#ellipse_empty		16x16	OOo_toolbar	res/commandimagelist/sc_ellipse_unfilled.png:res/sc10384.png
+
+#circle_filled		22x22	OOo_toolbar	res/commandimagelist/lc_circle.png:res/lc10385.png
+#circle_filled		16x16	OOo_toolbar	res/commandimagelist/sc_circle.png:res/sc10385.png
+
+#circle_empty		22x22	OOo_toolbar	res/commandimagelist/lc_circle_unfilled.png:res/lc10386.png
+#circle_empty		16x16	OOo_toolbar	res/commandimagelist/sc_circle_unfilled.png:res/sc10386.png
+
+#ellipse_pie_empty	22x22	OOo_toolbar	res/commandimagelist/lc_pie_unfilled.png:res/lc10387.png
+#ellipse_pie_empty	16x16	OOo_toolbar	res/commandimagelist/sc_pie_unfilled.png:res/sc10387.png
+
+#circle_pie_filled	22x22	OOo_toolbar	res/commandimagelist/lc_circlepie.png:res/lc10388.png
+#circle_pie_filled	16x16	OOo_toolbar	res/commandimagelist/sc_circlepie.png:res/sc10388.png
+
+#circle_pie_empty	22x22	OOo_toolbar	res/commandimagelist/lc_circlepie_unfilled.png:res/lc10389.png
+#circle_pie_empty	16x16	OOo_toolbar	res/commandimagelist/sc_circlepie_unfilled.png:res/sc10389.png
+
+#circle_part_empty	22x22	OOo_toolbar	res/commandimagelist/lc_circlecut_unfilled.png:res/lc10391.png
+#circle_part_empty	16x16	OOo_toolbar	res/commandimagelist/sc_circlecut_unfilled.png:res/sc10391.png
+
+#ellipse_part_filled	22x22	OOo_toolbar	res/commandimagelist/lc_ellipsecut.png:res/lc10392.png
+#ellipse_part_filled	16x16	OOo_toolbar	res/commandimagelist/sc_ellipsecut.png:res/sc10116.png:res/sc10392.png
+
+#ellipse_part_empty	22x22	OOo_toolbar	res/commandimagelist/lc_ellipsecut_unfilled.png:res/lc10393.png
+#ellipse_part_empty	16x16	OOo_toolbar	res/commandimagelist/sc_ellipsecut_unfilled.png:res/sc10393.png
+
+#draw-polygon		22x22	OOo_toolbar	res/commandimagelist/lc_polygon_unfilled.png:res/lc10395.png
+#draw-polygon		16x16	OOo_toolbar	res/commandimagelist/sc_polygon_unfilled.png:res/sc10395.png
+
+#draw-text		22x22	OOo_toolbar	res/commandimagelist/lc_texttoolbox.png:res/lc10398.png
+#draw-text		16x16	OOo_toolbar	res/commandimagelist/sc_drawtext.png:res/commandimagelist/sc_text.png:res/commandimagelist/sc_texttoolbox.png:res/sc10006.png:res/sc10253.png:res/sc10398.png
+
+#rectangle_filled	22x22	OOo_toolbar	res/commandimagelist/lc_rectangletoolbox.png:res/lc10399.png
+#rectangle_filled	16x16	OOo_toolbar	res/commandimagelist/sc_rect.png:res/commandimagelist/sc_rectangletoolbox.png:res/sc10104.png:res/sc10107.png:res/sc10399.png:svx/res/cd06.png:svx/res/id05.png
+
+#ellipse_filled		22x22	OOo_toolbar	res/commandimagelist/lc_ellipsetoolbox.png:res/lc10400.png
+#ellipse_filled		16x16	OOo_toolbar	res/commandimagelist/sc_ellipse.png:res/commandimagelist/sc_ellipsetoolbox.png:res/sc10110.png:res/sc10111.png:res/sc10400.png:svx/res/cd07.png:svx/res/id06.png
+
+#freeHand		22x22	OOo_toolbar	res/commandimagelist/lc_freeline_unfilled.png:res/commandimagelist/lc_linetoolbox.png:res/lc10401.png:res/lc10464.png
+#freeHand		16x16	OOo_toolbar	res/commandimagelist/sc_freeline_unfilled.png:res/commandimagelist/sc_linetoolbox.png:res/sc10401.png:res/sc10464.png
+
+
+########
+# New documents
+########
+
+mime-kword_kwd		32x32	kdelibs/pics/crystalsvg	svx/res/oo10433.png
+mime-kword_kwd		32x32	kdelibs/pics/crystalsvg	svx/res/tr10433.png
+
+mime-kpresenter_kpr	32x32	kdelibs/pics/crystalsvg	svx/res/oo10434.png
+mime-kpresenter_kpr	32x32	kdelibs/pics/crystalsvg	svx/res/tr10434.png
+
+mime-spreadsheet	32x32	kdelibs/pics/crystalsvg	svx/res/oo10435.png
+mime-spreadsheet	32x32	kdelibs/pics/crystalsvg	svx/res/tr10435.png
+
+mime-kformula_kfo	32x32	kdelibs/pics/crystalsvg	svx/res/oo10436.png
+mime-kformula_kfo	32x32	kdelibs/pics/crystalsvg	svx/res/tr10436.png
+
+mime-kchart_chrt	32x32	kdelibs/pics/crystalsvg	svx/res/oo10437.png
+mime-kchart_chrt	32x32	kdelibs/pics/crystalsvg	svx/res/tr10437.png
+
+mime-html		32x32	kdelibs/pics/crystalsvg	svx/res/oo10439.png
+mime-html		32x32	kdelibs/pics/crystalsvg	svx/res/tr10439.png
+
+mime-krita_kra		32x32	kdelibs/pics/crystalsvg	svx/res/oo10447.png
+mime-krita_kra		32x32	kdelibs/pics/crystalsvg	svx/res/tr10447.png
+
+
+action-group		22x22	broken_in_kde	res/commandimagelist/lc_formatgroup.png:res/lc10454.png
+action-group		16x16	broken_in_kde	res/commandimagelist/sc_formatgroup.png:res/sc10454.png
+
+action-ungroup		22x22	broken_in_kde	res/commandimagelist/lc_formatungroup.png:res/lc10455.png
+action-ungroup		16x16	broken_in_kde	res/commandimagelist/sc_formatungroup.png:res/sc10455.png
+
+#text_animation		22x22	OOo_toolbar	res/commandimagelist/lc_text_marquee.png:res/lc10465.png
+#text_animation		16x16	OOo_toolbar	res/commandimagelist/sc_text_marquee.png:res/sc10465.png
+
+#10461 OOo_toolbar-decrease_indent.png
+#10462 OOo_toolbar-increase_indent.png
+
+action-format_decreaseindent	22x22	koffice/pics/crystalsvg	res/commandimagelist/lc_decrementindent.png:res/lc10461.png
+action-format_decreaseindent	16x16	koffice/pics/crystalsvg	res/commandimagelist/sc_decrementindent.png:res/sc10461.png
+
+action-format_increaseindent	22x22	koffice/pics/crystalsvg	res/commandimagelist/lc_incrementindent.png:res/lc10462.png
+action-format_increaseindent	16x16	koffice/pics/crystalsvg	res/commandimagelist/sc_incrementindent.png:res/sc10462.png
+
+#10463 cr22-action-closed_freehand.png
+
+#freeHand_filled		22x22	modified	res/commandimagelist/lc_freeline.png:res/lc10463.png
+#freeHand_filled		16x16	modified	res/commandimagelist/sc_freeline.png:res/sc10463.png:svx/res/id08.png
+
+#freeHand		22x22	OOo_toolbar	res/commandimagelist/lc_freeline_unfilled.png:res/commandimagelist/lc_linetoolbox.png:res/lc10401.png:res/lc10464.png
+#freeHand		16x16	OOo_toolbar	res/commandimagelist/sc_freeline_unfilled.png:res/commandimagelist/sc_linetoolbox.png:res/sc10401.png:res/sc10464.png
+
+#10489 OOo_toolbar-text_highlight.png
+
+neonpen			22x22	modified	res/commandimagelist/lc_backcolor.png:res/lc10489.png
+neonpen			16x16	modified	res/commandimagelist/sc_backcolor.png:res/sc10489.png
+
+action-charset		22x22	kdelibs/pics/crystalsvg	res/lc10503.png
+action-charset		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_bullet.png:res/commandimagelist/sc_insertsymbol.png:res/sc10503.png:sd/res/imagelst/sc27019.png:sw/imglst/sc20328.png
+
+#font_names		22x22	koffice/kugar/kudesigner_qt2/images	res/commandimagelist/lc_color.png:res/commandimagelist/lc_fontcolor.png:res/lc10017.png:res/lc10537.png
+#font_names		16x16	koffice/kugar/kudesigner_qt2/images	res/commandimagelist/sc_color.png:res/commandimagelist/sc_fontcolor.png:res/sc10017.png:res/sc10537.png
+
+action-form_edit	22x22	koffice/kexi/pics	res/lc10593.png
+action-form_edit	16x16	koffice/kexi/pics	res/sc10593.png
+action-form_edit	16x16	koffice/kexi/pics	res/sx10593.png
+
+
+#10613 properties.png
+
+action-player_start	22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_firstrecord.png:res/lc10616.png
+action-player_start	16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_firstrecord.png:res/sc10616.png
+
+action-player_play	22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_nextrecord.png:res/lc10617.png
+action-player_play	16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_nextrecord.png:res/sc10617.png
+
+action-player_end	22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_lastrecord.png:res/lc10619.png
+action-player_end	16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_lastrecord.png:res/sc10619.png
+
+#10644 OOo_toolbar-pmsor.png
+
+#3dcontroller		22x22	modified	res/commandimagelist/lc_window3d.png:res/lc10644.png
+#3dcontroller		16x16	modified	res/commandimagelist/sc_window3d.png:res/sc10644.png
+
+app-date		22x22	kdebase/kcontrol/pics	res/commandimagelist/lc_adddatefield.png:res/commandimagelist/lc_datefield.png:res/lc10704.png:res/lc10936.png
+app-date		16x16	kdebase/kcontrol/pics	res/commandimagelist/sc_adddatefield.png:res/commandimagelist/sc_datefield.png:res/sc10704.png:res/sc10936.png
+app-date		16x16	kdebase/kcontrol/pics	res/sx10704.png
+
+action-tool_timer	22x22	kdenetwork/kget/icons	res/commandimagelist/lc_timefield.png:res/lc10705.png:res/lc10937.png
+action-tool_timer	16x16	kdenetwork/kget/icons	res/commandimagelist/sc_timefield.png:res/sc10705.png:res/sc10937.png
+action-tool_timer	16x16	kdenetwork/kget/icons	res/sx10705.png
+
+#action-filter		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_datafilterstandardfilter.png:res/commandimagelist/lc_filtercrit.png:res/lc10715.png:sc/res/imglst/apptbx/lc26323.png
+#action-filter		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_filtercrit.png:res/sc10715.png
+#action-filter		16x16	kdelibs/pics/crystalsvg	res/sx10715.png
+
+#action-filter		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_formfilterexecute.png:res/lc10731.png
+#action-filter		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_datafilterstandardfilter.png:res/commandimagelist/sc_formfilterexecute.png:res/sc10731.png:sc/res/imglst/apptbx/sc26323.png
+
+# FIXME 10742 cr22-app-date.png
+# FIXME 10743 cr22-action-tool_timer.png
+
+#brightness		22x22	OOo_toolbar	res/commandimagelist/lc_grafluminance.png:res/lc10863.png
+#brightness		16x16	OOo_toolbar	res/commandimagelist/sc_grafluminance.png:res/sc10863.png
+
+#contrast		22x22	OOo_toolbar	res/commandimagelist/lc_grafcontrast.png:res/lc10864.png
+#contrast		16x16	OOo_toolbar	res/commandimagelist/sc_grafcontrast.png:res/sc10864.png
+
+#channel-red		22x22	OOo_toolbar	res/commandimagelist/lc_grafred.png:res/lc10865.png
+#channel-red		16x16	OOo_toolbar	res/commandimagelist/sc_grafred.png:res/sc10865.png
+
+#channel-green		22x22	OOo_toolbar	res/commandimagelist/lc_grafgreen.png:res/lc10866.png
+#channel-green		16x16	OOo_toolbar	res/commandimagelist/sc_grafgreen.png:res/sc10866.png
+
+#channel-blue		22x22	OOo_toolbar	res/commandimagelist/lc_grafblue.png:res/lc10867.png
+#channel-blue		16x16	OOo_toolbar	res/commandimagelist/sc_grafblue.png:res/sc10867.png
+
+app-date		22x22	kdebase/kcontrol/pics	res/commandimagelist/lc_adddatefield.png:res/commandimagelist/lc_datefield.png:res/lc10704.png:res/lc10936.png
+app-date		16x16	kdebase/kcontrol/pics	res/commandimagelist/sc_adddatefield.png:res/commandimagelist/sc_datefield.png:res/sc10704.png:res/sc10936.png
+
+#12021 OOo_toolbar-pencil.png
+
+spellcheck_auto		22x22	modified	res/commandimagelist/lc_spellonline.png:res/lc12021.png
+spellcheck_auto		16x16	modified	res/commandimagelist/sc_spellonline.png:res/sc12021.png
+
+
+########
+# Writer
+########
+
+#20121 original-bullets_or_numbering.png
+
+text_bullets		22x22	OOo_toolbar	res/commandimagelist/lc_defaultbullet.png:res/lc20138.png
+text_bullets		16x16	OOo_toolbar	res/commandimagelist/sc_defaultbullet.png:res/sc20138.png
+
+text_numbering		22x22	OOo_toolbar	res/commandimagelist/lc_defaultnumbering.png:res/lc20144.png
+text_numbering		16x16	OOo_toolbar	res/commandimagelist/sc_defaultnumbering.png:res/sc20144.png
+
+#20213 cr22-action-images_display.png
+#20213 cr22-action-pminserterrors.png
+
+clipart_on_off		22x22	modified	res/commandimagelist/lc_graphic.png:sw/imglst/lc20213.png
+clipart_on_off		16x16	modified	res/commandimagelist/sc_graphic.png:sw/imglst/sc20213.png
+
+#20224 OOo_toolbar-nonprinting_chars.png
+
+#nonprinting_chars	22x22	modified	res/commandimagelist/lc_controlcodes.png:sw/imglst/lc20224.png
+#nonprinting_chars	16x16	modified	res/commandimagelist/sc_controlcodes.png:sw/imglst/sc20224.png
+
+#20225 original-field_shading.png
+#20226 original-fields.png
+#20302 OOo_toolbar-bookmark_add.png
+
+action-bookmark		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_addbookmark.png:res/commandimagelist/lc_insertbookmark.png:sw/imglst/lc20302.png
+action-bookmark		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_addbookmark.png:res/commandimagelist/sc_insertbookmark.png:sw/imglst/nc20005.png:sw/imglst/sc20302.png
+
+#20308 modified-insertfield.png
+#20310 original-caption.png
+
+#cross_reference		22x22	OOo_toolbar	res/commandimagelist/lc_insertreferencefield.png:sw/imglst/lc20313.png
+#cross_reference		16x16	OOo_toolbar	res/commandimagelist/sc_insertreferencefield.png:sw/imglst/sc20313.png
+
+action-charset		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_bullet.png:res/commandimagelist/lc_insertsymbol.png:sd/res/imagelst/lc27019.png:sw/imglst/lc20328.png
+action-charset		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_bullet.png:res/commandimagelist/sc_insertsymbol.png:res/sc10503.png:sd/res/imagelst/sc27019.png:sw/imglst/sc20328.png
+
+#20329 original-note.png
+#20330 OOo_toolbar-frame_spreadsheet.png
+
+action-table		22x22	koffice/kexi/pics	res/commandimagelist/lc_inserttable.png:sw/imglst/lc20330.png
+action-table		16x16	koffice/kexi/pics	res/commandimagelist/sc_inserttable.png:sw/imglst/nc20001.png:sw/imglst/sc20330.png:sw/imglst/sr20002.png
+
+#20334 original-frame.png
+#20349 original-anchor.png
+
+action-mail_new		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_dsbformletter.png:res/commandimagelist/lc_mergedialog.png:sw/imglst/lc20364.png
+action-mail_new		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_dsbformletter.png:res/commandimagelist/sc_mergedialog.png:sw/imglst/sc20364.png
+
+#20369 original-sqrt.png
+#20391 modified-insertfield.png
+
+action-text_super	22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_superscript.png:res/lc10294.png:sw/imglst/lc20411.png
+action-text_super	16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_superscript.png:res/sc10294.png:sw/imglst/sc20411.png
+
+action-text_sub		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_subscript.png:res/lc10295.png:sw/imglst/lc20412.png
+action-text_sub		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_subscript.png:res/sc10295.png:sw/imglst/sc20412.png
+
+
+# Table rows and columns
+action-insert_table_row	22x22	koffice/pics/crystalsvg	sw/imglst/lc20501.png
+action-insert_table_row	16x16	koffice/pics/crystalsvg	sw/imglst/sc20501.png
+
+action-insert_table_col	22x22	koffice/pics/crystalsvg	res/commandimagelist/lc_insertcolumns.png:sc/res/imglst/apptbx/lc26268.png:sw/imglst/lc20502.png
+action-insert_table_col	16x16	koffice/pics/crystalsvg	res/commandimagelist/sc_insertcolumns.png:sc/res/imglst/apptbx/sc26268.png:sw/imglst/sc20502.png
+
+action-delete_table_row	22x22	koffice/pics/crystalsvg	res/commandimagelist/lc_deleterows.png:sc/res/imglst/apptbx/lc26236.png:sw/imglst/lc20503.png
+action-delete_table_row	16x16	koffice/pics/crystalsvg	res/commandimagelist/sc_deleterows.png:sc/res/imglst/apptbx/sc26236.png:sw/imglst/sc20503.png
+
+action-delete_table_col	22x22	koffice/pics/crystalsvg	res/commandimagelist/lc_deletecolumns.png:sc/res/imglst/apptbx/lc26237.png:sw/imglst/lc20504.png
+action-delete_table_col	16x16	koffice/pics/crystalsvg	res/commandimagelist/sc_deletecolumns.png:sc/res/imglst/apptbx/sc26237.png:sw/imglst/sc20504.png
+
+#20505 original-table_split_cells.png
+#20506 original-table_merge_cells.png
+#20510 original-table_optimize.png
+
+action-button_cancel	22x22	kdelibs/pics/crystalsvg	sw/imglst/lc20557.png
+action-button_cancel	16x16	kdelibs/pics/crystalsvg	sc/res/imglst/apptbx/sc26050.png:sw/imglst/sc20557.png
+
+action-button_ok	22x22	kdelibs/pics/crystalsvg	sw/imglst/lc20558.png
+action-button_ok	16x16	kdelibs/pics/crystalsvg	sc/res/imglst/apptbx/sc26051.png:sw/imglst/sc20558.png
+
+#20589 original-table_fixed.png
+#20590 original-table_fixed_prop.png
+#20591 original-table_variable.png
+#20595 original-sum.png
+
+# FIXME: 20600 cr22-action-spellcheck.png
+
+#20603 original-thesaurus.png
+#20605 original-hyphenation.png
+#20620 OOo_toolbar-wizard.png
+
+#auto_text		22x22	modified	res/commandimagelist/lc_editglossary.png:sw/imglst/lc20620.png
+#auto_text		16x16	modified	res/commandimagelist/sc_editglossary.png:sw/imglst/sc20620.png
+
+#insert_section		22x22	OOo_toolbar	res/commandimagelist/lc_insertsection.png:sw/imglst/lc21419.png
+#insert_section		16x16	OOo_toolbar	res/commandimagelist/sc_insertsection.png:sw/imglst/sc21419.png
+
+#cursor			22x22	modified	res/commandimagelist/lc_shadowcursor.png:sw/imglst/lc22204.png
+#cursor			16x16	modified	res/commandimagelist/sc_shadowcursor.png:sw/imglst/sc22204.png
+
+
+########
+# Calc
+########
+
+#26045 original-currency.png
+
+action-percent		22x22	koffice/kspread/toolbar/crystalsvg	res/commandimagelist/lc_numberformatpercent.png:sc/res/imglst/apptbx/lc26046.png
+action-percent		16x16	koffice/kspread/toolbar/crystalsvg	res/commandimagelist/sc_numberformatpercent.png:sc/res/imglst/apptbx/sc26046.png
+
+#26048 original-sum.png
+
+action-button_cancel	22x22	kdelibs/pics/crystalsvg	sc/res/imglst/apptbx/lc26050.png
+action-button_cancel	16x16	kdelibs/pics/crystalsvg	sc/res/imglst/apptbx/sc26050.png:sw/imglst/sc20557.png
+
+action-button_ok	22x22	kdelibs/pics/crystalsvg	sc/res/imglst/apptbx/lc26051.png
+action-button_ok	16x16	kdelibs/pics/crystalsvg	sc/res/imglst/apptbx/sc26051.png:sw/imglst/sc20558.png
+
+#26052 original-number_format_standard.png
+
+action-prec_plus	22x22	koffice/kspread/toolbar/crystalsvg	res/commandimagelist/lc_numberformatincdecimals.png:sc/res/imglst/apptbx/lc26057.png
+action-prec_plus	16x16	koffice/kspread/toolbar/crystalsvg	res/commandimagelist/sc_numberformatincdecimals.png:sc/res/imglst/apptbx/sc26057.png
+
+action-prec_minus	22x22	koffice/kspread/toolbar/crystalsvg	res/commandimagelist/lc_numberformatdecdecimals.png:sc/res/imglst/apptbx/lc26058.png
+action-prec_minus	16x16	koffice/kspread/toolbar/crystalsvg	res/commandimagelist/sc_numberformatdecdecimals.png:sc/res/imglst/apptbx/sc26058.png
+
+#26063 original-sqrt.png
+
+action-pie		22x22	koffice/kpresenter/toolbar	res/commandimagelist/lc_drawchart.png:sc/res/imglst/apptbx/lc26071.png
+action-pie		16x16	koffice/kpresenter/toolbar	res/commandimagelist/sc_drawchart.png:res/sc10140.png:sc/res/imglst/apptbx/sc26071.png:sc/res/imglst/navipi/nc05.png:sw/imglst/nc20004.png:sw/imglst/sr20010.png
+
+#26082 original-choose_theme.png
+#26087 original-hyphenation.png
+
+# FIXME: 26155 cr22-action-pie.png
+
+# Table rows and columns
+
+#26235 original-headers_and_footers.png
+
+action-delete_table_row	22x22	koffice/pics/crystalsvg	res/commandimagelist/lc_deleterows.png:sc/res/imglst/apptbx/lc26236.png:sw/imglst/lc20503.png
+action-delete_table_row	16x16	koffice/pics/crystalsvg	res/commandimagelist/sc_deleterows.png:sc/res/imglst/apptbx/sc26236.png:sw/imglst/sc20503.png
+
+action-delete_table_col	22x22	koffice/pics/crystalsvg	res/commandimagelist/lc_deletecolumns.png:sc/res/imglst/apptbx/lc26237.png:sw/imglst/lc20504.png
+action-delete_table_col	16x16	koffice/pics/crystalsvg	res/commandimagelist/sc_deletecolumns.png:sc/res/imglst/apptbx/sc26237.png:sw/imglst/sc20504.png
+
+action-insert_table_row	22x22	koffice/pics/crystalsvg	res/commandimagelist/lc_insertrows.png:sc/res/imglst/apptbx/lc26267.png
+action-insert_table_row	16x16	koffice/pics/crystalsvg	res/commandimagelist/sc_insertrows.png:sc/res/imglst/apptbx/sc26267.png
+
+action-insert_table_col	22x22	koffice/pics/crystalsvg	res/commandimagelist/lc_insertcolumns.png:sc/res/imglst/apptbx/lc26268.png:sw/imglst/lc20502.png
+action-insert_table_col	16x16	koffice/pics/crystalsvg	res/commandimagelist/sc_insertcolumns.png:sc/res/imglst/apptbx/sc26268.png:sw/imglst/sc20502.png
+
+#26278 original-table_insert_cells_down.png
+#26279 original-table_insert_cells_right.png
+
+#26343 original-sort_descending.png
+#26344 original-sort_ascending.png
+
+# Text justification in calc
+#26371 cr22-action-text_left.png
+#26372 cr22-action-text_right.png
+
+leftjust		22x22	OOo_toolbar	res/commandimagelist/lc_alignleft.png:res/commandimagelist/lc_leftpara.png:res/lc10028.png:sc/res/imglst/apptbx/lc26371.png
+leftjust		16x16	OOo_toolbar	res/commandimagelist/sc_alignleft.png:res/commandimagelist/sc_leftpara.png:res/sc10028.png:sc/res/imglst/apptbx/sc26371.png
+
+rightjust		22x22	OOo_toolbar	res/commandimagelist/lc_alignright.png:res/commandimagelist/lc_rightpara.png:res/lc10029.png:sc/res/imglst/apptbx/lc26372.png
+rightjust		16x16	OOo_toolbar	res/commandimagelist/sc_alignright.png:res/commandimagelist/sc_rightpara.png:res/sc10029.png:sc/res/imglst/apptbx/sc26372.png
+
+action-text_center	22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_alignhorizontalcenter.png:res/commandimagelist/lc_centerpara.png:res/lc10030.png:sc/res/imglst/apptbx/lc26373.png
+action-text_center	16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_alignhorizontalcenter.png:res/commandimagelist/sc_centerpara.png:res/sc10030.png:sc/res/imglst/apptbx/sc26373.png
+
+action-text_block	22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_alignblock.png:res/commandimagelist/lc_justifypara.png:res/lc10031.png:sc/res/imglst/apptbx/lc26374.png
+action-text_block	16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_alignblock.png:res/commandimagelist/sc_justifypara.png:res/commandimagelist/sc_spacepara1.png:res/sc10031.png:res/sc10034.png:sc/res/imglst/apptbx/sc26374.png
+
+#26412 original-anchor.png
+
+action-viewmag+		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_zoomin.png:sc/res/imglst/apptbx/lc26501.png
+action-viewmag+		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_zoomin.png:sc/res/imglst/apptbx/sc26501.png
+
+action-viewmag-		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_zoomminus.png:res/commandimagelist/lc_zoomout.png:sc/res/imglst/apptbx/lc26502.png
+action-viewmag-		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_zoomminus.png:res/commandimagelist/sc_zoomout.png:res/sc10098.png:sc/res/imglst/apptbx/sc26502.png
+
+
+#26627 original-table_insert_cells.png
+
+########
+# Draw
+########
+
+action-charset		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_bullet.png:res/commandimagelist/lc_insertsymbol.png:sd/res/imagelst/lc27019.png:sw/imglst/lc20328.png
+action-charset		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_bullet.png:res/commandimagelist/sc_insertsymbol.png:res/sc10503.png:sd/res/imagelst/sc27019.png:sw/imglst/sc20328.png
+
+action-bring_forward	22x22	koffice/pics/crystalsvg	res/commandimagelist/lc_forward.png:sd/res/imagelst/lc27031.png
+action-bring_forward	16x16	koffice/pics/crystalsvg	res/commandimagelist/sc_forward.png:sd/res/imagelst/sc27031.png
+
+action-send_backward	22x22	koffice/pics/crystalsvg	res/commandimagelist/lc_backward.png:sd/res/imagelst/lc27032.png
+action-send_backward	16x16	koffice/pics/crystalsvg	res/commandimagelist/sc_backward.png:sd/res/imagelst/sc27032.png
+
+14_rotate		22x22	OOo_toolbar	res/commandimagelist/lc_advancedmode.png:sd/res/imagelst/lc27095.png
+14_rotate		16x16	OOo_toolbar	res/commandimagelist/sc_advancedmode.png:res/commandimagelist/sc_toggleobjectrotatemode.png:res/sc10129.png:sd/res/imagelst/sc27095.png
+
+#27295 OOo_toolbar-object3d.png
+#27296 OOo_toolbar-cube.png
+#27297 OOo_toolbar-sphere.png
+#27298 OOo_toolbar-cylinder.png
+#27299 OOo_toolbar-cone.png
+
+#action-pmbox		22x22	kdegraphics/kpovmodeler/pics/crystalsvg	res/commandimagelist/lc_objects3dtoolbox.png:sd/res/imagelst/lc27295.png
+#action-pmbox		16x16	kdegraphics/kpovmodeler/pics/crystalsvg	res/commandimagelist/sc_cube.png:res/commandimagelist/sc_objects3dtoolbox.png:sd/res/imagelst/sc27295.png:sd/res/imagelst/sc27296.png
+
+#action-pmbox		22x22	kdegraphics/kpovmodeler/pics/crystalsvg	res/commandimagelist/lc_cube.png:sd/res/imagelst/lc27296.png
+#action-pmbox		16x16	kdegraphics/kpovmodeler/pics/crystalsvg	res/commandimagelist/sc_cube.png:res/commandimagelist/sc_objects3dtoolbox.png:sd/res/imagelst/sc27295.png:sd/res/imagelst/sc27296.png
+
+#action-pmsphere		22x22	kdegraphics/kpovmodeler/pics/crystalsvg	res/commandimagelist/lc_sphere.png:sd/res/imagelst/lc27297.png
+#action-pmsphere		16x16	kdegraphics/kpovmodeler/pics/crystalsvg	res/commandimagelist/sc_sphere.png:sd/res/imagelst/sc27297.png
+
+#action-pmcylinder	22x22	kdegraphics/kpovmodeler/pics/crystalsvg	res/commandimagelist/lc_cylinder.png:sd/res/imagelst/lc27298.png
+#action-pmcylinder	16x16	kdegraphics/kpovmodeler/pics/crystalsvg	res/commandimagelist/sc_cylinder.png:sd/res/imagelst/sc27298.png
+
+#action-pmcone		22x22	kdegraphics/kpovmodeler/pics/crystalsvg	res/commandimagelist/lc_cone.png:sd/res/imagelst/lc27299.png
+#action-pmcone		16x16	kdegraphics/kpovmodeler/pics/crystalsvg	res/commandimagelist/sc_cone.png:sd/res/imagelst/sc27299.png
+
+#pyramid			22x22	OOo_toolbar	res/commandimagelist/lc_cyramid.png:sd/res/imagelst/lc27300.png
+#pyramid			16x16	OOo_toolbar	res/commandimagelist/sc_cyramid.png:sd/res/imagelst/sc27300.png
+
+#shell			22x22	OOo_toolbar	res/commandimagelist/lc_shell3d.png:sd/res/imagelst/lc27311.png
+#shell			16x16	OOo_toolbar	res/commandimagelist/sc_shell3d.png:sd/res/imagelst/sc27311.png
+
+#tourus			22x22	OOo_toolbar	res/commandimagelist/lc_torus.png:sd/res/imagelst/lc27312.png
+#tourus			16x16	OOo_toolbar	res/commandimagelist/sc_torus.png:sd/res/imagelst/sc27312.png
+
+#halfsphere		22x22	OOo_toolbar	res/commandimagelist/lc_halfsphere.png:sd/res/imagelst/lc27313.png
+#halfsphere		16x16	OOo_toolbar	res/commandimagelist/sc_halfsphere.png:sd/res/imagelst/sc27313.png
+
+#27340 original-hyphenation.png
+
+# FIXME: 27353 modified-3dcontroller.png
+
+########
+# Math
+########
+
+viewmag50		22x22	modified	starmath/res/lc30263.png
+viewmag50		16x16	modified	starmath/res/sc30263.png
+
+viewmag100		22x22	modified	res/commandimagelist/lc_view100.png:starmath/res/lc30264.png
+viewmag100		16x16	modified	res/commandimagelist/sc_view100.png:starmath/res/sc30264.png
+
+viewmag200		22x22	modified	starmath/res/lc30265.png
+viewmag200		16x16	modified	starmath/res/sc30265.png
+
+action-viewmag+		22x22	kdelibs/pics/crystalsvg	starmath/res/lc30266.png
+action-viewmag+		16x16	kdelibs/pics/crystalsvg	starmath/res/sc30266.png
+
+action-viewmag-		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_adjust.png:res/commandimagelist/lc_draw.png:starmath/res/lc30267.png:starmath/res/lc30268.png:starmath/res/lc30269.png
+action-viewmag-		16x16	kdelibs/pics/crystalsvg	starmath/res/sc30267.png
+
+action-reload		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_adjust.png:res/commandimagelist/lc_draw.png:starmath/res/lc30267.png:starmath/res/lc30268.png:starmath/res/lc30269.png
+action-reload		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_draw.png:starmath/res/sc30268.png
+
+action-viewmagfit	22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_adjust.png:res/commandimagelist/lc_draw.png:starmath/res/lc30267.png:starmath/res/lc30268.png:starmath/res/lc30269.png
+action-viewmagfit	16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_adjust.png:starmath/res/sc30269.png
+
+action-select		22x22	koffice/pics/crystalsvg	starmath/res/lc30270.png
+action-select		16x16	koffice/pics/crystalsvg	starmath/res/sc30270.png
+
+#cursor			22x22	modified	res/commandimagelist/lc_formelcursor.png:starmath/res/lc30271.png
+#cursor			16x16	modified	res/commandimagelist/sc_formelcursor.png:starmath/res/sc30271.png
+
+
+########
+# Other
+########
+
+# FIXME: Fix the 26x26 bitmaps...
+
+action-back		26x26	modified	svtools/res/back_large.png
+action-back		16x16	kdelibs/pics/crystalsvg	svtools/res/back_small.png
+
+filesys-folder_empty	16x16	modified	sfx2/res/hlpbookclosed.png
+
+filesys-folder_empty_open	16x16	modified	sfx2/res/hlpbookopen.png
+
+mime-help		16x16	modified	sfx2/res/hlpdoc.png
+
+action-view_text	26x26	modified	sfx2/res/indexoff_big.png
+action-view_text	16x16	kdelibs/pics/crystalsvg	sfx2/res/indexoff_small.png
+
+action-view_choose	26x26	modified	sfx2/res/indexon_big.png
+action-view_choose	16x16	kdelibs/pics/crystalsvg	sfx2/res/indexon_small.png
+
+action-info		26x26	modified	svtools/res/info_large.png
+action-info		16x16	kdelibs/pics/crystalsvg	svtools/res/info_small.png
+
+action-bookmark_add	26x26	modified	sfx2/res/favourite_big.png
+action-bookmark_add	16x16	kdelibs/pics/crystalsvg	sfx2/res/favourite.png
+
+filesys-folder		16x16	kdelibs/pics/crystalsvg	svtools/res/folder.png
+
+action-up		16x16	kdelibs/pics/crystalsvg	res/fp010.png
+
+action-gohome		16x16	kdelibs/pics/crystalsvg	svtools/res/fp011.png
+
+folder_new		16x16	modified	res/fp015.png
+
+msgbox			128x32	modified	vcl/source/src/msgbox.png
+
+page_preview		26x26	modified	svtools/res/preview_large.png
+page_preview		16x16	modified	svtools/res/preview_small.png
+
+action-up		26x26	modified	svtools/res/up_large.png
+action-up		16x16	kdelibs/pics/crystalsvg	svtools/res/up_small.png
+
+
+filesys-folder_txt	32x32	kdelibs/pics/crystalsvg	svtools/res/my_docs.png
+
+action-filenew		32x32	kdelibs/pics/crystalsvg	svtools/res/new_doc.png
+
+filesys-folder_man	32x32	kdelibs/pics/crystalsvg	svtools/res/samples.png
+
+mime-document		32x32	kdelibs/pics/crystalsvg	svtools/res/template.png
+
+
+#################################################
+# From slotlist.csv
+#5301 OOo_toolbar-help.png
+#5309 OOo_toolbar-filesaveall.png
+#5331 OOo_toolbar-mail_new.png
+#5535 OOo_toolbar-info.png
+#5538 OOo_toolbar-filesave.png
+#5552 OOo_toolbar-color_fill.png
+#5563 OOo_toolbar-frame_edit.png
+#5620 OOo_toolbar-window_new.png
+#5621 OOo_toolbar-fileclose.png
+#5675 OOo_toolbar-html_source.png
+#5829 OOo_toolbar-file_export.png
+#5928 OOo_toolbar-newslide.png
+#5962 OOo_toolbar-helpAgent.png
+#10126 OOo_toolbar-edit_points.png
+#10469 OOo_toolbar-wizard.png
+#10537 OOo_toolbar-text_color.png
+#10593 OOo_toolbar-newwidget.png
+#10593 OOo_toolbar-frame_field.png
+#10882 OOo_toolbar-launch.png
+#20237 OOo_toolbar-print_layout.png
+#20328 OOo_toolbar-pysol.png
+#20329 OOo_toolbar-comment.png
+#20334 OOo_toolbar-frame_text.png
+#20369 OOo_toolbar-frame_formula.png
+#20389 OOo_toolbar-frame_spreadsheet.png
+#20391 OOo_toolbar-insertfield.png
+#20425 OOo_toolbar-flip_vertical.png
+#20426 OOo_toolbar-flip_horizontal.png
+#20456 OOo_toolbar-graphics_dlg.png
+#20603 OOo_toolbar-kdict.png
+#20907 OOo_toolbar-gohome.png
+#20908 OOo_toolbar-down.png
+#20909 OOo_toolbar-forward.png
+#20911 OOo_toolbar-back.png
+#20944 OOo_toolbar-next.png
+#20945 OOo_toolbar-previous.png
+#20958 OOo_toolbar-next_frame.png
+#27022 OOo_toolbar-arrange.png
+#27028 OOo_toolbar-draw-connector.png
+#27062 OOo_toolbar-aktion.png
+#27095 OOo_toolbar-14_rotate.png
+#27171 OOo_toolbar-draw-line-arrow-end.png
+#27328 OOo_toolbar-effects_object.png

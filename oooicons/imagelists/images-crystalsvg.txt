@@ -1,0 +1,642 @@
+#
+# Alignment (objects)
+#
+aligncenter			svg	.	res/commandimagelist
+aligndown			svg	.	res/commandimagelist
+alignup				svg	.	res/commandimagelist
+backward			SVG	.	res/commandimagelist
+beforeobject			SVG	.	res/commandimagelist
+behindobject			SVG	.	res/commandimagelist
+bringtofront			SVG	.	res/commandimagelist
+forward				SVG	.	res/commandimagelist
+objectposition			SVG	.	res/commandimagelist
+reverseorder			SVG	.	res/commandimagelist
+sendtoback			SVG	.	res/commandimagelist
+
+#
+# Alignment (text)
+#
+alignblock			svg	.	res/commandimagelist
+alignbottom			SVG	.	res/commandimagelist
+alignhorizontalcenter		svg	.	res/commandimagelist
+alignleft			svg	.	res/commandimagelist
+alignright			svg	.	res/commandimagelist
+aligntop			SVG	.	res/commandimagelist
+alignvcenter			SVG	.	res/commandimagelist
+cellvertbottom			SVG	.	res/commandimagelist
+cellvertcenter			SVG	.	res/commandimagelist
+cellverttop			SVG	.	res/commandimagelist
+centerpara			svg	.	res/commandimagelist
+leftpara			svg	.	res/commandimagelist
+rightpara			svg	.	res/commandimagelist
+textdirectionlefttoright	SVG	.	res/commandimagelist
+textdirectiontoptobottom	SVG	.	res/commandimagelist
+
+#
+# Arrow shapes
+#
+arrowshapes			SVG	.	res/commandimagelist
+arrowshapes.chevron		SVG	.	res/commandimagelist
+arrowshapes.circular-arrow	SVG	.	res/commandimagelist
+arrowshapes.corner-right-arrow	SVG	.	res/commandimagelist
+arrowshapes.down-arrow-callout	SVG	.	res/commandimagelist
+arrowshapes.down-arrow		SVG	.	res/commandimagelist
+arrowshapes.left-arrow-callout	SVG	.	res/commandimagelist
+arrowshapes.left-arrow		SVG	.	res/commandimagelist
+arrowshapes.left-right-arrow-callout SVG .	res/commandimagelist
+arrowshapes.left-right-arrow	SVG	.	res/commandimagelist
+arrowshapes.notched-right-arrow	SVG	.	res/commandimagelist
+arrowshapes.pentagon-right	SVG	.	res/commandimagelist
+arrowshapes.quad-arrow-callout	SVG	.	res/commandimagelist
+arrowshapes.quad-arrow		SVG	.	res/commandimagelist
+arrowshapes.right-arrow-callout	SVG	.	res/commandimagelist
+arrowshapes.right-arrow		SVG	.	res/commandimagelist
+arrowshapes.split-arrow		SVG	.	res/commandimagelist
+arrowshapes.split-round-arrow	SVG	.	res/commandimagelist
+arrowshapes.s-sharped-arrow	SVG	.	res/commandimagelist
+arrowshapes.striped-right-arrow	SVG	.	res/commandimagelist
+arrowshapes.up-arrow-callout	SVG	.	res/commandimagelist
+arrowshapes.up-arrow		SVG	.	res/commandimagelist
+arrowshapes.up-down-arrow-callout SVG	.	res/commandimagelist
+arrowshapes.up-down-arrow	SVG	.	res/commandimagelist
+arrowshapes.up-right-arrow-callout SVG	.	res/commandimagelist
+arrowshapes.up-right-arrow	SVG	.	res/commandimagelist
+arrowshapes.up-right-down-arrow	SVG	.	res/commandimagelist
+arrowstoolbox			SVG	.	res/commandimagelist
+
+#
+# Basic shapes
+#
+basicshapes			SVG	.	res/commandimagelist
+basicshapes.block-arc		SVG	.	res/commandimagelist
+basicshapes.can			SVG	.	res/commandimagelist
+basicshapes.circle-pie		SVG	.	res/commandimagelist
+basicshapes.circle		SVG	.	res/commandimagelist
+basicshapes.cross		SVG	.	res/commandimagelist
+basicshapes.cube		SVG	.	res/commandimagelist
+basicshapes.diamond		SVG	.	res/commandimagelist
+basicshapes.ellipse		SVG	.	res/commandimagelist
+basicshapes.frame		SVG	.	res/commandimagelist
+basicshapes.hexagon		SVG	.	res/commandimagelist
+basicshapes.isosceles-triangle	SVG	.	res/commandimagelist
+basicshapes.octagon		SVG	.	res/commandimagelist
+basicshapes.paper		SVG	.	res/commandimagelist
+basicshapes.parallelogram	SVG	.	res/commandimagelist
+basicshapes.pentagon		SVG	.	res/commandimagelist
+basicshapes.quadrat		SVG	.	res/commandimagelist
+basicshapes.rectangle		SVG	.	res/commandimagelist
+basicshapes.right-triangle	SVG	.	res/commandimagelist
+basicshapes.ring		SVG	.	res/commandimagelist
+basicshapes.round-quadrat	SVG	.	res/commandimagelist
+basicshapes.round-rectangle	SVG	.	res/commandimagelist
+basicshapes.trapezoid		SVG	.	res/commandimagelist
+
+#
+# Bezier
+#
+bezierappend			SVG	.	res/commandimagelist
+bezierclose			SVG	.	res/commandimagelist
+bezierconvert			SVG	.	res/commandimagelist
+beziercutline			SVG	.	res/commandimagelist
+bezierdelete			SVG	.	res/commandimagelist
+bezieredge			SVG	.	res/commandimagelist
+beziereliminatepoints		SVG	.	res/commandimagelist
+bezierinsert			SVG	.	res/commandimagelist
+beziermove			SVG	.	res/commandimagelist
+beziersmooth			SVG	.	res/commandimagelist
+beziersymmetric			SVG	.	res/commandimagelist
+bighandles			SVG	.	res/commandimagelist
+toggleobjectbeziermode		SVG	.	res/commandimagelist
+
+#
+# Callout shapes
+#
+calloutshapes			SVG	.	res/commandimagelist
+calloutshapes.cloud-callout	SVG	.	res/commandimagelist
+calloutshapes.line-callout-1	SVG	.	res/commandimagelist
+calloutshapes.line-callout-2	SVG	.	res/commandimagelist
+calloutshapes.line-callout-3	SVG	.	res/commandimagelist
+calloutshapes.rectangular-callout SVG	.	res/commandimagelist
+calloutshapes.round-callout	SVG	.	res/commandimagelist
+calloutshapes.round-rectangular-callout	SVG .	res/commandimagelist
+
+#
+# Character attributes
+#
+backcolor			SVG	.	res/commandimagelist
+backgroundcolor			SVG	.	res/commandimagelist
+backgroundpatterncontroller	SVG	.	res/commandimagelist
+bold				svg	.	res/commandimagelist
+color				SVG	.	res/commandimagelist
+fontcolor			SVG	.	res/commandimagelist
+italic				svg	.	res/commandimagelist
+outlinefont			SVG	.	res/commandimagelist
+shadowed			SVG	.	res/commandimagelist
+strikeout			SVG	.	res/commandimagelist
+subscript			svg	.	res/commandimagelist
+superscript			svg	.	res/commandimagelist
+underline			svg	.	res/commandimagelist
+underlinedouble			SVG	.	res/commandimagelist
+
+#
+# Charts
+#
+drawchart			SVG	.	res/commandimagelist
+insertobjectchart		SVG	.	res/commandimagelist
+togglelegend			SVG	.	res/commandimagelist
+toggletitle			SVG	.	res/commandimagelist
+
+#
+# Color settings
+#
+grafblue			SVG	.	res/commandimagelist
+grafcontrast			SVG	.	res/commandimagelist
+grafgreen			SVG	.	res/commandimagelist
+grafinvert			SVG	.	res/commandimagelist
+grafluminance			SVG	.	res/commandimagelist
+grafmode			SVG	.	res/commandimagelist
+grafred				SVG	.	res/commandimagelist
+graftransparence		SVG	.	res/commandimagelist
+
+#
+# Connectors
+#
+connector			SVG	.	res/commandimagelist
+connectorarrowend		SVG	.	res/commandimagelist
+connectorarrows			SVG	.	res/commandimagelist
+connectorarrowstart		SVG	.	res/commandimagelist
+connectorcircleend		SVG	.	res/commandimagelist
+connectorcircles		SVG	.	res/commandimagelist
+connectorcirclestart		SVG	.	res/commandimagelist
+connectorcurve			SVG	.	res/commandimagelist
+connectorcurvearrowend		SVG	.	res/commandimagelist
+connectorcurvearrows		SVG	.	res/commandimagelist
+connectorcurvearrowstart	SVG	.	res/commandimagelist
+connectorcurvecircleend		SVG	.	res/commandimagelist
+connectorcurvecircles		SVG	.	res/commandimagelist
+connectorcurvecirclestart	SVG	.	res/commandimagelist
+connectorline			SVG	.	res/commandimagelist
+connectorlinearrowend		SVG	.	res/commandimagelist
+connectorlinearrows		SVG	.	res/commandimagelist
+connectorlinearrowstart		SVG	.	res/commandimagelist
+connectorlinecircleend		SVG	.	res/commandimagelist
+connectorlinecircles		SVG	.	res/commandimagelist
+connectorlinecirclestart	SVG	.	res/commandimagelist
+connectorlines			SVG	.	res/commandimagelist
+connectorlinesarrowend		SVG	.	res/commandimagelist
+connectorlinesarrows		SVG	.	res/commandimagelist
+connectorlinesarrowstart	SVG	.	res/commandimagelist
+connectorlinescircleend		SVG	.	res/commandimagelist
+connectorlinescircles		SVG	.	res/commandimagelist
+connectorlinescirclestart	SVG	.	res/commandimagelist
+connectortoolbox		SVG	.	res/commandimagelist
+
+#
+# Controls
+#
+checkbox			SVG	.	res/commandimagelist
+progressbar			SVG	.	res/commandimagelist
+radiobutton			SVG	.	res/commandimagelist
+
+#
+# Currency
+#
+currencyfield			SVG	.	res/commandimagelist
+insertcurrencyfield		SVG	.	res/commandimagelist
+numberformatcurrency		SVG	.	res/commandimagelist
+
+#
+# Database
+#
+dbaddrelation			SVG	.	res/commandimagelist
+dbclearquery			SVG	.	res/commandimagelist
+dbdtableedit			SVG	.	res/commandimagelist
+dbformdelete			SVG	.	res/commandimagelist
+dbformedit			SVG	.	res/commandimagelist
+dbformrename			SVG	.	res/commandimagelist
+dbchangedesignmode		SVG	.	res/commandimagelist
+dbindexdesign			SVG	.	res/commandimagelist
+dbnewform			SVG	.	res/commandimagelist
+dbnewquery			SVG	.	res/commandimagelist
+dbnewqueryautopilot		SVG	.	res/commandimagelist
+dbnewquerysql			SVG	.	res/commandimagelist
+dbnewreportautopilot		SVG	.	res/commandimagelist
+dbnewtable			SVG	.	res/commandimagelist
+dbnewtableautopilot		SVG	.	res/commandimagelist
+dbnewviewsql			SVG	.	res/commandimagelist
+dbqueryedit			SVG	.	res/commandimagelist
+dbqueryrename			SVG	.	res/commandimagelist
+dbreportrename			SVG	.	res/commandimagelist
+dbtabledelete			SVG	.	res/commandimagelist
+dbviewfunctions			SVG	.	res/commandimagelist
+dsbdocumentdatasource		SVG	.	res/commandimagelist
+
+#
+# Decimal
+#
+addecimal			22x22	.	res/commandimagelist/lc_numberformatincdecimals.png
+addecimal			16x16	.	res/commandimagelist/sc_numberformatincdecimals.png
+subdecimal			22x22	.	res/commandimagelist/lc_numberformatdecdecimals.png
+subdecimal			16x16	.	res/commandimagelist/sc_numberformatdecdecimals.png
+
+#
+# Document
+#
+adddirect			SVG	.	res/commandimagelist
+addons				SVG	.	res/commandimagelist
+choosedesign			SVG	.	res/commandimagelist
+formatpaintbrush		SVG	.	res/commandimagelist
+formdesigntools			SVG	.	res/commandimagelist
+formproperties			SVG	.	res/commandimagelist
+grid				SVG	.	res/commandimagelist
+insertbookmark			svg	.	res/commandimagelist
+insertdoc			SVG	.	res/commandimagelist
+insertdraw			SVG	.	res/commandimagelist
+inserthyperlink			SVG	.	res/commandimagelist
+insertpage			SVG	.	res/commandimagelist
+insertpagecountfield		SVG	.	res/commandimagelist
+insertpagenumberfield		SVG	.	res/commandimagelist
+insertspreadsheet		SVG	.	res/commandimagelist
+insertsymbol			SVG	.	res/commandimagelist
+inserttable			svg	.	res/commandimagelist
+newdoc				SVG	.	res/commandimagelist
+openurl				SVG	.	res/commandimagelist
+saveas				svg	.	res/commandimagelist
+sendmail			svg	.	res/commandimagelist
+setdocumentproperties		SVG	.	res/commandimagelist
+symbolcatalogue			SVG	.	res/commandimagelist
+usewizards			SVG	.	res/commandimagelist
+
+#
+# Edit (graphics)
+#
+changebezier			SVG	.	res/commandimagelist
+changepolygon			SVG	.	res/commandimagelist
+choosepolygon			SVG	.	res/commandimagelist
+drawselect			SVG	.	res/commandimagelist
+fliphorizontal			SVG	.	res/commandimagelist
+flipvertical			SVG	.	res/commandimagelist
+graphic				SVG	.	res/commandimagelist
+graphicdraft			SVG	.	res/commandimagelist
+linetoolbox			SVG	.	res/commandimagelist
+objects3dtoolbox		SVG	.	res/commandimagelist
+selectmode			SVG	.	res/commandimagelist
+selectobject			SVG	.	res/commandimagelist
+
+#
+# Edit (text)
+#
+copy				svg	.	res/commandimagelist
+edit				svg	.	res/commandimagelist
+paste				svg	.	res/commandimagelist
+editheaderandfooter		SVG	.	res/commandimagelist
+selectall			SVG	.	res/commandimagelist
+selecttable			SVG	.	res/commandimagelist
+
+#
+# Extrusion
+#
+extrusionlightingfloater	SVG	.	res/commandimagelist
+
+#
+# Filters
+#
+autofilter			SVG	.	res/commandimagelist
+datafilterautofilter		SVG	.	res/commandimagelist
+datafilterspecialfilter		SVG	.	res/commandimagelist
+datafilterstandardfilter	SVG	.	res/commandimagelist
+filtercrit			SVG	.	res/commandimagelist
+formfilter			SVG	.	res/commandimagelist
+formfiltered			SVG	.	res/commandimagelist
+formfilterexecute		SVG	.	res/commandimagelist
+formfilternavigator		SVG	.	res/commandimagelist
+lc10711				SVG	.	res
+lc10715				SVG	.	res
+lc10716				SVG	.	res
+lc10723				SVG	.	res
+removefilter			SVG	.	res/commandimagelist
+removefiltersort		SVG	.	res/commandimagelist
+
+#
+# Flow chart shapes
+#
+flowchartshapes.flowchart-alternate-process	SVG .	res/commandimagelist
+flowchartshapes.flowchart-card			SVG .	res/commandimagelist
+flowchartshapes.flowchart-collate		SVG .	res/commandimagelist
+flowchartshapes.flowchart-connector		SVG .	res/commandimagelist
+flowchartshapes.flowchart-data			SVG .	res/commandimagelist
+flowchartshapes.flowchart-decision		SVG .	res/commandimagelist
+flowchartshapes.flowchart-delay			SVG .	res/commandimagelist
+flowchartshapes.flowchart-direct-access-storage	SVG .	res/commandimagelist
+flowchartshapes.flowchart-display		SVG .	res/commandimagelist
+flowchartshapes.flowchart-document		SVG .	res/commandimagelist
+flowchartshapes.flowchart-extract		SVG .	res/commandimagelist
+flowchartshapes					SVG .	res/commandimagelist
+flowchartshapes.flowchart-internal-storage	SVG .	res/commandimagelist
+flowchartshapes.flowchart-magnetic-disk		SVG .	res/commandimagelist
+flowchartshapes.flowchart-manual-input		SVG .	res/commandimagelist
+flowchartshapes.flowchart-manual-operation	SVG .	res/commandimagelist
+flowchartshapes.flowchart-merge			SVG .	res/commandimagelist
+flowchartshapes.flowchart-multidocument		SVG .	res/commandimagelist
+flowchartshapes.flowchart-off-page-connector	SVG .	res/commandimagelist
+flowchartshapes.flowchart-or			SVG .	res/commandimagelist
+flowchartshapes.flowchart-preparation		SVG .	res/commandimagelist
+flowchartshapes.flowchart-predefined-process	SVG .	res/commandimagelist
+flowchartshapes.flowchart-process		SVG .	res/commandimagelist
+flowchartshapes.flowchart-punched-tape		SVG .	res/commandimagelist
+flowchartshapes.flowchart-sequential-access	SVG .	res/commandimagelist
+flowchartshapes.flowchart-sort			SVG .	res/commandimagelist
+flowchartshapes.flowchart-stored-data		SVG .	res/commandimagelist
+flowchartshapes.flowchart-summing-junction	SVG .	res/commandimagelist
+flowchartshapes.flowchart-terminator		SVG .	res/commandimagelist
+
+#
+# Fontwork shapes
+#
+fontworkshapetype.fontwork-arch-down-curve	SVG .	res/commandimagelist
+fontworkshapetype.fontwork-arch-down-pour	SVG .	res/commandimagelist
+fontworkshapetype.fontwork-arch-left-curve	SVG .	res/commandimagelist
+fontworkshapetype.fontwork-arch-left-pour	SVG .	res/commandimagelist
+fontworkshapetype.fontwork-arch-right-curve	SVG .	res/commandimagelist
+fontworkshapetype.fontwork-arch-right-pour	SVG .	res/commandimagelist
+fontworkshapetype.fontwork-arch-up-curve	SVG .	res/commandimagelist
+fontworkshapetype.fontwork-arch-up-pour		SVG .	res/commandimagelist
+fontworkshapetype.fontwork-chevron-down		SVG .	res/commandimagelist
+fontworkshapetype.fontwork-chevron-up		SVG .	res/commandimagelist
+fontworkshapetype.fontwork-circle-curve		SVG .	res/commandimagelist
+fontworkshapetype.fontwork-circle-pour		SVG .	res/commandimagelist
+fontworkshapetype.fontwork-curve-down		SVG .	res/commandimagelist
+fontworkshapetype.fontwork-curve-up		SVG .	res/commandimagelist
+fontworkshapetype.fontwork-fade-down		SVG .	res/commandimagelist
+fontworkshapetype.fontwork-fade-left		SVG .	res/commandimagelist
+fontworkshapetype.fontwork-fade-right		SVG .	res/commandimagelist
+fontworkshapetype.fontwork-fade-up-and-left	SVG .	res/commandimagelist
+fontworkshapetype.fontwork-fade-up-and-right	SVG .	res/commandimagelist
+fontworkshapetype.fontwork-fade-up		SVG .	res/commandimagelist
+fontworkshapetype.fontwork-inflate		SVG .	res/commandimagelist
+fontworkshapetype.fontwork-open-circle-curve	SVG .	res/commandimagelist
+fontworkshapetype.fontwork-open-circle-pour	SVG .	res/commandimagelist
+fontworkshapetype.fontwork-plain-text		SVG .	res/commandimagelist
+fontworkshapetype.fontwork-slant-down		SVG .	res/commandimagelist
+fontworkshapetype.fontwork-slant-up		SVG .	res/commandimagelist
+fontworkshapetype.fontwork-stop			SVG .	res/commandimagelist
+fontworkshapetype.fontwork-triangle-down	SVG .	res/commandimagelist
+fontworkshapetype.fontwork-triangle-up		SVG .	res/commandimagelist
+fontworkshapetype.fontwork-wave			SVG .	res/commandimagelist
+
+#
+# Grid
+#
+togglegridhorizontal		SVG	.	res/commandimagelist
+togglegridvertical		SVG	.	res/commandimagelist
+
+#
+# Help
+#
+extendedhelp			SVG	.	res/commandimagelist
+
+#
+# Indent
+#
+bullet				SVG	.	res/commandimagelist
+bulletsandnumberingdialog	SVG	.	res/commandimagelist
+decrementindent			svg	.	res/commandimagelist
+defaultbullet			svg	.	res/commandimagelist
+defaultnumbering		svg	.	res/commandimagelist
+incrementindent			svg	.	res/commandimagelist
+
+#
+# Line arrows
+#
+linearrowcircle			SVG	.	res/commandimagelist
+linearrowend			SVG	.	res/commandimagelist
+linearrows			SVG	.	res/commandimagelist
+linearrowsquare			SVG	.	res/commandimagelist
+linearrowstart			SVG	.	res/commandimagelist
+linecirclearrow			SVG	.	res/commandimagelist
+lineendstyle			SVG	.	res/commandimagelist
+linesquarearrow			SVG	.	res/commandimagelist
+
+#
+# Macros & basic
+basicstop			SVG	.	res/commandimagelist
+choosemacro			SVG	.	res/commandimagelist
+macrorecorder			SVG	.	res/commandimagelist
+
+#
+# Mathematic
+#
+autosum				SVG	.	res/commandimagelist
+lc20556				SVG	.	sw/imglst
+lc26047				SVG	.	sc/res/imglst/apptbx
+lc26048				SVG	.	sc/res/imglst/apptbx
+
+#
+# Media
+#
+animationobjects		SVG	.	res/commandimagelist
+avmediaplayer			SVG	.	res/commandimagelist
+insertavmedia			SVG	.	res/commandimagelist
+insertsound			SVG	.	res/commandimagelist
+insertvideo			SVG	.	res/commandimagelist
+
+#
+# New shapes
+#
+arc				SVG	.	res/commandimagelist
+bezierfill			SVG	.	res/commandimagelist
+bezier_unfilled			SVG	.	res/commandimagelist
+circle				SVG	.	res/commandimagelist
+circle_unfilled			SVG	.	res/commandimagelist
+circlearc			SVG	.	res/commandimagelist
+circlecut			SVG	.	res/commandimagelist
+circlecut_unfilled		SVG	.	res/commandimagelist
+circlepie			SVG	.	res/commandimagelist
+circlepie_unfilled		SVG	.	res/commandimagelist
+clickchangerotation		SVG	.	res/commandimagelist
+crookrotate			SVG	.	res/commandimagelist
+crookslant			SVG	.	res/commandimagelist
+cube				SVG	.	res/commandimagelist
+ellipse				SVG	.	res/commandimagelist
+ellipse_unfilled		SVG	.	res/commandimagelist
+ellipsecut			SVG	.	res/commandimagelist
+ellipsecut_unfilled		SVG	.	res/commandimagelist
+ellipsetoolbox			SVG	.	res/commandimagelist
+freeline			SVG	.	res/commandimagelist
+freeline_unfilled		SVG	.	res/commandimagelist
+interactivegradient		SVG	.	res/commandimagelist
+interactivetransparence		SVG	.	res/commandimagelist
+line				SVG	.	res/commandimagelist
+line_diagonal			SVG	.	res/commandimagelist
+pie				SVG	.	res/commandimagelist
+pie_unfilled			SVG	.	res/commandimagelist
+polygon				SVG	.	res/commandimagelist
+polygon_diagonal		SVG	.	res/commandimagelist
+polygon_diagonal_unfilled	SVG	.	res/commandimagelist
+polygon_unfilled		SVG	.	res/commandimagelist
+rect				SVG	.	res/commandimagelist
+rect_rounded			SVG	.	res/commandimagelist
+rect_rounded_unfilled		SVG	.	res/commandimagelist
+rect_unfilled			SVG	.	res/commandimagelist
+rectangletoolbox		SVG	.	res/commandimagelist
+square				SVG	.	res/commandimagelist
+square_rounded			SVG	.	res/commandimagelist
+square_rounded_unfilled		SVG	.	res/commandimagelist
+square_unfilled			SVG	.	res/commandimagelist
+
+#
+# New shapes - 3d
+#
+cone				SVG	.	res/commandimagelist
+cylinder			SVG	.	res/commandimagelist
+cyramid				SVG	.	res/commandimagelist
+halfsphere			SVG	.	res/commandimagelist
+shell3d				SVG	.	res/commandimagelist
+sphere				SVG	.	res/commandimagelist
+
+#
+# Number format
+#
+numberformatdate		SVG	.	res/commandimagelist
+numberformatpercent		SVG	.	res/commandimagelist
+numberformatscientific		SVG	.	res/commandimagelist
+numberformatstandard		SVG	.	res/commandimagelist
+
+#
+# Other
+#
+colorsettings			SVG	.	res/commandimagelist
+navigator			SVG	.	res/commandimagelist
+objectcatalog			SVG	.	res/commandimagelist
+toggleanchortype		SVG	.	res/commandimagelist
+
+#
+# Printing
+#
+exportdirecttopdf		SVG	.	res/commandimagelist
+printersetup			SVG	.	res/commandimagelist
+printpagepreview		SVG	.	res/commandimagelist
+printpreview			SVG	.	res/commandimagelist
+showmultiplepages		SVG	.	res/commandimagelist
+showtwopages			SVG	.	res/commandimagelist
+
+#
+# Sort
+#
+atoz				22x22	.	res/commandimagelist/lc_sortascending.png:res/commandimagelist/lc_sortup.png:res/lc10712.png
+atoz				16x16	.	res/commandimagelist/sc_sortascending.png:res/commandimagelist/sc_sortup.png:res/sc10712.png
+aztoa				22x22	.	res/commandimagelist/lc_sortdescending.png:res/commandimagelist/lc_sortdown.png:res/lc10713.png
+aztoa				16x16	.	res/commandimagelist/sc_sortdescending.png:res/commandimagelist/sc_sortdown.png:res/sc10713.png
+
+#
+# Spelling
+#
+spelling			svg	.	res/commandimagelist
+spelldialog			svg	.	res/commandimagelist
+spellonline			svg	.	res/commandimagelist
+
+#
+# Star shapes
+#
+starshapes.bang			SVG	.	res/commandimagelist
+starshapes.concave-star6	SVG	.	res/commandimagelist
+starshapes.doorplate		SVG	.	res/commandimagelist
+starshapes.horizontal-scroll	SVG	.	res/commandimagelist
+starshapes.signet		SVG	.	res/commandimagelist
+starshapes.star12		SVG	.	res/commandimagelist
+starshapes.star24		SVG	.	res/commandimagelist
+starshapes.star4		SVG	.	res/commandimagelist
+starshapes.star5		SVG	.	res/commandimagelist
+starshapes.star6		SVG	.	res/commandimagelist
+starshapes.star8		SVG	.	res/commandimagelist
+starshapes			SVG	.	res/commandimagelist
+starshapes.vertical-scroll	SVG	.	res/commandimagelist
+
+#
+# Symbol shapes
+#
+symbolshapes.brace-pair		SVG	.	res/commandimagelist
+symbolshapes.bracket-pair	SVG	.	res/commandimagelist
+symbolshapes.cloud		SVG	.	res/commandimagelist
+symbolshapes.diamond-bevel	SVG	.	res/commandimagelist
+symbolshapes.flower		SVG	.	res/commandimagelist
+symbolshapes.forbidden		SVG	.	res/commandimagelist
+symbolshapes.heart		SVG	.	res/commandimagelist
+symbolshapes.left-brace		SVG	.	res/commandimagelist
+symbolshapes.left-bracket	SVG	.	res/commandimagelist
+symbolshapes.lightning		SVG	.	res/commandimagelist
+symbolshapes.moon		SVG	.	res/commandimagelist
+symbolshapes.octagon-bevel	SVG	.	res/commandimagelist
+symbolshapes.puzzle		SVG	.	res/commandimagelist
+symbolshapes.quad-bevel		SVG	.	res/commandimagelist
+symbolshapes.right-brace	SVG	.	res/commandimagelist
+symbolshapes.right-bracket	SVG	.	res/commandimagelist
+symbolshapes.smiley		SVG	.	res/commandimagelist
+symbolshapes.sun		SVG	.	res/commandimagelist
+symbolshapes			SVG	.	res/commandimagelist
+
+#
+# Tables
+#
+addfield			SVG	.	res/commandimagelist
+addtable			SVG	.	res/commandimagelist
+datadatapilotrun		SVG	.	res/commandimagelist
+dataimport			SVG	.	res/commandimagelist
+dataincolumns			SVG	.	res/commandimagelist
+datainrows			SVG	.	res/commandimagelist
+deletecolumns			SVG	.	res/commandimagelist
+deleterows			SVG	.	res/commandimagelist
+diagramdata			SVG	.	res/commandimagelist
+entirecolumn			SVG	.	res/commandimagelist
+entirerow			SVG	.	res/commandimagelist
+inscellsctrl			SVG	.	res/commandimagelist
+insertcellsdown			SVG	.	res/commandimagelist
+insertcellsright		SVG	.	res/commandimagelist
+insertcolumns			SVG	.	res/commandimagelist
+insertrows			SVG	.	res/commandimagelist
+mergecells			SVG	.	res/commandimagelist
+setborderstyle			SVG	.	res/commandimagelist
+
+#
+# Zoom and search
+#
+adjust				SVG	.	res/commandimagelist
+helpzoomin			SVG	.	res/commandimagelist
+helpzoomout			SVG	.	res/commandimagelist
+lc05961				SVG	.	res
+lc10853				SVG	.	res
+previewzoom			SVG	.	res/commandimagelist
+searchdialog			SVG	.	res/commandimagelist
+view100				SVG	.	res/commandimagelist
+zoom				SVG	.	res/commandimagelist
+zoom100percent			SVG	.	res/commandimagelist
+zoomin				SVG	.	res/commandimagelist
+zoomminus			SVG	.	res/commandimagelist
+zoomnext			SVG	.	res/commandimagelist
+zoomobjects			SVG	.	res/commandimagelist
+zoomout				SVG	.	res/commandimagelist
+zoompage			SVG	.	res/commandimagelist
+zoompagewidth			SVG	.	res/commandimagelist
+zoomplus			SVG	.	res/commandimagelist
+zoomprevious			SVG	.	res/commandimagelist
+zoomtoolbox			SVG	.	res/commandimagelist
+
+###########################################
+#####     END OF THE MAIN SECTION     #####
+###########################################
+
+#
+# Alternate designs
+# Disabled not to confuse check-imagelists.sh
+#
+anchor_16			-
+coins				-
+bezierdeleten			-
+bezieredgen			-
+beziereliminatepointsn		-
+bezierinsertn			-
+beziersmoothn			-
+beziersymmetricn		-
+navigatorN			-
+starshapes.bang-glossy		-
+toggleobjectbeziermoden		-

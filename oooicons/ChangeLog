@@ -1,0 +1,140 @@
+2005-04-11  Jan Holesovsky  <kendy@suse.cz>
+
+	* imagelists/images-crystalsvg.txt: More mapped icons by Nuno.
+
+2005-03-16  Jan Holesovsky  <kendy@suse.cz>
+
+	* imagelists/images-crystalsvg.txt: More mapped icons.
+
+	* crystalsvg/flip*.svg, mono/flip*.svg: The meaning of hozizontal and
+	  vertical flip is switched in OOo, we have to swap them as well.
+
+2005-03-14  Jan Holesovsky  <kendy@suse.cz>
+
+	* crystalsvg/underscript.svg, crystalsvg/subscript.svg: Rename.
+	* crystalsvg/wizard.svg, crystalsvg-reusable/wizard.svg: Rename.
+	* crystalsvg/*.svg: Updated.
+
+	* imagelists/images-crystalsvg.txt,
+	  imagelists/images-from-kde.txt: Mappings of several new icons.
+
+	* bin/create-crystal-images.sh: ooo_crystal_images-5.
+
+2005-03-11  Jan Holesovsky  <kendy@suse.cz>
+
+	* imagelists/images-crystalsvg.txt,
+	  imagelists/images-from-kde.txt: Lots of new icons mapped.
+
+	* bin/create-crystal-images.sh,
+	  bin/create-mono-images.sh: Handle lc[0-9]* icons well.
+
+	* bin/create-crystal-images.sh: ooo_crystal_images-4.
+
+2005-02-17  Jan Holesovsky  <kendy@suse.cz>
+
+	* bin/create-ooo-images.sh,
+	  bin/create-crystal-images.sh: Rename.
+
+	* bin/create-mono-images.sh: For creating the mono icon set.
+
+	* bin/create-index.sh: Added the mono icon set status.
+
+	* bin/upload-status.sh: Make the uploading easier.
+
+2005-02-16  Jan Holesovsky  <kendy@suse.cz>
+
+	* bin/create-index.sh: Create index of the mapped icons.
+
+	* crystalsvg/anchor.svg,
+	  crystalsvg/toggleanchortype.svg: Rename from anchor.
+	* crystalsvg/coinsa.svg,
+	  crystalsvg/currencyfield.svg,
+	  crystalsvg/insertcurrencyfield.svg,
+	  crystalsvg/numberformatcurrency.svg: Rename from coinsa.
+	* crystalsvg/colors.svg,
+	  crystalsvg/colorsettings.svg: Rename from colors.
+	* crystalsvg/object.svg,
+	  crystalsvg/objectcatalog.svg: Rename from object.
+
+	* imagelists/images-crystalsvg.txt: Update.
+
+2005-02-14  Jan Holesovsky  <kendy@suse.cz>
+
+	* imagelists/images-crystalsvg.txt: More images mapped.
+
+	* bin/create-ooo-images.sh: Bump to ooo_crystal_images-3.tar.bz2.
+
+2005-02-11  Jan Holesovsky  <kendy@suse.cz>
+
+	* bin/create-ooo-images.sh, imagelists/images-from-kde.txt: Do not
+	  include everything, create .tar.bz2 instead of .zip, fix several
+	  names.
+
+2005-01-24  Jan Holesovsky  <kendy@suse.cz>
+
+	* imagelists/images-crystalsvg.txt: Updated after a load of new
+	  images.
+
+2005-01-17  Jan Holesovsky  <kendy@suse.cz>
+
+	* bin/create-ooo-images.sh: Fix generation of 16x16 from the SVGs.
+
+2005-01-11  Jan Holesovsky  <kendy@suse.cz>
+
+	* bin/create-ooo-images.sh: Be less verbose.
+
+	* crystalsvg-reusable/: Created for the reusable parts of the icons,
+	  and lots of icons moved here from crystalsvg/.
+
+	* imagelists/images-crystalsvg.txt: Remove files that are in
+	  crystalsvg-reusable now.
+
+2005-01-10  Jan Holesovsky  <kendy@suse.cz>
+
+	* bin/create-ooo-images.sh: Warning on SVG files that are in
+	  imagelists, but not in images.zip.
+
+	* imagelists/images-crystalsvg.txt: New load of icons by Rob and Nuno.
+
+2005-01-04  Jan Holesovsky  <kendy@suse.cz>
+
+	* bin/check-imagelists.sh: Improve to handle disabled images
+
+	* imagelists/images-crystalsvg.txt: More images.
+
+2005-01-03  Jan Holesovsky  <kendy@suse.cz>
+
+	* doc/index.html,
+	  doc/indicators.png: Start of the iconset guide.
+
+	* bin/check-imagelists.sh: Simple script checking consistency of
+	  images-crystalsvg.txt.
+
+2004-12-30  Jan Holesovsky  <kendy@suse.cz>
+
+	* bin/create-ooo-images.sh: Support for SVG images.
+
+	* imagelists/Makefile.am,
+	  imagelists/images-crystalsvg.txt: List some of the SVG images.
+
+2004-12-16  Jan Holesovsky  <kendy@suse.cz>
+
+	* doc/base.svg: Recommended color gradients.
+
+2004-12-15  Jan Holesovsky  <kendy@suse.cz>
+
+	* .cvsignore, Makefile.am, bin/.cvsignore, bin/Makefile.am,
+	  crystalsvg/.cvsignore, crystalsvg/Makefile.am, doc/.cvsignore,
+	  doc/Makefile.am, imagelists/.cvsignore, imagelists/Makefile.am,
+	  src/.cvsignore, src/Makefile.am: Initial setup.
+
+	* COPYING, INSTALL, README: Basic instructions.
+
+	* imagelists/images-from-gnome-ooo.txt,
+	  imagelists/images-from-kde.txt: Mapping of the Gnome and KDE images.
+	* src/ooo-icons-OOO_1_1-10-png.tar.bz2: Archive with the Gnome images.
+
+	* bin/color-potrace.sh: Enhancement over potrace to trace even color
+	  images.
+	* bin/create-debug-images.sh: Script for creating debug images set.
+	* bin/create-ooo-images.sh: Script for creating the resulting set.

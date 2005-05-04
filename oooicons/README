@@ -1,0 +1,39 @@
+OpenOffice.org 2.0 KDE (CrystalSVG) icons
+=========================================
+
+This directory contains images, scripts and documents to create a good
+CrystalSVG icon set for OpenOffice.org 2.0.  The result is intended to be
+committed directly to the OpenOffice.org CVS, so the files here must be
+covered both under LGPL and SISSL.  ead the COPYING file, it contains text
+of both licenses.  If you are interested, you can also see also the licensing
+FAQ at http://www.openoffice.org/FAQs/faq-licensing.html.
+
+Signing JCA, the Joint Copyright Assignment, is a pre-requisite for the SISSL
+license; you can find the form at http://www.openoffice.org/licenses/jca.pdf.
+We would not be allowed to upstream the icon set if we did not use the above
+mentioned licenses.
+
+NOTE: PLEASE DO NOT COMMIT HERE, IF YOU DID NOT SIGN THE JCA.
+
+Content of this directory:
+
+  - bin        - scripts and programs
+  - crystalsvg - images created especially for OOo, usually not used anywhere
+                 else in KDE
+  - doc        - documentation
+  - imagelists - mapping between OOo icon names and KDE/Gnome/crystalsvg
+                 images
+  - src        - third-party sources
+
+The KDE image list (images-from-kde.txt) is originally based on slotlist.csv
+by Rohit Kaoul <rohitkaul@sbcglobal.net>, see
+http://www.kde-look.org/content/show.php?content=7131
+
+You might be also interested in:
+  - http://kde.openoffice.org/index.html
+  - http://www.openoffice.org
+  - http://ooo.ximian.org
+
+Happy designing! :)
+
+Jan Holesovsky <kendy@openoffice.org>
