@@ -33,12 +33,18 @@ done | sort | uniq > "$TMPIMAGELIST"
 # Diff & show
 diff --normal "$TMPIMAGELIST" "$TMPSVGLIST" > "$TMPDIFF"
 
-echo "Files missing in imagelists/images-crystalsvg.txt:"
-grep "^>" "$TMPDIFF" | sed -e 's#^> \./#  crystalsvg/#' -e 's/$/.svg/'
+if [ "$1" = "--create" ] ; then
+    for I in `grep "^>" "$TMPDIFF" | sed -e 's#^> \./##'` ; do
+	[ -e "$BASE_DIR/build/reference/res/commandimagelist/lc_$I.png" ] && echo -e "$I\t\t\tSVG\t.\tres/commandimagelist"
+    done
+else
+    echo "Files missing in imagelists/images-crystalsvg.txt:"
+    grep "^>" "$TMPDIFF" | sed -e 's#^> \./#  crystalsvg/#' -e 's/$/.svg/'
 
-echo
-echo "Files present in imagelists/images-crystalsvg.txt, but missing in crystalsvg:"
-grep "^<" "$TMPDIFF" | sed -e 's#^< \./#  crystalsvg/#' -e 's/$/.svg/'
+    echo
+    echo "Files present in imagelists/images-crystalsvg.txt, but missing in crystalsvg:"
+    grep "^<" "$TMPDIFF" | sed -e 's#^< \./#  crystalsvg/#' -e 's/$/.svg/'
+fi
 
 # Cleanup
 rm "$TMPSVGLIST" "$TMPIMAGELIST" "$TMPDIFF"

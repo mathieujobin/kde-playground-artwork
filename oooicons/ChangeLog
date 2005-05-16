@@ -1,8 +1,14 @@
 2005-05-16  Jan Holesovsky  <kendy@suse.cz>
 
 	* imagelists/images-crystalsvg.txt: More icons by Nuno.
+
 	* crystalsvg/inserttitlefield.svg -> crystalsvg/inserttimefield.svg:
 	  Rename.
+	* crystalsvg/unchainframes.svg -> crystalsvg/unchainframes.svg,
+	  crystalsvg/autoformatsvg.svg -> crystalsvg/autoformat.svg: Rename.
+
+	* bin/check-imagelists.sh: New --create switch to directly create an
+	  imagelists file.
 
 2005-04-11  Jan Holesovsky  <kendy@suse.cz>
 
