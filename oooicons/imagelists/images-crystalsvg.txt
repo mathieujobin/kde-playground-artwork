@@ -27,8 +27,15 @@ cellvertbottom			SVG	.	res/commandimagelist
 cellvertcenter			SVG	.	res/commandimagelist
 cellverttop			SVG	.	res/commandimagelist
 centerpara			svg	.	res/commandimagelist
+controlcodes			SVG	.	res/commandimagelist
 leftpara			svg	.	res/commandimagelist
 rightpara			svg	.	res/commandimagelist
+paragraphdialog			SVG	.	res/commandimagelist
+paralefttoright			SVG	.	res/commandimagelist
+pararighttoleft			SVG	.	res/commandimagelist
+spacepara1			SVG	.	res/commandimagelist
+spacepara15			SVG	.	res/commandimagelist
+spacepara2			SVG	.	res/commandimagelist
 textdirectionlefttoright	SVG	.	res/commandimagelist
 textdirectiontoptobottom	SVG	.	res/commandimagelist
 
@@ -127,8 +134,12 @@ backcolor			SVG	.	res/commandimagelist
 backgroundcolor			SVG	.	res/commandimagelist
 backgroundpatterncontroller	SVG	.	res/commandimagelist
 bold				svg	.	res/commandimagelist
+charfontname			SVG	.	res/commandimagelist
 color				SVG	.	res/commandimagelist
 fontcolor			SVG	.	res/commandimagelist
+fontdialog			SVG	.	res/commandimagelist
+fontheight			SVG	.	res/commandimagelist
+fontworkgalleryfloater		SVG	.	res/commandimagelist
 italic				svg	.	res/commandimagelist
 outlinefont			SVG	.	res/commandimagelist
 shadowed			SVG	.	res/commandimagelist
@@ -143,6 +154,9 @@ underlinedouble			SVG	.	res/commandimagelist
 #
 drawchart			SVG	.	res/commandimagelist
 insertobjectchart		SVG	.	res/commandimagelist
+starchartdialog			SVG	.	res/commandimagelist
+toggleaxisdescr			SVG	.	res/commandimagelist
+toggleaxistitle			SVG	.	res/commandimagelist
 togglelegend			SVG	.	res/commandimagelist
 toggletitle			SVG	.	res/commandimagelist
 
@@ -194,14 +208,25 @@ connectortoolbox		SVG	.	res/commandimagelist
 #
 # Controls
 #
+autocontrolfocus		SVG	.	res/commandimagelist
 checkbox			SVG	.	res/commandimagelist
+choosecontrols			SVG	.	res/commandimagelist
+combobox			SVG	.	res/commandimagelist
+config				SVG	.	res/commandimagelist
+controlproperties		SVG	.	res/commandimagelist
+fields				SVG	.	res/commandimagelist
+hscrollbar			SVG	.	res/commandimagelist
+insertlistbox			SVG	.	res/commandimagelist
 progressbar			SVG	.	res/commandimagelist
 radiobutton			SVG	.	res/commandimagelist
+scrollbar			SVG	.	res/commandimagelist
+spinbutton			SVG	.	res/commandimagelist
 
 #
 # Currency
 #
 currencyfield			SVG	.	res/commandimagelist
+euroconverter			SVG	.	res/commandimagelist
 insertcurrencyfield		SVG	.	res/commandimagelist
 numberformatcurrency		SVG	.	res/commandimagelist
 
@@ -210,6 +235,7 @@ numberformatcurrency		SVG	.	res/commandimagelist
 #
 dbaddrelation			SVG	.	res/commandimagelist
 dbclearquery			SVG	.	res/commandimagelist
+dbdistinctvalues		SVG	.	res/commandimagelist
 dbdtableedit			SVG	.	res/commandimagelist
 dbformdelete			SVG	.	res/commandimagelist
 dbformedit			SVG	.	res/commandimagelist
@@ -217,6 +243,7 @@ dbformrename			SVG	.	res/commandimagelist
 dbchangedesignmode		SVG	.	res/commandimagelist
 dbindexdesign			SVG	.	res/commandimagelist
 dbnewform			SVG	.	res/commandimagelist
+dbnewformautopilot		SVG	.	res/commandimagelist
 dbnewquery			SVG	.	res/commandimagelist
 dbnewqueryautopilot		SVG	.	res/commandimagelist
 dbnewquerysql			SVG	.	res/commandimagelist
@@ -224,10 +251,14 @@ dbnewreportautopilot		SVG	.	res/commandimagelist
 dbnewtable			SVG	.	res/commandimagelist
 dbnewtableautopilot		SVG	.	res/commandimagelist
 dbnewviewsql			SVG	.	res/commandimagelist
+dbquerydelete			SVG	.	res/commandimagelist
 dbqueryedit			SVG	.	res/commandimagelist
 dbqueryrename			SVG	.	res/commandimagelist
+dbreportdelete			SVG	.	res/commandimagelist
+dbreportedit			SVG	.	res/commandimagelist
 dbreportrename			SVG	.	res/commandimagelist
 dbtabledelete			SVG	.	res/commandimagelist
+dbtableedit			SVG	.	res/commandimagelist
 dbviewfunctions			SVG	.	res/commandimagelist
 dsbdocumentdatasource		SVG	.	res/commandimagelist
 
@@ -245,6 +276,7 @@ subdecimal			16x16	.	res/commandimagelist/sc_numberformatdecdecimals.png
 adddirect			SVG	.	res/commandimagelist
 addons				SVG	.	res/commandimagelist
 choosedesign			SVG	.	res/commandimagelist
+deletemasterpage		SVG	.	res/commandimagelist
 formatpaintbrush		SVG	.	res/commandimagelist
 formdesigntools			SVG	.	res/commandimagelist
 formproperties			SVG	.	res/commandimagelist
@@ -252,6 +284,7 @@ grid				SVG	.	res/commandimagelist
 insertbookmark			svg	.	res/commandimagelist
 insertdoc			SVG	.	res/commandimagelist
 insertdraw			SVG	.	res/commandimagelist
+insertformula			SVG	.	res/commandimagelist
 inserthyperlink			SVG	.	res/commandimagelist
 insertpage			SVG	.	res/commandimagelist
 insertpagecountfield		SVG	.	res/commandimagelist
@@ -259,25 +292,35 @@ insertpagenumberfield		SVG	.	res/commandimagelist
 insertspreadsheet		SVG	.	res/commandimagelist
 insertsymbol			SVG	.	res/commandimagelist
 inserttable			svg	.	res/commandimagelist
+inserttimefield			SVG	.	res/commandimagelist
+newarrangement			SVG	.	res/commandimagelist
 newdoc				SVG	.	res/commandimagelist
 openurl				SVG	.	res/commandimagelist
 saveas				svg	.	res/commandimagelist
 sendmail			svg	.	res/commandimagelist
 setdocumentproperties		SVG	.	res/commandimagelist
 symbolcatalogue			SVG	.	res/commandimagelist
+switchcontroldesignmode		SVG	.	res/commandimagelist
+switchxformsdesignmode		SVG	.	res/commandimagelist
+testmode			SVG	.	res/commandimagelist
+timefield			SVG	.	res/commandimagelist
 usewizards			SVG	.	res/commandimagelist
 
 #
 # Edit (graphics)
 #
+actionmode			SVG	.	res/commandimagelist
 changebezier			SVG	.	res/commandimagelist
 changepolygon			SVG	.	res/commandimagelist
 choosepolygon			SVG	.	res/commandimagelist
 drawselect			SVG	.	res/commandimagelist
+drawtext			SVG	.	res/commandimagelist
 fliphorizontal			SVG	.	res/commandimagelist
 flipvertical			SVG	.	res/commandimagelist
+glueeditmode			SVG	.	res/commandimagelist
 graphic				SVG	.	res/commandimagelist
 graphicdraft			SVG	.	res/commandimagelist
+linestyle			SVG	.	res/commandimagelist
 linetoolbox			SVG	.	res/commandimagelist
 objects3dtoolbox		SVG	.	res/commandimagelist
 selectmode			SVG	.	res/commandimagelist
@@ -290,8 +333,10 @@ copy				svg	.	res/commandimagelist
 edit				svg	.	res/commandimagelist
 paste				svg	.	res/commandimagelist
 editheaderandfooter		SVG	.	res/commandimagelist
+redo				SVG	.	res/commandimagelist
 selectall			SVG	.	res/commandimagelist
 selecttable			SVG	.	res/commandimagelist
+undo				SVG	.	res/commandimagelist
 
 #
 # Extrusion
@@ -385,6 +430,12 @@ fontworkshapetype.fontwork-triangle-up		SVG .	res/commandimagelist
 fontworkshapetype.fontwork-wave			SVG .	res/commandimagelist
 
 #
+# Frames
+#
+chainframes			SVG	.	res/commandimagelist
+lc10851				SVG	.	res
+
+#
 # Grid
 #
 togglegridhorizontal		SVG	.	res/commandimagelist
@@ -393,7 +444,10 @@ togglegridvertical		SVG	.	res/commandimagelist
 #
 # Help
 #
+absoluterecord			SVG	.	res/commandimagelist
 extendedhelp			SVG	.	res/commandimagelist
+helpannotate			SVG	.	res/commandimagelist
+helpmenu			SVG	.	res/commandimagelist
 
 #
 # Indent
@@ -419,9 +473,12 @@ linesquarearrow			SVG	.	res/commandimagelist
 
 #
 # Macros & basic
+addwatch			SVG	.	res/commandimagelist
 basicstop			SVG	.	res/commandimagelist
+compilebasic			SVG	.	res/commandimagelist
 choosemacro			SVG	.	res/commandimagelist
 macrorecorder			SVG	.	res/commandimagelist
+togglebreakpoint		SVG	.	res/commandimagelist
 
 #
 # Mathematic
@@ -434,11 +491,24 @@ lc26048				SVG	.	sc/res/imglst/apptbx
 #
 # Media
 #
+animationeffects		SVG	.	res/commandimagelist
+animationmode			SVG	.	res/commandimagelist
 animationobjects		SVG	.	res/commandimagelist
 avmediaplayer			SVG	.	res/commandimagelist
+customanimation			SVG	.	res/commandimagelist
 insertavmedia			SVG	.	res/commandimagelist
 insertsound			SVG	.	res/commandimagelist
 insertvideo			SVG	.	res/commandimagelist
+
+#
+# Navigation
+#
+firstpage			SVG	.	res/commandimagelist
+gotoend				SVG	.	res/commandimagelist
+gotoendofdoc			SVG	.	res/commandimagelist
+gotostartofdoc			SVG	.	res/commandimagelist
+lastpage			SVG	.	res/commandimagelist
+navigator			SVG	.	res/commandimagelist
 
 #
 # New shapes
@@ -506,7 +576,7 @@ numberformatstandard		SVG	.	res/commandimagelist
 # Other
 #
 colorsettings			SVG	.	res/commandimagelist
-navigator			SVG	.	res/commandimagelist
+designerdialog			SVG	.	res/commandimagelist
 objectcatalog			SVG	.	res/commandimagelist
 toggleanchortype		SVG	.	res/commandimagelist
 
@@ -580,10 +650,12 @@ symbolshapes			SVG	.	res/commandimagelist
 #
 addfield			SVG	.	res/commandimagelist
 addtable			SVG	.	res/commandimagelist
+borderdialog			SVG	.	res/commandimagelist
 datadatapilotrun		SVG	.	res/commandimagelist
 dataimport			SVG	.	res/commandimagelist
 dataincolumns			SVG	.	res/commandimagelist
 datainrows			SVG	.	res/commandimagelist
+definename			SVG	.	res/commandimagelist
 deletecolumns			SVG	.	res/commandimagelist
 deleterows			SVG	.	res/commandimagelist
 diagramdata			SVG	.	res/commandimagelist
@@ -595,12 +667,26 @@ insertcellsright		SVG	.	res/commandimagelist
 insertcolumns			SVG	.	res/commandimagelist
 insertrows			SVG	.	res/commandimagelist
 mergecells			SVG	.	res/commandimagelist
+optimizetable			SVG	.	res/commandimagelist
 setborderstyle			SVG	.	res/commandimagelist
+
+#
+# Wrap
+#
+contourdialog			SVG	.	res/commandimagelist
+wrapcontour			SVG	.	res/commandimagelist
+wrapideal			SVG	.	res/commandimagelist
+wrapleft			SVG	.	res/commandimagelist
+wrapoff				SVG	.	res/commandimagelist
+wrapon				SVG	.	res/commandimagelist
+wrapright			SVG	.	res/commandimagelist
+wrapthrough			SVG	.	res/commandimagelist
 
 #
 # Zoom and search
 #
 adjust				SVG	.	res/commandimagelist
+helpsearch			SVG	.	res/commandimagelist
 helpzoomin			SVG	.	res/commandimagelist
 helpzoomout			SVG	.	res/commandimagelist
 lc05961				SVG	.	res
@@ -615,6 +701,7 @@ zoomminus			SVG	.	res/commandimagelist
 zoomnext			SVG	.	res/commandimagelist
 zoomobjects			SVG	.	res/commandimagelist
 zoomout				SVG	.	res/commandimagelist
+zoompanning			SVG	.	res/commandimagelist
 zoompage			SVG	.	res/commandimagelist
 zoompagewidth			SVG	.	res/commandimagelist
 zoomplus			SVG	.	res/commandimagelist
