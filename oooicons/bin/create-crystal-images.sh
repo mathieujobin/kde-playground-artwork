@@ -29,7 +29,7 @@ BUILD_DIR="$BASE_DIR/build"
 
 OUTPUT="crystal"
 OUTDIR="$BUILD_DIR/$OUTPUT"
-OUTNAME="$BUILD_DIR/ooo_crystal_images-5.tar.bz2"
+OUTNAME="$BUILD_DIR/ooo_crystal_images-6.tar.bz2"
 
 #GNOMEDIR="$BUILD_DIR/ooo-icons-OOO_1_1-10-png"
 #GNOMEZIP="$BASE_DIR/src/ooo-icons-OOO_1_1-10-png.tar.bz2"
