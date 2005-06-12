@@ -141,9 +141,12 @@ public:
     void reset();
     QImage getButtonImage(ButtonType type);
     virtual void setOn(bool on);
+    virtual void setDown(bool on);
 
 protected slots:
     void animate();
+    void buttonClicked();
+    void buttonReleased();
 
 private:
     void enterEvent(QEvent *e);
@@ -160,6 +163,7 @@ private:
     QPixmap *pixmap[2][4];
     ButtonState lastmouse_;
     bool hover_;
+    bool m_clicked;
     QTimer *animTmr;
     uint animProgress;
 };

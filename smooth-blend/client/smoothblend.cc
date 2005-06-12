@@ -173,7 +173,9 @@ smoothblendButton::smoothblendButton(smoothblendClient *parent, const char *name
     animTmr = new QTimer(this);
     connect(animTmr, SIGNAL(timeout() ), this, SLOT(animate() ) );
     connect(this, SIGNAL(pressed() ), this, SLOT(buttonClicked() ) );
+    connect(this, SIGNAL(released() ), this, SLOT(buttonReleased() ) );
     animProgress = 0;
+    m_clicked=false;
 }
 
 smoothblendButton::~smoothblendButton() {
@@ -196,7 +198,12 @@ QSize smoothblendButton::sizeHint() const {
 // Button animation progress reset so we don't get any leave event animation
 // when the mouse is still pressed
 void smoothblendButton::buttonClicked() {
+    m_clicked=true;
     animProgress=0;
+}
+void smoothblendButton::buttonReleased() {
+    //This doesn't work b/c a released() signal is thrown when a leaveEvent occurs
+    //m_clicked=false;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -236,8 +243,11 @@ void smoothblendButton::enterEvent(QEvent *e) {
     // we wanted to pass on the event
     QButton::enterEvent(e);
     // we want to do mouseovers, so keep track of it here
-    hover_=true; 
-    animate();
+    hover_=true;
+    if(!m_clicked)
+    {
+        animate();
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -250,7 +260,10 @@ void smoothblendButton::leaveEvent(QEvent *e) {
     QButton::leaveEvent(e);
     // we want to do mouseovers, so keep track of it here
     hover_=false; 
-    animate();
+    if(!m_clicked)
+    {
+        animate();
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -286,6 +299,10 @@ void smoothblendButton::mouseReleaseEvent(QMouseEvent* e) {
     }
     QMouseEvent me(e->type(), e->pos(), e->globalPos(), button, e->state());
     QButton::mouseReleaseEvent(&me);
+    if(m_clicked)
+    {
+        m_clicked=false;
+    }
 }
 
 void smoothblendButton::setOn(bool on)
