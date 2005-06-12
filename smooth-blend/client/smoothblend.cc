@@ -172,6 +172,7 @@ smoothblendButton::smoothblendButton(smoothblendClient *parent, const char *name
     //button animation setup
     animTmr = new QTimer(this);
     connect(animTmr, SIGNAL(timeout() ), this, SLOT(animate() ) );
+    connect(this, SIGNAL(pressed() ), this, SLOT(buttonClicked() ) );
     animProgress = 0;
 }
 
@@ -190,26 +191,36 @@ QSize smoothblendButton::sizeHint() const {
 }
 
 //////////////////////////////////////////////////////////////////////////////
+// buttonClicked()
+// ----------
+// Button animation progress reset so we don't get any leave event animation
+// when the mouse is still pressed
+void smoothblendButton::buttonClicked() {
+    animProgress=0;
+}
+
+//////////////////////////////////////////////////////////////////////////////
 // animate()
 // ----------
 // Button animation timing
 void smoothblendButton::animate() {
     animTmr->stop();
-    if(!hover_) {
-        if(animProgress > 0) {
-            if (::factory->animateButtons() ) {
-                animProgress--;
-            } else {
-                animProgress = 0;
-            }
-            animTmr->start(TIMERINTERVAL, true); // single-shot
-        }
-    } else {
+
+    if(hover_) {
         if(animProgress < ANIMATIONSTEPS) {
             if (::factory->animateButtons() ) {
                 animProgress++;
             } else {
                 animProgress = ANIMATIONSTEPS;
+            }
+            animTmr->start(TIMERINTERVAL, true); // single-shot
+        }
+    } else {
+        if(animProgress > 0) {
+            if (::factory->animateButtons() ) {
+                animProgress--;
+            } else {
+                animProgress = 0;
             }
             animTmr->start(TIMERINTERVAL, true); // single-shot
         }
@@ -222,13 +233,11 @@ void smoothblendButton::animate() {
 // Mouse has entered the button
 
 void smoothblendButton::enterEvent(QEvent *e) {
-    // we want to do mouseovers, so keep track of it here
-    hover_=true; 
-    repaint( hover_ );
-    animate();
     // we wanted to pass on the event
     QButton::enterEvent(e);
-    
+    // we want to do mouseovers, so keep track of it here
+    hover_=true; 
+    animate();
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -237,12 +246,11 @@ void smoothblendButton::enterEvent(QEvent *e) {
 // Mouse has left the button
 
 void smoothblendButton::leaveEvent(QEvent *e) {
-    // we want to do mouseovers, so keep track of it here
-    hover_=false; 
-    repaint( hover_ );
-    animate();
     // we wanted to pass on the event
     QButton::leaveEvent(e);
+    // we want to do mouseovers, so keep track of it here
+    hover_=false; 
+    animate();
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -282,7 +290,12 @@ void smoothblendButton::mouseReleaseEvent(QMouseEvent* e) {
 
 void smoothblendButton::setOn(bool on)
 {
-        QButton::setOn(on);
+    QButton::setOn(on);
+}
+
+void smoothblendButton::setDown(bool on)
+{
+    QButton::setDown(on);
 }
 
 //////////////////////////////////////////////////////////
@@ -681,7 +694,7 @@ void smoothblendClient::addButtons(QBoxLayout *layout, const QString& s, int but
                     connect(button[ButtonMenu], SIGNAL(pressed()), this, SLOT(menuButtonPressed()));
                     connect(button[ButtonMenu], SIGNAL(released()), this, SLOT(menuButtonReleased()));
                     layout->addWidget(button[ButtonMenu]);
-                    if (n < s.length()-1) layout->addSpacing(3);
+                    if (n < s.length()-1) layout->addSpacing(1);
                 }
                 break;
 
@@ -697,7 +710,7 @@ void smoothblendClient::addButtons(QBoxLayout *layout, const QString& s, int but
                     connect(button[ButtonSticky], SIGNAL(clicked()),
                             this, SLOT(toggleOnAllDesktops()));
                     layout->addWidget(button[ButtonSticky]);
-                    if (n < s.length()-1) layout->addSpacing(3);
+                    if (n < s.length()-1) layout->addSpacing(1);
                 }
                 break;
 
@@ -708,7 +721,7 @@ void smoothblendClient::addButtons(QBoxLayout *layout, const QString& s, int but
                     connect(button[ButtonHelp], SIGNAL(clicked()),
                             this, SLOT(showContextHelp()));
                     layout->addWidget(button[ButtonHelp]);
-                    if (n < s.length()-1) layout->addSpacing(3);
+                    if (n < s.length()-1) layout->addSpacing(1);
                 }
                 break;
 
@@ -719,7 +732,7 @@ void smoothblendClient::addButtons(QBoxLayout *layout, const QString& s, int but
                     connect(button[ButtonMin], SIGNAL(clicked()),
                             this, SLOT(minimize()));
                     layout->addWidget(button[ButtonMin]);
-                    if (n < s.length()-1) layout->addSpacing(3);
+                    if (n < s.length()-1) layout->addSpacing(1);
                 }
                 break;
 
@@ -735,7 +748,7 @@ void smoothblendClient::addButtons(QBoxLayout *layout, const QString& s, int but
                     connect(button[ButtonMax], SIGNAL(clicked()),
                             this, SLOT(maxButtonPressed()));
                     layout->addWidget(button[ButtonMax]);
-                    if (n < s.length()-1) layout->addSpacing(3);
+                    if (n < s.length()-1) layout->addSpacing(1);
                 }
                 break;
 
@@ -746,7 +759,7 @@ void smoothblendClient::addButtons(QBoxLayout *layout, const QString& s, int but
                     connect(button[ButtonClose], SIGNAL(clicked()),
                             this, SLOT(closeWindow()));
                     layout->addWidget(button[ButtonClose]);
-                    if (n < s.length()-1) layout->addSpacing(3);
+                    if (n < s.length()-1) layout->addSpacing(1);
                 }
                 break;
 
@@ -758,7 +771,7 @@ void smoothblendClient::addButtons(QBoxLayout *layout, const QString& s, int but
                     connect(button[ButtonAbove], SIGNAL(clicked()),
                             this, SLOT(aboveButtonPressed()));
                     layout->addWidget(button[ButtonAbove]);
-                    if (n < s.length()-1) layout->addSpacing(3);
+                    if (n < s.length()-1) layout->addSpacing(1);
                 }
                 break;
 
@@ -770,7 +783,7 @@ void smoothblendClient::addButtons(QBoxLayout *layout, const QString& s, int but
                     connect(button[ButtonBelow], SIGNAL(clicked()),
                             this, SLOT(belowButtonPressed()));
                     layout->addWidget(button[ButtonBelow]);
-                    if (n < s.length()-1) layout->addSpacing(3);
+                    if (n < s.length()-1) layout->addSpacing(1);
                 }
                 break;
 
@@ -786,7 +799,7 @@ void smoothblendClient::addButtons(QBoxLayout *layout, const QString& s, int but
                     connect(button[ButtonShade], SIGNAL(clicked()),
                             this, SLOT(shadeButtonPressed()));
                     layout->addWidget(button[ButtonShade]);
-                    if (n < s.length()-1) layout->addSpacing(3);
+                    if (n < s.length()-1) layout->addSpacing(1);
                 }
                 break;
 
@@ -901,21 +914,8 @@ void smoothblendClient::keepBelowChange(bool b) {
 // Get the size of the borders
 
 void smoothblendClient::borders(int &left, int &right, int &top, int &bottom) const {
-    /*
-    if(isShade())
-    {
-        l = r = ::factory->frameSize();
-        b = 0;
-        t = ::factory->titleSize() + (::factory->frameSize()*2);
-    }
-    else
-    {
-        l = r = ::factory->frameSize();
-        t = ::factory->titleSize() + ::factory->frameSize();
-        b = ::factory->frameSize();
-    }
-    */
     int FRAMESIZE = ::factory->frameSize();
+
     if ((maximizeMode()==MaximizeFull) && !options()->moveResizeMaximizedWindows()) {
         left = right = bottom = 0;
         top = s_titleHeight;
@@ -1117,8 +1117,6 @@ void smoothblendClient::paintEvent(QPaintEvent*) {
 
     // top
     painter.drawTiledPixmap(topRect, active ? *aTitleBarTopTile:*iTitleBarTopTile);
-    // all the Title Bar - behind buttons and text
-    //painter.drawTiledPixmap(titleRect, active ? *aTitleBarTile:*iTitleBarTile);
     painter.drawTiledPixmap(titleRect.x(),
                             titleRect.y(),
                             titleRect.width(),
@@ -1184,9 +1182,6 @@ void smoothblendClient::paintEvent(QPaintEvent*) {
     // outline outside the frame but not the corners if they are rounded
     tempRect = widget()->rect();
     painter.drawRect(tempRect);
-    // this makes the outline 2 pixels instead of 1 pixel wide
-    //frame.setRect(frame.x()+1,frame.y()+1,frame.right()-1,frame.bottom()-1);
-    //painter.drawRect(frame);
 
     bool cornersFlag = ::factory->roundedCorners();
     if(cornersFlag) {
