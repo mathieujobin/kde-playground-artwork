@@ -1,1 +1,1 @@
-SUBDIRS = decoration style
+SUBDIRS = style
