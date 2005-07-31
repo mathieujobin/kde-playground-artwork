@@ -108,19 +108,19 @@ inline bool smoothblendFactory::roundedCorners() {
 }
 inline int smoothblendFactory::titleSize() {
     return titlesize_;
-};
+}
 inline int smoothblendFactory::buttonSize() {
     return buttonsize_;
-};
+}
 inline int smoothblendFactory::frameSize() {
     return framesize_;
-};
+}
 inline int smoothblendFactory::roundSize() {
     return roundsize_;
-};
+}
 inline bool smoothblendFactory::titleShadow() {
     return titleshadow_;
-};
+}
 
 // smoothblendButton //////////////////////////////////////////////////////////
 
