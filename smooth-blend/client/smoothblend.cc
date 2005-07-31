@@ -637,7 +637,7 @@ void smoothblendClient::_resetLayout()
     int FRAMESIZE = ::factory->frameSize();
 
     topSpacer_        = new QSpacerItem(1, FRAMESIZE, QSizePolicy::Expanding, QSizePolicy::Fixed);
-    titlebar_         = new QSpacerItem(1, s_titleHeight,
+    titlebar_         = new QSpacerItem(1, ::factory->buttonSize(),
                                         QSizePolicy::Expanding, QSizePolicy::Fixed);
     leftTitleSpacer_  = new QSpacerItem(FRAMESIZE, s_titleHeight,
                                         QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -935,15 +935,15 @@ void smoothblendClient::borders(int &left, int &right, int &top, int &bottom) co
 
     if ((maximizeMode()==MaximizeFull) && !options()->moveResizeMaximizedWindows()) {
         left = right = bottom = 0;
-        top = s_titleHeight;
+        top = ::factory->buttonSize();
 
         // update layout etc.
         topSpacer_->changeSize(1, 0, QSizePolicy::Expanding, QSizePolicy::Fixed);
         decoSpacer_->changeSize(1, 0, QSizePolicy::Expanding, QSizePolicy::Fixed);
         leftSpacer_->changeSize(left, 1, QSizePolicy::Fixed, QSizePolicy::Expanding);
-        leftTitleSpacer_->changeSize(left, s_titleHeight, QSizePolicy::Fixed, QSizePolicy::Fixed);
+        leftTitleSpacer_->changeSize(left, top, QSizePolicy::Fixed, QSizePolicy::Fixed);
         rightSpacer_->changeSize(right, 1, QSizePolicy::Fixed, QSizePolicy::Expanding);
-        rightTitleSpacer_->changeSize(right, s_titleHeight, QSizePolicy::Fixed, QSizePolicy::Fixed);
+        rightTitleSpacer_->changeSize(right, top, QSizePolicy::Fixed, QSizePolicy::Fixed);
         bottomSpacer_->changeSize(1, bottom, QSizePolicy::Expanding, QSizePolicy::Fixed);
     } else {
         left = right = bottom = ::factory->frameSize();
@@ -1120,15 +1120,15 @@ void smoothblendClient::paintEvent(QPaintEvent*) {
     /*
     if(active)
     {
-        qDebug("topRect.y()   = %i\tbottom() = %i",topRect.top(),topRect.bottom());
-        qDebug("titleRect.y() = %i\tbottom() = %i",titleRect.top(),titleRect.bottom());
-        qDebug("textRect.y()  = %i\tbottom() = %i",textRect.top(),textRect.bottom());
-        qDebug("Rltitle.y()   = %i\tbottom() = %i",Rltitle.top(),Rltitle.bottom());
-        qDebug("Rrtitle.y()   = %i\tbottom() = %i",Rrtitle.top(),Rrtitle.bottom());
-        qDebug("Rdeco.y()     = %i\tbottom() = %i",Rdeco.top(),Rdeco.bottom());
-        qDebug("Rleft.y()     = %i\tbottom() = %i",Rleft.top(),Rleft.bottom());
-        qDebug("Rright.y()    = %i\tbottom() = %i",Rright.top(),Rright.bottom());
-        qDebug("Rbottom.y()   = %i\tbottom() = %i",Rbottom.top(),Rbottom.bottom());
+        qDebug("paintEvent() topRect.y()   = %i\tbottom() = %i",topRect.top(),topRect.bottom());
+        qDebug("paintEvent() titleRect.y() = %i\tbottom() = %i",titleRect.top(),titleRect.bottom());
+        qDebug("paintEvent() textRect.y()  = %i\tbottom() = %i",textRect.top(),textRect.bottom());
+        qDebug("paintEvent() Rltitle.y()   = %i\tbottom() = %i",Rltitle.top(),Rltitle.bottom());
+        qDebug("paintEvent() Rrtitle.y()   = %i\tbottom() = %i",Rrtitle.top(),Rrtitle.bottom());
+        qDebug("paintEvent() Rdeco.y()     = %i\tbottom() = %i",Rdeco.top(),Rdeco.bottom());
+        qDebug("paintEvent() Rleft.y()     = %i\tbottom() = %i",Rleft.top(),Rleft.bottom());
+        qDebug("paintEvent() Rright.y()    = %i\tbottom() = %i",Rright.top(),Rright.bottom());
+        qDebug("paintEvent() Rbottom.y()   = %i\tbottom() = %i",Rbottom.top(),Rbottom.bottom());
     }
     */
 
@@ -1228,7 +1228,7 @@ void smoothblendClient::paintEvent(QPaintEvent*) {
 // update the frame mask
 void smoothblendClient::updateMask() {
     bool cornersFlag = ::factory->roundedCorners();
-    if ( (!options()->moveResizeMaximizedWindows() && maximizeMode() & MaximizeFull ) ) 
+    if ( (!options()->moveResizeMaximizedWindows() && maximizeMode() == MaximizeFull ) ) 
     {
         setMask(QRegion(widget()->rect()));
         return;
