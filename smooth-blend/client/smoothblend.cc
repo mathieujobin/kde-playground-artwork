@@ -355,11 +355,11 @@ QImage smoothblendButton::getButtonImage(ButtonType type)
         case ButtonShade:
             if(client_->isShade())
             {
-                finalImage = uic_findImage( "splat.png" );
+                finalImage = uic_findImage( "shade.png" );
             }
             else
             {
-                finalImage = uic_findImage( "splat.png" );
+                finalImage = uic_findImage( "shade.png" );
             }
             break;
         case ButtonAbove:
@@ -812,7 +812,7 @@ void smoothblendClient::addButtons(QBoxLayout *layout, const QString& s, int but
                         tip = i18n("Shade");
                     }
                     button[ButtonShade] =
-                        new smoothblendButton(this, "splat.png", tip, ButtonShade, button_size, true);
+                        new smoothblendButton(this, "shade.png", tip, ButtonShade, button_size, true);
                     connect(button[ButtonShade], SIGNAL(clicked()),
                             this, SLOT(shadeButtonPressed()));
                     layout->addWidget(button[ButtonShade]);
