@@ -1,1 +1,1 @@
-SUBDIRS = style
+SUBDIRS = 
