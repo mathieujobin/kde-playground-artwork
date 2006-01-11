@@ -217,8 +217,8 @@ action-imagegallery	16x16	kdeaddons/konq-plugins/kimgalleryplugin	res/commandima
 action-find		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_helpsearch.png:res/commandimagelist/lc_searchdialog.png:res/lc05412.png:res/lc05961.png
 action-find		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_recsearch.png:res/commandimagelist/sc_searchdialog.png:res/sc05961.png:res/sc10725.png:res/sc10853.png
 
-action-ark_help		22x22	kdeutils/ark/pics	res/commandimagelist/lc_helperdialog.png:res/commandimagelist/lc_helpindex.png:res/lc05962.png
-action-ark_help		16x16	kdeutils/ark/pics	res/commandimagelist/sc_helperdialog.png:res/commandimagelist/sc_helpindex.png:res/sc05962.png
+action-ark_help		22x22	broken_in_kde	res/commandimagelist/lc_helperdialog.png:res/commandimagelist/lc_helpindex.png:res/lc05962.png
+action-ark_help		16x16	broken_in_kde	res/commandimagelist/sc_helperdialog.png:res/commandimagelist/sc_helpindex.png:res/sc05962.png
 
 
 ########
@@ -228,8 +228,8 @@ action-ark_help		16x16	kdeutils/ark/pics	res/commandimagelist/sc_helperdialog.pn
 action-forward		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_browseforward.png:res/lc06300.png
 action-forward		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_browseforward.png:res/sc06300.png
 
-action-back		22x22	kdewebdev/kfilereplace/toolbar	res/commandimagelist/lc_browsebackward.png:res/lc06301.png
-action-back		16x16	kdewebdev/kfilereplace/toolbar	res/commandimagelist/sc_browsebackward.png:res/sc06301.png
+action-back		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_browsebackward.png:res/lc06301.png
+action-back		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_browsebackward.png:res/sc06301.png
 
 action-stop		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_stop.png:res/lc06302.png
 action-stop		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_stop.png:res/sc06302.png
@@ -365,8 +365,8 @@ action-aoright		16x16	koffice/pics/crystalsvg	res/commandimagelist/sc_objectalig
 action-aotop		22x22	koffice/pics/crystalsvg	res/commandimagelist/lc_alignup.png:res/lc10134.png
 action-aotop		16x16	koffice/pics/crystalsvg	res/commandimagelist/sc_alignup.png:res/sc10134.png
 
-action-aocenterv	22x22	broken_in_kde	res/commandimagelist/lc_alignmiddle.png:res/commandimagelist/lc_alignverticalcenter.png:res/lc10135.png
-action-aocenterv	16x16	broken_in_kde	res/commandimagelist/sc_alignmiddle.png:res/commandimagelist/sc_alignverticalcenter.png:res/sc10135.png
+action-aocenterv	22x22	broken_in_kde	res/commandimagelist/lc_alignmiddle.png:res/lc10135.png
+action-aocenterv	16x16	broken_in_kde	res/commandimagelist/sc_alignmiddle.png:res/sc10135.png
 
 action-aobottom		22x22	koffice/pics/crystalsvg	res/commandimagelist/lc_aligndown.png:res/lc10136.png
 action-aobottom		16x16	koffice/pics/crystalsvg	res/commandimagelist/sc_aligndown.png:res/sc10136.png
@@ -594,6 +594,9 @@ action-player_start	16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_firstr
 
 action-player_play	22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_nextrecord.png:res/lc10617.png
 action-player_play	16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_nextrecord.png:res/sc10617.png
+
+action-player_playrev	22x22	modified	res/commandimagelist/lc_prevrecord.png:res/lc10618.png
+action-player_playrev	16x16	modified	res/commandimagelist/sc_prevrecord.png:res/sc10618.png
 
 action-player_end	22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_lastrecord.png:res/lc10619.png
 action-player_end	16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_lastrecord.png:res/sc10619.png
@@ -903,13 +906,13 @@ viewmag200		16x16	modified	starmath/res/sc30265.png
 action-viewmag+		22x22	kdelibs/pics/crystalsvg	starmath/res/lc30266.png
 action-viewmag+		16x16	kdelibs/pics/crystalsvg	starmath/res/sc30266.png
 
-action-viewmag-		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_adjust.png:res/commandimagelist/lc_draw.png:starmath/res/lc30267.png:starmath/res/lc30268.png:starmath/res/lc30269.png
+action-viewmag-		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_adjust.png:starmath/res/lc30267.png:starmath/res/lc30268.png:starmath/res/lc30269.png
 action-viewmag-		16x16	kdelibs/pics/crystalsvg	starmath/res/sc30267.png
 
 action-reload		22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_adjust.png:res/commandimagelist/lc_draw.png:starmath/res/lc30267.png:starmath/res/lc30268.png:starmath/res/lc30269.png
 action-reload		16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_draw.png:starmath/res/sc30268.png
 
-action-viewmagfit	22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_adjust.png:res/commandimagelist/lc_draw.png:starmath/res/lc30267.png:starmath/res/lc30268.png:starmath/res/lc30269.png
+action-viewmagfit	22x22	kdelibs/pics/crystalsvg	res/commandimagelist/lc_adjust.png:starmath/res/lc30267.png:starmath/res/lc30268.png:starmath/res/lc30269.png
 action-viewmagfit	16x16	kdelibs/pics/crystalsvg	res/commandimagelist/sc_adjust.png:starmath/res/sc30269.png
 
 action-select		22x22	koffice/pics/crystalsvg	starmath/res/lc30270.png

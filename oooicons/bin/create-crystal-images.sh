@@ -29,7 +29,7 @@ BUILD_DIR="$BASE_DIR/build"
 
 OUTPUT="crystal"
 OUTDIR="$BUILD_DIR/$OUTPUT"
-OUTNAME="$BUILD_DIR/ooo_crystal_images-6.tar.bz2"
+OUTNAME="$BUILD_DIR/ooo_crystal_images-1.tar.gz"
 
 #GNOMEDIR="$BUILD_DIR/ooo-icons-OOO_1_1-10-png"
 #GNOMEZIP="$BASE_DIR/src/ooo-icons-OOO_1_1-10-png.tar.bz2"
@@ -71,8 +71,10 @@ function correct_size()
 # correct_and_copy: do correct_size and copy_image in one step
 function correct_and_copy
 {
-    correct_size "$1" "$TMPFILE_CORR"
-    copy_image "$TMPFILE_CORR" "$2"
+    # Resize to 24x24 is not needed any more
+    #correct_size "$1" "$TMPFILE_CORR"
+    #copy_image "$TMPFILE_CORR" "$2"
+    copy_image "$1" "$2"
 }
 
 # Clean
@@ -201,7 +203,7 @@ rm -f $TMPFILE $TMPFILE_CORR $TMPXPM $TMPXPM2
 
 # Tarbz it
 echo "Creating tarball" 1>&2
-tar cfj "$OUTNAME" -C "$BUILD_DIR" "$OUTPUT"
+tar cfz "$OUTNAME" -C "$BUILD_DIR" "$OUTPUT"
 
 echo
 echo "The result is stored in $OUTNAME."

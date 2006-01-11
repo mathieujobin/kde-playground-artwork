@@ -1,3 +1,17 @@
+2006-01-11  Jan Holesovsky  <kendy@suse.cz>
+
+	* crystalsvg/alignverticalcenter.svg: Copy of alignvcenter.svg.
+
+	* imagelists/images-crystalsvg.txt: More icons by the artists.
+
+	* imagelists/images-from-kde.txt: Fixed for KDE3.5.
+
+	* bin/create-mono-images.sh,
+	  bin/create-crystal-images.sh: 24x24 -> 22x22.
+
+	* bin/create-crystal-images.sh: Use gzip instead of bzip, version
+	  ooo_crystal_images-1.tar.gz.
+
 2005-05-16  Jan Holesovsky  <kendy@suse.cz>
 
 	* imagelists/images-crystalsvg.txt: More icons by Nuno.

@@ -22,6 +22,8 @@ BUILD_DIR="$BASE_DIR/build"
 [ -d "$BUILD_DIR/reference" ] || { echo "Cannot find '$BUILD_DIR/reference', aborting." ; exit 1 ; }
 [ -f "$BUILD_DIR/index.html" ] || { echo "Cannot find '$BUILD_DIR/index.html', aborting." ; exit 1 ; }
 
+chmod -R go+r "$BUILD_DIR/crystal" "$BUILD_DIR/mono" "$BUILD_DIR/reference" "$BUILD_DIR/index.html"
+
 WHERE="$1"
 
 rsync -avz "$BUILD_DIR/crystal/" "$WHERE/crystal/"

@@ -23,6 +23,7 @@ alignleft			svg	.	res/commandimagelist
 alignright			svg	.	res/commandimagelist
 aligntop			SVG	.	res/commandimagelist
 alignvcenter			SVG	.	res/commandimagelist
+alignverticalcenter		SVG	.	res/commandimagelist
 cellvertbottom			SVG	.	res/commandimagelist
 cellvertcenter			SVG	.	res/commandimagelist
 cellverttop			SVG	.	res/commandimagelist
@@ -214,13 +215,16 @@ choosecontrols			SVG	.	res/commandimagelist
 combobox			SVG	.	res/commandimagelist
 config				SVG	.	res/commandimagelist
 controlproperties		SVG	.	res/commandimagelist
+fieldnames			SVG	.	res/commandimagelist
 fields				SVG	.	res/commandimagelist
 hscrollbar			SVG	.	res/commandimagelist
 insertlistbox			SVG	.	res/commandimagelist
 progressbar			SVG	.	res/commandimagelist
+pushbutton			SVG	.	res/commandimagelist
 radiobutton			SVG	.	res/commandimagelist
 scrollbar			SVG	.	res/commandimagelist
 spinbutton			SVG	.	res/commandimagelist
+vscrollbar			SVG	.	res/commandimagelist
 
 #
 # Currency
@@ -261,6 +265,9 @@ dbtabledelete			SVG	.	res/commandimagelist
 dbtableedit			SVG	.	res/commandimagelist
 dbviewfunctions			SVG	.	res/commandimagelist
 dsbdocumentdatasource		SVG	.	res/commandimagelist
+dsbinsertcolumns		SVG	.	res/commandimagelist
+dsbinsertcontent		SVG	.	res/commandimagelist
+goalseekdialog			SVG	.	res/commandimagelist
 
 #
 # Decimal
@@ -269,6 +276,15 @@ addecimal			22x22	.	res/commandimagelist/lc_numberformatincdecimals.png
 addecimal			16x16	.	res/commandimagelist/sc_numberformatincdecimals.png
 subdecimal			22x22	.	res/commandimagelist/lc_numberformatdecdecimals.png
 subdecimal			16x16	.	res/commandimagelist/sc_numberformatdecdecimals.png
+
+#
+# Dia
+#
+dia				SVG	.	res/commandimagelist
+diaauto				SVG	.	res/commandimagelist
+diaeffect			SVG	.	res/commandimagelist
+diaspeed			SVG	.	res/commandimagelist
+diatime				SVG	.	res/commandimagelist
 
 #
 # Document
@@ -282,21 +298,29 @@ formatpaintbrush		SVG	.	res/commandimagelist
 formdesigntools			SVG	.	res/commandimagelist
 formproperties			SVG	.	res/commandimagelist
 grid				SVG	.	res/commandimagelist
+insertannotation		SVG	.	res/commandimagelist
 insertbookmark			svg	.	res/commandimagelist
 insertdoc			SVG	.	res/commandimagelist
 insertdraw			SVG	.	res/commandimagelist
 insertformula			SVG	.	res/commandimagelist
+insertframe			SVG	.	res/commandimagelist
+insertframeinteractnocolumns	SVG	.	res/commandimagelist
 inserthyperlink			SVG	.	res/commandimagelist
+insertobjectdialog		SVG	.	res/commandimagelist
+insertobjectfloatingframe	SVG	.	res/commandimagelist
 insertpage			SVG	.	res/commandimagelist
 insertpagecountfield		SVG	.	res/commandimagelist
 insertpagenumberfield		SVG	.	res/commandimagelist
+insertplugin			SVG	.	res/commandimagelist
 insertspreadsheet		SVG	.	res/commandimagelist
 insertsymbol			SVG	.	res/commandimagelist
 inserttable			svg	.	res/commandimagelist
+inserttextframe			SVG	.	res/commandimagelist
 inserttimefield			SVG	.	res/commandimagelist
 newarrangement			SVG	.	res/commandimagelist
 newdoc				SVG	.	res/commandimagelist
 openurl				SVG	.	res/commandimagelist
+pluginsactive			SVG	.	res/commandimagelist
 saveas				svg	.	res/commandimagelist
 sendmail			svg	.	res/commandimagelist
 setdocumentproperties		SVG	.	res/commandimagelist
@@ -316,9 +340,11 @@ changepolygon			SVG	.	res/commandimagelist
 choosepolygon			SVG	.	res/commandimagelist
 drawselect			SVG	.	res/commandimagelist
 drawtext			SVG	.	res/commandimagelist
+fillshadow			SVG	.	res/commandimagelist
 fliphorizontal			SVG	.	res/commandimagelist
 flipvertical			SVG	.	res/commandimagelist
 glueeditmode			SVG	.	res/commandimagelist
+grafattrcrop			SVG	.	res/commandimagelist
 graphic				SVG	.	res/commandimagelist
 graphicdraft			SVG	.	res/commandimagelist
 linestyle			SVG	.	res/commandimagelist
@@ -334,10 +360,12 @@ copy				svg	.	res/commandimagelist
 edit				svg	.	res/commandimagelist
 paste				svg	.	res/commandimagelist
 editheaderandfooter		SVG	.	res/commandimagelist
+formelcursor			SVG	.	res/commandimagelist
 redo				SVG	.	res/commandimagelist
 selectall			SVG	.	res/commandimagelist
 selecttable			SVG	.	res/commandimagelist
 undo				SVG	.	res/commandimagelist
+doubleclicktextedit		SVG	.	res/commandimagelist
 
 #
 # Extrusion
@@ -582,9 +610,39 @@ designerdialog			SVG	.	res/commandimagelist
 objectcatalog			SVG	.	res/commandimagelist
 toggleanchortype		SVG	.	res/commandimagelist
 
+lc10620				22x22	.	res/lc10620.png
+lc10620				16x16	.	res/sc10620.png
+
+lc10621				22x22	.	res/lc10621.png
+lc10621				16x16	.	res/sc10621.png
+
+lc10622				22x22	.	svx/res/lc10622.png
+lc10622				16x16	.	svx/res/sc10622.png
+
+lc10627				22x22	.	res/lc10627.png
+lc10627				16x16	.	res/sc10627.png
+
+lc10630				22x22	.	res/lc10630.png
+lc10630				16x16	.	res/sc10630.png
+
+lc10714				22x22	.	res/lc10714.png
+lc10714				16x16	.	res/sc10714.png
+
+lc10724				22x22	.	res/lc10724.png
+lc10724				16x16	.	res/sc10724.png
+
+lc10854				22x22	.	res/lc10854.png
+lc10854				16x16	.	res/sc10854.png
+
+lc26049				22x22	.	sc/res/imglst/apptbx/lc26049.png
+lc26049				16x16	.	sc/res/imglst/apptbx/sc26049.png
+
 #
 # Printing
 #
+addprintarea			SVG	.	res/commandimagelist
+defineprintarea			SVG	.	res/commandimagelist
+deleteprintarea			SVG	.	res/commandimagelist
 exportdirecttopdf		SVG	.	res/commandimagelist
 printersetup			SVG	.	res/commandimagelist
 printpagepreview		SVG	.	res/commandimagelist
@@ -661,8 +719,11 @@ definename			SVG	.	res/commandimagelist
 deletecolumns			SVG	.	res/commandimagelist
 deleterows			SVG	.	res/commandimagelist
 diagramdata			SVG	.	res/commandimagelist
+distributecolumns		SVG	.	res/commandimagelist
+distributerows			SVG	.	res/commandimagelist
 entirecolumn			SVG	.	res/commandimagelist
 entirerow			SVG	.	res/commandimagelist
+gotostartoftable		SVG	.	res/commandimagelist
 inscellsctrl			SVG	.	res/commandimagelist
 insertcellsdown			SVG	.	res/commandimagelist
 insertcellsright		SVG	.	res/commandimagelist

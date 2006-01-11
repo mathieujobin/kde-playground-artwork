@@ -22,7 +22,7 @@ BUILD_DIR="$BASE_DIR/build"
 
 OUTPUT="mono"
 OUTDIR="$BUILD_DIR/$OUTPUT"
-OUTNAME="$BUILD_DIR/ooo_mono_images-1.tar.bz2"
+OUTNAME="$BUILD_DIR/ooo_mono_images-1.tar.gz"
 
 REFERENCEDIR="$BUILD_DIR/reference"
 
@@ -61,8 +61,10 @@ function correct_size()
 # correct_and_copy: do correct_size and copy_image in one step
 function correct_and_copy
 {
-    correct_size "$1" "$TMPFILE_CORR"
-    copy_image "$TMPFILE_CORR" "$2"
+    # No need to correct the size any more
+    #correct_size "$1" "$TMPFILE_CORR"
+    #copy_image "$TMPFILE_CORR" "$2"
+    copy_image "$1" "$2"
 }
 
 # Clean
@@ -115,7 +117,7 @@ rm -f $TMPFILE $TMPFILE_CORR $TMPXPM $TMPXPM2
 
 # Tarbz it
 echo "Creating tarball" 1>&2
-tar cfj "$OUTNAME" -C "$BUILD_DIR" "$OUTPUT"
+tar cfz "$OUTNAME" -C "$BUILD_DIR" "$OUTPUT"
 
 echo
 echo "The result is stored in $OUTNAME."
