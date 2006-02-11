@@ -60,7 +60,7 @@ SUSE2Handler::~SUSE2Handler()
             delete m_pixmaps[t][i];
 }
 
-bool SUSE2Handler::reset(unsigned long changed)
+bool SUSE2Handler::reset(unsigned long /*changed*/)
 {
     // we assume the active font to be the same as the inactive font since the control
     // center doesn't offer different settings anyways.
@@ -106,21 +106,9 @@ bool SUSE2Handler::reset(unsigned long changed)
         }
     }
 
-    // Do we need to "hit the wooden hammer" ?
-    bool needHardReset = true;
-    // TODO: besides the Color and Font settings I can maybe handle more changes
-    //       without a hard reset. I will do this later...
-    if (changed & SettingColors || changed & SettingFont)
-    {
-        needHardReset = false;
-    }
-
-    if (needHardReset) {
-        return true;
-    } else {
-        resetDecorations(changed);
-        return false;
-    }
+    /// I dont want to do smart things here
+    /// just for cases that do not happen very often.
+    return true;
 }
 
 KDecoration* SUSE2Handler::createDecoration( KDecorationBridge* bridge )

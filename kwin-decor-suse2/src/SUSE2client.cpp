@@ -564,13 +564,13 @@ void SUSE2Client::reset(unsigned long changed)
         s_titleFont = isToolWindow() ?
                       Handler()->titleFontTool()
                       : Handler()->titleFont();
-        updateButtons();
 
         // then repaint
         delete_pixmaps();
         create_pixmaps();
         captionBufferDirty = true;
         widget()->update();
+        updateButtons();
     }
 
     KCommonDecoration::reset(changed);
