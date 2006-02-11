@@ -216,8 +216,12 @@ const KPixmap &SUSE2Handler::buttonPixmap(ButtonIcon type, int size, int state)
     int typeIndex = type;
     int s = size;
 
-    if (m_pixmaps[state][typeIndex] && m_pixmaps[state][typeIndex]->size() == QSize(s, s))
-        return *m_pixmaps[state][typeIndex];
+    if (m_pixmaps[state][typeIndex]) {
+        if (state != SHADOW && m_pixmaps[state][typeIndex]->size() == QSize(s, s))
+            return *m_pixmaps[state][typeIndex];
+        else if (state == SHADOW && m_pixmaps[state][typeIndex]->size() == QSize(s+4, s+4))
+            return *m_pixmaps[state][typeIndex];
+    }
 
     // no matching pixmap found, create a new one...
 
