@@ -1,15 +1,10 @@
 next
 -dont be smart on config changes - fixes wrong button colors when colors change
 -fix icon shadows when toolwindows are exactly 4px smaller than normal
-
-0.3.91 (0.4alpha2)
 -fix drawing with sharp edges
 -simplify cache for lipstik button pixmaps
 -updated admin/ to svn from branches/KDE/3.5 (3.5.1)
 -draw bottom spacer also when maximized + shaded + moving is not allowed
-(this version is considered quite stable despite being an alpha ;-)
-
-0.3.90 (0.4alpha1)
 -ported to kcommondecoration (KDE 3.5)
 
 0.3.3

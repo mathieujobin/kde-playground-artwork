@@ -66,7 +66,7 @@ SUSE2Client::~SUSE2Client()
 // pure virtual methods from KCommonDecoration
 QString SUSE2Client::visibleName() const
 {
-    return i18n("SUSE2 (Version %1)").arg("0.4alpha2");
+    return i18n("SUSE2 (Version %1)").arg("0.3.4pre");
 }
 
 QString SUSE2Client::defaultButtonsLeft() const
@@ -293,6 +293,7 @@ void SUSE2Client::paintEvent(QPaintEvent *e)
     const int titleEdgeLeft = layoutMetric(LM_TitleEdgeLeft);
     const int titleEdgeRight = layoutMetric(LM_TitleEdgeRight);
     const int btnMarginTop = layoutMetric(LM_ButtonMarginTop);
+    const int titleMargin = layoutMetric(LM_TitleBorderLeft);
 
     const int borderBottomTop = r_y2-borderBottom+1;
     const int borderLeftRight = r_x+borderLeft-1;
@@ -381,8 +382,6 @@ void SUSE2Client::paintEvent(QPaintEvent *e)
     }
 
     // leftTitleSpacer
-    int titleMarginLeft = 0;
-    int titleMarginRight = 0;
     if(titleEdgeLeft > 1)
     {
         tmpRect.setRect(r_x, titleEdgeTop, borderLeft, titleEdgeTop+titleHeight+titleEdgeBottom);
@@ -394,7 +393,6 @@ void SUSE2Client::paintEvent(QPaintEvent *e)
             painter.setPen(innerWindowContour);
             painter.drawLine(tmpRect.left()+1, tmpRect.top()+1,
                              tmpRect.left()+1, tmpRect.bottom() );
-            titleMarginLeft = borderLeft;
         }
     }
 
@@ -410,14 +408,12 @@ void SUSE2Client::paintEvent(QPaintEvent *e)
             painter.setPen(innerWindowContour );
             painter.drawLine(tmpRect.right()-1, tmpRect.top()+1,
                             tmpRect.right()-1, tmpRect.bottom() );
-            titleMarginRight = borderRight;
         }
     }
 
     // titleSpacer
     QPixmap *titleBfrPtr = active ? aCaptionBuffer : iCaptionBuffer;
     if(Rtitle.width() > 0 && titleBfrPtr != 0) {
-        const int titleMargin = 5; // 5 px between title and buttons
 
         int tX, tW;
         switch (Handler()->titleAlign()) {
@@ -710,21 +706,15 @@ void SUSE2Client::update_captionBuffer()
     painter.end();
 
 
-    // inactive -> no shadow
+    // inactive -> no shadow and no logo
     iCaptionBuffer->resize(captionWidth+4, titleHeight + TOPMARGIN + DECOHEIGHT);
     painter.begin(iCaptionBuffer);
     painter.drawTiledPixmap(iCaptionBuffer->rect(), *iTitleBarTile);
     painter.setFont(s_titleFont);
     painter.setPen(Handler()->getColor(TitleFont,false));
-    if (Handler()->titleLogo()) {
-        painter.drawText(iCaptionBuffer->rect().left(), iCaptionBuffer->rect().top() + titleEdgeTop,
-                         iCaptionBuffer->rect().width() - logo.width() - logoOffset, iCaptionBuffer->rect().height() - titleEdgeTop - titleEdgeBottom,
-                         AlignCenter, c);
-    } else {
-        painter.drawText(iCaptionBuffer->rect().left(), iCaptionBuffer->rect().top() + titleEdgeTop,
-                         iCaptionBuffer->rect().width(), iCaptionBuffer->rect().height() - titleEdgeTop - titleEdgeBottom,
-                         AlignCenter, c);
-    }
+    painter.drawText(iCaptionBuffer->rect().left(), iCaptionBuffer->rect().top() + titleEdgeTop,
+                     iCaptionBuffer->rect().width(), iCaptionBuffer->rect().height() - titleEdgeTop - titleEdgeBottom,
+                     AlignCenter, c);
     painter.end();
 
     captionBufferDirty = false;
