@@ -34,7 +34,7 @@ Authors:
 %if %{DIST} == SuSE
 cp extra/kroete.png src/titlebar_decor.png
 . /etc/opt/kde3/common_options
-update_admin
+update_admin --no-unsermake
 %endif
 
 %build

@@ -1,6 +1,10 @@
 -bugfixing
 -translation
 
+-1 known issue: some apps (quanta, kdevelop) dont keep their state if
+ maximized + moving and resizing of max. windows is not allowed
+ with shading, I guess thats a problem with kwin, if somebody has an idea please tell me
+
 Don't get to bloated. ;-)
 Uhm, we're getting close. I guess all options I can think of are done now.
 And as we have now deKorator and decgen everybody can make his own decoration. ;-)
