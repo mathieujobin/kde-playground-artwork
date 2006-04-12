@@ -76,7 +76,7 @@ QString SUSE2Client::defaultButtonsLeft() const
 
 QString SUSE2Client::defaultButtonsRight() const
 {
-    return "HIAX";
+    return "HIA___X";
 }
 
 bool SUSE2Client::decorationBehaviour(DecorationBehaviour behaviour) const
@@ -278,6 +278,10 @@ void SUSE2Client::paintEvent(QPaintEvent *e)
     const QColor innerWindowContour = Handler()->getColor(TitleGradientTo, active);
     const QColor deco = Handler()->getColor(TitleGradientTo, active);
     const QColor aBorder = Handler()->getColor(Border, active);
+    const QColor darkAntiAlias = alphaBlendColors(innerWindowContour, active ? aAntialiasBase : iAntialiasBase, 140);
+    const QColor midAntiAlias = alphaBlendColors(innerWindowContour, active ? aAntialiasBase : iAntialiasBase, 120);
+    const QColor brightAntiAlias = alphaBlendColors(innerWindowContour, active ? aAntialiasBase : iAntialiasBase, 80);
+    const QColor innerAntiAlias = alphaBlendColors(innerWindowContour, active ? aAntialiasBase : iAntialiasBase, 170);
 
     QRect r = widget()->rect();
 
@@ -313,9 +317,9 @@ void SUSE2Client::paintEvent(QPaintEvent *e)
                                 active ? *aTitleBarTile : *iTitleBarTile);
     }
 
-     QRect Rtitle = QRect(r_x+titleEdgeLeft+buttonsLeftWidth(), r_y+titleEdgeTop,
-                          r_x2-titleEdgeRight-buttonsRightWidth()-(r_x+titleEdgeLeft+buttonsLeftWidth()),
-                          titleEdgeBottomBottom-(r_y+titleEdgeTop) );
+    QRect Rtitle = QRect(r_x+titleEdgeLeft+buttonsLeftWidth(), r_y+titleEdgeTop,
+                         r_x2-titleEdgeRight-buttonsRightWidth()-(r_x+titleEdgeLeft+buttonsLeftWidth()),
+                         titleEdgeBottomBottom-(r_y+titleEdgeTop) );
 
     QRect tmpRect;
 
@@ -340,11 +344,22 @@ void SUSE2Client::paintEvent(QPaintEvent *e)
 
                 painter.setPen(innerWindowContour);
                 // left inner corner
-                painter.drawLine(tmpRect.left()+3, tmpRect.top()+2, tmpRect.left()+4, tmpRect.top()+2 );
-                painter.drawLine(tmpRect.left()+2, tmpRect.top()+3, tmpRect.left()+2, tmpRect.top()+4 );
+                painter.drawPoint(tmpRect.left()+3, tmpRect.top()+2);
+                painter.drawPoint(tmpRect.left()+2, tmpRect.top()+3);
                 // right inner corner
-                painter.drawLine(tmpRect.right()-3, tmpRect.top()+2, tmpRect.right()-4, tmpRect.top()+2 );
-                painter.drawLine(tmpRect.right()-2, tmpRect.top()+3, tmpRect.right()-2, tmpRect.top()+4 );
+                painter.drawPoint(tmpRect.right()-3, tmpRect.top()+2);
+                painter.drawPoint(tmpRect.right()-2, tmpRect.top()+3);
+                painter.setPen(midAntiAlias);
+                painter.drawPoint(tmpRect.left()+3, tmpRect.top()+3);
+                painter.drawPoint(tmpRect.right()-3, tmpRect.top()+3);
+                painter.setPen(brightAntiAlias);
+                painter.drawPoint(tmpRect.left()+5, tmpRect.top()+2);
+                painter.drawPoint(tmpRect.right()-5, tmpRect.top()+2);
+                painter.setPen(innerAntiAlias);
+                painter.drawPoint(tmpRect.left()+4, tmpRect.top()+2);
+                painter.drawPoint(tmpRect.left()+2, tmpRect.top()+4);
+                painter.drawPoint(tmpRect.right()-4, tmpRect.top()+2);
+                painter.drawPoint(tmpRect.right()-2, tmpRect.top()+4);
             } else {
                 // top line
                 if (maximizeMode() != MaximizeFull || options()->moveResizeMaximizedWindows()) {
@@ -393,6 +408,11 @@ void SUSE2Client::paintEvent(QPaintEvent *e)
             painter.setPen(innerWindowContour);
             painter.drawLine(tmpRect.left()+1, tmpRect.top()+1,
                              tmpRect.left()+1, tmpRect.bottom() );
+            if (Handler()->roundCorners() == 1 ||
+                (Handler()->roundCorners() == 2 && maximizeMode() != MaximizeFull)) {
+                painter.setPen(darkAntiAlias);
+                painter.drawPoint(tmpRect.left()+2, tmpRect.top()+1);
+            }
         }
     }
 
@@ -408,6 +428,11 @@ void SUSE2Client::paintEvent(QPaintEvent *e)
             painter.setPen(innerWindowContour );
             painter.drawLine(tmpRect.right()-1, tmpRect.top()+1,
                             tmpRect.right()-1, tmpRect.bottom() );
+            if (Handler()->roundCorners() == 1 ||
+                (Handler()->roundCorners() == 2 && maximizeMode() != MaximizeFull)) {
+                painter.setPen(darkAntiAlias);
+                painter.drawPoint(tmpRect.right()-2, tmpRect.top()+1);
+            }
         }
     }
 
@@ -510,7 +535,7 @@ void SUSE2Client::paintEvent(QPaintEvent *e)
                 painter.drawLine(tmpRect.left(), tmpRect.top(), tmpRect.left(), tmpRect.bottom()-2);
 
                 // anti-alias for the window contour...
-                painter.setPen(alphaBlendColors(innerWindowContour, windowContour, 110) );
+                painter.setPen(alphaBlendColors(innerWindowContour, windowContour, 90) );
                 painter.drawLine(tmpRect.left(), tmpRect.bottom()-1, tmpRect.left(), tmpRect.bottom());
                 painter.drawPoint(tmpRect.left()+1, tmpRect.bottom());
             }
@@ -617,8 +642,10 @@ void SUSE2Client::create_pixmaps()
 
     QImage aTempImage = aTitleBarTile->convertToImage();
     aGradientBottom = QColor::QColor(aTempImage.pixel(0, aTempImage.height()-1));
+    aAntialiasBase = QColor::QColor(aTempImage.pixel(0, 2));
     QImage iTempImage = iTitleBarTile->convertToImage();
     iGradientBottom = QColor::QColor(iTempImage.pixel(0, iTempImage.height()-1));
+    iAntialiasBase = QColor::QColor(iTempImage.pixel(0, 2));
 
     pixmaps_created = true;
 }

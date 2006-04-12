@@ -70,7 +70,7 @@ private:
     void update_captionBuffer();
 
     QPixmap *aTitleBarTile, *iTitleBarTile, *aTitleBarTopTile, *iTitleBarTopTile;
-    QColor aGradientBottom, iGradientBottom;
+    QColor aGradientBottom, iGradientBottom, aAntialiasBase, iAntialiasBase;
     bool pixmaps_created;
     void create_pixmaps();
     void delete_pixmaps();
