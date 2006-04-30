@@ -2,67 +2,23 @@
 # This file is released under the GNU GPL2.
 #
 # Gerd Fleischer <gerdfleischer@web.de>, 2005.
-# Gerd Fleischer <gerdfleischer@gmx.de>, 2005.
+# Gerd Fleischer <gerdfleischer@gmx.de>, 2005, 2006.
 msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-11-28 21:17+0100\n"
-"PO-Revision-Date: 2005-11-28 21:18+0100\n"
+"POT-Creation-Date: 2006-04-30 18:05+0200\n"
+"PO-Revision-Date: 2006-04-30 18:00+0200\n"
 "Last-Translator: Gerd Fleischer <gerdfleischer@gmx.de>\n"
 "Language-Team: Deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11\n"
+"X-Generator: KBabel 1.11.2\n"
 
-#: SUSE2client.cpp:512
-msgid "SUSE2 preview (Version %1)"
-msgstr "SUSE2 Vorschau (Version %1)"
-
-#: SUSE2client.cpp:531
-msgid "Menu"
-msgstr "Menü"
-
-#: SUSE2client.cpp:542 SUSE2client.cpp:759
-msgid "Not on all desktops"
-msgstr "Nicht auf allen Arbeitsflächen"
-
-#: SUSE2client.cpp:543 SUSE2client.cpp:760
-msgid "On all desktops"
-msgstr "Auf allen Arbeitsflächen"
-
-#: SUSE2client.cpp:559
-msgid "Minimize"
-msgstr "Minimieren"
-
-#: SUSE2client.cpp:568 SUSE2client.cpp:748
-msgid "Maximize"
-msgstr "Maximieren"
-
-#: SUSE2client.cpp:587 SUSE2client.cpp:802
-msgid "Do not keep above others"
-msgstr "Nicht im Vordergrund halten"
-
-#: SUSE2client.cpp:588 SUSE2client.cpp:802 SUSE2client.cpp:820
-msgid "Keep above others"
-msgstr "Im Vordergrund halten"
-
-#: SUSE2client.cpp:599 SUSE2client.cpp:815
-msgid "Do not keep below others"
-msgstr "Nicht im Hintergrund halten"
-
-#: SUSE2client.cpp:600 SUSE2client.cpp:807 SUSE2client.cpp:815
-msgid "Keep below others"
-msgstr "Im Hintergrund halten"
-
-#: SUSE2client.cpp:611 SUSE2client.cpp:770
-msgid "Unshade"
-msgstr "Fensterheber rückgängig"
-
-#: SUSE2client.cpp:611 SUSE2client.cpp:771
-msgid "Shade"
-msgstr "Fensterheber"
+#: SUSE2client.cpp:69
+msgid "SUSE2 (Version %1)"
+msgstr "SUSE2 (Version %1)"
 
 #: _translatorinfo.cpp:1
 msgid ""
@@ -354,8 +310,8 @@ msgstr ""
 #. i18n: file config/configdialog.ui line 360
 #: rc.cpp:129 config/configdialog.cpp:318
 #, no-c-format
-msgid "&Use titlefont settings for buttons"
-msgstr "Tite&lfonteinstellungen für Knöpfe verwenden"
+msgid "&Use titlefont settings for button icons"
+msgstr "Tite&lfonteinstellungen für Knopficons verwenden"
 
 #. i18n: file config/configdialog.ui line 363
 #: rc.cpp:132 config/configdialog.cpp:319
@@ -558,6 +514,6 @@ msgstr "&Bild auswählen"
 msgid "Select the titlebar logo image."
 msgstr "Titelzeilen-Logo:"
 
-#: config/config.cpp:259
+#: config/config.cpp:255
 msgid "Select Logo Image"
 msgstr "Logo auswählen"

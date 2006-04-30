@@ -34,8 +34,9 @@ class ConfigDialog;
 class SUSE2Config : public QObject
 {
     Q_OBJECT
+
 public:
-    SUSE2Config(KConfig* config, QWidget* parent);
+    SUSE2Config(KConfig *config, QWidget *parent);
     ~SUSE2Config();
 
 signals:
@@ -43,7 +44,7 @@ signals:
 
 public slots:
     void load(KConfig *config);
-    void save(KConfig *config);
+    void save(KConfig *config) const;
     void defaults();
 
 private:
@@ -53,6 +54,7 @@ private:
     QString titlebarLogoURL;
 
 private slots:
+    void toggleIconSettings(bool) const;
     void selectImage();
 };
 

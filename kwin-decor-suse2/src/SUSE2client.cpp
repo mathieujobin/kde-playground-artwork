@@ -663,11 +663,12 @@ void SUSE2Client::delete_pixmaps()
 
 void SUSE2Client::update_captionBuffer()
 {
-    const uint maxCaptionLength = 300; // truncate captions longer than this!
+    const uint maxCaptionLength = 110; // truncate captions longer than this!
     QString c(caption());
     if (c.length() > maxCaptionLength) {
-        c.truncate(maxCaptionLength);
-        c.append(" [...]");
+        QString tmpLeft = c.left(50);
+        QString tmpRight = c.right(50);
+        c = tmpLeft + QString::fromUtf8("[...]") + tmpRight;
     }
 
     QImage logo(Handler()->titleLogoURL());
@@ -690,7 +691,7 @@ void SUSE2Client::update_captionBuffer()
         // prepare the shadow
         textPixmap = QPixmap(captionWidth+4, titleHeight + TOPMARGIN + DECOHEIGHT); // 4 px shadow space
         textPixmap.fill(QColor(0,0,0));
-        textPixmap.setMask(textPixmap.createHeuristicMask(TRUE));
+        textPixmap.setMask(textPixmap.createHeuristicMask(true));
         painter.begin(&textPixmap);
         painter.setFont(s_titleFont);
         painter.setPen(white);

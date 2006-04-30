@@ -24,18 +24,21 @@
 #ifndef SUSE2_H
 #define SUSE2_H
 
-#define A_FG_DARK 0
-#define A_FG_LIGHT 1
-#define I_FG_DARK 2
-#define I_FG_LIGHT 3
-#define SHADOW 4
-
 #include <qfont.h>
 
 #include <kdecoration.h>
 #include <kdecorationfactory.h>
 
 namespace KWinSUSE2 {
+
+enum ButtonStatus {
+    ActiveUp = 0,
+    ActiveDown,
+    InactiveUp,
+    InactiveDown,
+    Shadow,
+    NumButtonStatus
+};
 
 enum ButtonIcon {
     CloseIcon = 0,
@@ -55,7 +58,7 @@ enum ButtonIcon {
 };
 
 enum ColorType {
-    WindowContour=0,
+    WindowContour = 0,
     TitleGradientFrom,
     TitleGradientTo,
     Border,
@@ -71,32 +74,32 @@ public:
     ~SUSE2Handler();
     virtual bool reset( unsigned long changed );
 
-    virtual KDecoration* createDecoration( KDecorationBridge* );
-    virtual bool supports( Ability ability );
+    virtual KDecoration *createDecoration( KDecorationBridge * );
+    virtual bool supports( Ability ability ) const;
 
-    const KPixmap &buttonPixmap(ButtonIcon type, int size, int state);
+    const KPixmap &buttonPixmap(ButtonIcon type, int size, ButtonStatus status);
 
-    int  titleHeight() { return m_titleHeight; }
-    int  titleHeightTool() { return m_titleHeightTool; }
-    QFont titleFont() { return m_titleFont; }
-    QFont titleFontTool() { return m_titleFontTool; }
-    bool titleLogo() { return m_titleLogo; }
-    int titleLogoOffset() { return m_titleLogoOffset; }
-    QString titleLogoURL() { return m_titleLogoURL; }
-    bool titleShadow() { return m_titleShadow; }
-    int  borderSize() { return m_borderSize; }
-    int buttonType() { return m_buttonType; }
-    bool customColors() { return m_customColors; }
-    bool useTitleProps() { return m_useTitleProps; }
-    float iconSize() { return m_iconSize; }
-    bool animateButtons() { return m_animateButtons; }
-    bool redCloseButton() { return m_redCloseButton; }
-    bool iconShadow() { return m_iconShadow; }
-    bool menuClose() { return m_menuClose; }
-    Qt::AlignmentFlags titleAlign() { return m_titleAlign; }
-    int roundCorners() { return m_roundCorners; }
-    bool reverseLayout() { return m_reverse; }
-    QColor getColor(KWinSUSE2::ColorType type, const bool active = true);
+    int  titleHeight() const { return m_titleHeight; }
+    int  titleHeightTool() const { return m_titleHeightTool; }
+    QFont titleFont() const { return m_titleFont; }
+    QFont titleFontTool() const { return m_titleFontTool; }
+    bool titleLogo() const { return m_titleLogo; }
+    int titleLogoOffset() const { return m_titleLogoOffset; }
+    QString titleLogoURL() const { return m_titleLogoURL; }
+    bool titleShadow() const { return m_titleShadow; }
+    int  borderSize() const { return m_borderSize; }
+    int buttonType() const { return m_buttonType; }
+    bool customColors() const { return m_customColors; }
+    bool useTitleProps() const { return m_useTitleProps; }
+    float iconSize() const { return m_iconSize; }
+    bool animateButtons() const { return m_animateButtons; }
+    bool redCloseButton() const { return m_redCloseButton; }
+    bool iconShadow() const { return m_iconShadow; }
+    bool menuClose() const { return m_menuClose; }
+    Qt::AlignmentFlags titleAlign() const { return m_titleAlign; }
+    int roundCorners() const { return m_roundCorners; }
+    bool reverseLayout() const { return m_reverse; }
+    QColor getColor(KWinSUSE2::ColorType type, const bool active = true) const;
     QValueList< SUSE2Handler::BorderSize >  borderSizes() const;
 
 private:
@@ -129,7 +132,7 @@ private:
     QString m_titleLogoURL;
     bool m_useTitleProps;
 
-    KPixmap *m_pixmaps[5][NumButtonIcons];
+    KPixmap *m_pixmaps[NumButtonStatus][NumButtonIcons];
 };
 
 SUSE2Handler* Handler();
@@ -137,3 +140,5 @@ SUSE2Handler* Handler();
 } // KWinSUSE2
 
 #endif
+
+// kate: space-indent on; indent-width 4; replace-tabs on;

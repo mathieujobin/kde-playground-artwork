@@ -48,7 +48,7 @@ public:
     ~SUSE2Button();
 
     void reset(unsigned long changed);
-    SUSE2Client * client() { return m_client; }
+    SUSE2Client *client() { return m_client; }
 
 protected slots:
     void animate();

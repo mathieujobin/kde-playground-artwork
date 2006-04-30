@@ -45,7 +45,7 @@ namespace KWinSUSE2
 
 SUSE2Handler::SUSE2Handler()
 {
-    memset(m_pixmaps, 0, sizeof(QPixmap*)*5*NumButtonIcons); // set elements to 0
+    memset(m_pixmaps, 0, sizeof(QPixmap *) * NumButtonStatus * NumButtonIcons); // set elements to 0
 
     KGlobal::locale()->insertCatalogue("kwin_clients");
     KGlobal::locale()->insertCatalogue("kwin_SUSE2");
@@ -55,7 +55,7 @@ SUSE2Handler::SUSE2Handler()
 
 SUSE2Handler::~SUSE2Handler()
 {
-    for (int t = 0; t < 5; ++t)
+    for (int t = 0; t < NumButtonStatus; ++t)
         for (int i = 0; i < NumButtonIcons; ++i)
             delete m_pixmaps[t][i];
 }
@@ -97,7 +97,7 @@ bool SUSE2Handler::reset(unsigned long /*changed*/)
     // read in the configuration
     readConfig();
 
-    for (int t = 0; t < 5; ++t) {
+    for (int t = 0; t < NumButtonStatus; ++t) {
         for (int i = 0; i < NumButtonIcons; ++i) {
             if (m_pixmaps[t][i]) {
                 delete m_pixmaps[t][i];
@@ -116,7 +116,7 @@ KDecoration* SUSE2Handler::createDecoration( KDecorationBridge* bridge )
         return new SUSE2Client( bridge, this );
 }
 
-bool SUSE2Handler::supports( Ability ability )
+bool SUSE2Handler::supports( Ability ability ) const
 {
     switch( ability )
     {
@@ -187,7 +187,7 @@ void SUSE2Handler::readConfig()
     m_titleLogoURL   = config.readEntry("TitleBarLogoURL", locate("data", "kwin/pics/titlebar_decor.png"));
 }
 
-QColor SUSE2Handler::getColor(KWinSUSE2::ColorType type, const bool active)
+QColor SUSE2Handler::getColor(KWinSUSE2::ColorType type, const bool active) const
 {
     switch (type) {
         case TitleGradientFrom:
@@ -211,22 +211,19 @@ QColor SUSE2Handler::getColor(KWinSUSE2::ColorType type, const bool active)
     }
 }
 
-const KPixmap &SUSE2Handler::buttonPixmap(ButtonIcon type, int size, int state)
+const KPixmap &SUSE2Handler::buttonPixmap(ButtonIcon type, int size, ButtonStatus status)
 {
-    int typeIndex = type;
-    int s = size;
-
-    if (m_pixmaps[state][typeIndex]) {
-        if (state != SHADOW && m_pixmaps[state][typeIndex]->size() == QSize(s, s))
-            return *m_pixmaps[state][typeIndex];
-        else if (state == SHADOW && m_pixmaps[state][typeIndex]->size() == QSize(s+4, s+4))
-            return *m_pixmaps[state][typeIndex];
+    if (m_pixmaps[status][type]) {
+        if (status != Shadow && m_pixmaps[status][type]->size() == QSize(size, size))
+            return *m_pixmaps[status][type];
+        else if (status == Shadow && m_pixmaps[status][type]->size() == QSize(size+4, size+4))
+            return *m_pixmaps[status][type];
     }
 
     // no matching pixmap found, create a new one...
 
-    delete m_pixmaps[state][typeIndex];
-    m_pixmaps[state][typeIndex] = 0;
+    delete m_pixmaps[status][type];
+    m_pixmaps[status][type] = 0;
 
     QColor aDecoFgDark = alphaBlendColors(getColor(TitleGradientTo, true), Qt::black, 50);
     QColor aDecoFgLight = alphaBlendColors(getColor(TitleGradientTo, true), Qt::white, 50);
@@ -240,7 +237,7 @@ const KPixmap &SUSE2Handler::buttonPixmap(ButtonIcon type, int size, int state)
         iDecoFgLight = m_iBgColor;
     }
 
-    KPixmap icon = IconEngine::icon(type, s);
+    KPixmap icon = IconEngine::icon(type, size);
     QImage img = icon.convertToImage();
 
     KPixmap *pixmap;
@@ -248,8 +245,8 @@ const KPixmap &SUSE2Handler::buttonPixmap(ButtonIcon type, int size, int state)
     ShadowEngine se;
     QPainter painter;
     KPixmap tmpShadow;
-    switch (state) {
-        case A_FG_DARK:
+    switch (status) {
+        case ActiveUp:
             if (m_useTitleProps)
                 tmpImage = recolorImage(&img, getColor(TitleFont, true));
             else
@@ -257,7 +254,7 @@ const KPixmap &SUSE2Handler::buttonPixmap(ButtonIcon type, int size, int state)
 
             pixmap = new KPixmap(tmpImage);
             break;
-        case A_FG_LIGHT:
+        case ActiveDown:
             if (m_useTitleProps)
                 tmpImage = recolorImage(&img, getColor(TitleFont, true));
             else
@@ -265,7 +262,7 @@ const KPixmap &SUSE2Handler::buttonPixmap(ButtonIcon type, int size, int state)
 
             pixmap = new KPixmap(tmpImage);
             break;
-        case I_FG_DARK:
+        case InactiveUp:
             if (m_useTitleProps)
                 tmpImage = recolorImage(&img, getColor(TitleFont, false));
             else
@@ -273,7 +270,7 @@ const KPixmap &SUSE2Handler::buttonPixmap(ButtonIcon type, int size, int state)
 
             pixmap = new KPixmap(tmpImage);
             break;
-        case I_FG_LIGHT:
+        case InactiveDown:
             if (m_useTitleProps)
                 tmpImage = recolorImage(&img, getColor(TitleFont, false));
             else
@@ -281,11 +278,11 @@ const KPixmap &SUSE2Handler::buttonPixmap(ButtonIcon type, int size, int state)
 
             pixmap = new KPixmap(tmpImage);
             break;
-        case SHADOW:
+        case Shadow:
             // prepare shadow
             tmpShadow = QPixmap(icon.width()+4, icon.height()+4);
             tmpShadow.fill(QColor(0,0,0));
-            tmpShadow.setMask(tmpShadow.createHeuristicMask(TRUE));
+            tmpShadow.setMask(tmpShadow.createHeuristicMask(true));
             painter.begin(&tmpShadow);
             painter.setPen(white);
             painter.drawPixmap(0,0, icon);
@@ -297,7 +294,7 @@ const KPixmap &SUSE2Handler::buttonPixmap(ButtonIcon type, int size, int state)
             pixmap = new KPixmap();
     }
 
-    m_pixmaps[state][typeIndex] = pixmap;
+    m_pixmaps[status][type] = pixmap;
     return *pixmap;
 }
 
@@ -306,13 +303,13 @@ SUSE2Handler::borderSizes() const
 {
     // the list must be sorted
     return QValueList< BorderSize >() << BorderTiny << BorderNormal <<
-	BorderLarge << BorderVeryLarge <<  BorderHuge <<
-	BorderVeryHuge << BorderOversized;
+        BorderLarge << BorderVeryLarge <<  BorderHuge <<
+        BorderVeryHuge << BorderOversized;
 }
 
 static SUSE2Handler *handler = 0;
 
-SUSE2Handler* Handler()
+SUSE2Handler *Handler()
 {
     return handler;
 }
@@ -331,3 +328,5 @@ extern "C"
         return KWinSUSE2::handler;
     }
 }
+
+// kate: space-indent on; indent-width 4; replace-tabs on;

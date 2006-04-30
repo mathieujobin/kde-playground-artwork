@@ -346,9 +346,9 @@ void SUSE2Button::drawPlastikBtn(QPainter *painter)
         if ((s + r.height())%2 != 0) --s;
 
         if (down) {
-            deco = active ? Handler()->buttonPixmap(m_iconType, s, A_FG_LIGHT) : Handler()->buttonPixmap(m_iconType, s, I_FG_LIGHT);
+            deco = active ? Handler()->buttonPixmap(m_iconType, s, ActiveDown) : Handler()->buttonPixmap(m_iconType, s, InactiveDown);
         } else {
-            deco = active ? Handler()->buttonPixmap(m_iconType, s, A_FG_DARK) : Handler()->buttonPixmap(m_iconType, s, I_FG_DARK);
+            deco = active ? Handler()->buttonPixmap(m_iconType, s, ActiveUp) : Handler()->buttonPixmap(m_iconType, s, InactiveUp);
         }
         dX = r.x()+(r.width()-deco.width())/2;
         dY = r.y()+(r.height()-deco.height())/2;
@@ -358,7 +358,7 @@ void SUSE2Button::drawPlastikBtn(QPainter *painter)
 
         if(active && !down &&
            (Handler()->useTitleProps() && Handler()->titleShadow() || Handler()->iconShadow())) {
-            bP.drawPixmap(dX+1, dY+1, Handler()->buttonPixmap(m_iconType, s, SHADOW));
+            bP.drawPixmap(dX+1, dY+1, Handler()->buttonPixmap(m_iconType, s, Shadow));
         }
 
         bP.drawPixmap(dX, dY, deco);
@@ -417,10 +417,15 @@ void SUSE2Button::drawLipstikBtn(QPainter *painter)
 
         int dX,dY;
         KPixmap deco;
-        int s = lroundf(r.height()*Handler()->iconSize());
+        int s = lroundf(r.height() * Handler()->iconSize());
         if ((s + r.height())%2 != 0) --s;
 
-        deco = active ? Handler()->buttonPixmap(m_iconType, s, A_FG_DARK) : Handler()->buttonPixmap(m_iconType, s, I_FG_DARK);
+        if (down) {
+            deco = active ? Handler()->buttonPixmap(m_iconType, s, ActiveDown) : Handler()->buttonPixmap(m_iconType, s, InactiveDown);
+        } else {
+            deco = active ? Handler()->buttonPixmap(m_iconType, s, ActiveUp) : Handler()->buttonPixmap(m_iconType, s, InactiveUp);
+        }
+
         dX = r.x()+(r.width()-deco.width())/2;
         dY = r.y()+(r.height()-deco.height())/2;
         if (down) {
@@ -429,7 +434,7 @@ void SUSE2Button::drawLipstikBtn(QPainter *painter)
 
         if(active && !down &&
            (Handler()->useTitleProps() && Handler()->titleShadow() || Handler()->iconShadow())) {
-            bP.drawPixmap(dX+1, dY+1, Handler()->buttonPixmap(m_iconType, s, SHADOW));
+            bP.drawPixmap(dX+1, dY+1, Handler()->buttonPixmap(m_iconType, s, Shadow));
         }
 
         bP.drawPixmap(dX, dY, deco);
@@ -512,7 +517,7 @@ void SUSE2Button::renderBtnSurface(QPainter *p, const QRect &r)
         highlightColor = Qt::white;
     }
 
-    int highlightAlpha = static_cast<int>(255-((60/static_cast<double>(ANIMATIONSTEPS))*
+    int highlightAlpha = static_cast<int>(255-((60/static_cast<double>(ANIMATIONSTEPS)) *
                                           static_cast<double>(animProgress) ) );
 
     QColor buttonColor, bottomColor, topLineColor, bottomLineColor;
@@ -553,7 +558,8 @@ void SUSE2Button::renderBtnSurface(QPainter *p, const QRect &r)
     height = r.height();
     width-=2;
     height-=2;
-    renderGradient(p, QRect(r.left()+1, r.top()+1, width, height),  bottomColor, buttonColor, 10+2*ANIMATIONSTEPS+animProgress, intActive);
+    renderGradient(p, QRect(r.left()+1, r.top()+1, width, height),  bottomColor, buttonColor,
+                   10 + 2 * ANIMATIONSTEPS+animProgress, intActive);
 }
 
 void SUSE2Button::renderPixel(QPainter *p, const QPoint &pos, const int alpha, const QColor &color,
@@ -697,36 +703,36 @@ QBitmap IconEngine::icon(ButtonIcon icon, int size)
             }
 
             int margin1, margin2;
-            margin1 = margin2 = lineWidth2*2;
+            margin1 = margin2 = lineWidth2 * 2;
             if (r.width() < 8)
                 margin1 = 1;
 
             // background window
             drawObject(p, HorizontalLine, r.x()+margin1, r.top(), r.width()-margin1, lineWidth2);
-            drawObject(p, HorizontalLine, r.right()-margin2, r.bottom()-(lineWidth2-1)-margin1, margin2, lineWidth2);
+            drawObject(p, HorizontalLine, r.right()-margin2, r.bottom()-(lineWidth2 - 1)-margin1, margin2, lineWidth2);
             drawObject(p, VerticalLine, r.x()+margin1, r.top(), margin2, lineWidth2);
-            drawObject(p, VerticalLine, r.right()-(lineWidth2-1), r.top(), r.height()-margin1, lineWidth2);
+            drawObject(p, VerticalLine, r.right()-(lineWidth2 - 1), r.top(), r.height()-margin1, lineWidth2);
 
             // foreground window
             drawObject(p, HorizontalLine, r.x(), r.top()+margin2, r.width()-margin2, lwTitleBar);
-            drawObject(p, HorizontalLine, r.x(), r.bottom()-(lineWidth2-1), r.width()-margin2, lineWidth2);
+            drawObject(p, HorizontalLine, r.x(), r.bottom()-(lineWidth2 - 1), r.width()-margin2, lineWidth2);
             drawObject(p, VerticalLine, r.x(), r.top()+margin2, r.height(), lineWidth2);
-            drawObject(p, VerticalLine, r.right()-(lineWidth2-1)-margin2, r.top()+margin2, r.height(), lineWidth2);
+            drawObject(p, VerticalLine, r.right()-(lineWidth2 - 1)-margin2, r.top()+margin2, r.height(), lineWidth2);
 
             break;
         }
 
         case MinIcon:
         {
-            drawObject(p, HorizontalLine, r.x(), r.bottom()-(lwTitleBar-1), r.width(), lwTitleBar);
+            drawObject(p, HorizontalLine, r.x(), r.bottom()-(lwTitleBar - 1), r.width(), lwTitleBar);
 
             break;
         }
 
         case HelpIcon:
         {
-            int center = r.x()+r.width()/2 -1;
-            int side = r.width()/4;
+            int center = r.x()+r.width() / 2 - 1;
+            int side = r.width() / 4;
 
             // paint a question mark... code is quite messy, to be cleaned up later...! :o
 
@@ -734,9 +740,9 @@ QBitmap IconEngine::icon(ButtonIcon icon, int size)
                 int lineWidth = 3;
 
                 // top bar
-                drawObject(p, HorizontalLine, center-side+3, r.y(), 2*side-3-1, lineWidth);
+                drawObject(p, HorizontalLine, center-side + 3, r.y(), 2 * side - 3 - 1, lineWidth);
                 // top bar rounding
-                drawObject(p, CrossDiagonalLine, center-side-1, r.y()+5, 6, lineWidth);
+                drawObject(p, CrossDiagonalLine, center - side - 1, r.y() + 5, 6, lineWidth);
                 drawObject(p, DiagonalLine, center+side-3, r.y(), 5, lineWidth);
                 // right bar
                 drawObject(p, VerticalLine, center+side+2-lineWidth, r.y()+3, r.height()-(2*lineWidth+side+2+1), lineWidth);

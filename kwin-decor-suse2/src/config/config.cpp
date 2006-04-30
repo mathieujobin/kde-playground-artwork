@@ -50,7 +50,7 @@
 #include "config.h"
 #include "configdialog.h"
 
-SUSE2Config::SUSE2Config(KConfig* config, QWidget* parent)
+SUSE2Config::SUSE2Config(KConfig *config, QWidget *parent)
     : QObject(parent), m_config(0), m_dialog(0)
 {
     m_parent = parent;
@@ -66,51 +66,33 @@ SUSE2Config::SUSE2Config(KConfig* config, QWidget* parent)
 
     // load the configuration
     load(config);
-
+    toggleIconSettings(m_dialog->useTitleProps->isChecked());
 
     // setup the connections
-    connect(m_dialog->titleAlign, SIGNAL(clicked(int)),
-            this, SIGNAL(changed()));
-    connect(m_dialog->roundCorners, SIGNAL(clicked(int)),
-            this, SIGNAL(changed()));
-    connect(m_dialog->menuClose, SIGNAL(toggled(bool)),
-            this, SIGNAL(changed()));
-    connect(m_dialog->titleShadow, SIGNAL(toggled(bool)),
-            this, SIGNAL(changed()));
-    connect(m_dialog->addSpace, SIGNAL(valueChanged(int)),
-            this, SIGNAL(changed()));
+    connect(m_dialog->titleAlign, SIGNAL(clicked(int)), SIGNAL(changed()));
+    connect(m_dialog->roundCorners, SIGNAL(clicked(int)), SIGNAL(changed()));
+    connect(m_dialog->menuClose, SIGNAL(toggled(bool)), SIGNAL(changed()));
+    connect(m_dialog->titleShadow, SIGNAL(toggled(bool)), SIGNAL(changed()));
+    connect(m_dialog->addSpace, SIGNAL(valueChanged(int)), SIGNAL(changed()));
 
-    connect(m_dialog->buttonType, SIGNAL(activated(int)),
-            this, SIGNAL(changed()));
-    connect(m_dialog->customColors, SIGNAL(toggled(bool)),
-            this, SIGNAL(changed()));
-    connect(m_dialog->useTitleProps, SIGNAL(toggled(bool)),
-            this, SIGNAL(changed()));
-    connect(m_dialog->animateButtons, SIGNAL(toggled(bool)),
-            this, SIGNAL(changed()));
-    connect(m_dialog->redCloseButton, SIGNAL(toggled(bool)),
-            this, SIGNAL(changed()));
-    connect(m_dialog->iconSize, SIGNAL(valueChanged(int)),
-            this, SIGNAL(changed()));
-    connect(m_dialog->customIconColors, SIGNAL(toggled(bool)),
-            this, SIGNAL(changed()));
-    connect(m_dialog->activeFgColor, SIGNAL(changed(const QColor &)),
-            this, SIGNAL(changed()));
-    connect(m_dialog->activeBgColor, SIGNAL(changed(const QColor &)),
-            this, SIGNAL(changed()));
-    connect(m_dialog->inactiveFgColor, SIGNAL(changed(const QColor &)),
-            this, SIGNAL(changed()));
-    connect(m_dialog->inactiveBgColor, SIGNAL(changed(const QColor &)),
-            this, SIGNAL(changed()));
-    connect(m_dialog->iconShadow, SIGNAL(toggled(bool)),
-            this, SIGNAL(changed()));
+    connect(m_dialog->buttonType, SIGNAL(activated(int)), SIGNAL(changed()));
+    connect(m_dialog->customColors, SIGNAL(toggled(bool)), SIGNAL(changed()));
+    connect(m_dialog->useTitleProps, SIGNAL(toggled(bool)), SIGNAL(changed()));
+    connect(m_dialog->animateButtons, SIGNAL(toggled(bool)), SIGNAL(changed()));
+    connect(m_dialog->redCloseButton, SIGNAL(toggled(bool)), SIGNAL(changed()));
+    connect(m_dialog->iconSize, SIGNAL(valueChanged(int)), SIGNAL(changed()));
+    connect(m_dialog->customIconColors, SIGNAL(toggled(bool)), SIGNAL(changed()));
+    connect(m_dialog->activeFgColor, SIGNAL(changed(const QColor &)), SIGNAL(changed()));
+    connect(m_dialog->activeBgColor, SIGNAL(changed(const QColor &)), SIGNAL(changed()));
+    connect(m_dialog->inactiveFgColor, SIGNAL(changed(const QColor &)), SIGNAL(changed()));
+    connect(m_dialog->inactiveBgColor, SIGNAL(changed(const QColor &)), SIGNAL(changed()));
+    connect(m_dialog->iconShadow, SIGNAL(toggled(bool)), SIGNAL(changed()));
 
-    connect(m_dialog->titleBarLogo, SIGNAL(toggled(bool)),
-            this, SIGNAL(changed()));
-    connect(m_dialog->titleBarLogoOffset, SIGNAL(valueChanged(int)),
-            this, SIGNAL(changed()));
-    connect(m_dialog->selectButton, SIGNAL(clicked()),
-            this, SLOT(selectImage()));
+    connect(m_dialog->titleBarLogo, SIGNAL(toggled(bool)), SIGNAL(changed()));
+    connect(m_dialog->titleBarLogoOffset, SIGNAL(valueChanged(int)), SIGNAL(changed()));
+
+    connect(m_dialog->useTitleProps, SIGNAL(toggled(bool)), SLOT(toggleIconSettings(bool)));
+    connect(m_dialog->selectButton, SIGNAL(clicked()), SLOT(selectImage()));
 }
 
 SUSE2Config::~SUSE2Config()
@@ -119,7 +101,7 @@ SUSE2Config::~SUSE2Config()
     if (m_config) delete m_config;
 }
 
-void SUSE2Config::load(KConfig*)
+void SUSE2Config::load(KConfig *)
 {
     m_config->setGroup("General");
 
@@ -193,7 +175,7 @@ void SUSE2Config::load(KConfig*)
 
 }
 
-void SUSE2Config::save(KConfig*)
+void SUSE2Config::save(KConfig *) const
 {
     m_config->setGroup("General");
 
@@ -254,6 +236,20 @@ void SUSE2Config::defaults()
     m_dialog->logoImage->setPixmap(QPixmap(tmpLogo.smoothScale(120, 20, QImage::ScaleMin)));
 }
 
+void SUSE2Config::toggleIconSettings(bool checked) const
+{
+    m_dialog->customIconColors->setEnabled(!checked);
+    m_dialog->activeLbl->setEnabled(!checked);
+    m_dialog->activeDownLbl->setEnabled(!checked);
+    m_dialog->inactiveLbl->setEnabled(!checked);
+    m_dialog->inactiveDownLbl->setEnabled(!checked);
+    m_dialog->activeFgColor->setEnabled(!checked);
+    m_dialog->activeBgColor->setEnabled(!checked);
+    m_dialog->inactiveFgColor->setEnabled(!checked);
+    m_dialog->inactiveBgColor->setEnabled(!checked);
+    m_dialog->iconShadow->setEnabled(!checked);
+}
+
 void SUSE2Config::selectImage()
 {
     KURL logoURL = KFileDialog::getImageOpenURL(titlebarLogoURL, m_parent, i18n("Select Logo Image"));
@@ -273,12 +269,14 @@ void SUSE2Config::selectImage()
 extern "C"
 {
 #if KDE_IS_VERSION(3, 3, 2)
-    KDE_EXPORT QObject* allocate_config(KConfig* config, QWidget* parent) {
+    KDE_EXPORT QObject *allocate_config(KConfig *config, QWidget *parent) {
 #else
-    QObject* allocate_config(KConfig* config, QWidget* parent) {
+    QObject *allocate_config(KConfig *config, QWidget *parent) {
 #endif
         return (new SUSE2Config(config, parent));
     }
 }
 
 #include "config.moc"
+
+// kate: space-indent on; indent-width 4; replace-tabs on;

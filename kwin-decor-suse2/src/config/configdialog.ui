@@ -357,7 +357,7 @@
                             <cstring>useTitleProps</cstring>
                         </property>
                         <property name="text">
-                            <string>&amp;Use titlefont settings for buttons</string>
+                            <string>&amp;Use titlefont settings for button icons</string>
                         </property>
                         <property name="accel">
                             <string>Alt+U</string>
@@ -503,7 +503,7 @@
                                     </property>
                                     <widget class="QLabel">
                                         <property name="name">
-                                            <cstring>textLabel1_5</cstring>
+                                            <cstring>activeLbl</cstring>
                                         </property>
                                         <property name="text">
                                             <string>Active:</string>
@@ -511,7 +511,7 @@
                                     </widget>
                                     <widget class="QLabel">
                                         <property name="name">
-                                            <cstring>textLabel1_6</cstring>
+                                            <cstring>activeDownLbl</cstring>
                                         </property>
                                         <property name="text">
                                             <string>Active down:</string>
@@ -519,7 +519,7 @@
                                     </widget>
                                     <widget class="QLabel">
                                         <property name="name">
-                                            <cstring>textLabel2_2</cstring>
+                                            <cstring>inactiveLbl</cstring>
                                         </property>
                                         <property name="text">
                                             <string>Inactive:</string>
@@ -527,7 +527,7 @@
                                     </widget>
                                     <widget class="QLabel">
                                         <property name="name">
-                                            <cstring>textLabel3</cstring>
+                                            <cstring>inactiveDownLbl</cstring>
                                         </property>
                                         <property name="text">
                                             <string>Inactive down:</string>

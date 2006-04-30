@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-11-28 21:17+0100\n"
+"POT-Creation-Date: 2006-04-30 18:05+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,52 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: SUSE2client.cpp:512
-msgid "SUSE2 preview (Version %1)"
-msgstr ""
-
-#: SUSE2client.cpp:531
-msgid "Menu"
-msgstr ""
-
-#: SUSE2client.cpp:542 SUSE2client.cpp:759
-msgid "Not on all desktops"
-msgstr ""
-
-#: SUSE2client.cpp:543 SUSE2client.cpp:760
-msgid "On all desktops"
-msgstr ""
-
-#: SUSE2client.cpp:559
-msgid "Minimize"
-msgstr ""
-
-#: SUSE2client.cpp:568 SUSE2client.cpp:748
-msgid "Maximize"
-msgstr ""
-
-#: SUSE2client.cpp:587 SUSE2client.cpp:802
-msgid "Do not keep above others"
-msgstr ""
-
-#: SUSE2client.cpp:588 SUSE2client.cpp:802 SUSE2client.cpp:820
-msgid "Keep above others"
-msgstr ""
-
-#: SUSE2client.cpp:599 SUSE2client.cpp:815
-msgid "Do not keep below others"
-msgstr ""
-
-#: SUSE2client.cpp:600 SUSE2client.cpp:807 SUSE2client.cpp:815
-msgid "Keep below others"
-msgstr ""
-
-#: SUSE2client.cpp:611 SUSE2client.cpp:770
-msgid "Unshade"
-msgstr ""
-
-#: SUSE2client.cpp:611 SUSE2client.cpp:771
-msgid "Shade"
+#: SUSE2client.cpp:69
+msgid "SUSE2 (Version %1)"
 msgstr ""
 
 #: _translatorinfo.cpp:1
@@ -347,7 +303,7 @@ msgstr ""
 #. i18n: file config/configdialog.ui line 360
 #: rc.cpp:129 config/configdialog.cpp:318
 #, no-c-format
-msgid "&Use titlefont settings for buttons"
+msgid "&Use titlefont settings for button icons"
 msgstr ""
 
 #. i18n: file config/configdialog.ui line 363
@@ -539,6 +495,6 @@ msgstr ""
 msgid "Select the titlebar logo image."
 msgstr ""
 
-#: config/config.cpp:259
+#: config/config.cpp:255
 msgid "Select Logo Image"
 msgstr ""

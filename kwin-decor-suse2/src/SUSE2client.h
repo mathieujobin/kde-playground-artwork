@@ -40,7 +40,7 @@ class SUSE2Button;
 class SUSE2Client : public KCommonDecoration
 {
 public:
-    SUSE2Client(KDecorationBridge* bridge, KDecorationFactory* factory);
+    SUSE2Client(KDecorationBridge *bridge, KDecorationFactory *factory);
     ~SUSE2Client();
 
     // pure virtual methods from KCommonDecoration
