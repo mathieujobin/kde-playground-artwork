@@ -23,7 +23,7 @@
   Boston, MA  02110-1301  USA.
 */
 
-#include <kdebug.h>
+//#include <kdebug.h>
 
 #include <qbuttongroup.h>
 #include <qcheckbox.h>
@@ -268,11 +268,7 @@ void SUSE2Config::selectImage()
 
 extern "C"
 {
-#if KDE_IS_VERSION(3, 3, 2)
     KDE_EXPORT QObject *allocate_config(KConfig *config, QWidget *parent) {
-#else
-    QObject *allocate_config(KConfig *config, QWidget *parent) {
-#endif
         return (new SUSE2Config(config, parent));
     }
 }
