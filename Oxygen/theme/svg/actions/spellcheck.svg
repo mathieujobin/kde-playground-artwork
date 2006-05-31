@@ -22,26 +22,59 @@
    sodipodi:version="0.32"
    inkscape:version="0.43"
    sodipodi:docname="spellcheck.svg"
-   sodipodi:docbase="/home/pinheiro/artwork/Oxygen/theme/svg/actions"><defs
+   sodipodi:docbase="/Users/David/Progetti/oxygen-svn/Oxygen/theme/svg/actions"><defs
    id="defs28"><linearGradient
-     inkscape:collect="always"
-     id="linearGradient3291"><stop
-       style="stop-color:#000000;stop-opacity:1;"
-       offset="0"
-       id="stop3293" /><stop
-       style="stop-color:#000000;stop-opacity:0;"
-       offset="1"
-       id="stop3295" /></linearGradient><radialGradient
-     inkscape:collect="always"
-     xlink:href="#linearGradient3291"
-     id="radialGradient2096"
-     gradientUnits="userSpaceOnUse"
-     gradientTransform="matrix(1,0,0,0.197802,1.421085e-14,92.82166)"
-     cx="63.912209"
-     cy="115.70919"
-     fx="75.279396"
-     fy="115.70919"
-     r="63.912209" /></defs><sodipodi:namedview
+   inkscape:collect="always"
+   id="linearGradient3291"><stop
+     style="stop-color:#000000;stop-opacity:1;"
+     offset="0"
+     id="stop3293" /><stop
+     style="stop-color:#000000;stop-opacity:0;"
+     offset="1"
+     id="stop3295" /></linearGradient><radialGradient
+   inkscape:collect="always"
+   xlink:href="#linearGradient3291"
+   id="radialGradient2096"
+   gradientUnits="userSpaceOnUse"
+   gradientTransform="matrix(1,0,0,0.197802,1.421085e-14,92.82166)"
+   cx="63.912209"
+   cy="115.70919"
+   fx="75.279396"
+   fy="115.70919"
+   r="63.912209" />
+	<foreignObject
+   id="foreignObject7"
+   height="1"
+   width="1"
+   y="0"
+   x="0"
+   requiredExtensions="http://ns.adobe.com/AdobeIllustrator/10.0/">
+		<i:pgfRef
+   xlink:href="#adobe_illustrator_pgf">
+		</i:pgfRef>
+	</foreignObject>
+	
+
+		
+		<linearGradient
+   id="XMLID_2_"
+   gradientUnits="userSpaceOnUse"
+   x1="64.000504"
+   y1="113"
+   x2="64.000504"
+   y2="29.0005">
+			<stop
+   offset="0"
+   style="stop-color:#00bf00;stop-opacity:1;"
+   id="stop20" />
+			<stop
+   offset="1"
+   style="stop-color:#009300;stop-opacity:1;"
+   id="stop22" />
+		</linearGradient>
+		
+		
+	</defs><sodipodi:namedview
    inkscape:window-height="540"
    inkscape:window-width="835"
    inkscape:pageshadow="2"
@@ -53,8 +86,8 @@
    inkscape:zoom="2.921875"
    inkscape:cx="64"
    inkscape:cy="64"
-   inkscape:window-x="0"
-   inkscape:window-y="25"
+   inkscape:window-x="135"
+   inkscape:window-y="61"
    inkscape:current-layer="Livello_1" />
 <metadata
    id="metadata3">
@@ -77,61 +110,27 @@
 <rdf:RDF><cc:Work
      rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
        rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata>
-<switch
-   id="switch5">
-	<foreignObject
-   requiredExtensions="http://ns.adobe.com/AdobeIllustrator/10.0/"
-   x="0"
-   y="0"
-   width="1"
-   height="1"
-   id="foreignObject7">
-		<i:pgfRef
-   xlink:href="#adobe_illustrator_pgf">
-		</i:pgfRef>
-	</foreignObject>
-	<g
-   i:extraneous="self"
-   id="g9">
-		<g
+<g
    id="g11">
 			<path
-   d="M31.336,41.48L26.934,30.27H9.789L5.332,41.48H0L16.051,1.012h5.688L37.543,41.48H31.336z M25.266,26.004L18.375,8.559     l-6.918,17.445H25.266z"
+   d="M 31.336,41.48 L 26.934,30.27 L 9.789,30.27 L 5.332,41.48 L 0,41.48 L 16.051,1.012 L 21.739,1.012 L 37.543,41.48 L 31.336,41.48 z M 25.266,26.004 L 18.375,8.559 L 11.457,26.004 L 25.266,26.004 L 25.266,26.004 z "
    id="path13" />
 			<path
-   d="M43.395,41.48V1.012h10.5c4.047,0,7.148,0.766,9.312,2.297c2.156,1.531,3.238,3.738,3.238,6.617     c0,4.904-2.77,8.395-8.312,10.473c6.617,2.023,9.926,5.68,9.926,10.965c0,3.281-1.094,5.789-3.281,7.52     c-2.188,1.732-5.34,2.598-9.461,2.598H43.395z M49.082,18.785h1.832c3.062,0,5.438-0.656,7.121-1.969     c1.688-1.312,2.531-3.162,2.531-5.551c0-3.973-3.082-5.961-9.242-5.961h-2.242V18.785z M49.082,37.188h1.176     c4.211,0,6.938-0.264,8.176-0.793c2.371-1.002,3.555-2.861,3.555-5.578c0-2.406-1.074-4.406-3.227-6.002s-4.84-2.393-8.066-2.393     h-1.613V37.188z"
+   d="M 43.395,41.48 L 43.395,1.012 L 53.895,1.012 C 57.942,1.012 61.043,1.778 63.207,3.309 C 65.363,4.84 66.445,7.047 66.445,9.926 C 66.445,14.83 63.675,18.321 58.133,20.399 C 64.75,22.422 68.059,26.079 68.059,31.364 C 68.059,34.645 66.965,37.153 64.778,38.884 C 62.59,40.616 59.438,41.482 55.317,41.482 L 43.395,41.482 L 43.395,41.48 z M 49.082,18.785 L 50.914,18.785 C 53.976,18.785 56.352,18.129 58.035,16.816 C 59.723,15.504 60.566,13.654 60.566,11.265 C 60.566,7.292 57.484,5.304 51.324,5.304 L 49.082,5.304 L 49.082,18.785 L 49.082,18.785 z M 49.082,37.188 L 50.258,37.188 C 54.469,37.188 57.196,36.924 58.434,36.395 C 60.805,35.393 61.989,33.534 61.989,30.817 C 61.989,28.411 60.915,26.411 58.762,24.815 C 56.609,23.219 53.922,22.422 50.696,22.422 L 49.083,22.422 L 49.083,37.188 L 49.082,37.188 z "
    id="path15" />
 			<path
-   d="M92.941,42.492c-6.289,0-11.148-1.846-14.574-5.537s-5.141-8.918-5.141-15.682c0-6.744,1.746-11.977,5.238-15.695     C81.953,1.859,86.871,0,93.215,0c3.629,0,7.875,0.594,12.742,1.777v5.387c-5.543-1.914-9.816-2.871-12.824-2.871     c-4.395,0-7.793,1.486-10.199,4.457c-2.406,2.973-3.609,7.164-3.609,12.578c0,5.16,1.285,9.229,3.855,12.209     s6.078,4.471,10.527,4.471c3.828,0,7.93-1.176,12.305-3.527v4.922C102.02,41.463,97.664,42.492,92.941,42.492z"
+   d="M 92.941,42.492 C 86.652,42.492 81.793,40.646 78.367,36.955 C 74.941,33.264 73.226,28.037 73.226,21.273 C 73.226,14.529 74.972,9.296 78.464,5.578 C 81.953,1.859 86.871,0 93.215,0 C 96.844,0 101.09,0.594 105.957,1.777 L 105.957,7.164 C 100.414,5.25 96.141,4.293 93.133,4.293 C 88.738,4.293 85.34,5.779 82.934,8.75 C 80.528,11.723 79.325,15.914 79.325,21.328 C 79.325,26.488 80.61,30.557 83.18,33.537 C 85.75,36.517 89.258,38.008 93.707,38.008 C 97.535,38.008 101.637,36.832 106.012,34.481 L 106.012,39.403 C 102.02,41.463 97.664,42.492 92.941,42.492 z "
    id="path17" />
-		</g>
-		<linearGradient
-   id="XMLID_2_"
-   gradientUnits="userSpaceOnUse"
-   x1="64.0005"
-   y1="113"
-   x2="64.0005"
-   y2="29.0005">
-			<stop
-   offset="0"
-   style="stop-color:#BFF500"
-   id="stop20" />
-			<stop
-   offset="1"
-   style="stop-color:#00BF00"
-   id="stop22" />
-		</linearGradient>
-		<path
-   fill="url(#XMLID_2_)"
-   d="M52.793,82.785C43.287,73.043,22.736,51.98,22.736,51.98L8,67.086L52.793,113L120,44.105    L105.262,29C105.262,29,64.123,71.172,52.793,82.785z"
-   id="path24" />
-		<rect
+		</g><path
+   d="M 52.793,82.785 C 43.287,73.043 22.736,51.98 22.736,51.98 L 8,67.086 L 52.793,113 L 120,44.105 L 105.262,29 C 105.262,29 64.123,71.172 52.793,82.785 z "
+   id="path24"
+   style="fill:url(#XMLID_2_)" /><rect
    id="_x3C_Sezione_x3E_"
-   fill="none"
    width="128"
-   height="128" />
-	</g>
-</switch>
+   height="128"
+   x="0"
+   y="0"
+   style="fill:none" />
 <i:pgf
    id="adobe_illustrator_pgf">
 	
