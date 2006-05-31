@@ -15,7 +15,7 @@
    sodipodi:version="0.32"
    inkscape:version="0.43"
    version="1.0"
-   sodipodi:docbase="/home/pinheiro/artwork/Oxygen/theme/svg"
+   sodipodi:docbase="/home/pinheiro/artwork/Oxygen/theme/svg/apps"
    sodipodi:docname="kopete.svg"
    inkscape:export-filename="/home/pinheiro/Documents/pics/new oxygen/svg/pen.png"
    inkscape:export-xdpi="90"
@@ -57,12 +57,23 @@
        id="pattern5373"
        patternTransform="matrix(0.810943,0.217291,-0.217291,0.810943,204.9056,-119.5555)" />
     <linearGradient
-       inkscape:collect="always"
        id="linearGradient5355">
       <stop
-         style="stop-color:#ffffff;stop-opacity:1;"
+         style="stop-color:#ffffff;stop-opacity:0.80505413;"
          offset="0"
          id="stop5357" />
+      <stop
+         id="stop2376"
+         offset="0.125"
+         style="stop-color:#ffffff;stop-opacity:0.5956679;" />
+      <stop
+         id="stop2374"
+         offset="0.25"
+         style="stop-color:#ffffff;stop-opacity:0.40072203;" />
+      <stop
+         id="stop2372"
+         offset="0.5"
+         style="stop-color:#ffffff;stop-opacity:0.15523465;" />
       <stop
          style="stop-color:#ffffff;stop-opacity:0;"
          offset="1"
@@ -754,9 +765,9 @@
        gradientUnits="userSpaceOnUse"
        gradientTransform="matrix(1.000543,0,0,1.070835,-3.471499,0.914263)"
        x1="67.192299"
-       y1="11.439613"
+       y1="17.587891"
        x2="67.192299"
-       y2="66.348274" />
+       y2="68.370071" />
     <linearGradient
        inkscape:collect="always"
        xlink:href="#radialGradient5323"
@@ -947,6 +958,6 @@
        sodipodi:nodetypes="cccccccc"
        id="path5351"
        d="M 33.221432,19.750756 C 18.671709,20.142642 7.0705185,32.160677 7.0705185,47.830372 L 7.0705185,63.219947 C 7.0705185,70.386527 118.65213,70.377426 120.44409,63.219947 L 120.44409,47.830372 C 120.44409,31.911958 108.48083,19.750756 93.607333,19.750756 L 33.907258,19.750756 C 33.674865,19.750756 33.452383,19.744538 33.221432,19.750756 z "
-       style="fill:url(#linearGradient5548);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1.17903697;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:4;stroke-opacity:1" />
+       style="fill:url(#linearGradient5548);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1.17903697;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:4;stroke-opacity:1;opacity:1" />
   </g>
 </svg>
