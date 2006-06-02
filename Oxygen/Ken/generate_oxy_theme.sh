@@ -17,21 +17,28 @@ for size in $sizes; do
   done
 done
 
-for apps in $(ls apps/*.svg); do inkscape --export-png="../oxygen/128x128/"$( echo $apps | cut -d . -f -1 ).png --export-dpi=72 --export-background-opacity=0 --export-width=128 --export-height=128 $apps;done
-for actions in $(ls actions/*.svg); do inkscape --export-png="../oxygen/128x128/"$( echo $actions | cut -d . -f -1 ).png --export-dpi=72 --export-background-opacity=0 --export-width=128 --export-height=128 $actions;done
-for filesystems in $(ls filesystems/*.svg); do inkscape --export-png="../oxygen/128x128/"$( echo $filesystems | cut -d . -f -1 ).png --export-dpi=72 --export-background-opacity=0 --export-width=128 --export-height=128 $filesystems;done
-for devices in $(ls devices/*.svg); do inkscape --export-png="../oxygen/128x128/"$( echo $devices | cut -d . -f -1 ).png --export-dpi=72 --export-background-opacity=0 --export-width=128 --export-height=128 $devices;done
-for mimetypes in $(ls mimetypes/*.svg); do inkscape --export-png="../oxygen/128x128/"$( echo $mimetypes | cut -d . -f -1 ).png --export-dpi=72 --export-background-opacity=0 --export-width=128 --export-height=128 $mimetypes;done
+#resize the 128x128 png's to all needed sizes defined in sizes
+for folder in $folders; do
+  for icon in $(ls $folder/*.svg); do
+    inkscape --export-png="../oxygen/128x128/"$( echo $icon | cut -d . -f -1 ).png --export-dpi=72 --export-background-opacity=0 --export-width=128 --export-height=128 $icon > /dev/null
+  done
+done
 
 cd ../oxygen/128x128
 
 echo "-----------------------------"
 echo "Scaling PNGs, be patient DUDE"
 
-for i in $(ls */*.png); do convert -filter Sinc -resize 64x64 $i "../64x64/"$i && convert -filter Sinc -resize 48x48 $i "../48x48/"$i && convert -resize 32x32 -sharpen 2 $i "../32x32/"$i && convert -resize 22x22 -sharpen 2 +contrast $i "../22x22/"$i && convert -resize 16x16 -sharpen 2 +contrast $i "../16x16/"$i;done
+for i in $(ls */*.png); do 
+  convert -filter Sinc -resize 64x64 $i "../64x64/"$i 
+  convert -filter Sinc -resize 48x48 $i "../48x48/"$i
+  convert -resize 32x32 -sharpen 2 $i "../32x32/"$i 
+  convert -resize 22x22 -sharpen 2 -contrast $i "../22x22/"$i
+  convert -resize 16x16 -sharpen 2 -contrast $i "../16x16/"$i
+done
 
-echo -----------------------------
-echo Creating index.theme
+echo "-----------------------------"
+echo "Creating index.theme"
 
 #create theme file
 cd ../
@@ -177,14 +184,14 @@ Context=MimeTypes
 Type=Threshold
 EOF
 
-echo -----------------------------
-echo Creating Oxygen_$date.tar.gz
+echo "-----------------------------"
+echo "Creating Oxygen_$date.tar.gz"
 
 #change dir to basedir -1 and create a tar for gzipping
 cd ../
 tar -cf oxygen_$date.tar oxygen
 gzip oxygen_$date.tar
-echo ---------------------------
-echo Done
+echo "---------------------------"
+echo "Done"
 
 exit 0
