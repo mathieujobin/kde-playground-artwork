@@ -28,7 +28,7 @@ cd ../oxygen/128x128
 echo "-----------------------------"
 echo "Scaling PNGs, be patient DUDE"
 
-for i in $(ls */*.png); do convert -filter Sinc -resize 64x64 $i "../64x64/"$i && convert -filter Sinc -resize 48x48 $i "../48x48/"$i && convert -resize 32x32 -sharpen 2 $i "../32x32/"$i && convert -resize 22x22 -sharpen 2 +contrast $i "../22x22/"$i && convert -resize 16x16 -sharpen 2 +contrast 2 $i "../16x16/"$i;done
+for i in $(ls */*.png); do convert -filter Sinc -resize 64x64 $i "../64x64/"$i && convert -filter Sinc -resize 48x48 $i "../48x48/"$i && convert -resize 32x32 -sharpen 2 $i "../32x32/"$i && convert -resize 22x22 -sharpen 2 +contrast $i "../22x22/"$i && convert -resize 16x16 -sharpen 2 +contrast $i "../16x16/"$i;done
 
 echo -----------------------------
 echo Creating index.theme
