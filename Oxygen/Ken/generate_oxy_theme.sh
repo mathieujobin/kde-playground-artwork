@@ -2,27 +2,45 @@
 
 sizes="128x128 64x64 48x48 32x32 22x22 16x16"
 folders="actions apps devices filesystems mimetypes"
+smallexport="no"
+smallfolders="apps/small filesystems/small"
+smallsize="22"
 date=`date '+%F-%H-%M'`
 
 #create every size dir and within the size dir create all the icon folders
 for size in $sizes; do
+  prefix="../oxygen/$size"
   for folder in $folders; do
-    mkdir -p ../oxygen/$size/$folder
-    if [ "$?" = "0" ]; then
-      echo "../oxygen/$size/$folder created"
-    else
-      echo "creation of ../$size/$folder failed"
-      exit 1
-    fi
+    mkdir -p $prefix/$folder
+    echo "$prefix/$folder created"
   done
 done
+if [ "$smallexport" == "yes" ]; then
+    prefix="../oxygen/${smallsize}x${smallsize}"
+    for folder in $smallfolders; do
+      mkdir -p $prefix/$folder
+      echo "$prefix/$folder created"
+    done
+fi
+
+echo "-----------------------------"
+echo "Exporting to 128 and smaller (if available)"
 
 #resize the 128x128 png's to all needed sizes defined in sizes
 for folder in $folders; do
   for icon in $(ls $folder/*.svg); do
-    inkscape --export-png="../oxygen/128x128/"$( echo $icon | cut -d . -f -1 ).png --export-dpi=72 --export-background-opacity=0 --export-width=128 --export-height=128 $icon > /dev/null
+    inkscape --without-gui --export-png="../oxygen/128x128/"$( echo $icon | cut -d . -f -1 ).png --export-dpi=72 --export-background-opacity=0 --export-width=128 --export-height=128 $icon > /dev/null
   done
 done
+
+#export small versions if available
+if [ "$smallexport" == "yes" ]; then
+  for folder in $smallfolders; do
+    for icon in $(ls $folder/*.svg); do
+      inkscape --without-gui --export-png="../oxygen/${smallsize}x${smallsize}/"$( echo $icon | cut -d . -f -1 ).png --export-dpi=72 --export-background-opacity=0 --export-width=${smallsize} --export-height=${smallsize} $icon > /dev/null
+    done
+  done
+fi
 
 cd ../oxygen/128x128
 
@@ -36,6 +54,22 @@ for i in $(ls */*.png); do
   convert -filter Sinc -resize 22x22 -sharpen 1 -contrast $i "../22x22/"$i
   convert -filter Sinc -resize 16x16 -sharpen 1 -contrast $i "../16x16/"$i
 done
+
+#do a resize for small exported icons
+if [ "$smallexport" == "yes" ]; then
+  cd ../${smallsize}x${smallsize}
+
+  #first fix the directory which is currently size/iconfolder/smallsize
+  for folder in $smallfolders; do
+    mv $folder/* $folder/..
+    rm -r $folder
+  done
+
+  #resize to 16x16
+  for i in $(ls */*.png); do 
+      convert -filter Sinc -resize 16x16 -sharpen 1 -contrast $i "../16x16/"$i
+  done
+fi
 
 echo "-----------------------------"
 echo "Creating index.theme"
@@ -191,6 +225,7 @@ echo "Creating Oxygen_$date.tar.gz"
 cd ../
 tar -cf oxygen_$date.tar oxygen
 gzip oxygen_$date.tar
+rm -rf oxygen
 echo "---------------------------"
 echo "Done"
 
