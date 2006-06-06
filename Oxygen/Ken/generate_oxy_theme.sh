@@ -3,8 +3,8 @@
 sizes="128x128 64x64 48x48 32x32 22x22 16x16"
 folders="actions apps devices filesystems mimetypes"
 smallexport="no"
-smallfolders="apps/small filesystems/small"
-smallsize="22"
+smallfolders="apps/small"
+smallsize="22" #size of small version - currently only works with 22x22!
 date=`date '+%F-%H-%M'`
 
 #create every size dir and within the size dir create all the icon folders
