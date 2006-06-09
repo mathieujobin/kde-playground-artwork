@@ -2,7 +2,7 @@
 
 sizes="128x128 64x64 48x48 32x32 22x22 16x16"
 folders="actions apps devices filesystems mimetypes"
-smallexport="no"
+smallexport="yes"
 smallfolders="apps/small"
 smallsize="22" #size of small version - currently only works with 22x22!
 date=`date '+%F-%H-%M'`
