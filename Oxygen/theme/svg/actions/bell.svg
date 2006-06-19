@@ -16,7 +16,7 @@
    inkscape:version="0.43+0.44pre3"
    version="1.0"
    sodipodi:docbase="/home/pinheiro/artwork/Oxygen/theme/svg/actions"
-   sodipodi:docname="bell2.svg">
+   sodipodi:docname="bell.svg">
   <defs
      id="defs1309">
     <linearGradient
@@ -139,6 +139,10 @@
          id="stop2335"
          offset="0.5"
          style="stop-color:#000000;stop-opacity:1;" />
+      <stop
+         style="stop-color:black;stop-opacity:0.39350182;"
+         offset="0.75"
+         id="stop2870" />
       <stop
          style="stop-color:#000000;stop-opacity:0;"
          offset="1"
@@ -312,11 +316,11 @@
        xlink:href="#linearGradient2327"
        id="radialGradient2988"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1.134854,3.859401e-2,-9.541623e-3,0.499715,-0.396758,49.51745)"
-       cx="10.367208"
-       cy="99.894547"
-       fx="9.8421068"
-       fy="99.001495"
+       gradientTransform="matrix(1.13493,2.425103e-3,-2.457025e-7,0.366007,-1.350683,63.24912)"
+       cx="10.159748"
+       cy="100.33847"
+       fx="9.6346474"
+       fy="99.445419"
        r="5.5" />
     <linearGradient
        inkscape:collect="always"
@@ -477,9 +481,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="4"
-     inkscape:cx="54.504748"
-     inkscape:cy="50.358699"
+     inkscape:zoom="2.8284271"
+     inkscape:cx="122.71959"
+     inkscape:cy="9.7401352"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:document-units="px"
@@ -608,7 +612,7 @@
          sodipodi:cy="99.75"
          sodipodi:cx="10"
          id="path2325"
-         style="opacity:0.73770492;fill:url(#radialGradient2988);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.02;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:4;stroke-opacity:1"
+         style="opacity:1;fill:url(#radialGradient2988);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.02;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:4;stroke-opacity:1"
          sodipodi:type="arc" />
       <path
          sodipodi:nodetypes="ccsssscc"
