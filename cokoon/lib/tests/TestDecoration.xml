@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cokoon_theme name="TestDecoration" version="0.1pre">
+
+	<object id="Decoration.active.normal.normal.normal">
+		<expression id="oneplusone" value="1+1"/>
+
+		<expression id="variableExpression" value="testVar"/>
+
+		<expression id="outermargin" value="5"/>
+		<expression id="toprowheight" value=".outermargin"/>
+
+		<source id="decorationsrc" type="pixmap" file="testdeco1-src.xpm"/>
+		<source id="svgrc" type="svg" file="svgtest.svg"/>
+		<tile id="topleft" mode_hor="normal" mode_vert="normal" source_id="decorationsrc" left="0" top="0" width="5" height=".width"/>
+		<tile id="top" mode_hor="tiled" mode_vert="tiled" source_object="" source_id="decorationsrc" left="5" top="0" width="5" height="5"/>
+		<tile id="topright" mode_hor="normal" mode_vert="normal" source_id="decorationsrc" left="10" top="0" width="5" height="5"/>
+		<tile id="bottomleft" mode_hor="normal" mode_vert="normal" source_id="decorationsrc" left="0" top="10" width="5" height="5"/>
+		<tile id="bottom" mode_hor="tiled" mode_vert="tiled" source_id="decorationsrc" left="5" top="10" width="5" height="5"/>
+		<tile id="bottomright" mode_hor="normal" mode_vert="normal" source_id="decorationsrc" left="10" top="10" width="5" height="5"/>
+		<tile id="left" mode_hor="tiled" mode_vert="tiled" source_id="decorationsrc" left="0" top="5" width="5" height="5"/>
+		<tile id="right" mode_hor="tiled" mode_vert="tiled" source_id="decorationsrc" left="10" top="5" width="5" height="5"/>
+		<tile id="center" mode_hor="tiled" mode_vert="tiled" source_id="decorationsrc" left="5" top="5" width="5" height="5"/>
+		<layout id="bglayout">
+			<column type="fixed" fixed_size="2+3"/>
+			<column type="expanding"/>
+			<column type="fixed" fixed_size="5"/>
+			<row type="fixed" fixed_size=".o.toprowheight">
+				<cell type="tile" tile_id="topleft"/>
+				<cell type="tile" tile_id="top"/>
+				<cell type="tile" tile_id="topright"/>
+			</row>
+			<row type="expanding">
+				<cell type="tile" tile_id="left"/>
+				<cell type="tile" tile_id="center"/>
+				<cell type="tile" tile_id="right"/>
+			</row>
+			<row type="fixed" fixed_size=".o.variableExpression">
+				<cell type="tile" tile_id="bottomleft"/>
+				<cell type="tile" tile_id="bottom"/>
+				<cell type="tile" tile_id="bottomright"/>
+			</row>
+		</layout>
+		<paint>
+			<layer layout_object="" layout_id="bglayout"/>
+		</paint>
+	</object>
+
+	<object id="Decoration.active.*.*.*" inherit="..normal.normal.normal">
+		<expression id="twoplustwo" value="2+2"/>
+	</object>
+
+	<object id="Button.close.normal.active.normal">
+		<expression id="refvalue" value="10-3"/>
+		<source id="decorationsrc" type="pixmap" file="testdeco1-src.xpm"/>
+		<tile id="topleft" mode_hor="normal" mode_vert="normal" source_id="decorationsrc" left=".top*2" top="4" width="Button.close.normal.active.normal.refvalue" height=".o.refvalue"/>
+
+		<expression id="objectExp" value=".t.topleft.top+1"/>
+		<expression id="objectExp2" value="Button.close.normal.active.normal.t.topleft.top+2"/>
+		<expression id="objectExp3" value=".refvalue"/>
+
+		<layout id="bglayout">
+			<column type="fixed" fixed_size=".o.refvalue"/>
+			<row type="fixed" fixed_size=".o.t.topleft.top">
+				<cell type="tile" tile_id="topleft"/>
+			</row>
+		</layout>
+	</object>
+
+<!--	<object id="Button.*.*.*.*" inherit="Button.close.normal.active.normal">
+		<expression id="twoplustwo" value="2+2"/>
+	</object>-->
+
+</cokoon_theme>
+
+<!-- kate: tab-width 4;-->

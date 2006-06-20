@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cokoon_spec name="CokoonDecorationSpec" version="0.1pre">
+	<item id="Settings">
+		<desc>Some general switches for the window decoration.</desc>
+
+		<required>
+			<expression type="Bool" id="RespectBorderSizeFactor">
+				<desc>Whether it is intended by the Decoration items to respect the 'BorderSize' variable. 0 for no, otherwise yes.</desc>
+			</expression>
+			<expression type="Bool" id="CustomButtonSize">
+				<desc>If set to 0, buttons will get the size of the Decoration 'TitleHeight' property. Else, the size will be determined by the Button 'ButtonHeight', 'ButtonWidth' properties.</desc>
+			</expression>
+			<expression type="Bool" id="MenuDoubleClickClose">
+				<desc>If set to 0, a double click on the menu button won't take any effect. Otherwise it will close the window (e.g. the behavior of MS Windows).</desc>
+			</expression>
+			<expression type="Int" id="WindowTitleAlignment">
+				<desc>If set to 1, the special cell WindowTitle will be painted centered. If set to 2, it will be aligned right. Else it will be aligned left.</desc>
+			</expression>
+		</required>
+	</item>
+
+	<item id="Decoration">
+		<desc>A window decoration frame.</desc>
+
+		<states>
+			<desc>The window activation state.</desc>
+			
+			<state id="active">
+				<desc>Window is active.</desc>
+			</state>
+			<state id="inactive">
+				<desc>Window is not active.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>The maximization state.</desc>
+			
+			<state id="normal">
+				<desc>Not maximized.</desc>
+			</state>
+			<state id="max">
+				<desc>Fully maximized.</desc>
+			</state>
+			<state id="maxHor">
+				<desc>Horizontally maximized.</desc>
+			</state>
+			<state id="maxVert">
+				<desc>Vertically maximized.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>The window type.</desc>
+			
+			<state id="normal">
+				<desc>A normal window.</desc>
+			</state>
+			<state id="tool">
+				<desc>A utility window. Usually a bit smaller than normal windows.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>The shade state.</desc>
+			
+			<state id="normal">
+				<desc>Not shaded.</desc>
+			</state>
+			<state id="shaded">
+				<desc>Shaded, window is rolled up.</desc>
+			</state>
+		</states>
+
+		<provided>
+			<variable type="Double" id="BorderSizeFactor">
+				<desc>The preferred border size factor.</desc>
+			</variable>
+
+			<variable type="Int" id="ButtonGroupLeftWidth">
+				<desc>The width which is taken by the left button group.</desc>
+			</variable>
+			<variable type="Int" id="ButtonGroupRightWidth">
+				<desc>The width which is taken by the right button group.</desc>
+			</variable>
+
+			<variable type="Int" id="WindowTitleHeight">
+				<desc>Height of the titleBar text (caption).</desc>
+			</variable>
+			<variable type="Int" id="WindowTitleWidth">
+				<desc>Width of the titleBar text.</desc>
+			</variable>
+
+			<variable type="Color" id="ColorTitleBar">
+				<desc>The color for the titlebar</desc>
+			</variable>
+			<variable type="Color" id="ColorTitleBlend">
+				<desc>The blend color for the titlebar</desc>
+			</variable>
+			<variable type="Color" id="ColorFont">
+				<desc>The titlebar text color</desc>
+			</variable>
+			<variable type="Color" id="ColorButtonBg">
+				<desc>The color to use for the titlebar buttons</desc>
+			</variable>
+			<variable type="Color" id="ColorFrame">
+				<desc>The color for the window frame (border)</desc>
+			</variable>
+			<variable type="Color" id="ColorHandle">
+				<desc>The color for the resize handle</desc>
+			</variable>
+
+			<special_cell id="WindowTitle">
+				<desc>To embed the window title in a layout</desc>
+			</special_cell>
+			<special_cell id="WindowIcon">
+				<desc>To embed the window icon in a layout</desc>
+			</special_cell>
+		</provided>
+		
+		<required>
+			<tile id="WindowMaskTopLeft">
+				<desc>Window shape: Bitmap (b/w bitmap) of the top left edge.</desc>
+			</tile>
+			<tile id="WindowMaskTopRight">
+				<desc>Window shape: Bitmap (b/w bitmap) of the top right edge.</desc>
+			</tile>
+			<tile id="WindowMaskBottomLeft">
+				<desc>Window shape: Bitmap (b/w bitmap) of the bottom left edge.</desc>
+			</tile>
+			<tile id="WindowMaskBottomRight">
+				<desc>Window shape:  Bitmap (b/w bitmap) of the bottom right edge.</desc>
+			</tile>
+			
+			<expression type="Color" id="WindowTitleColor">
+				<desc>Color of the window title.</desc>
+			</expression>
+			
+			<expression type="Int" id="BorderLeft">
+				<desc>Window layout: Width of the left border.</desc>
+			</expression>
+			<expression type="Int" id="BorderRight">
+				<desc>Window layout: Width of the right border.</desc>
+			</expression>
+			<expression type="Int" id="BorderBottom">
+				<desc>Window layout: Height of the bottom border.</desc>
+			</expression>
+			<expression type="Int" id="TitleHeight">
+				<desc>Window layout: height of the 'title' area. The actual title height is TitleEdgeTop + TitleHeight + TitleEdgeBottom.</desc>
+			</expression>
+			<expression type="Int" id="TitleBorderLeft">
+				<desc>Window layout: Space between left buttons and the area of the title text.</desc>
+			</expression>
+			<expression type="Int" id="TitleBorderRight">
+				<desc>Window layout: Space between the area of the title text and right buttons.</desc>
+			</expression>
+			<expression type="Int" id="TitleEdgeLeft">
+				<desc>Window layout: Space between left side of the window and left buttons.</desc>
+			</expression>
+			<expression type="Int" id="TitleEdgeRight">
+				<desc>Window layout: Space between right buttons and right side of the window.</desc>
+			</expression>
+			<expression type="Int" id="TitleEdgeTop">
+				<desc>Window layout: Space between top side of the window and top of buttons. The actual title height is TitleEdgeTop + TitleHeight + TitleEdgeBottom.</desc>
+			</expression>
+			<expression type="Int" id="TitleEdgeBottom">
+				<desc>Window layout: Space between bottom side of the title bar and bottom of buttons. The actual title height is TitleEdgeTop + TitleHeight + TitleEdgeBottom.</desc>
+			</expression>
+			<expression type="Int" id="ButtonSpacing">
+				<desc>Window layout: Space between single buttons in a button group.</desc>
+			</expression>
+			<expression type="Int" id="ExplicitButtonSpacer">
+				<desc>Window layout: Width of a button group "Spacer" item.</desc>
+			</expression>
+			<expression type="Int" id="ButtonMarginTop">
+				<desc>Window layout: Space between TitleEdgeTop and buttons.</desc>
+			</expression>
+			<expression type="Int" id="TitleBorders">
+				<desc>Intended space between the window title text and title buttons. Used to calculate the available titlebar space. Based on this, buttons may dynamically be hidden or not.</desc>
+			</expression>
+		</required>
+	</item>
+
+	<item id="Button">
+		<desc>A window decoration button.</desc>
+		<states>
+			<desc>The button type.</desc>
+
+			<state id="help">
+				<desc>Help button.</desc>
+			</state>
+			<state id="close">
+				<desc>Close window.</desc>
+			</state>
+			<state id="minimize">
+				<desc>Minimize window.</desc>
+			</state>
+			<state id="menu">
+				<desc>Window menu.</desc>
+			</state>
+			<state id="maximize">
+				<desc>Maximize window.</desc>
+			</state>
+			<state id="maxRestore">
+				<desc>Restore fully maximized window.</desc>
+			</state>
+			<state id="maxHorRestore">
+				<desc>Restore horizontally maximized window.</desc>
+			</state>
+			<state id="maxVertRestore">
+				<desc>Restore horizontally maximized window.</desc>
+			</state>
+			<state id="shade">
+				<desc>Shade window.</desc>
+			</state>
+			<state id="shadeRestore">
+				<desc>Restore shaded window.</desc>
+			</state>
+			<state id="above">
+				<desc>Make window keep above others.</desc>
+			</state>
+			<state id="aboveRestore">
+				<desc>Restore keep-above-others window.</desc>
+			</state>
+			<state id="below">
+				<desc>Make window keep below others.</desc>
+			</state>
+			<state id="belowRestore">
+				<desc>Restore keep-below-others window.</desc>
+			</state>
+			<state id="allDesktops">
+				<desc>Show window on all desktops.</desc>
+			</state>
+			<state id="allDesktopsRestore">
+				<desc>Show window not on all desktops.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>The actual button state.</desc>
+
+			<state id="normal">
+				<desc>Normal button.</desc>
+			</state>
+			<state id="pressed">
+				<desc>Pressed button.</desc>
+			</state>
+			<state id="prelight">
+				<desc>Mouse rolled over the button.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>The parent window activation state.</desc>
+
+			<state id="active">
+				<desc>Parent window is active.</desc>
+			</state>
+			<state id="inactive">
+				<desc>Parent window is not active.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>Parent window type.</desc>
+
+			<state id="normal">
+				<desc>A normal window.</desc>
+			</state>
+			<state id="tool">
+				<desc>A utility window. Usually a bit smaller than normal windows.</desc>
+			</state>
+		</states>
+
+		<provided>
+			<desc>The same as in Decoration</desc>
+		</provided>
+		<required>
+			<expression type="Int" id="ButtonWidth">
+				<desc>Width of the button. This only takes effect when Decoration 'CustomButtonSize' is disabled.</desc>
+			</expression>
+			<expression type="Int" id="ButtonHeight">
+				<desc>Width of the button. This only takes effect when Decoration 'CustomButtonSize' is disabled.</desc>
+			</expression>
+		</required>
+	</item>
+</cokoon_spec>
+
+<!-- kate: tab-width 4;-->

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cokoon_spec name="DecorationThemeSpec" version="0.1pre">
+	<desc>This is the definition of the requirements for TestTheme themes. Themes not defining all mandatory parts (those which do not inherit others) are considered as invalid.</desc>
+
+	<item id="Decoration">
+		<desc>A window decoration frame.</desc>
+
+		<states>
+			<desc>The window activation state.</desc>
+			
+			<state id="active">
+				<desc>Window is active.</desc>
+			</state>
+			<state id="inactive">
+				<desc>Window is not active.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>The maximization state.</desc>
+			
+			<state id="normal">
+				<desc>Not maximized.</desc>
+			</state>
+			<state id="max">
+				<desc>Fully maximized.</desc>
+			</state>
+			<state id="maxHor">
+				<desc>Horizontally maximized.</desc>
+			</state>
+			<state id="maxVert">
+				<desc>Vertically maximized.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>The window type.</desc>
+			
+			<state id="normal">
+				<desc>A normal window.</desc>
+			</state>
+			<state id="tool">
+				<desc>A utility window. Usually a bit smaller than normal windows.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>The shade state.</desc>
+			
+			<state id="normal">
+				<desc>Not shaded.</desc>
+			</state>
+			<state id="shaded">
+				<desc>Shaded, window is rolled up.</desc>
+			</state>
+		</states>
+
+		<provided>
+			<variable type="Int" id="testVar">
+					<desc>Just the declaration of a variable identifier for a test case.</desc>
+			</variable>
+		</provided>
+		<required>
+			<expression type="Int" id="oneplusone">
+				<desc>Declaration for test case.</desc>
+			</expression>
+			<expression type="Int" id="variableExpression">
+				<desc>Declaration for test case.</desc>
+			</expression>
+			<expression type="Int" id="objectExp">
+				<desc>Declaration for test case.</desc>
+			</expression>
+			<expression type="Int" id="objectExp2">
+				<desc>Declaration for test case.</desc>
+			</expression>
+			<expression type="Int" id="objectExp3">
+				<desc>Declaration for test case.</desc>
+			</expression>
+			<expression type="Int" id="recursiveLoopTest1">
+				<desc>Declaration for test case.</desc>
+			</expression>
+			<expression type="Int" id="recursiveLoopTest2">
+				<desc>Declaration for test case.</desc>
+			</expression>
+			<expression type="Int" id="recursiveLoopTest3">
+				<desc>Declaration for test case.</desc>
+			</expression>
+		</required>
+	</item>
+
+	<item id="Button">
+		<desc>A window decoration button.</desc>
+		<states>
+			<desc>The button type.</desc>
+			
+			<state id="close">
+				<desc>Close window.</desc>
+			</state>
+			<state id="minimize">
+				<desc>Minimize window.</desc>
+			</state>
+			<state id="menu">
+				<desc>Window menu.</desc>
+			</state>
+			<state id="maximize">
+				<desc>Maximize window.</desc>
+			</state>
+			<state id="maxRestore">
+				<desc>Restore fully maximized window.</desc>
+			</state>
+			<state id="maxHorRestore">
+				<desc>Restore horizontally maximized window.</desc>
+			</state>
+			<state id="maxVertRestore">
+				<desc>Restore horizontally maximized window.</desc>
+			</state>
+			<state id="shade">
+				<desc>Shade window.</desc>
+			</state>
+			<state id="shadeRestore">
+				<desc>Restore shaded window.</desc>
+			</state>
+			<state id="above">
+				<desc>Make window keep above others.</desc>
+			</state>
+			<state id="aboveRestore">
+				<desc>Restore keep-above-others window.</desc>
+			</state>
+			<state id="below">
+				<desc>Make window keep below others.</desc>
+			</state>
+			<state id="belowRestore">
+				<desc>Restore keep-below-others window.</desc>
+			</state>
+			<state id="allDesktops">
+				<desc>Show window on all desktops.</desc>
+			</state>
+			<state id="allDesktopsRestore">
+				<desc>Show window not on all desktops.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>The actual button state.</desc>
+
+			<state id="normal">
+				<desc>Normal button.</desc>
+			</state>
+			<state id="pressed">
+				<desc>Pressed button.</desc>
+			</state>
+			<state id="prelight">
+				<desc>Mouse rolled over the button.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>The parent window activation state.</desc>
+
+			<state id="active">
+				<desc>Parent window is active.</desc>
+			</state>
+			<state id="inactive">
+				<desc>Parent window is not active.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>Parent window type.</desc>
+
+			<state id="normal">
+				<desc>A normal window.</desc>
+			</state>
+			<state id="tool">
+				<desc>A utility window. Usually a bit smaller than normal windows.</desc>
+			</state>
+		</states>
+	</item>
+</cokoon_spec>
+
+<!-- kate: tab-width 4;-->

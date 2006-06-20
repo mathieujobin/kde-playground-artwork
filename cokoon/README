@@ -1,0 +1,11 @@
+CoKoon is a flexible theme library. It's aims are:
+- Combine the advantages of SVG (scalable vector graphics) with layout
+  capabilities as known from pixmap theme engines.
+- Make it usable in a variety of applications (such as KDE styles,
+  KWin decorations, Custom widgets, Application themes...)
+- Keep the theme file format simple enough to make future GUI theme editor
+  applications possible,
+- but powerful enough to be able to achieve tasks which would only have been
+  possible with programmatically coded themes previously.
+
+See apidocs for an overview of CoKoon concepts.

@@ -1,0 +1,26 @@
+TODO:
+- Adapt to KDE library code guidelines
+- Move more error reporting into the theme parser
+- implement all Tile paint modes
+- Implementation of Bitmap tile source
+  - make it possible to color bitmaps according to expression colors
+- Expression: implement 'blend' function
+- KWin decoration using cokoon:
+  - How to install and make themes known to the decoration... .desktop files?
+  - theme info tags: name, author, description, copyright. in .desktop or theme xml file?
+  - Think about how to specify e.g. default button positions in decoration themes. .desktop file or String Expressions?
+- Performance/Memory profiling. Perhaps it will be necessary to
+  - Give a QRegion to the ::paint() methods, so only necessary parts of the layout are
+    repainted.
+  - reduce the number of expression evaluations (track the use of variables/references
+    and their old value and only recalculate when they have changed). Perhaps do this
+    on a more global level and avoid repeated calculation of layouts...??
+  - 'compile' themes into some binary format
+- script for automatic creation of documentation from a given spec XML file
+- create dtd's for theme spec and theme description XML formats when they are becoming more stable
+
+Ideas:
+- KWin Decoration, KStyle, Theme library for use in custom widgets
+- GetHotNewStuff
+- Theme editor application. Basically something which edits the theme
+  description file DOM and which offers instant preview (through plugins?).

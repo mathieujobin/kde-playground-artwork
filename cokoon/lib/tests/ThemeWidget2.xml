@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cokoon_theme name="ThemeWidget1" version="0.1pre">
+	<object id="Widget">
+		<source id="decorationsrc" type="svg" file="svgtest.svg"/>
+
+		<expression id="zoom" value="1"/>
+
+		<expression id="srcwidth" value="200"/>
+		<expression id="srcheight" value="50"/>
+		<expression id="edgesize" value="5"/>
+		<tile id="topleft" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left="0" top="0" width=".o.edgesize" height=".o.edgesize"/>
+		<tile id="top" mode_hor="tiled" mode_vert="stretched" source_id="decorationsrc" left="10" top="0" width="2" height=".o.edgesize"/>
+		<tile id="topright" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".o.srcwidth-.o.edgesize" top="0" width=".o.edgesize" height=".o.edgesize"/>
+		<tile id="bottomleft" mode_hor="stretched" mode_vert="stretched" source_object="" source_id="decorationsrc" left="0" top=".o.srcheight-.o.edgesize" width=".o.edgesize" height=".o.edgesize"/>
+		<tile id="bottom" mode_hor="tiled" mode_vert="stretched" source_id="decorationsrc" left="10" top=".o.srcheight-.o.edgesize" width="2" height=".o.edgesize"/>
+		<tile id="bottomright" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".o.srcwidth-.o.edgesize" top=".o.srcheight-.o.edgesize" width=".o.edgesize" height=".o.edgesize"/>
+		<tile id="left" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left="0" top=".o.edgesize" width=".o.edgesize" height=".o.srcheight-2*.o.edgesize"/>
+		<tile id="right" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".o.srcwidth-.o.edgesize" top=".o.edgesize" width=".o.edgesize" height=".o.srcheight-2*.o.edgesize"/>
+		<tile id="center" mode_hor="tiled" mode_vert="stretched" source_id="decorationsrc" left="10" top=".o.edgesize" width="2" height=".o.srcheight-2*.o.edgesize"/>
+		<layout id="bglayout">
+			<column type="fixed" fixed_size=".o.height/5*.o.zoom"/>
+			<column type="expanding"/>
+			<column type="fixed" fixed_size=".o.height/5*.o.zoom"/>
+			<row type="fixed" fixed_size=".o.height/5*.o.zoom">
+				<cell type="tile" tile_id="topleft"/>
+				<cell type="tile" tile_id="top"/>
+				<cell type="tile" tile_id="topright"/>
+			</row>
+			<row type="expanding">
+				<cell type="tile" tile_id="left"/>
+				<cell type="tile" tile_id="center"/>
+				<cell type="tile" tile_id="right"/>
+			</row>
+			<row type="fixed" fixed_size=".o.height/5*.o.zoom">
+				<cell type="tile" tile_id="bottomleft"/>
+				<cell type="tile" tile_id="bottom"/>
+				<cell type="tile" tile_id="bottomright"/>
+			</row>
+		</layout>
+		<paint>
+			<layer layout_id="bglayout"/>
+		</paint>
+	</object>
+	
+</cokoon_theme>
+
+<!-- kate: tab-width 4;-->
