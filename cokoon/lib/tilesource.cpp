@@ -179,7 +179,7 @@ QPixmap SvgTileSource::pixmap(const ExecContext *c,
                 int idx = 0;
                 bool endReplacement = false;
                 while (!endReplacement) {
-                    idx = m_svgData.indexOf("id=\"" + r->id + "\"", idx);
+                    idx = m_svgData.indexOf(QString("id=\"" + r->id + "\"").toAscii(), idx);
 
                     if (idx == -1) {
                         endReplacement = true;

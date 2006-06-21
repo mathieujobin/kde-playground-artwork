@@ -22,6 +22,8 @@
 #include <QString>
 #include <QVariant>
 
+#include <kdelibs_export.h>
+
 class QPainter;
 
 namespace Cokoon {
@@ -33,7 +35,7 @@ namespace Cokoon {
  *
  * @author Sandro Giessl <giessl@kde.org>
  */
-class ExpressionVariableBridge
+class KDEFX_EXPORT ExpressionVariableBridge
 {
     public:
         /**
@@ -58,7 +60,7 @@ class ExpressionVariableBridge
  *
  * @author Sandro Giessl <giessl@kde.org>
  */
-class SpecialCellBridge
+class KDEFX_EXPORT SpecialCellBridge
 {
     public:
         /**

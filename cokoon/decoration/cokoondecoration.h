@@ -26,8 +26,8 @@
 #include <kdecorationfactory.h>
 #include <kcommondecoration.h>
 
-#include <../lib/document.h>
-#include <../lib/bridges.h>
+#include <cokoon/document.h>
+#include <cokoon/bridges.h>
 
 class Cokoon::Object;
 

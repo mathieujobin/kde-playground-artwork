@@ -24,6 +24,7 @@
 
 class QPainter;
 
+#include <kdelibs_export.h>
 #include "bridges.h"
 
 /**
@@ -58,7 +59,7 @@ class DocumentPrivate;
  *
  * @author Sandro Giessl <giessl@kde.org>
  */
-class Document
+class KDEFX_EXPORT Document
 {
     public:
         /**
