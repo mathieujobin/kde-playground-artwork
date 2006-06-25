@@ -53,9 +53,9 @@ class LayoutCellContent;
  * addCol(Expanding);
  * addCol(Fixed, 5);
  * addRow(Fixed, 5);
- * addRowCell( ... );
- * addRowCell( ... );
- * addRowCell( ... );
+ * addTileCell( ... );
+ * addTileCell( ... );
+ * addTileCell( ... );
  * addRow(Expanding);
  * ...
  * addRow(Fixed, 5);

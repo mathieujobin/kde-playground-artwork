@@ -727,6 +727,8 @@ void Document::drawLayers(int objId,
     const Object *o = obj( objId );
     if ( o )
         o->paint( p, left, top, width, height, vars, cells );
+    else
+        qCritical("Object '%d' does not exist; unable to paint layers.", objId);
 }
 
 void Document::drawLayout(int objId, int layoutId,
@@ -765,8 +767,11 @@ QVariant Document::getExpValue(int objId, int expressionId,
                                const ExpressionVariableBridge *vars) const
 {
     const Object *o = obj( objId );
-    if ( !o )
+    if ( !o ) {
+        qCritical("Object '%d' does not exist; unable to get expression value '%d'.",
+                 objId, expressionId);
         return QVariant();
+    }
 
     return o->evalExpression( expressionId, vars );
 }
