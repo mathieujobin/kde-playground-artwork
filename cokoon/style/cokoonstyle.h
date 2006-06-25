@@ -1,5 +1,5 @@
-/* Plastik widget style for KDE 4
-   Copyright (C) 2005 Sandro Giessl <sandro@giessl.com>
+/* coKoon theme widget style
+   Copyright © 2006 Sandro Giessl <giessl@kde.org>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -12,29 +12,35 @@
 
    You should have received a copy of the GNU Library General Public License
    along with this library; see the file COPYING.LIB.  If not, write to
-   the Free Software Foundation, Inc., 51 Franklin Steet, Fifth Floor,
+   the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
  */
 
-#ifndef __PLASTIK_H
-#define __PLASTIK_H
+#ifndef COKOON_STYLE_H
+#define COKOON_STYLE_H
 
 #include <kstyle.h>
 
-class Plastik2Style : public KStyle
-{
-//     Q_OBJECT
-// 
-public:
-    Plastik2Style();
-    virtual ~Plastik2Style();
+#include <cokoon/document.h>
+#include <cokoon/bridges.h>
 
-    virtual void drawKStylePrimitive(WidgetType widgetType, int primitive,
-                                     const QStyleOption* opt,
-                                     QRect r, QPalette pal, State flags,
-                                     QPainter* p,
-                                     const QWidget* widget = 0,
-                                     Option* kOpt = 0) const;
+class CokoonStyle : public KStyle
+{
+    public:
+        CokoonStyle();
+        virtual ~CokoonStyle();
+
+        virtual void drawKStylePrimitive(WidgetType widgetType, int primitive,
+                                         const QStyleOption* opt,
+                                         QRect r, QPalette pal, State flags,
+                                         QPainter* p,
+                                         const QWidget* widget = 0,
+                                         Option* kOpt = 0) const;
+
+    protected:
+        Cokoon::Document theme;
 };
 
-#endif // __PLASTIK_H
+#endif // COKOON_STYLE_H
+
+// kate: space-indent on; indent-width 4; mixedindent off; indent-mode cstyle;

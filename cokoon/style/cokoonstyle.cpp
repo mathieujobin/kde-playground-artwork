@@ -1,5 +1,5 @@
-/* Plastik widget style for KDE 4
-   Copyright (C) 2005 Sandro Giessl <sandro@giessl.com>
+/* coKoon theme widget style
+   Copyright © 2006 Sandro Giessl <giessl@kde.org>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -12,32 +12,54 @@
 
    You should have received a copy of the GNU Library General Public License
    along with this library; see the file COPYING.LIB.  If not, write to
-   the Free Software Foundation, Inc., 51 Franklin Steet, Fifth Floor,
+   the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
  */
 
 #include <QPainter>
 #include <QStyleOption>
 
-#include "plastik.h"
-// #include "plastik.moc"
+#include <QDebug>
 
-K_EXPORT_STYLE("Plastik42", Plastik2Style)
+#include "cokoonstyle.h"
 
+#include "CokoonStyleSpec.h"
 
-Plastik2Style::Plastik2Style()
+K_EXPORT_STYLE("Cokoon", CokoonStyle)
+
+using namespace CokoonStyleSpec;
+
+CokoonStyle::CokoonStyle()
 {
+    // load theme...
+    theme.clear();
+    CokoonStyleSpec::setupItems(&theme);
+    // TODO: !!! locate themes using .desktop file or something...
+    theme.loadTheme("/home/k4dev/src/playground-artwork/cokoon/style/TestTheme/TestTheme.xml");
+
+    const int sObjId = CokoonStyleSpec::ButtonSettings;
+    setWidgetLayoutProp(WT_PushButton, PushButton::DefaultIndicatorMargin,
+                        theme.getExpValue(sObjId, Exp_DefaultIndicatorMargin).toInt() );
+    setWidgetLayoutProp(WT_PushButton, PushButton::ContentsMargin,
+                        theme.getExpValue(sObjId, Exp_ContentsMargin).toInt() );
+    setWidgetLayoutProp(WT_PushButton, PushButton::FocusMargin,
+                        theme.getExpValue(sObjId, Exp_FocusMargin).toInt() );
+    setWidgetLayoutProp(WT_PushButton, PushButton::PressedShiftHorizontal,
+                        theme.getExpValue(sObjId, Exp_PressedShiftHorizontal).toInt() );
+    setWidgetLayoutProp(WT_PushButton, PushButton::PressedShiftVertical,
+                        theme.getExpValue(sObjId, Exp_PressedShiftVertical).toInt() );
+
+
+
+
     setWidgetLayoutProp(WT_Generic, Generic::DefaultFrameWidth, 2);
-
-    setWidgetLayoutProp(WT_PushButton, PushButton::DefaultIndicatorMargin, 1);
-    setWidgetLayoutProp(WT_PushButton, PushButton::FocusMargin, 3);
 }
 
-Plastik2Style::~Plastik2Style()
+CokoonStyle::~CokoonStyle()
 {
 }
 
-void Plastik2Style::drawKStylePrimitive(WidgetType widgetType, int primitive,
+void CokoonStyle::drawKStylePrimitive(WidgetType widgetType, int primitive,
                                        const QStyleOption* opt,
                                        QRect r, QPalette pal, State flags,
                                        QPainter* p,
@@ -56,16 +78,33 @@ void Plastik2Style::drawKStylePrimitive(WidgetType widgetType, int primitive,
             {
                 case Generic::Bevel:
                 {
+                    qDebug() << "Paint Button...!!!";
 
+                    int themeObjId = CokoonStyleSpec::Button;
 
-//                     return;
+                    themeObjId += CokoonStyleSpec::Button0_normal; // TODO: Default buttons!
+
+                    if ( !(flags & State_Enabled) ) {
+                        themeObjId += CokoonStyleSpec::Button1_disabled;
+                    } else if ( (flags & State_On) || (flags & State_Sunken) ) {
+                        themeObjId += CokoonStyleSpec::Button1_pressed;
+                    } else if ( flags & State_MouseOver ) {
+                        themeObjId += CokoonStyleSpec::Button1_prelight;
+                    } else {
+                        themeObjId += CokoonStyleSpec::Button1_normal;
+                    }
+
+                    theme.drawLayers( themeObjId, p,
+                                      r.left(), r.top(), r.width(), r.height(),
+                                      /*this, this*/ 0,0 );
+
+                    return;
                 }
 
                 case PushButton::DefaultButtonBevel:
                 {
-
-
-//                     return;
+                    // Cokoon Themes should draw the focus indicator from bevel...
+                    return;
                 }
             }
         }
@@ -79,3 +118,5 @@ void Plastik2Style::drawKStylePrimitive(WidgetType widgetType, int primitive,
     KStyle::drawKStylePrimitive(widgetType, primitive, opt,
                                 r, pal, flags, p, widget, kOpt);
 }
+
+// kate: space-indent on; indent-width 4; mixedindent off; indent-mode cstyle;

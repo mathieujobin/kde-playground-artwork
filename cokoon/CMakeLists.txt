@@ -14,6 +14,7 @@ link_directories(${KDE4_LIB_DIR})
 
 add_subdirectory( lib )
 add_subdirectory( decoration )
+add_subdirectory( style )
 
 include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
 

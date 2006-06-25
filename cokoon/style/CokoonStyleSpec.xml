@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cokoon_spec name="CokoonStyleSpec" version="0.1pre">
+	<item id="ButtonSettings">
+		<desc>General settings of PushButton layout properties etc.</desc>
+
+		<required>
+			<!-- TODO: Default, contents margins: left,top,right,bottom... -->
+			<expression type="Int" id="DefaultIndicatorMargin">
+				<desc>Space around the button (bevel, focus indicator, etc.) reserved for the default button indicator</desc>
+			</expression>
+			<expression type="Int" id="ContentsMargin">
+				<desc>Space between the bevel and the button contents</desc>
+			</expression>
+			<expression type="Int" id="FocusMargin">
+				<desc>Area of the focus indicator, measured from the bevel</desc>
+			</expression>
+			<expression type="Int" id="PressedShiftHorizontal">
+				<desc>Horizontal contents shift for pressed buttons</desc>
+			</expression>
+			<expression type="Int" id="PressedShiftVertical">
+				<desc>Vertical contents shift for pressed buttons</desc>
+			</expression>
+		</required>
+	</item>
+	<item id="Button">
+		<desc>Push button and similar.</desc>
+
+		<states>
+			<desc>Default button or not.</desc>
+			
+			<state id="normal">
+				<desc>Normal, not a default button.</desc>
+			</state>
+			<state id="default">
+				<desc>Dialog default button.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>The actual button state.</desc>
+			
+			<state id="normal">
+				<desc>Normal button.</desc>
+			</state>
+			<state id="pressed">
+				<desc>Pressed button.</desc>
+			</state>
+			<state id="prelight">
+				<desc>Mouse rolled over the button.</desc>
+			</state>
+			<state id="disabled">
+				<desc>Disabled button.</desc>
+			</state>
+		</states>
+		<!-- TODO: Maybe add states for hor/vert button direction. -->
+	</item>
+
+</cokoon_spec>
+
+<!-- kate: tab-width 4;-->
