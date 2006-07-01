@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 <svg
-   xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
    xmlns:i="http://ns.adobe.com/AdobeIllustrator/10.0/"
+   xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://web.resource.org/cc/"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -17,9 +17,31 @@
    sodipodi:version="0.32"
    inkscape:version="0.44"
    sodipodi:docbase="/Users/kwwii/kdesvn/artwork/Oxygen/Ken"
-   sodipodi:docname="newArrowBack.svg">
+   sodipodi:docname="newestArrowBack.svg">
   <defs
      id="defs2359">
+    <linearGradient
+       id="linearGradient2854">
+      <stop
+         style="stop-color:#5dff0d;stop-opacity:1;"
+         offset="0"
+         id="stop2856" />
+      <stop
+         style="stop-color:#0eae00;stop-opacity:0.42268041;"
+         offset="1"
+         id="stop2858" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient2846">
+      <stop
+         style="stop-color:black;stop-opacity:1;"
+         offset="0"
+         id="stop2848" />
+      <stop
+         style="stop-color:black;stop-opacity:0;"
+         offset="1"
+         id="stop2850" />
+    </linearGradient>
     <linearGradient
        inkscape:collect="always"
        id="linearGradient3335">
@@ -40,59 +62,48 @@
        fx="2"
        fy="16"
        gradientUnits="userSpaceOnUse">
-				<stop
-   offset="0"
-   style="stop-color:#bfffbf;stop-opacity:1"
-   id="stop3309" />
-
-				<stop
-   offset="0.1227"
-   style="stop-color:#A9FEC7"
-   id="stop3311" />
-
-				<stop
-   offset="0.2629"
-   style="stop-color:#9DF9B9"
-   id="stop3313" />
-
-				<stop
-   offset="0.4116"
-   style="stop-color:#8AF2A3"
-   id="stop3315" />
-
-				<stop
-   offset="0.5662"
-   style="stop-color:#6FE883"
-   id="stop3317" />
-
-				<stop
-   offset="0.7256"
-   style="stop-color:#4CDB59"
-   id="stop3319" />
-
-				<stop
-   offset="0.8864"
-   style="stop-color:#22CB28"
-   id="stop3321" />
-
-				<stop
-   offset="1"
-   style="stop-color:#00BF00"
-   id="stop3323" />
-
-				<a:midPointStop
-   offset="0"
-   style="stop-color:#ADFFCC" />
-
-				<a:midPointStop
-   offset="0.6798"
-   style="stop-color:#ADFFCC" />
-
-				<a:midPointStop
-   offset="1"
-   style="stop-color:#00BF00" />
-
-			</radialGradient>
+      <stop
+         offset="0"
+         style="stop-color:#13f413;stop-opacity:0"
+         id="stop3309" />
+      <stop
+         offset="0.1227"
+         style="stop-color:#A9FEC7"
+         id="stop3311" />
+      <stop
+         offset="0.2629"
+         style="stop-color:#9DF9B9"
+         id="stop3313" />
+      <stop
+         offset="0.4116"
+         style="stop-color:#8AF2A3"
+         id="stop3315" />
+      <stop
+         offset="0.5662"
+         style="stop-color:#6FE883"
+         id="stop3317" />
+      <stop
+         offset="0.7256"
+         style="stop-color:#4CDB59"
+         id="stop3319" />
+      <stop
+         offset="0.8864"
+         style="stop-color:#22CB28"
+         id="stop3321" />
+      <stop
+         offset="1"
+         style="stop-color:#00BF00"
+         id="stop3323" />
+      <a:midPointStop
+         offset="0"
+         style="stop-color:#ADFFCC" />
+      <a:midPointStop
+         offset="0.6798"
+         style="stop-color:#ADFFCC" />
+      <a:midPointStop
+         offset="1"
+         style="stop-color:#00BF00" />
+    </radialGradient>
     <linearGradient
        y2="15.0332"
        x2="29"
@@ -100,37 +111,27 @@
        x1="23"
        gradientUnits="userSpaceOnUse"
        id="XMLID_8_">
-				<stop
-   id="stop1901"
-   style="stop-color:#00FF00"
-   offset="0" />
-
-				<stop
-   id="stop1903"
-   style="stop-color:#00D600"
-   offset="0.6649" />
-
-				<stop
-   id="stop1905"
-   style="stop-color:#00BF00"
-   offset="1" />
-
-				<a:midPointStop
-   style="stop-color:#00FF00"
-   offset="0" />
-
-				<a:midPointStop
-   style="stop-color:#00FF00"
-   offset="0.5225" />
-
-				<a:midPointStop
-   style="stop-color:#00BF00"
-   offset="1" />
-
-			</linearGradient>
+      <stop
+         id="stop1901"
+         style="stop-color:#31e531;stop-opacity:1;"
+         offset="0" />
+      <stop
+         id="stop1905"
+         style="stop-color:#008c00;stop-opacity:1"
+         offset="1" />
+      <a:midPointStop
+         style="stop-color:#00FF00"
+         offset="0" />
+      <a:midPointStop
+         style="stop-color:#00FF00"
+         offset="0.5225" />
+      <a:midPointStop
+         style="stop-color:#00BF00"
+         offset="1" />
+    </linearGradient>
     <linearGradient
        inkscape:collect="always"
-       xlink:href="#radialGradient3307"
+       xlink:href="#XMLID_8_"
        id="linearGradient2289"
        gradientUnits="userSpaceOnUse"
        x1="24.310083"
@@ -145,69 +146,48 @@
        cy="16"
        cx="2"
        id="XMLID_7_">
-				<stop
-   id="stop1880"
-   style="stop-color:#ADFFCC"
-   offset="0" />
-
-				<stop
-   id="stop1882"
-   style="stop-color:#A9FEC7"
-   offset="0.1227" />
-
-				<stop
-   id="stop1884"
-   style="stop-color:#9DF9B9"
-   offset="0.2629" />
-
-				<stop
-   id="stop1886"
-   style="stop-color:#8AF2A3"
-   offset="0.4116" />
-
-				<stop
-   id="stop1888"
-   style="stop-color:#6FE883"
-   offset="0.5662" />
-
-				<stop
-   id="stop1890"
-   style="stop-color:#4CDB59"
-   offset="0.7256" />
-
-				<stop
-   id="stop1892"
-   style="stop-color:#22CB28"
-   offset="0.8864" />
-
-				<stop
-   id="stop1894"
-   style="stop-color:#00BF00"
-   offset="1" />
-
-				<a:midPointStop
-   style="stop-color:#ADFFCC"
-   offset="0" />
-
-				<a:midPointStop
-   style="stop-color:#ADFFCC"
-   offset="0.6798" />
-
-				<a:midPointStop
-   style="stop-color:#00BF00"
-   offset="1" />
-
-			</radialGradient>
-    <radialGradient
-       inkscape:collect="always"
-       xlink:href="#XMLID_7_"
-       id="radialGradient2287"
-       gradientUnits="userSpaceOnUse"
-       cx="2"
-       cy="16"
-       fx="2"
-       fy="16"
-       r="23.0868" />
+      <stop
+         id="stop1880"
+         style="stop-color:#ADFFCC"
+         offset="0" />
+      <stop
+         id="stop1882"
+         style="stop-color:#A9FEC7"
+         offset="0.1227" />
+      <stop
+         id="stop1884"
+         style="stop-color:#9DF9B9"
+         offset="0.2629" />
+      <stop
+         id="stop1886"
+         style="stop-color:#8AF2A3"
+         offset="0.4116" />
+      <stop
+         id="stop1888"
+         style="stop-color:#6FE883"
+         offset="0.5662" />
+      <stop
+         id="stop1890"
+         style="stop-color:#4CDB59"
+         offset="0.7256" />
+      <stop
+         id="stop1892"
+         style="stop-color:#22CB28"
+         offset="0.8864" />
+      <stop
+         id="stop1894"
+         style="stop-color:#00BF00"
+         offset="1" />
+      <a:midPointStop
+         style="stop-color:#ADFFCC"
+         offset="0" />
+      <a:midPointStop
+         style="stop-color:#ADFFCC"
+         offset="0.6798" />
+      <a:midPointStop
+         style="stop-color:#00BF00"
+         offset="1" />
+    </radialGradient>
     <radialGradient
        gradientUnits="userSpaceOnUse"
        gradientTransform="matrix(0.2944,0,0,-2e-2,-13.8208,-28.1039)"
@@ -217,29 +197,24 @@
        cy="-6094.6094"
        cx="265.3896"
        id="path2295_1_">
-				<stop
-   id="stop25"
-   style="stop-color:#000000"
-   offset="0" />
-
-				<stop
-   id="stop27"
-   style="stop-color:black;stop-opacity:0.19587629;"
-   offset="1" />
-
-				<a:midPointStop
-   style="stop-color:#000000"
-   offset="0" />
-
-				<a:midPointStop
-   style="stop-color:#000000"
-   offset="0.5" />
-
-				<a:midPointStop
-   style="stop-color:#FFFFFF"
-   offset="1" />
-
-			</radialGradient>
+      <stop
+         id="stop25"
+         style="stop-color:#000000"
+         offset="0" />
+      <stop
+         id="stop27"
+         style="stop-color:black;stop-opacity:0.19587629;"
+         offset="1" />
+      <a:midPointStop
+         style="stop-color:#000000"
+         offset="0" />
+      <a:midPointStop
+         style="stop-color:#000000"
+         offset="0.5" />
+      <a:midPointStop
+         style="stop-color:#FFFFFF"
+         offset="1" />
+    </radialGradient>
     <radialGradient
        inkscape:collect="always"
        xlink:href="#path2295_1_"
@@ -261,6 +236,17 @@
        y2="12.890625"
        gradientUnits="userSpaceOnUse"
        gradientTransform="translate(-3,0)" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2854"
+       id="radialGradient2860"
+       cx="3.0342076"
+       cy="15"
+       fx="3.0342076"
+       fy="15"
+       r="14"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.8547,0,0,1.000038,-2.593337,-5.592469e-4)" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -281,8 +267,8 @@
      inkscape:object-nodes="true"
      inkscape:window-width="945"
      inkscape:window-height="896"
-     inkscape:window-x="20"
-     inkscape:window-y="42" />
+     inkscape:window-x="13"
+     inkscape:window-y="54" />
   <metadata
      id="metadata2362">
     <rdf:RDF>
@@ -317,13 +303,13 @@
        d="M 20.401165,0.19141205 L 1.276165,14.190412 C 1.019165,14.379412 0.867165,14.679412 0.867165,14.998412 C 0.867165,15.316412 1.019165,15.616412 1.276165,15.805412 L 20.401165,29.804412 C 20.705165,30.028412 21.108165,30.061412 21.444165,29.889412 C 21.780165,29.719412 21.992165,29.374412 21.992165,28.997412 C 21.992165,28.997412 21.992165,22.816412 21.992165,21.247412 C 23.566165,21.247412 29.867165,21.247412 29.867165,21.247412 C 30.420165,21.247412 30.867165,20.801412 30.867165,20.248412 L 30.867165,9.748412 C 30.867165,9.195412 30.420165,8.748412 29.867165,8.748412 C 29.867165,8.748412 23.566165,8.748412 21.992165,8.748412 C 21.992165,7.179412 21.992165,0.99841205 21.992165,0.99841205 C 21.992165,0.62241205 21.780165,0.27741205 21.444165,0.10641205 C 21.108165,-0.063587952 20.705165,-0.030587952 20.401165,0.19141205 z "
        i:knockout="Off" />
     <polygon
-       style="fill:url(#radialGradient2287)"
+       style="fill:url(#radialGradient2860);fill-opacity:1.0"
        id="polygon1896"
        points="29,9.75 20.125,9.75 20.125,1 1,15 20.125,29 20.125,20.25 29,20.25 29,9.75 "
        i:knockout="Off"
        transform="translate(0.867165,-1.587952e-3)" />
     <polygon
-       style="fill:#bfffbf"
+       style="fill:#41e741;fill-opacity:1"
        id="polygon1898"
        points="24,11.25 17.66,11.25 17.66,5 4,15 17.66,25 17.66,18.75 24,18.75 24,11.25 "
        i:knockout="Off"
@@ -333,9 +319,9 @@
        id="polygon1907"
        points="24,11.25 24,18.75 29,18.999 28.959,11.068 24,11.25 "
        i:knockout="Off"
-       transform="matrix(0.97343,0,0,1,0.637675,-1.587952e-3)" />
+       transform="matrix(1.200001,0,0,1,-4.800029,-1.587952e-3)" />
     <path
-       style="fill:url(#linearGradient3341);fill-opacity:1"
+       style="fill:url(#linearGradient3341);fill-opacity:1;opacity:0.59659091"
        d="M 15.46875,7 L 3.875,15 L 9.375,18.78125 C 12.207712,15.915348 16.296042,14.080086 20.875,14 L 20.875,12 L 15.46875,12 L 15.46875,7 z "
        id="polygon3325" />
     <polygon

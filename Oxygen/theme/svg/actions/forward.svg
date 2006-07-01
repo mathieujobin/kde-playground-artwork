@@ -15,11 +15,33 @@
    height="32px"
    id="svg2357"
    sodipodi:version="0.32"
-   inkscape:version="0.44+devel"
-   sodipodi:docbase="/home/kwwii/kdesvn/artwork/Oxygen/theme/svg/actions"
-   sodipodi:docname="forward.svg">
+   inkscape:version="0.44"
+   sodipodi:docbase="/Users/kwwii/kdesvn/artwork/Oxygen/Ken"
+   sodipodi:docname="newestArrowForward.svg">
   <defs
      id="defs2359">
+    <linearGradient
+       id="linearGradient2854">
+      <stop
+         style="stop-color:#5dff0d;stop-opacity:1;"
+         offset="0"
+         id="stop2856" />
+      <stop
+         style="stop-color:#0eae00;stop-opacity:0.42268041;"
+         offset="1"
+         id="stop2858" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient2846">
+      <stop
+         style="stop-color:black;stop-opacity:1;"
+         offset="0"
+         id="stop2848" />
+      <stop
+         style="stop-color:black;stop-opacity:0;"
+         offset="1"
+         id="stop2850" />
+    </linearGradient>
     <linearGradient
        inkscape:collect="always"
        id="linearGradient3335">
@@ -42,7 +64,7 @@
        gradientUnits="userSpaceOnUse">
       <stop
          offset="0"
-         style="stop-color:#bfffbf;stop-opacity:1"
+         style="stop-color:#13f413;stop-opacity:0"
          id="stop3309" />
       <stop
          offset="0.1227"
@@ -91,15 +113,11 @@
        id="XMLID_8_">
       <stop
          id="stop1901"
-         style="stop-color:#00FF00"
+         style="stop-color:#31e531;stop-opacity:1;"
          offset="0" />
       <stop
-         id="stop1903"
-         style="stop-color:#00D600"
-         offset="0.6649" />
-      <stop
          id="stop1905"
-         style="stop-color:#00BF00"
+         style="stop-color:#008c00;stop-opacity:1"
          offset="1" />
       <a:midPointStop
          style="stop-color:#00FF00"
@@ -113,7 +131,7 @@
     </linearGradient>
     <linearGradient
        inkscape:collect="always"
-       xlink:href="#radialGradient3307"
+       xlink:href="#XMLID_8_"
        id="linearGradient2289"
        gradientUnits="userSpaceOnUse"
        x1="24.310083"
@@ -171,16 +189,6 @@
          offset="1" />
     </radialGradient>
     <radialGradient
-       inkscape:collect="always"
-       xlink:href="#XMLID_7_"
-       id="radialGradient2287"
-       gradientUnits="userSpaceOnUse"
-       cx="2"
-       cy="16"
-       fx="2"
-       fy="16"
-       r="23.0868" />
-    <radialGradient
        gradientUnits="userSpaceOnUse"
        gradientTransform="matrix(0.2944,0,0,-2e-2,-13.8208,-28.1039)"
        fy="-6087.2788"
@@ -227,7 +235,18 @@
        x2="23.875"
        y2="12.890625"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(-1,0,0,-1,34.73433,29.78125)" />
+       gradientTransform="matrix(-1,0,0,-1,34.875,30)" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2854"
+       id="radialGradient2860"
+       cx="3.0342076"
+       cy="15"
+       fx="3.0342076"
+       fy="15"
+       r="14"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.8547,0,0,1.000038,-2.593337,-5.592469e-4)" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -247,9 +266,9 @@
      inkscape:object-points="true"
      inkscape:object-nodes="true"
      inkscape:window-width="945"
-     inkscape:window-height="878"
-     inkscape:window-x="36"
-     inkscape:window-y="0" />
+     inkscape:window-height="896"
+     inkscape:window-x="13"
+     inkscape:window-y="54" />
   <metadata
      id="metadata2362">
     <rdf:RDF>
@@ -284,13 +303,13 @@
        d="M 11.333165,0.19141205 L 30.458165,14.190412 C 30.715165,14.379412 30.867165,14.679412 30.867165,14.998412 C 30.867165,15.316412 30.715165,15.616412 30.458165,15.805412 L 11.333165,29.804412 C 11.029165,30.028412 10.626165,30.061412 10.290165,29.889412 C 9.954165,29.719412 9.742165,29.374412 9.742165,28.997412 C 9.742165,28.997412 9.742165,22.816412 9.742165,21.247412 C 8.168165,21.247412 1.867165,21.247412 1.867165,21.247412 C 1.314165,21.247412 0.867165,20.801412 0.867165,20.248412 L 0.867165,9.748412 C 0.867165,9.195412 1.314165,8.748412 1.867165,8.748412 C 1.867165,8.748412 8.168165,8.748412 9.742165,8.748412 C 9.742165,7.179412 9.742165,0.99841205 9.742165,0.99841205 C 9.742165,0.62241205 9.954165,0.27741205 10.290165,0.10641205 C 10.626165,-0.063587952 11.029165,-0.030587952 11.333165,0.19141205 z "
        i:knockout="Off" />
     <polygon
-       style="fill:url(#radialGradient2287)"
+       style="fill:url(#radialGradient2860);fill-opacity:1"
        id="polygon1896"
        points="29,9.75 20.125,9.75 20.125,1 1,15 20.125,29 20.125,20.25 29,20.25 29,9.75 "
        i:knockout="Off"
        transform="matrix(-1,0,0,1,30.86717,-1.587952e-3)" />
     <polygon
-       style="fill:#bfffbf"
+       style="fill:#41e741;fill-opacity:1"
        id="polygon1898"
        points="24,11.25 17.66,11.25 17.66,5 4,15 17.66,25 17.66,18.75 24,18.75 24,11.25 "
        i:knockout="Off"
@@ -300,10 +319,10 @@
        id="polygon1907"
        points="24,11.25 24,18.75 29,18.999 28.959,11.068 24,11.25 "
        i:knockout="Off"
-       transform="matrix(-0.97343,0,0,1,31.09666,-1.587952e-3)" />
+       transform="matrix(-1.200001,0,0,1,36.53436,-1.587952e-3)" />
     <path
-       style="fill:url(#linearGradient3341);fill-opacity:1"
-       d="M 16.26558,22.78125 L 27.85933,14.78125 L 22.35933,11 C 19.526618,13.865902 15.438288,15.701164 10.85933,15.78125 L 10.85933,17.78125 L 16.26558,17.78125 L 16.26558,22.78125 z "
+       style="opacity:0.59659095;fill:url(#linearGradient3341);fill-opacity:1"
+       d="M 16.40625,23 L 28,15 L 22.5,11.21875 C 19.667288,14.084652 15.578958,15.919914 11,16 L 11,18 L 16.40625,18 L 16.40625,23 z "
        id="polygon3325" />
     <polygon
        style="fill:white;fill-opacity:1"
