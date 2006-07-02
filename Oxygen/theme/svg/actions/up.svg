@@ -15,9 +15,9 @@
    height="32px"
    id="svg2357"
    sodipodi:version="0.32"
-   inkscape:version="0.44"
-   sodipodi:docbase="/Users/kwwii/kdesvn/artwork/Oxygen/Ken"
-   sodipodi:docname="newestArrowUp.svg">
+   inkscape:version="0.44+devel"
+   sodipodi:docbase="/home/kwwii/kdesvn/artwork/Oxygen/theme/svg/actions"
+   sodipodi:docname="up.svg">
   <defs
      id="defs2359">
     <linearGradient
@@ -44,11 +44,11 @@
     <linearGradient
        id="linearGradient2854">
       <stop
-         style="stop-color:#5dff0d;stop-opacity:1;"
+         style="stop-color:#70c745;stop-opacity:1;"
          offset="0"
          id="stop2856" />
       <stop
-         style="stop-color:#0eae00;stop-opacity:0.42268041;"
+         style="stop-color:#0fc800;stop-opacity:0.63921571;"
          offset="1"
          id="stop2858" />
     </linearGradient>
@@ -62,18 +62,6 @@
          style="stop-color:black;stop-opacity:0;"
          offset="1"
          id="stop2850" />
-    </linearGradient>
-    <linearGradient
-       inkscape:collect="always"
-       id="linearGradient3335">
-      <stop
-         style="stop-color:white;stop-opacity:1;"
-         offset="0"
-         id="stop3337" />
-      <stop
-         style="stop-color:white;stop-opacity:0;"
-         offset="1"
-         id="stop3339" />
     </linearGradient>
     <radialGradient
        id="radialGradient3307"
@@ -134,7 +122,7 @@
        id="XMLID_8_">
       <stop
          id="stop1901"
-         style="stop-color:#31e531;stop-opacity:1;"
+         style="stop-color:#42d442;stop-opacity:1;"
          offset="0" />
       <stop
          id="stop1905"
@@ -247,37 +235,17 @@
        fx="267.3615"
        fy="-6087.2788"
        r="253.0349" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient3335"
-       id="linearGradient3341"
-       x1="6.875"
-       y1="12.890625"
-       x2="23.875"
-       y2="12.890625"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(-1,0,0,-1,34.875,30)" />
     <radialGradient
        inkscape:collect="always"
        xlink:href="#linearGradient2854"
        id="radialGradient2860"
-       cx="3.0342076"
-       cy="15"
-       fx="3.0342076"
-       fy="15"
+       cx="5.119575"
+       cy="12.980343"
+       fx="5.119575"
+       fy="12.980343"
        r="14"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1.8547,0,0,1.000038,-2.593337,-5.592469e-4)" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient3335"
-       id="linearGradient2974"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(0,1,-1,0,30.86852,-4.00919)"
-       x1="6.875"
-       y1="12.890625"
-       x2="23.875"
-       y2="12.890625" />
+       gradientTransform="matrix(2.726885,0,0,2.11709,-7.058553,-15.86481)" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -286,9 +254,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="8.2735849"
-     inkscape:cx="31"
-     inkscape:cy="12"
+     inkscape:zoom="11.700616"
+     inkscape:cx="32.292805"
+     inkscape:cy="8.9454944"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:grid-bbox="true"
@@ -297,9 +265,9 @@
      inkscape:object-points="true"
      inkscape:object-nodes="true"
      inkscape:window-width="945"
-     inkscape:window-height="896"
-     inkscape:window-x="108"
-     inkscape:window-y="22" />
+     inkscape:window-height="875"
+     inkscape:window-x="13"
+     inkscape:window-y="54" />
   <metadata
      id="metadata2362">
     <rdf:RDF>
@@ -331,26 +299,26 @@
     <path
        style="fill:#008c00"
        id="path1877"
-       d="M 1.0599318,19.532645 L 15.058932,0.40764529 C 15.247932,0.15064529 15.547932,-0.0013547052 15.866932,-0.0013547052 C 16.184932,-0.0013547052 16.484932,0.15064529 16.673932,0.40764529 L 30.672932,19.532645 C 30.896932,19.836645 30.929932,20.239645 30.757932,20.575645 C 30.587932,20.911645 30.242932,21.123645 29.865932,21.123645 C 29.865932,21.123645 23.684932,21.123645 22.115932,21.123645 C 22.115932,22.697645 22.115932,28.998645 22.115932,28.998645 C 22.115932,29.551645 21.669932,29.998645 21.116932,29.998645 L 10.616932,29.998645 C 10.063932,29.998645 9.6169317,29.551645 9.6169317,28.998645 C 9.6169317,28.998645 9.6169317,22.697645 9.6169317,21.123645 C 8.0479317,21.123645 1.8669318,21.123645 1.8669318,21.123645 C 1.4909318,21.123645 1.1459318,20.911645 0.97493176,20.575645 C 0.80493175,20.239645 0.83793175,19.836645 1.0599318,19.532645 z "
+       d="M 30.674398,19.532645 L 16.675398,0.40764529 C 16.486398,0.15064529 16.186398,-0.0013547052 15.867398,-0.0013547052 C 15.549398,-0.0013547052 15.249398,0.15064529 15.060398,0.40764529 L 1.0613983,19.532645 C 0.83739829,19.836645 0.80439829,20.239645 0.97639829,20.575645 C 1.1463983,20.911645 1.4913983,21.123645 1.8683983,21.123645 C 1.8683983,21.123645 8.0493983,21.123645 9.6183983,21.123645 C 9.6183983,22.697645 9.6183983,28.998645 9.6183983,28.998645 C 9.6183983,29.551645 10.064398,29.998645 10.617398,29.998645 L 21.117398,29.998645 C 21.670398,29.998645 22.117398,29.551645 22.117398,28.998645 C 22.117398,28.998645 22.117398,22.697645 22.117398,21.123645 C 23.686398,21.123645 29.867398,21.123645 29.867398,21.123645 C 30.243398,21.123645 30.588398,20.911645 30.759398,20.575645 C 30.929398,20.239645 30.896398,19.836645 30.674398,19.532645 z "
        i:knockout="Off" />
     <polygon
        style="fill:url(#radialGradient2860);fill-opacity:1"
        id="polygon1896"
        points="29,9.75 20.125,9.75 20.125,1 1,15 20.125,29 20.125,20.25 29,20.25 29,9.75 "
        i:knockout="Off"
-       transform="matrix(0,1,1,0,0.866932,-1.359705e-3)" />
+       transform="matrix(0,1,-1,0,30.8674,-1.354705e-3)" />
     <polygon
-       style="fill:#41e741;fill-opacity:1"
+       style="fill:#65da65;fill-opacity:1"
        id="polygon1898"
        points="24,11.25 17.66,11.25 17.66,5 4,15 17.66,25 17.66,18.75 24,18.75 24,11.25 "
        i:knockout="Off"
-       transform="matrix(0,1.029675,1,0,0.866932,-1.12005)" />
+       transform="matrix(0,1.029675,-1,0,30.8674,-1.120054)" />
     <polygon
        style="fill:url(#linearGradient2289);fill-opacity:1"
        id="polygon1907"
        points="24,11.25 24,18.75 29,18.999 28.959,11.068 24,11.25 "
        i:knockout="Off"
-       transform="matrix(0,1.200001,1,0,0.866932,-5.66855)" />
+       transform="matrix(0,1.200001,-1,0,30.8674,-5.668549)" />
     <polygon
        style="fill:white;fill-opacity:1"
        id="polygon3327"
@@ -358,7 +326,7 @@
        i:knockout="Off"
        transform="matrix(0.85,0,0,0.8,3.467166,32.99841)" />
     <path
-       style="fill:url(#linearGradient2814);fill-opacity:1;opacity:0.59659091"
+       style="fill:url(#linearGradient2814);fill-opacity:1;opacity:0.79365079"
        d="M 15.875,3 L 5.875,17.0625 L 6.09375,17.0625 C 8.6277517,15.172938 12.135997,14 16,14 C 19.836457,14 23.314168,15.165378 25.84375,17.03125 L 15.875,3 z "
        id="polygon1916" />
   </g>
