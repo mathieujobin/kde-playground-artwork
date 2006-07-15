@@ -30,6 +30,9 @@ class CokoonStyle : public KStyle
         CokoonStyle();
         virtual ~CokoonStyle();
 
+        void polish(QWidget* widget);
+        void unpolish(QWidget* widget);
+
         virtual void drawKStylePrimitive(WidgetType widgetType, int primitive,
                                          const QStyleOption* opt,
                                          QRect r, QPalette pal, State flags,

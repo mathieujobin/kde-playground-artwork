@@ -1,96 +1,738 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cokoon_theme name="TestTheme" version="0.1pre">
-	<object id="ButtonSettings">
-		<expression id="DefaultIndicatorMargin" value="2"/>
-		<expression id="ContentsMargin" value="5"/>
-		<expression id="FocusMargin" value="3"/>
-		<expression id="PressedShiftHorizontal" value="2"/>
-		<expression id="PressedShiftVertical" value="2"/>
+	<object id="LayoutProperties">
+		<expression id="zoom" value="1"/>
+
+		<expression id="Generic_DefaultFrameWidth" value="3*.zoom"/>
+
+		<expression id="Button_DefaultIndicatorMargin" value="2"/>
+		<expression id="Button_ContentsMargin" value="6*.zoom"/>
+		<expression id="Button_FocusMargin" value="5*.zoom"/>
+		<expression id="Button_PressedShiftHorizontal" value="0"/>
+		<expression id="Button_PressedShiftVertical" value="1"/>
+
+		<expression id="CheckBox_Size" value="14+2*.zoom"/>
+		<expression id="RadioButton_Size" value="14+2*.zoom"/>
+
+		<expression id="ComboBox_FrameWidth" value="3*.zoom"/>
+		<expression id="ComboBox_ButtonWidth" value="10*.zoom+6*.zoom"/>
+		<expression id="ComboBox_FocusMargin" value="1*.zoom"/>
+
+		<expression id="SpinBox_FrameWidth" value=".ComboBox_FrameWidth"/>
+		<expression id="SpinBox_ButtonWidth" value=".ComboBox_ButtonWidth"/>
+
+		<expression id="ScrollBar_BarWidth" value="16"/>
+		<expression id="ScrollBar_ButtonHeight" value="16"/>
 	</object>
 
-	<object id="button_normal">
-		<source id="decorationsrc" type="svg" file="button.svg"/>
+	<object id="src_normal">
+		<source id="decorationsrc" type="svg" file="svg-style.svg"/>
 		
-		<expression id="zoom" value="2"/>
-		
-		<expression id="srcwidth" value="20"/>
-		<expression id="srcheight" value="20"/>
-		<expression id="edgesize" value="3"/>
-		
-		
-		<tile id="topleft" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left="0" top="0" width=".o.edgesize" height=".o.edgesize"/>
-		<tile id="top" mode_hor="tiled" mode_vert="stretched" source_id="decorationsrc" left="10" top="0" width="2" height=".o.edgesize"/>
-		<tile id="topright" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".o.srcwidth-.o.edgesize" top="0" width=".o.edgesize" height=".o.edgesize"/>
-		
-		<tile id="left" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left="0" top=".o.edgesize+1" width=".o.edgesize" height=".o.srcheight-2*.o.edgesize"/>
-		<tile id="center" mode_hor="tiled" mode_vert="stretched" source_id="decorationsrc" left=".o.edgesize+1" top=".o.edgesize" width="2" height=".o.srcheight-2*.o.edgesize"/>
-		<tile id="right" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".o.srcwidth-.o.edgesize" top=".o.edgesize+1" width=".o.edgesize" height=".o.srcheight-2*.o.edgesize"/>
-		
-		<tile id="bottomleft" mode_hor="stretched" mode_vert="stretched" source_object="" source_id="decorationsrc" left="0" top=".o.srcheight-.o.edgesize" width=".o.edgesize" height=".o.edgesize"/>
-		<tile id="bottom" mode_hor="tiled" mode_vert="stretched" source_id="decorationsrc" left=".o.edgesize+1" top=".o.srcheight-.o.edgesize" width="2" height=".o.edgesize"/>
-		<tile id="bottomright" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".o.srcwidth-.o.edgesize" top=".o.srcheight-.o.edgesize" width=".o.edgesize" height=".o.edgesize"/>
+		<expression id="zoom" value="1"/>
 
+		<expression id="btn_x" value="0"/>
+		<expression id="btn_y" value="0"/>
+		<expression id="btn_srcwidth" value="15"/>
+		<expression id="btn_srcheight" value="23"/>
+		<expression id="btn_edgesize" value="6"/>
+		<tile id="btn_tl" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".btn_x" top=".btn_y" width=".o.btn_edgesize" height=".o.btn_edgesize"/>
+		<tile id="btn_t" mode_hor="tiled" mode_vert="stretched" source_id="decorationsrc" left=".btn_x+.o.btn_edgesize+1" top=".btn_y" width="2" height=".o.btn_edgesize"/>
+		<tile id="btn_tr" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".btn_x+.o.btn_srcwidth-.o.btn_edgesize" top=".btn_y" width=".o.btn_edgesize" height=".o.btn_edgesize"/>
+		<tile id="btn_l" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".btn_x" top=".btn_y+.o.btn_edgesize+1" width=".o.btn_edgesize" height=".o.btn_srcheight-2*.o.btn_edgesize"/>
+		<tile id="btn_c" mode_hor="tiled" mode_vert="stretched" source_id="decorationsrc" left=".btn_x+.o.btn_edgesize+1" top=".btn_y+.o.btn_edgesize" width="2" height=".o.btn_srcheight-2*.o.btn_edgesize"/>
+		<tile id="btn_r" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".btn_x+.o.btn_srcwidth-.o.btn_edgesize" top=".btn_y+.o.btn_edgesize+1" width=".o.btn_edgesize" height=".o.btn_srcheight-2*.o.btn_edgesize"/>
+		<tile id="btn_bl" mode_hor="stretched" mode_vert="stretched" source_object="" source_id="decorationsrc" left=".btn_x" top=".btn_y+.o.btn_srcheight-.o.btn_edgesize" width=".o.btn_edgesize" height=".o.btn_edgesize"/>
+		<tile id="btn_b" mode_hor="tiled" mode_vert="stretched" source_id="decorationsrc" left=".btn_x+.o.btn_edgesize+1" top=".btn_y+.o.btn_srcheight-.o.btn_edgesize" width="2" height=".o.btn_edgesize"/>
+		<tile id="btn_br" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".btn_x+.o.btn_srcwidth-.o.btn_edgesize" top=".btn_y+.o.btn_srcheight-.o.btn_edgesize" width=".o.btn_edgesize" height=".o.btn_edgesize"/>
 		<layout id="button">
-			<column type="fixed" fixed_size=".o.edgesize*.o.zoom"/>
+			<column type="fixed" fixed_size=".o.btn_edgesize*.o.zoom"/>
 			<column type="expanding"/>
-			<column type="fixed" fixed_size=".o.edgesize*.o.zoom"/>
-			<row type="fixed" fixed_size=".o.edgesize*.o.zoom">
-				<cell type="tile" tile_id="topleft"/>
-				<cell type="tile" tile_id="top"/>
-				<cell type="tile" tile_id="topright"/>
+			<column type="fixed" fixed_size=".o.btn_edgesize*.o.zoom"/>
+			<row type="fixed" fixed_size=".o.btn_edgesize*.o.zoom">
+				<cell type="tile" tile_id="btn_tl"/>
+				<cell type="tile" tile_id="btn_t"/>
+				<cell type="tile" tile_id="btn_tr"/>
 			</row>
 			<row type="expanding">
-				<cell type="tile" tile_id="left"/>
-				<cell type="tile" tile_id="center"/>
-				<cell type="tile" tile_id="right"/>
+				<cell type="tile" tile_id="btn_l"/>
+				<cell type="tile" tile_id="btn_c"/>
+				<cell type="tile" tile_id="btn_r"/>
 			</row>
-			<row type="fixed" fixed_size=".o.edgesize*.o.zoom">
-				<cell type="tile" tile_id="bottomleft"/>
-				<cell type="tile" tile_id="bottom"/>
-				<cell type="tile" tile_id="bottomright"/>
+			<row type="fixed" fixed_size=".o.btn_edgesize*.o.zoom">
+				<cell type="tile" tile_id="btn_bl"/>
+				<cell type="tile" tile_id="btn_b"/>
+				<cell type="tile" tile_id="btn_br"/>
+			</row>
+		</layout>
+
+		<expression id="cb_x" value="32"/>
+		<expression id="cb_y" value="0"/>
+		<expression id="cb_size" value="16"/>
+		<tile id="cb" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".o.cb_x" top=".o.cb_y" width=".o.cb_size" height=".o.cb_size"/>
+		<layout id="checkbox">
+			<column type="expanding"/>
+			<row type="expanding">
+				<cell type="tile" tile_id="cb"/>
+			</row>
+		</layout>
+
+		<expression id="cbm_x" value="66"/>
+		<expression id="cbm_y" value="0"/>
+		<expression id="cbm_size" value="10"/>
+		<expression id="cbm_margin" value="(.cb_size-.cbm_size)/2"/>
+		<tile id="cbm" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".o.cbm_x" top=".o.cbm_y" width=".o.cbm_size" height=".o.cbm_size"/>
+		<layout id="checkboxMark">
+			<column type="fixed" fixed_size=".cbm_margin"/>
+			<column type="expanding"/>
+			<column type="fixed" fixed_size=".cbm_margin"/>
+			<row type="fixed" fixed_size=".cbm_margin">
+				<cell type="empty" />
+				<cell type="empty" />
+				<cell type="empty" />
+			</row>
+			<row type="expanding">
+				<cell type="empty" />
+				<cell type="tile" tile_id="cbm"/>
+				<cell type="empty" />
+			</row>
+			<row type="fixed"  fixed_size=".cbm_margin">
+				<cell type="empty" />
+				<cell type="empty" />
+				<cell type="empty" />
+			</row>
+		</layout>
+
+		<expression id="cbt_x" value="66"/>
+		<expression id="cbt_y" value="11"/>
+		<expression id="cbt_size" value="10"/>
+		<tile id="cbmt" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".o.cbt_x" top=".o.cbt_y" width=".o.cbt_size" height=".o.cbt_size"/>
+		<layout id="checkboxMarkTri">
+			<column type="fixed" fixed_size=".cbm_margin"/>
+			<column type="expanding"/>
+			<column type="fixed" fixed_size=".cbm_margin"/>
+			<row type="fixed" fixed_size=".cbm_margin">
+				<cell type="empty" />
+				<cell type="empty" />
+				<cell type="empty" />
+			</row>
+			<row type="expanding">
+				<cell type="empty" />
+				<cell type="tile" tile_id="cbmt"/>
+				<cell type="empty" />
+			</row>
+			<row type="fixed"  fixed_size=".cbm_margin">
+				<cell type="empty" />
+				<cell type="empty" />
+				<cell type="empty" />
+			</row>
+		</layout>
+
+		<expression id="rb_x" value="49"/>
+		<expression id="rb_y" value="0"/>
+		<expression id="rb_size" value="16"/>
+		<tile id="rb" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".o.rb_x" top=".o.rb_y" width=".o.rb_size" height=".o.rb_size"/>
+		<layout id="radiobutton">
+			<column type="expanding"/>
+			<row type="expanding">
+				<cell type="tile" tile_id="rb"/>
+			</row>
+		</layout>
+
+		<expression id="rbm_x" value="77"/>
+		<expression id="rbm_y" value="0"/>
+		<expression id="rbm_size" value="10"/>
+		<expression id="rbm_margin" value="(.rb_size-.rbm_size)/2"/>
+		<tile id="rbm" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".o.rbm_x" top=".o.rbm_y" width=".o.rbm_size" height=".o.rbm_size"/>
+		<layout id="radiobuttonMark">
+			<column type="fixed" fixed_size=".cbm_margin"/>
+			<column type="expanding"/>
+			<column type="fixed" fixed_size=".cbm_margin"/>
+			<row type="fixed" fixed_size=".cbm_margin">
+				<cell type="empty" />
+				<cell type="empty" />
+				<cell type="empty" />
+			</row>
+			<row type="expanding">
+				<cell type="empty" />
+				<cell type="tile" tile_id="rbm"/>
+				<cell type="empty" />
+			</row>
+			<row type="fixed"  fixed_size=".cbm_margin">
+				<cell type="empty" />
+				<cell type="empty" />
+				<cell type="empty" />
+			</row>
+		</layout>
+
+		<expression id="le_x" value="0"/>
+		<expression id="le_y" value="24"/>
+		<expression id="le_srcwidth" value="15"/>
+		<expression id="le_srcheight" value="23"/>
+		<expression id="le_edgesize" value="3"/>
+		<tile id="le_tl" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".le_x" top=".le_y" width=".o.le_edgesize" height=".o.le_edgesize"/>
+		<tile id="le_t" mode_hor="tiled" mode_vert="stretched" source_id="decorationsrc" left=".le_x+.o.le_edgesize+1" top=".le_y" width="2" height=".o.le_edgesize"/>
+		<tile id="le_tr" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".le_x+.o.le_srcwidth-.o.le_edgesize" top=".le_y" width=".o.le_edgesize" height=".o.le_edgesize"/>
+		<tile id="le_l" mode_hor="stretched" mode_vert="tiled" source_id="decorationsrc" left=".le_x" top=".le_y+.o.le_edgesize+1" width=".o.le_edgesize" height="2"/>
+		<tile id="le_r" mode_hor="stretched" mode_vert="tiled" source_id="decorationsrc" left=".le_x+.o.le_srcwidth-.o.le_edgesize" top=".le_y+.o.le_edgesize+1" width=".o.le_edgesize" height="2"/>
+		<tile id="le_bl" mode_hor="stretched" mode_vert="stretched" source_object="" source_id="decorationsrc" left=".le_x" top=".le_y+.o.le_srcheight-.o.le_edgesize" width=".o.le_edgesize" height=".o.le_edgesize"/>
+		<tile id="le_b" mode_hor="tiled" mode_vert="stretched" source_id="decorationsrc" left=".le_x+.o.le_edgesize+1" top=".le_y+.o.le_srcheight-.o.le_edgesize" width="2" height=".o.le_edgesize"/>
+		<tile id="le_br" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".le_x+.o.le_srcwidth-.o.le_edgesize" top=".le_y+.o.le_srcheight-.o.le_edgesize" width=".o.le_edgesize" height=".o.le_edgesize"/>
+		<layout id="lineeditFrame">
+			<column type="fixed" fixed_size=".o.le_edgesize*.o.zoom"/>
+			<column type="expanding"/>
+			<column type="fixed" fixed_size=".o.le_edgesize*.o.zoom"/>
+			<row type="fixed" fixed_size=".o.le_edgesize*.o.zoom">
+				<cell type="tile" tile_id="le_tl"/>
+				<cell type="tile" tile_id="le_t"/>
+				<cell type="tile" tile_id="le_tr"/>
+			</row>
+			<row type="expanding">
+				<cell type="tile" tile_id="le_l"/>
+				<cell type="empty"/>
+				<cell type="tile" tile_id="le_r"/>
+			</row>
+			<row type="fixed" fixed_size=".o.le_edgesize*.o.zoom">
+				<cell type="tile" tile_id="le_bl"/>
+				<cell type="tile" tile_id="le_b"/>
+				<cell type="tile" tile_id="le_br"/>
+			</row>
+		</layout>
+
+		<expression id="cb_btnwidth" value="10"/>
+		<layout id="comboboxFrame">
+			<column type="fixed" fixed_size=".o.le_edgesize*.o.zoom"/>
+			<column type="expanding"/>
+			<column type="fixed" fixed_size=".cb_btnwidth*.o.zoom+.o.btn_edgesize*.o.zoom"/>
+			<row type="fixed" fixed_size=".o.le_edgesize*.o.zoom">
+				<cell type="tile" tile_id="le_tl"/>
+				<cell type="tile" tile_id="le_t"/>
+				<cell type="empty"/>
+			</row>
+			<row type="expanding">
+				<cell type="tile" tile_id="le_l"/>
+				<cell type="empty"/>
+				<cell type="empty"/>
+			</row>
+			<row type="fixed" fixed_size=".o.le_edgesize*.o.zoom">
+				<cell type="tile" tile_id="le_bl"/>
+				<cell type="tile" tile_id="le_b"/>
+				<cell type="empty"/>
+			</row>
+		</layout>
+		<layout id="comboboxButton">
+			<column type="expanding"/>
+			<column type="fixed" fixed_size=".cb_btnwidth*.o.zoom"/>
+			<column type="fixed" fixed_size=".o.btn_edgesize*.o.zoom"/>
+			<row type="fixed" fixed_size=".o.btn_edgesize*.o.zoom">
+				<cell type="empty"/>
+				<cell type="tile" tile_id="btn_t"/>
+				<cell type="tile" tile_id="btn_tr"/>
+			</row>
+			<row type="expanding">
+				<cell type="empty"/>
+				<cell type="tile" tile_id="btn_c"/>
+				<cell type="tile" tile_id="btn_r"/>
+			</row>
+			<row type="fixed" fixed_size=".o.btn_edgesize*.o.zoom">
+				<cell type="empty"/>
+				<cell type="tile" tile_id="btn_b"/>
+				<cell type="tile" tile_id="btn_br"/>
+			</row>
+		</layout>
+
+
+		<expression id="fr_r_x" value="16"/>
+		<expression id="fr_r_y" value="24"/>
+		<expression id="fr_r_srcwidth" value="9"/>
+		<expression id="fr_r_srcheight" value="23"/>
+		<expression id="fr_r_edgesize" value="3"/>
+		<tile id="fr_r_tl" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".fr_r_x" top=".fr_r_y" width=".o.fr_r_edgesize" height=".o.fr_r_edgesize"/>
+		<tile id="fr_r_t" mode_hor="tiled" mode_vert="stretched" source_id="decorationsrc" left=".fr_r_x+.o.fr_r_edgesize+1" top=".fr_r_y" width="2" height=".o.fr_r_edgesize"/>
+		<tile id="fr_r_tr" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".fr_r_x+.o.fr_r_srcwidth-.o.fr_r_edgesize" top=".fr_r_y" width=".o.fr_r_edgesize" height=".o.fr_r_edgesize"/>
+		<tile id="fr_r_l" mode_hor="stretched" mode_vert="tiled" source_id="decorationsrc" left=".fr_r_x" top=".fr_r_y+.o.fr_r_edgesize+1" width=".o.fr_r_edgesize" height="2"/>
+		<tile id="fr_r_r" mode_hor="stretched" mode_vert="tiled" source_id="decorationsrc" left=".fr_r_x+.o.fr_r_srcwidth-.o.fr_r_edgesize" top=".fr_r_y+.o.fr_r_edgesize+1" width=".o.fr_r_edgesize" height="2"/>
+		<tile id="fr_r_bl" mode_hor="stretched" mode_vert="stretched" source_object="" source_id="decorationsrc" left=".fr_r_x" top=".fr_r_y+.o.fr_r_srcheight-.o.fr_r_edgesize" width=".o.fr_r_edgesize" height=".o.fr_r_edgesize"/>
+		<tile id="fr_r_b" mode_hor="tiled" mode_vert="stretched" source_id="decorationsrc" left=".fr_r_x+.o.fr_r_edgesize+1" top=".fr_r_y+.o.fr_r_srcheight-.o.fr_r_edgesize" width="2" height=".o.fr_r_edgesize"/>
+		<tile id="fr_r_br" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".fr_r_x+.o.fr_r_srcwidth-.o.fr_r_edgesize" top=".fr_r_y+.o.fr_r_srcheight-.o.fr_r_edgesize" width=".o.fr_r_edgesize" height=".o.fr_r_edgesize"/>
+		<layout id="frameRaised">
+			<column type="fixed" fixed_size=".o.fr_r_edgesize*.o.zoom"/>
+			<column type="expanding"/>
+			<column type="fixed" fixed_size=".o.fr_r_edgesize*.o.zoom"/>
+			<row type="fixed" fixed_size=".o.fr_r_edgesize*.o.zoom">
+				<cell type="tile" tile_id="fr_r_tl"/>
+				<cell type="tile" tile_id="fr_r_t"/>
+				<cell type="tile" tile_id="fr_r_tr"/>
+			</row>
+			<row type="expanding">
+				<cell type="tile" tile_id="fr_r_l"/>
+				<cell type="empty"/>
+				<cell type="tile" tile_id="fr_r_r"/>
+			</row>
+			<row type="fixed" fixed_size=".o.fr_r_edgesize*.o.zoom">
+				<cell type="tile" tile_id="fr_r_bl"/>
+				<cell type="tile" tile_id="fr_r_b"/>
+				<cell type="tile" tile_id="fr_r_br"/>
+			</row>
+		</layout>
+
+		<expression id="fr_s_x" value="26"/>
+		<expression id="fr_s_y" value="24"/>
+		<expression id="fr_s_srcwidth" value="9"/>
+		<expression id="fr_s_srcheight" value="23"/>
+		<expression id="fr_s_edgesize" value="3"/>
+		<tile id="fr_s_tl" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".fr_s_x" top=".fr_s_y" width=".o.fr_s_edgesize" height=".o.fr_s_edgesize"/>
+		<tile id="fr_s_t" mode_hor="tiled" mode_vert="stretched" source_id="decorationsrc" left=".fr_s_x+.o.fr_s_edgesize+1" top=".fr_s_y" width="2" height=".o.fr_s_edgesize"/>
+		<tile id="fr_s_tr" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".fr_s_x+.o.fr_s_srcwidth-.o.fr_s_edgesize" top=".fr_s_y" width=".o.fr_s_edgesize" height=".o.fr_s_edgesize"/>
+		<tile id="fr_s_l" mode_hor="stretched" mode_vert="tiled" source_id="decorationsrc" left=".fr_s_x" top=".fr_s_y+.o.fr_s_edgesize+1" width=".o.fr_s_edgesize" height="2"/>
+		<tile id="fr_s_r" mode_hor="stretched" mode_vert="tiled" source_id="decorationsrc" left=".fr_s_x+.o.fr_s_srcwidth-.o.fr_s_edgesize" top=".fr_s_y+.o.fr_s_edgesize+1" width=".o.fr_s_edgesize" height="2"/>
+		<tile id="fr_s_bl" mode_hor="stretched" mode_vert="stretched" source_object="" source_id="decorationsrc" left=".fr_s_x" top=".fr_s_y+.o.fr_s_srcheight-.o.fr_s_edgesize" width=".o.fr_s_edgesize" height=".o.fr_s_edgesize"/>
+		<tile id="fr_s_b" mode_hor="tiled" mode_vert="stretched" source_id="decorationsrc" left=".fr_s_x+.o.fr_s_edgesize+1" top=".fr_s_y+.o.fr_s_srcheight-.o.fr_s_edgesize" width="2" height=".o.fr_s_edgesize"/>
+		<tile id="fr_s_br" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".fr_s_x+.o.fr_s_srcwidth-.o.fr_s_edgesize" top=".fr_s_y+.o.fr_s_srcheight-.o.fr_s_edgesize" width=".o.fr_s_edgesize" height=".o.fr_s_edgesize"/>
+		<layout id="frameSunken">
+			<column type="fixed" fixed_size=".o.fr_s_edgesize*.o.zoom"/>
+			<column type="expanding"/>
+			<column type="fixed" fixed_size=".o.fr_s_edgesize*.o.zoom"/>
+			<row type="fixed" fixed_size=".o.fr_s_edgesize*.o.zoom">
+				<cell type="tile" tile_id="fr_s_tl"/>
+				<cell type="tile" tile_id="fr_s_t"/>
+				<cell type="tile" tile_id="fr_s_tr"/>
+			</row>
+			<row type="expanding">
+				<cell type="tile" tile_id="fr_s_l"/>
+				<cell type="empty"/>
+				<cell type="tile" tile_id="fr_s_r"/>
+			</row>
+			<row type="fixed" fixed_size=".o.fr_s_edgesize*.o.zoom">
+				<cell type="tile" tile_id="fr_s_bl"/>
+				<cell type="tile" tile_id="fr_s_b"/>
+				<cell type="tile" tile_id="fr_s_br"/>
+			</row>
+		</layout>
+
+		<expression id="fr_p_x" value="36"/>
+		<expression id="fr_p_y" value="24"/>
+		<expression id="fr_p_srcwidth" value="9"/>
+		<expression id="fr_p_srcheight" value="23"/>
+		<expression id="fr_p_edgesize" value="3"/>
+		<tile id="fr_p_tl" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".fr_p_x" top=".fr_p_y" width=".o.fr_p_edgesize" height=".o.fr_p_edgesize"/>
+		<tile id="fr_p_t" mode_hor="tiled" mode_vert="stretched" source_id="decorationsrc" left=".fr_p_x+.o.fr_p_edgesize+1" top=".fr_p_y" width="2" height=".o.fr_p_edgesize"/>
+		<tile id="fr_p_tr" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".fr_p_x+.o.fr_p_srcwidth-.o.fr_p_edgesize" top=".fr_p_y" width=".o.fr_p_edgesize" height=".o.fr_p_edgesize"/>
+		<tile id="fr_p_l" mode_hor="stretched" mode_vert="tiled" source_id="decorationsrc" left=".fr_p_x" top=".fr_p_y+.o.fr_p_edgesize+1" width=".o.fr_p_edgesize" height="2"/>
+		<tile id="fr_p_r" mode_hor="stretched" mode_vert="tiled" source_id="decorationsrc" left=".fr_p_x+.o.fr_p_srcwidth-.o.fr_p_edgesize" top=".fr_p_y+.o.fr_p_edgesize+1" width=".o.fr_p_edgesize" height="2"/>
+		<tile id="fr_p_bl" mode_hor="stretched" mode_vert="stretched" source_object="" source_id="decorationsrc" left=".fr_p_x" top=".fr_p_y+.o.fr_p_srcheight-.o.fr_p_edgesize" width=".o.fr_p_edgesize" height=".o.fr_p_edgesize"/>
+		<tile id="fr_p_b" mode_hor="tiled" mode_vert="stretched" source_id="decorationsrc" left=".fr_p_x+.o.fr_p_edgesize+1" top=".fr_p_y+.o.fr_p_srcheight-.o.fr_p_edgesize" width="2" height=".o.fr_p_edgesize"/>
+		<tile id="fr_p_br" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".fr_p_x+.o.fr_p_srcwidth-.o.fr_p_edgesize" top=".fr_p_y+.o.fr_p_srcheight-.o.fr_p_edgesize" width=".o.fr_p_edgesize" height=".o.fr_p_edgesize"/>
+		<layout id="framePlain">
+			<column type="fixed" fixed_size=".o.fr_p_edgesize*.o.zoom"/>
+			<column type="expanding"/>
+			<column type="fixed" fixed_size=".o.fr_p_edgesize*.o.zoom"/>
+			<row type="fixed" fixed_size=".o.fr_p_edgesize*.o.zoom">
+				<cell type="tile" tile_id="fr_p_tl"/>
+				<cell type="tile" tile_id="fr_p_t"/>
+				<cell type="tile" tile_id="fr_p_tr"/>
+			</row>
+			<row type="expanding">
+				<cell type="tile" tile_id="fr_p_l"/>
+				<cell type="empty"/>
+				<cell type="tile" tile_id="fr_p_r"/>
+			</row>
+			<row type="fixed" fixed_size=".o.fr_p_edgesize*.o.zoom">
+				<cell type="tile" tile_id="fr_p_bl"/>
+				<cell type="tile" tile_id="fr_p_b"/>
+				<cell type="tile" tile_id="fr_p_br"/>
+			</row>
+		</layout>
+
+
+		<expression id="sbg_h_x" value="20"/>
+		<expression id="sbg_h_y" value="48"/>
+		<expression id="sbg_h_h" value="16"/>
+		<tile id="sbg_hor" mode_hor="tiled" mode_vert="stretched" source_id="decorationsrc" left=".sbg_h_x" top=".sbg_h_y" width="2" height=".sbg_h_h"/>
+		<layout id="scrollbarGrooveHor">
+			<column type="expanding"/>
+			<row type="expanding">
+				<cell type="tile" tile_id="sbg_hor"/>
+			</row>
+		</layout>
+
+		<expression id="sbg_v_x" value="32"/>
+		<expression id="sbg_v_y" value="50"/>
+		<expression id="sbg_v_w" value="16"/>
+		<tile id="sbg_v_vert" mode_hor="stretched" mode_vert="tiled" source_id="decorationsrc" left=".sbg_v_x" top=".sbg_v_y" width=".sbg_v_w" height="2"/>
+		<layout id="scrollbarGrooveVert">
+			<column type="expanding"/>
+			<row type="expanding">
+				<cell type="tile" tile_id="sbg_v_vert"/>
+			</row>
+		</layout>
+
+		<expression id="sbh_h_x" value="27"/>
+		<expression id="sbh_h_y" value="48"/>
+		<expression id="sbh_h_h" value="16"/>
+		<tile id="sbh_hor" mode_hor="tiled" mode_vert="stretched" source_id="decorationsrc" left=".sbh_h_x" top=".sbh_h_y" width="2" height=".sbh_h_h"/>
+		<layout id="scrollbarHandleHor">
+			<column type="expanding"/>
+			<row type="expanding">
+				<cell type="tile" tile_id="sbh_hor"/>
+			</row>
+		</layout>
+		
+		<expression id="sbh_v_x" value="32"/>
+		<expression id="sbh_v_y" value="57"/>
+		<expression id="sbh_v_w" value="16"/>
+		<tile id="sbh_v_vert" mode_hor="stretched" mode_vert="tiled" source_id="decorationsrc" left=".sbh_v_x" top=".sbh_v_y" width=".sbh_v_w" height="2"/>
+		<layout id="scrollbarHandleVert">
+			<column type="expanding"/>
+			<row type="expanding">
+				<cell type="tile" tile_id="sbh_v_vert"/>
 			</row>
 		</layout>
 	</object>
 
-	<object id="button_prelight" inherit="button_normal">
-		<source id="decorationsrc" type="svg" file="button.svg">
+	<object id="src_prelight" inherit="src_normal">
+<!--		<source id="decorationsrc" type="svg" file="svg-style.svg">
+			<replace_style_attr element_id="rect2788" attr="stroke-opacity" value="0.1"/>
 			<replace_style_attr element_id="rect2788" attr="fill-opacity" value="0.8"/>
-		</source>
+		</source>-->
+
+		<expression id="btn_x" value="16"/>
+		<expression id="btn_y" value="0"/>
 	</object>
 
-	<object id="button_pressed" inherit="button_normal">
-		<source id="decorationsrc" type="svg" file="button.svg">
+	<object id="src_pressed" inherit="src_normal">
+<!--		<source id="decorationsrc" type="svg" file="svg-style.svg">
 			<replace_style_attr element_id="rect2788" attr="fill-opacity" value="0.2"/>
 			<replace_style_attr element_id="rect2788" attr="stroke-opacity" value="0.7"/>
-		</source>
+		</source>-->
 	</object>
 
-	<object id="button_disabled" inherit="button_normal">
-		<source id="decorationsrc" type="svg" file="button.svg">
+	<object id="src_disabled" inherit="src_normal">
+<!--		<source id="decorationsrc" type="svg" file="svg-style.svg">
 			<replace_style_attr element_id="rect2788" attr="fill-opacity" value="0.2"/>
 			<replace_style_attr element_id="rect2788" attr="stroke-opacity" value="0.3"/>
-		</source>
+		</source>-->
 	</object>
 
 
 	<object id="Button.*.normal">
 		<paint>
-			<layer layout_object="button_normal" layout_id="button"/>
+			<layer layout_object="src_normal" layout_id="button"/>
 		</paint>
 	</object>
 	<object id="Button.*.pressed">
 		<paint>
-			<layer layout_object="button_pressed" layout_id="button"/>
+			<layer layout_object="src_pressed" layout_id="button"/>
 		</paint>
 	</object>
 	<object id="Button.*.prelight">
 		<paint>
-			<layer layout_object="button_prelight" layout_id="button"/>
+			<layer layout_object="src_prelight" layout_id="button"/>
 		</paint>
 	</object>
 	<object id="Button.*.disabled">
 		<paint>
-			<layer layout_object="button_disabled" layout_id="button"/>
+			<layer layout_object="src_disabled" layout_id="button"/>
+		</paint>
+	</object>
+
+	<object id="CheckBox.normal.off">
+		<paint>
+			<layer layout_object="src_normal" layout_id="checkbox"/>
+		</paint>
+	</object>
+	<object id="CheckBox.pressed.off">
+		<paint>
+			<layer layout_object="src_pressed" layout_id="checkbox"/>
+		</paint>
+	</object>
+	<object id="CheckBox.prelight.off">
+		<paint>
+			<layer layout_object="src_prelight" layout_id="checkbox"/>
+		</paint>
+	</object>
+	<object id="CheckBox.disabled.off">
+		<paint>
+			<layer layout_object="src_disabled" layout_id="checkbox"/>
+		</paint>
+	</object>
+	<object id="CheckBox.normal.on">
+		<paint>
+			<layer layout_object="src_normal" layout_id="checkbox"/>
+			<layer layout_object="src_normal" layout_id="checkboxMark"/>
+		</paint>
+	</object>
+	<object id="CheckBox.pressed.on">
+		<paint>
+			<layer layout_object="src_pressed" layout_id="checkbox"/>
+			<layer layout_object="src_pressed" layout_id="checkboxMark"/>
+		</paint>
+	</object>
+	<object id="CheckBox.prelight.on">
+		<paint>
+			<layer layout_object="src_prelight" layout_id="checkbox"/>
+			<layer layout_object="src_prelight" layout_id="checkboxMark"/>
+		</paint>
+	</object>
+	<object id="CheckBox.disabled.on">
+		<paint>
+			<layer layout_object="src_disabled" layout_id="checkbox"/>
+			<layer layout_object="src_disabled" layout_id="checkboxMark"/>
+		</paint>
+	</object>
+	<object id="CheckBox.normal.tristate">
+		<paint>
+			<layer layout_object="src_normal" layout_id="checkbox"/>
+			<layer layout_object="src_normal" layout_id="checkboxMarkTri"/>
+		</paint>
+	</object>
+	<object id="CheckBox.pressed.tristate">
+		<paint>
+			<layer layout_object="src_pressed" layout_id="checkbox"/>
+			<layer layout_object="src_pressed" layout_id="checkboxMarkTri"/>
+		</paint>
+	</object>
+	<object id="CheckBox.prelight.tristate">
+		<paint>
+			<layer layout_object="src_prelight" layout_id="checkbox"/>
+			<layer layout_object="src_prelight" layout_id="checkboxMarkTri"/>
+		</paint>
+	</object>
+	<object id="CheckBox.disabled.tristate">
+		<paint>
+			<layer layout_object="src_disabled" layout_id="checkbox"/>
+			<layer layout_object="src_disabled" layout_id="checkboxMarkTri"/>
+		</paint>
+	</object>
+
+	<object id="RadioButton.normal.off">
+		<paint>
+			<layer layout_object="src_normal" layout_id="radiobutton"/>
+		</paint>
+	</object>
+	<object id="RadioButton.pressed.off">
+		<paint>
+			<layer layout_object="src_pressed" layout_id="radiobutton"/>
+		</paint>
+	</object>
+	<object id="RadioButton.prelight.off">
+		<paint>
+			<layer layout_object="src_prelight" layout_id="radiobutton"/>
+		</paint>
+	</object>
+	<object id="RadioButton.disabled.off">
+		<paint>
+			<layer layout_object="src_disabled" layout_id="radiobutton"/>
+		</paint>
+	</object>
+	<object id="RadioButton.normal.on">
+		<paint>
+			<layer layout_object="src_normal" layout_id="radiobutton"/>
+			<layer layout_object="src_normal" layout_id="radiobuttonMark"/>
+		</paint>
+	</object>
+	<object id="RadioButton.pressed.on">
+		<paint>
+			<layer layout_object="src_pressed" layout_id="radiobutton"/>
+			<layer layout_object="src_pressed" layout_id="radiobuttonMark"/>
+		</paint>
+	</object>
+	<object id="RadioButton.prelight.on">
+		<paint>
+			<layer layout_object="src_prelight" layout_id="radiobutton"/>
+			<layer layout_object="src_prelight" layout_id="radiobuttonMark"/>
+		</paint>
+	</object>
+	<object id="RadioButton.disabled.on">
+		<paint>
+			<layer layout_object="src_disabled" layout_id="radiobutton"/>
+			<layer layout_object="src_disabled" layout_id="radiobuttonMark"/>
+		</paint>
+	</object>
+
+	<object id="LineEdit.normal">
+		<paint>
+			<layer layout_object="src_normal" layout_id="lineeditFrame"/>
+		</paint>
+	</object>
+	<object id="LineEdit.focused">
+		<paint>
+			<layer layout_object="src_normal" layout_id="lineeditFrame"/>
+		</paint>
+	</object>
+	<object id="LineEdit.disabled">
+		<paint>
+			<layer layout_object="src_disabled" layout_id="lineeditFrame"/>
+		</paint>
+	</object>
+
+	<object id="ComboBox.normal.*">
+		<paint>
+			<layer layout_object="src_normal" layout_id="comboboxFrame"/>
+			<layer layout_object="src_normal" layout_id="comboboxButton"/>
+		</paint>
+	</object>
+	<object id="ComboBox.pressed.*">
+		<paint>
+			<layer layout_object="src_pressed" layout_id="comboboxFrame"/>
+			<layer layout_object="src_pressed" layout_id="comboboxButton"/>
+		</paint>
+	</object>
+	<object id="ComboBox.prelight.*">
+		<paint>
+			<layer layout_object="src_prelight" layout_id="comboboxFrame"/>
+			<layer layout_object="src_prelight" layout_id="comboboxButton"/>
+		</paint>
+	</object>
+	<object id="ComboBox.disabled.*">
+		<paint>
+			<layer layout_object="src_disabled" layout_id="comboboxFrame"/>
+			<layer layout_object="src_disabled" layout_id="comboboxButton"/>
+		</paint>
+	</object>
+
+	<object id="SpinBox.normal.*">
+		<paint>
+			<layer layout_object="src_normal" layout_id="comboboxFrame"/>
+			<layer layout_object="src_normal" layout_id="comboboxButton"/>
+		</paint>
+	</object>
+	<object id="SpinBox.pressedUp.*">
+		<paint>
+			<layer layout_object="src_pressed" layout_id="comboboxFrame"/>
+			<layer layout_object="src_pressed" layout_id="comboboxButton"/>
+		</paint>
+	</object>
+	<object id="SpinBox.pressedDown.*">
+		<paint>
+			<layer layout_object="src_pressed" layout_id="comboboxFrame"/>
+			<layer layout_object="src_pressed" layout_id="comboboxButton"/>
+		</paint>
+	</object>
+	<object id="SpinBox.prelightUp.*">
+		<paint>
+			<layer layout_object="src_prelight" layout_id="comboboxFrame"/>
+			<layer layout_object="src_prelight" layout_id="comboboxButton"/>
+		</paint>
+	</object>
+	<object id="SpinBox.prelightDown.*">
+		<paint>
+			<layer layout_object="src_prelight" layout_id="comboboxFrame"/>
+			<layer layout_object="src_prelight" layout_id="comboboxButton"/>
+		</paint>
+	</object>
+	<object id="SpinBox.disabled.*">
+		<paint>
+			<layer layout_object="src_disabled" layout_id="comboboxFrame"/>
+			<layer layout_object="src_disabled" layout_id="comboboxButton"/>
+		</paint>
+	</object>
+
+	<object id="GenericFrame.raised.*">
+		<paint>
+			<layer layout_object="src_normal" layout_id="frameRaised"/>
+		</paint>
+	</object>
+	<object id="GenericFrame.sunken.*">
+		<paint>
+			<layer layout_object="src_normal" layout_id="frameSunken"/>
+		</paint>
+	</object>
+	<object id="GenericFrame.plain.*">
+		<paint>
+			<layer layout_object="src_disabled" layout_id="framePlain"/>
+		</paint>
+	</object>
+
+	<object id="ScrollBarGroove.normal.vertical">
+		<paint>
+			<layer layout_object="src_normal" layout_id="scrollbarGrooveVert"/>
+		</paint>
+	</object>
+	<object id="ScrollBarGroove.pressed.vertical">
+		<paint>
+			<layer layout_object="src_pressed" layout_id="scrollbarGrooveVert"/>
+		</paint>
+	</object>
+	<object id="ScrollBarGroove.disabled.vertical">
+		<paint>
+			<layer layout_object="src_disabled" layout_id="scrollbarGrooveVert"/>
+		</paint>
+	</object>
+	<object id="ScrollBarGroove.normal.horizontal">
+		<paint>
+			<layer layout_object="src_normal" layout_id="scrollbarGrooveHor"/>
+		</paint>
+	</object>
+	<object id="ScrollBarGroove.pressed.horizontal">
+		<paint>
+			<layer layout_object="src_pressed" layout_id="scrollbarGrooveHor"/>
+		</paint>
+	</object>
+	<object id="ScrollBarGroove.disabled.horizontal">
+		<paint>
+			<layer layout_object="src_disabled" layout_id="scrollbarGrooveHor"/>
+		</paint>
+	</object>
+
+	<object id="ScrollBarHandle.normal.vertical">
+		<paint>
+			<layer layout_object="src_normal" layout_id="scrollbarHandleVert"/>
+		</paint>
+	</object>
+	<object id="ScrollBarHandle.pressed.vertical">
+		<paint>
+			<layer layout_object="src_pressed" layout_id="scrollbarHandleVert"/>
+		</paint>
+	</object>
+	<object id="ScrollBarHandle.disabled.vertical">
+		<paint>
+			<layer layout_object="src_disabled" layout_id="scrollbarHandleVert"/>
+		</paint>
+	</object>
+	<object id="ScrollBarHandle.normal.horizontal">
+		<paint>
+			<layer layout_object="src_normal" layout_id="scrollbarHandleHor"/>
+		</paint>
+	</object>
+	<object id="ScrollBarHandle.pressed.horizontal">
+		<paint>
+			<layer layout_object="src_pressed" layout_id="scrollbarHandleHor"/>
+		</paint>
+	</object>
+	<object id="ScrollBarHandle.disabled.horizontal">
+		<paint>
+			<layer layout_object="src_disabled" layout_id="scrollbarHandleHor"/>
+		</paint>
+	</object>
+
+	<object id="ScrollBarButton.normal.up">
+		<paint>
+			<layer layout_object="src_normal" layout_id="scrollbarGrooveVert"/>
+		</paint>
+	</object>
+	<object id="ScrollBarButton.pressed.up">
+		<paint>
+			<layer layout_object="src_pressed" layout_id="scrollbarGrooveVert"/>
+		</paint>
+	</object>
+	<object id="ScrollBarButton.disabled.up">
+		<paint>
+			<layer layout_object="src_disabled" layout_id="scrollbarGrooveVert"/>
+		</paint>
+	</object>
+	<object id="ScrollBarButton.normal.left">
+		<paint>
+			<layer layout_object="src_normal" layout_id="scrollbarGrooveHor"/>
+		</paint>
+	</object>
+	<object id="ScrollBarButton.pressed.left">
+		<paint>
+			<layer layout_object="src_pressed" layout_id="scrollbarGrooveHor"/>
+		</paint>
+	</object>
+	<object id="ScrollBarButton.disabled.left">
+		<paint>
+			<layer layout_object="src_disabled" layout_id="scrollbarGrooveHor"/>
 		</paint>
 	</object>
 

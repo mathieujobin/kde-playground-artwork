@@ -1,27 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cokoon_spec name="CokoonStyleSpec" version="0.1pre">
-	<item id="ButtonSettings">
-		<desc>General settings of PushButton layout properties etc.</desc>
+	<item id="LayoutProperties">
+		<desc>General settings for widgets, tuning the layout or enabling/disabling specific features.</desc>
 
 		<required>
+			<expression type="Int" id="Generic_DefaultFrameWidth">
+				<desc>Frame width which is in common for some widgets, e.g. GenericFrame, LineEdit</desc>
+			</expression>
+
 			<!-- TODO: Default, contents margins: left,top,right,bottom... -->
-			<expression type="Int" id="DefaultIndicatorMargin">
+			<expression type="Int" id="Button_DefaultIndicatorMargin">
 				<desc>Space around the button (bevel, focus indicator, etc.) reserved for the default button indicator</desc>
 			</expression>
-			<expression type="Int" id="ContentsMargin">
+			<expression type="Int" id="Button_ContentsMargin">
 				<desc>Space between the bevel and the button contents</desc>
 			</expression>
-			<expression type="Int" id="FocusMargin">
+			<expression type="Int" id="Button_FocusMargin">
 				<desc>Area of the focus indicator, measured from the bevel</desc>
 			</expression>
-			<expression type="Int" id="PressedShiftHorizontal">
+			<expression type="Int" id="Button_PressedShiftHorizontal">
 				<desc>Horizontal contents shift for pressed buttons</desc>
 			</expression>
-			<expression type="Int" id="PressedShiftVertical">
+			<expression type="Int" id="Button_PressedShiftVertical">
 				<desc>Vertical contents shift for pressed buttons</desc>
+			</expression>
+
+			<expression type="Int" id="CheckBox_Size">
+				<desc>Size of the CheckBox</desc>
+			</expression>
+
+			<expression type="Int" id="RadioButton_Size">
+				<desc>Size of the RadioButton</desc>
+			</expression>
+
+			<expression type="Int" id="ComboBox_FrameWidth">
+				<desc>Framewidth left, top, bottom</desc>
+			</expression>
+			<expression type="Int" id="ComboBox_ButtonWidth">
+				<desc>ComboBox button width, (kind of right Framewidth...)</desc>
+			</expression>
+			<expression type="Int" id="ComboBox_FocusMargin">
+				<desc>Margin measured from the input area where the focus rect is placed (non-editable ComboBox)</desc>
+			</expression>
+
+			<expression type="Int" id="SpinBox_FrameWidth">
+				<desc>Framewidth left, top, bottom</desc>
+			</expression>
+			<expression type="Int" id="SpinBox_ButtonWidth">
+				<desc>SpinBox button width, (kind of right Framewidth...)</desc>
+			</expression>
+
+			<expression type="Int" id="ScrollBar_BarWidth">
+				<desc>Width of a vertical ScrollBar (and height for a horizontal one)</desc>
+			</expression>
+			<expression type="Int" id="ScrollBar_ButtonHeight">
+				<desc>Height of a vertical ScrollBar button (and width for a horizontal one)</desc>
 			</expression>
 		</required>
 	</item>
+
+	<item id="GenericFrame">
+		<desc>Frame around e.g. frames, list view items...</desc>
+
+		<states>
+			<desc>The focused state.</desc>
+			
+			<state id="raised">
+				<desc>Frame is raised.</desc>
+			</state>
+			<state id="sunken">
+				<desc>Frame is sunken.</desc>
+			</state>
+			<state id="plain">
+				<desc>Frame is plain.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>The focused state.</desc>
+			
+			<state id="normal">
+				<desc>Normal, not focused.</desc>
+			</state>
+			<state id="focused">
+				<desc>Has keyboard focus.</desc>
+			</state>
+		</states>
+	</item>
+
 	<item id="Button">
 		<desc>Push button and similar.</desc>
 
@@ -52,6 +117,246 @@
 			</state>
 		</states>
 		<!-- TODO: Maybe add states for hor/vert button direction. -->
+	</item>
+	<item id="CheckBox">
+		<desc>Check box and similar.</desc>
+		
+		<states>
+			<desc>The actual button state.</desc>
+			
+			<state id="normal">
+				<desc>Normal button.</desc>
+			</state>
+			<state id="pressed">
+				<desc>Pressed button.</desc>
+			</state>
+			<state id="prelight">
+				<desc>Mouse rolled over the button.</desc>
+			</state>
+			<state id="disabled">
+				<desc>Disabled button.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>The checked state.</desc>
+			
+			<state id="on">
+				<desc>Normal button.</desc>
+			</state>
+			<state id="off">
+				<desc>Pressed button.</desc>
+			</state>
+			<state id="tristate">
+				<desc>Mouse rolled over the button.</desc>
+			</state>
+		</states>
+	</item>
+	<item id="RadioButton">
+		<desc>Check box and similar.</desc>
+		
+		<states>
+			<desc>The actual button state.</desc>
+			
+			<state id="normal">
+				<desc>Normal button.</desc>
+			</state>
+			<state id="pressed">
+				<desc>Pressed button.</desc>
+			</state>
+			<state id="prelight">
+				<desc>Mouse rolled over the button.</desc>
+			</state>
+			<state id="disabled">
+				<desc>Disabled button.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>The checked state.</desc>
+			
+			<state id="on">
+				<desc>Normal button.</desc>
+			</state>
+			<state id="off">
+				<desc>Pressed button.</desc>
+			</state>
+		</states>
+		<!-- TODO: Maybe add states for hor/vert button direction. -->
+	</item>
+	<item id="LineEdit">
+		<desc>Frame of a line edit.</desc>
+
+		<states>
+			<desc>The actual state.</desc>
+			
+			<state id="normal">
+				<desc>Normal.</desc>
+			</state>
+			<state id="focused">
+				<desc>Line edit has keyboard focus.</desc>
+			</state>
+			<state id="disabled">
+				<desc>Disabled.</desc>
+			</state>
+		</states>
+	</item>
+	<item id="ComboBox">
+		<desc>Frame and button of a combobox.</desc>
+
+		<states>
+			<desc>The actual button/combobox state.</desc>
+			
+			<state id="normal">
+				<desc>Normal button.</desc>
+			</state>
+			<state id="pressed">
+				<desc>Pressed button.</desc>
+			</state>
+			<state id="prelight">
+				<desc>Mouse rolled over the button.</desc>
+			</state>
+			<state id="disabled">
+				<desc>Disabled button.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>The focused state.</desc>
+			
+			<state id="normal">
+				<desc>Normal, not focused.</desc>
+			</state>
+			<state id="focused">
+				<desc>Has keyboard focus (doesn't make sense for disabled state).</desc>
+			</state>
+		</states>
+	</item>
+	<item id="SpinBox">
+		<desc>Frame and button of a SpinBox.</desc>
+		
+		<states>
+			<desc>The actual button/SpinBox state.</desc>
+			
+			<state id="normal">
+				<desc>Normal button.</desc>
+			</state>
+			<state id="pressedUp">
+				<desc>Pressed 'up' button.</desc>
+			</state>
+			<state id="pressedDown">
+				<desc>Pressed 'down' button.</desc>
+			</state>
+			<state id="prelightUp">
+				<desc>Mouse rolled over the 'up' button.</desc>
+			</state>
+			<state id="prelightDown">
+				<desc>Mouse rolled over the 'down' button.</desc>
+			</state>
+			<state id="disabled">
+				<desc>Disabled button.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>The focused state.</desc>
+			
+			<state id="normal">
+				<desc>Normal, not focused.</desc>
+			</state>
+			<state id="focused">
+				<desc>Has keyboard focus (doesn't make sense for disabled state).</desc>
+			</state>
+		</states>
+	</item>
+	<item id="ScrollBarButton">
+		<desc>Button on a ScrollBar.</desc>
+
+		<states>
+			<desc>The button state.</desc>
+			
+			<state id="normal">
+				<desc>Normal button.</desc>
+			</state>
+			<state id="pressed">
+				<desc>Pressed button.</desc>
+			</state>
+<!--			<state id="prelight">
+				<desc>Mouse rolled over the button.</desc>
+			</state>-->
+			<state id="disabled">
+				<desc>Disabled button.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>button orientation.</desc>
+			
+			<state id="left">
+				<desc>Left button on a horizontal ScrollBar.</desc>
+			</state>
+			<state id="right">
+				<desc>Right button on a horizontal ScrollBar.</desc>
+			</state>
+			<state id="up">
+				<desc>Up button on a vertical ScrollBar.</desc>
+			</state>
+			<state id="down">
+				<desc>Down button on a vertical ScrollBar.</desc>
+			</state>
+		</states>
+	</item>
+	<item id="ScrollBarGroove">
+		<desc>Groove of the ScrollBar handle.</desc>
+		
+		<states>
+			<desc>The button state.</desc>
+			
+			<state id="normal">
+				<desc>Normal button.</desc>
+			</state>
+			<state id="pressed">
+				<desc>Pressed button.</desc>
+			</state>
+			<state id="disabled">
+				<desc>Disabled button.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>scrollbar orientation.</desc>
+			
+			<state id="horizontal">
+				<desc>Horizontal ScrollBar.</desc>
+			</state>
+			<state id="vertical">
+				<desc>Vertical ScrollBar.</desc>
+			</state>
+		</states>
+	</item>
+	<item id="ScrollBarHandle">
+		<desc>The ScrollBar handle.</desc>
+		
+		<states>
+			<desc>The button state.</desc>
+			
+			<state id="normal">
+				<desc>Normal button.</desc>
+			</state>
+			<state id="pressed">
+				<desc>Pressed button.</desc>
+			</state>
+<!--			<state id="prelight">
+				<desc>Mouse rolled over the button.</desc>
+			</state>-->
+			<state id="disabled">
+				<desc>Disabled button.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>scrollbar orientation.</desc>
+			
+			<state id="horizontal">
+				<desc>Horizontal ScrollBar.</desc>
+			</state>
+			<state id="vertical">
+				<desc>Vertical ScrollBar.</desc>
+			</state>
+		</states>
 	</item>
 
 </cokoon_spec>
