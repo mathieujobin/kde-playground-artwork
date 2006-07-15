@@ -642,7 +642,7 @@ Expression &Expression::parse(const QString &expr,
                 continue;
             }
 
-        } else if (c.isLetter() || c=='.' ) {
+        } else if (c.isLetter() || c=='_'   || c=='.' ) {
             // check for valid position
             if (nodeExpect != ValueNode) {
                 qCritical("No value expected at pos %d", parsePos );
@@ -657,7 +657,7 @@ Expression &Expression::parse(const QString &expr,
             if (c == '.')
                 isReference = true;
             while (parsePos < (len-1)
-                   && ((c=expr[parsePos+1]).isLetterOrNumber() || c=='.') ) {
+                   && ((c=expr[parsePos+1]).isLetterOrNumber() || c=='_' || c=='.') ) {
                 ++parsePos;
                 identifier += c;
                 if (c == '.')

@@ -14,7 +14,7 @@ if(KDE4_BUILD_TESTS)
 
 kde4_add_executable(cokoontest ${cokoontest_SRCS})
 
-target_link_libraries(cokoontest  ${KDE4_KDECORE_LIBS} QtTest )
+target_link_libraries(cokoontest  ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} )
 
 endif(KDE4_BUILD_TESTS)
 
