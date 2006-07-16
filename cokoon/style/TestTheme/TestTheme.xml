@@ -3,7 +3,7 @@
 	<object id="LayoutProperties">
 		<expression id="zoom" value="1"/>
 
-		<expression id="Generic_DefaultFrameWidth" value="3*.zoom"/>
+		<expression id="Generic_DefaultFrameWidth" value="4*.zoom"/>
 
 		<expression id="Button_DefaultIndicatorMargin" value="2"/>
 		<expression id="Button_ContentsMargin" value="6*.zoom"/>
@@ -166,9 +166,9 @@
 
 		<expression id="le_x" value="0"/>
 		<expression id="le_y" value="24"/>
-		<expression id="le_srcwidth" value="15"/>
-		<expression id="le_srcheight" value="23"/>
-		<expression id="le_edgesize" value="3"/>
+		<expression id="le_srcwidth" value="11"/>
+		<expression id="le_srcheight" value="12"/>
+		<expression id="le_edgesize" value="4"/>
 		<tile id="le_tl" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".le_x" top=".le_y" width=".o.le_edgesize" height=".o.le_edgesize"/>
 		<tile id="le_t" mode_hor="tiled" mode_vert="stretched" source_id="decorationsrc" left=".le_x+.o.le_edgesize+1" top=".le_y" width="2" height=".o.le_edgesize"/>
 		<tile id="le_tr" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".le_x+.o.le_srcwidth-.o.le_edgesize" top=".le_y" width=".o.le_edgesize" height=".o.le_edgesize"/>
@@ -244,7 +244,7 @@
 		<expression id="fr_r_x" value="16"/>
 		<expression id="fr_r_y" value="24"/>
 		<expression id="fr_r_srcwidth" value="9"/>
-		<expression id="fr_r_srcheight" value="23"/>
+		<expression id="fr_r_srcheight" value="10"/>
 		<expression id="fr_r_edgesize" value="3"/>
 		<tile id="fr_r_tl" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".fr_r_x" top=".fr_r_y" width=".o.fr_r_edgesize" height=".o.fr_r_edgesize"/>
 		<tile id="fr_r_t" mode_hor="tiled" mode_vert="stretched" source_id="decorationsrc" left=".fr_r_x+.o.fr_r_edgesize+1" top=".fr_r_y" width="2" height=".o.fr_r_edgesize"/>
@@ -278,7 +278,7 @@
 		<expression id="fr_s_x" value="26"/>
 		<expression id="fr_s_y" value="24"/>
 		<expression id="fr_s_srcwidth" value="9"/>
-		<expression id="fr_s_srcheight" value="23"/>
+		<expression id="fr_s_srcheight" value="10"/>
 		<expression id="fr_s_edgesize" value="3"/>
 		<tile id="fr_s_tl" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".fr_s_x" top=".fr_s_y" width=".o.fr_s_edgesize" height=".o.fr_s_edgesize"/>
 		<tile id="fr_s_t" mode_hor="tiled" mode_vert="stretched" source_id="decorationsrc" left=".fr_s_x+.o.fr_s_edgesize+1" top=".fr_s_y" width="2" height=".o.fr_s_edgesize"/>
@@ -312,7 +312,7 @@
 		<expression id="fr_p_x" value="36"/>
 		<expression id="fr_p_y" value="24"/>
 		<expression id="fr_p_srcwidth" value="9"/>
-		<expression id="fr_p_srcheight" value="23"/>
+		<expression id="fr_p_srcheight" value="10"/>
 		<expression id="fr_p_edgesize" value="3"/>
 		<tile id="fr_p_tl" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".fr_p_x" top=".fr_p_y" width=".o.fr_p_edgesize" height=".o.fr_p_edgesize"/>
 		<tile id="fr_p_t" mode_hor="tiled" mode_vert="stretched" source_id="decorationsrc" left=".fr_p_x+.o.fr_p_edgesize+1" top=".fr_p_y" width="2" height=".o.fr_p_edgesize"/>
