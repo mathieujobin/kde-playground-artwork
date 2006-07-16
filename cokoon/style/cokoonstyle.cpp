@@ -82,6 +82,110 @@ CokoonStyle::CokoonStyle()
     setWidgetLayoutProp(WT_ScrollBar, ScrollBar::SingleButtonHeight,
                         theme.getExpValue(sObjId, Exp_ScrollBar_ButtonHeight).toInt() );
 
+
+
+    setWidgetLayoutProp(WT_TabBar, TabBar::TabContentsMargin,
+                        theme.getExpValue(sObjId, Exp_TabBarTab_ContentsMargin).toInt() );
+    setWidgetLayoutProp(WT_TabBar, TabBar::TabFocusMargin,
+                        theme.getExpValue(sObjId, Exp_TabBarTab_FocusMargin).toInt() );
+    setWidgetLayoutProp(WT_TabBar, TabBar::TabTextToIconSpace,
+                        theme.getExpValue(sObjId, Exp_TabBarTab_TextToIconSpace).toInt() );
+    setWidgetLayoutProp(WT_TabBar, TabBar::BaseHeight,
+                        theme.getExpValue(sObjId, Exp_TabBar_BaseHeight).toInt() );
+    setWidgetLayoutProp(WT_TabBar, TabBar::BaseOverlap,
+                        theme.getExpValue(sObjId, Exp_TabBar_BaseOverlap).toInt() );
+    setWidgetLayoutProp(WT_TabBar, TabBar::ScrollButtonWidth,
+                        theme.getExpValue(sObjId, Exp_TabBar_ScrollButtonWidth).toInt() );
+
+    setWidgetLayoutProp(WT_Slider, Slider::HandleThickness,
+                        theme.getExpValue(sObjId, Exp_SliderHandle_Thickness).toInt() );
+    setWidgetLayoutProp(WT_Slider, Slider::HandleLength,
+                        theme.getExpValue(sObjId, Exp_SliderHandle_Length).toInt() );
+
+    setWidgetLayoutProp(WT_ProgressBar, ProgressBar::GrooveMargin,
+                        theme.getExpValue(sObjId, Exp_ProgressBar_GrooveMargin).toInt() );
+    setWidgetLayoutProp(WT_ProgressBar, ProgressBar::SideText,
+                        theme.getExpValue(sObjId, Exp_ProgressBar_SideText).toInt() );
+    setWidgetLayoutProp(WT_ProgressBar, ProgressBar::BusyIndicatorSize,
+                        theme.getExpValue(sObjId, Exp_ProgressBar_BusyIndicatorSize).toInt() );
+
+    setWidgetLayoutProp(WT_Header, Header::ContentsMargin,
+                        theme.getExpValue(sObjId, Exp_Header_ContentsMargin).toInt() );
+    setWidgetLayoutProp(WT_Header, Header::TextToIconSpace,
+                        theme.getExpValue(sObjId, Exp_Header_TextToIconSpace).toInt() );
+//     setWidgetLayoutProp(WT_Header, Header::MarkSize,
+//                         theme.getExpValue(sObjId, Exp_Header_MarkSize).toInt() );
+
+    setWidgetLayoutProp(WT_ToolBoxTab, ToolBoxTab::Margin,
+                        theme.getExpValue(sObjId, Exp_ToolBoxTab_Margin).toInt() );
+
+    setWidgetLayoutProp(WT_ToolBar, ToolBar::HandleExtent,
+                        theme.getExpValue(sObjId, Exp_ToolBarHandle_Extent).toInt() );
+    setWidgetLayoutProp(WT_ToolBar, ToolBar::ExtensionExtent,
+                        theme.getExpValue(sObjId, Exp_ToolBar_ExtensionExtent).toInt() );
+
+    setWidgetLayoutProp(WT_ToolBar, ToolBar::SeparatorExtent,
+                        theme.getExpValue(sObjId, Exp_ToolBarSeparator_Extent).toInt() );
+
+    setWidgetLayoutProp(WT_ToolBar, ToolBar::ItemMargin,
+                        theme.getExpValue(sObjId, Exp_ToolBar_ItemMargin).toInt() );
+    setWidgetLayoutProp(WT_ToolBar, ToolBar::ItemSpacing,
+                        theme.getExpValue(sObjId, Exp_ToolBar_ItemSpacing).toInt() );
+
+    setWidgetLayoutProp(WT_MenuBarItem, MenuBarItem::Margin,
+                        theme.getExpValue(sObjId, Exp_MenuBarItem_Margin).toInt() );
+
+    setWidgetLayoutProp(WT_Menu, Menu::FrameWidth,
+                        theme.getExpValue(sObjId, Exp_MenuFrame_Width).toInt() );
+
+    setWidgetLayoutProp(WT_MenuItem, MenuItem::Margin,
+                        theme.getExpValue(sObjId, Exp_MenuItem_Margin).toInt() );
+    setWidgetLayoutProp(WT_MenuItem, MenuItem::CheckSpace,
+                        theme.getExpValue(sObjId, Exp_MenuItem_CheckSpace).toInt() );
+    setWidgetLayoutProp(WT_MenuItem, MenuItem::IconWidth,
+                        theme.getExpValue(sObjId, Exp_MenuItem_IconWidth).toInt() );
+    setWidgetLayoutProp(WT_MenuItem, MenuItem::IconSpace,
+                        theme.getExpValue(sObjId, Exp_MenuItem_IconSpace).toInt() );
+    setWidgetLayoutProp(WT_MenuItem, MenuItem::AccelSpace,
+                        theme.getExpValue(sObjId, Exp_MenuItem_AccelSpace).toInt() );
+    setWidgetLayoutProp(WT_MenuItem, MenuItem::ArrowSpace,
+                        theme.getExpValue(sObjId, Exp_MenuItem_ArrowSpace).toInt() );
+    setWidgetLayoutProp(WT_MenuItem, MenuItem::ArrowWidth,
+                        theme.getExpValue(sObjId, Exp_MenuItem_ArrowWidth).toInt() );
+    setWidgetLayoutProp(WT_MenuItem, MenuItem::MinHeight,
+                        theme.getExpValue(sObjId, Exp_MenuItem_MinHeight).toInt() );
+    setWidgetLayoutProp(WT_MenuItem, MenuItem::Margin,
+                        theme.getExpValue(sObjId, Exp_MenuItem_Margin).toInt() );
+    setWidgetLayoutProp(WT_MenuItem, MenuItem::SeparatorHeight,
+                        theme.getExpValue(sObjId, Exp_MenuItemSeparator_Height).toInt() );
+
+    setWidgetLayoutProp(WT_ToolButton, ToolButton::ContentsMargin,
+                        theme.getExpValue(sObjId, Exp_ToolButton_ContentsMargin).toInt() );
+    setWidgetLayoutProp(WT_ToolButton, ToolButton::FocusMargin,
+                        theme.getExpValue(sObjId, Exp_ToolButton_FocusMargin).toInt() );
+
+    setWidgetLayoutProp(WT_Splitter, Splitter::Width,
+                        theme.getExpValue(sObjId, Exp_Splitter_Width).toInt() );
+
+    setWidgetLayoutProp(WT_DockWidget, DockWidget::FrameWidth,
+                        theme.getExpValue(sObjId, Exp_DockWidget_FrameWidth).toInt() );
+    setWidgetLayoutProp(WT_DockWidget, DockWidget::SeparatorExtent,
+                        theme.getExpValue(sObjId, Exp_DockWidget_SeparatorExtent).toInt() );
+
+    setWidgetLayoutProp(WT_Window, Window::TitleHeight,
+                        theme.getExpValue(sObjId, Exp_Window_TitleHeight).toInt() );
+    setWidgetLayoutProp(WT_Window, Window::NoTitleFrame,
+                        theme.getExpValue(sObjId, Exp_Window_NoTitleFrame).toInt() );
+    setWidgetLayoutProp(WT_Window, Window::TitleMargin,
+                        theme.getExpValue(sObjId, Exp_Window_TitleMargin).toInt() );
+    setWidgetLayoutProp(WT_Window, Window::ButtonWidth,
+                        theme.getExpValue(sObjId, Exp_Window_ButtonWidth).toInt() );
+    setWidgetLayoutProp(WT_Window, Window::ButtonSpace,
+                        theme.getExpValue(sObjId, Exp_Window_ButtonSpace).toInt() );
+    setWidgetLayoutProp(WT_Window, Window::ButtonToTextSpace,
+                        theme.getExpValue(sObjId, Exp_Window_ButtonToTextSpace).toInt() );
+
+
     // TODO: disable double buttons for now only...
     setWidgetLayoutProp(WT_ScrollBar, ScrollBar::DoubleBotButton, 0 );
 }
@@ -394,8 +498,6 @@ void CokoonStyle::drawKStylePrimitive(WidgetType widgetType, int primitive,
 
         case WT_ScrollBar:
         {
-            bool down = (flags & State_Sunken);
-
             switch (primitive)
             {
                 case ScrollBar::SingleButtonVert:
@@ -498,6 +600,721 @@ void CokoonStyle::drawKStylePrimitive(WidgetType widgetType, int primitive,
         }
         break;
 
+
+        case WT_Slider:
+        {
+            switch (primitive)
+            {
+                case Slider::HandleVert:
+                case Slider::HandleHor:
+                {
+                    int themeObjId = CokoonStyleSpec::SliderHandle;
+
+                    if ( !enabled ) {
+                        themeObjId += CokoonStyleSpec::SliderHandle0_disabled;
+                    } else if ( (flags & State_On) || (flags & State_Sunken) ) {
+                        themeObjId += CokoonStyleSpec::SliderHandle0_pressed;
+                    } else if ( mouseOver ) {
+                        themeObjId += CokoonStyleSpec::SliderHandle0_prelight;
+                    } else {
+                        themeObjId += CokoonStyleSpec::SliderHandle0_normal;
+                    }
+
+                    if ( flags & State_Horizontal ) {
+                        themeObjId += CokoonStyleSpec::SliderHandle1_horizontal;
+                    } else {
+                        themeObjId += CokoonStyleSpec::SliderHandle1_vertical;
+                    }
+
+                    if ( hasFocus ) {
+                        themeObjId += CokoonStyleSpec::SliderHandle2_focused;
+                    } else {
+                        themeObjId += CokoonStyleSpec::SliderHandle2_notFocused;
+                    }
+
+                    theme.drawLayers( themeObjId, p,
+                                      r.left(), r.top(), r.width(), r.height(),
+                                      /*this, this*/ 0,0 );
+
+                    return;
+                }
+
+                case Slider::GrooveHor:
+                case Slider::GrooveVert:
+                {
+                    int themeObjId = CokoonStyleSpec::SliderGroove;
+
+                    if ( !enabled ) {
+                        themeObjId += CokoonStyleSpec::SliderGroove0_disabled;
+                    } else {
+                        themeObjId += CokoonStyleSpec::SliderGroove0_normal;
+                    }
+
+                    if ( flags & State_Horizontal ) {
+                        themeObjId += CokoonStyleSpec::SliderGroove1_horizontal;
+                    } else {
+                        themeObjId += CokoonStyleSpec::SliderGroove1_vertical;
+                    }
+
+                    if ( hasFocus ) {
+                        themeObjId += CokoonStyleSpec::SliderHandle2_focused;
+                    } else {
+                        themeObjId += CokoonStyleSpec::SliderHandle2_notFocused;
+                    }
+
+                    theme.drawLayers( themeObjId, p,
+                                      r.left(), r.top(), r.width(), r.height(),
+                                      /*this, this*/ 0,0 );
+
+                    return;
+                }
+
+                default:
+                    break;
+            }
+        }
+        break;
+
+
+        case WT_ProgressBar:
+        {
+            switch (primitive)
+            {
+                case ProgressBar::Indicator:
+                {
+                    int themeObjId = CokoonStyleSpec::ProgressBarBar;
+
+                    if ( !enabled ) {
+                        themeObjId += CokoonStyleSpec::ProgressBarBar0_disabled;
+                    } else {
+                        themeObjId += CokoonStyleSpec::ProgressBarBar0_normal;
+                    }
+
+                    if ( flags & State_Horizontal ) {
+                        themeObjId += CokoonStyleSpec::ProgressBarBar1_horizontal;
+                    } else {
+                        themeObjId += CokoonStyleSpec::ProgressBarBar1_vertical;
+                    }
+
+                    theme.drawLayers( themeObjId, p,
+                                      r.left(), r.top(), r.width(), r.height(),
+                                      /*this, this*/ 0,0 );
+
+                    return;
+                }
+
+                case ProgressBar::Groove:
+                {
+                    int themeObjId = CokoonStyleSpec::ProgressBarGroove;
+
+                    if ( !enabled ) {
+                        themeObjId += CokoonStyleSpec::ProgressBarGroove0_disabled;
+                    } else {
+                        themeObjId += CokoonStyleSpec::ProgressBarGroove0_normal;
+                    }
+
+                    if ( flags & State_Horizontal ) {
+                        themeObjId += CokoonStyleSpec::ProgressBarGroove1_horizontal;
+                    } else {
+                        themeObjId += CokoonStyleSpec::ProgressBarGroove1_vertical;
+                    }
+
+                    theme.drawLayers( themeObjId, p,
+                                      r.left(), r.top(), r.width(), r.height(),
+                                      /*this, this*/ 0,0 );
+
+                    return;
+                }
+
+                default:
+                    break;
+            }
+        }
+        break;
+
+
+        case WT_TabBar:
+        {
+            switch (primitive)
+            {
+                case TabBar::EastTab:
+                case TabBar::WestTab:
+                case TabBar::SouthTab:
+                case TabBar::NorthTab:
+                {
+                    const QStyleOptionTabV2 *tabOpt = qstyleoption_cast<const QStyleOptionTabV2 *>(opt);
+                    if (!tabOpt)
+                        break;
+
+
+                    int themeObjId = CokoonStyleSpec::TabBarTab;
+
+                    if ( !enabled ) {
+                        themeObjId += CokoonStyleSpec::TabBarTab0_disabled;
+                    } else if ( mouseOver ) {
+                        themeObjId += CokoonStyleSpec::TabBarTab0_prelight;
+                    } else {
+                        themeObjId += CokoonStyleSpec::TabBarTab0_normal;
+                    }
+
+                    if ( flags&State_Selected ) {
+                        themeObjId += CokoonStyleSpec::TabBarTab1_selected;
+                    } else {
+                        switch (tabOpt->selectedPosition) {
+                            case QStyleOptionTab::PreviousIsSelected:
+                                themeObjId += CokoonStyleSpec::TabBarTab1_previousIsSelected;
+                                break;
+                            case QStyleOptionTab::NextIsSelected:
+                                themeObjId += CokoonStyleSpec::TabBarTab1_nextIsSelected;
+                                break;
+                            default:
+                            case QStyleOptionTab::NotAdjacent:
+                                themeObjId += CokoonStyleSpec::TabBarTab1_notAdjacent;
+                                break;
+                        }
+                    }
+
+                    switch (tabOpt->position) {
+                        case QStyleOptionTab::Beginning:
+                            themeObjId += CokoonStyleSpec::TabBarTab2_beginning;
+                            break;
+                        case QStyleOptionTab::Middle:
+                            themeObjId += CokoonStyleSpec::TabBarTab2_middle;
+                            break;
+                        case QStyleOptionTab::End:
+                            themeObjId += CokoonStyleSpec::TabBarTab2_end;
+                            break;
+                        default:
+                        case QStyleOptionTab::OnlyOneTab:
+                            themeObjId += CokoonStyleSpec::TabBarTab2_onlyOne;
+                            break;
+                    }
+
+                    switch (primitive) {
+                        case TabBar::EastTab:
+                            themeObjId += CokoonStyleSpec::TabBarTab3_east;
+                            break;
+                        case TabBar::WestTab:
+                            themeObjId += CokoonStyleSpec::TabBarTab3_west;
+                            break;
+                        case TabBar::SouthTab:
+                            themeObjId += CokoonStyleSpec::TabBarTab3_south;
+                            break;
+                        default:
+                        case TabBar::NorthTab:
+                            themeObjId += CokoonStyleSpec::TabBarTab3_north;
+                            break;
+                    }
+
+                    if (hasFocus) {
+                        themeObjId += CokoonStyleSpec::TabBarTab4_focused;
+                    } else {
+                        themeObjId += CokoonStyleSpec::TabBarTab4_notFocused;
+                    }
+
+                    switch (tabOpt->shape) {
+                        case QTabBar::TriangularNorth:
+                        case QTabBar::TriangularSouth:
+                        case QTabBar::TriangularEast:
+                        case QTabBar::TriangularWest:
+                            themeObjId += CokoonStyleSpec::TabBarTab5_triangular;
+                            break;
+                        default:
+                            themeObjId += CokoonStyleSpec::TabBarTab5_rounded;
+                            break;
+                    }
+
+                    theme.drawLayers( themeObjId, p,
+                                      r.left(), r.top(), r.width(), r.height(),
+                                      /*this, this*/ 0,0 );
+
+
+                    return;
+                }
+
+                default:
+                    break;
+            }
+        }
+        break;
+
+
+        case WT_Header:
+        {
+            switch (primitive)
+            {
+                case Header::SectionHor:
+                case Header::SectionVert:
+                {
+                    const QStyleOptionHeader *hdOpt = qstyleoption_cast<const QStyleOptionHeader *>(opt);
+                    if (!hdOpt)
+                        break;
+
+
+                    int themeObjId = CokoonStyleSpec::Header;
+
+                    if ( !enabled ) {
+                        themeObjId += CokoonStyleSpec::Header0_disabled;
+                    } else if ( mouseOver ) {
+                        themeObjId += CokoonStyleSpec::Header0_prelight;
+                    } else {
+                        themeObjId += CokoonStyleSpec::Header0_normal;
+                    }
+
+                    if ( flags&State_On || flags&State_Sunken ) {
+                        themeObjId += CokoonStyleSpec::Header1_selected;
+                    } else {
+                        switch (hdOpt->selectedPosition) {
+                            case QStyleOptionHeader::NextAndPreviousAreSelected:
+                                themeObjId += CokoonStyleSpec::Header1_nextAndPreviousAreSelected;
+                                break;
+                            case QStyleOptionHeader::PreviousIsSelected:
+                                themeObjId += CokoonStyleSpec::Header1_previousIsSelected;
+                                break;
+                            case QStyleOptionHeader::NextIsSelected:
+                                themeObjId += CokoonStyleSpec::Header1_nextIsSelected;
+                                break;
+                            default:
+                            case QStyleOptionHeader::NotAdjacent:
+                                themeObjId += CokoonStyleSpec::Header1_notAdjacent;
+                                break;
+                        }
+                    }
+
+                    switch (hdOpt->position) {
+                        case QStyleOptionHeader::Beginning:
+                            themeObjId += CokoonStyleSpec::Header2_beginning;
+                            break;
+                        case QStyleOptionHeader::Middle:
+                            themeObjId += CokoonStyleSpec::Header2_middle;
+                            break;
+                        case QStyleOptionHeader::End:
+                            themeObjId += CokoonStyleSpec::Header2_end;
+                            break;
+                        default:
+                        case QStyleOptionHeader::OnlyOneSection:
+                            themeObjId += CokoonStyleSpec::Header2_onlyOne;
+                            break;
+                    }
+
+                    theme.drawLayers( themeObjId, p,
+                                      r.left(), r.top(), r.width(), r.height(),
+                                      /*this, this*/ 0,0 );
+
+                    return;
+                }
+            }
+        }
+        break;
+
+        case WT_ToolBoxTab:
+        {
+            switch (primitive)
+            {
+                case ToolBoxTab::Panel:
+                {
+                    int themeObjId = CokoonStyleSpec::ToolBoxTab;
+
+                    if ( !enabled ) {
+                        themeObjId += CokoonStyleSpec::ToolBoxTab0_disabled;
+                    } else if ( (flags & State_On) || (flags & State_Sunken) ) {
+                        themeObjId += CokoonStyleSpec::ToolBoxTab0_pressed;
+                    } else {
+                        themeObjId += CokoonStyleSpec::ToolBoxTab0_normal;
+                    }
+
+                    if ( flags & State_Selected ) {
+                        themeObjId += CokoonStyleSpec::ToolBoxTab1_selected;
+                    } else {
+                        themeObjId += CokoonStyleSpec::ToolBoxTab1_selected;
+                    }
+
+                    theme.drawLayers( themeObjId, p,
+                                      r.left(), r.top(), r.width(), r.height(),
+                                      /*this, this*/ 0,0 );
+
+                    return;
+                }
+            }
+        }
+        break;
+
+        case WT_ToolBar:
+        {
+            switch (primitive)
+            {
+                case ToolBar::HandleHor:
+                case ToolBar::HandleVert:
+                {
+                    int themeObjId = CokoonStyleSpec::ToolBarSeparator;
+
+                    if ( mouseOver ) {
+                        themeObjId += CokoonStyleSpec::ToolBarHandle0_prelight;
+                    } else if ( (flags & State_On) || (flags & State_Sunken) ) {
+                        themeObjId += CokoonStyleSpec::ToolBarHandle0_pressed;
+                    } else {
+                        themeObjId += CokoonStyleSpec::ToolBarHandle0_normal;
+                    }
+
+                    if ( flags & State_Horizontal ) {
+                        themeObjId += CokoonStyleSpec::ToolBarHandle1_horizontal;
+                    } else {
+                        themeObjId += CokoonStyleSpec::ToolBarHandle1_vertical;
+                    }
+
+                    theme.drawLayers( themeObjId, p,
+                                      r.left(), r.top(), r.width(), r.height(),
+                                      /*this, this*/ 0,0 );
+
+                    return;
+                }
+
+                case ToolBar::Separator:
+                {
+                    int themeObjId = CokoonStyleSpec::ToolBarSeparator;
+
+                    if ( flags & State_Horizontal ) {
+                        themeObjId += CokoonStyleSpec::ToolBarSeparator0_horizontal;
+                    } else {
+                        themeObjId += CokoonStyleSpec::ToolBarSeparator0_vertical;
+                    }
+
+                    theme.drawLayers( themeObjId, p,
+                                      r.left(), r.top(), r.width(), r.height(),
+                                      /*this, this*/ 0,0 );
+                    return;
+                }
+
+                case ToolBar::PanelHor:
+                {
+                    // TODO
+                    return;
+                }
+                case ToolBar::PanelVert:
+                {
+                    // TODO
+                    return;
+                }
+            }
+        }
+        break;
+
+        case WT_MenuBarItem:
+        {
+            switch (primitive)
+            {
+                case MenuBarItem::Panel:
+                {
+                    int themeObjId = CokoonStyleSpec::MenuBarItem;
+
+                    if ( mouseOver ) {
+                        themeObjId += CokoonStyleSpec::MenuBarItem0_prelight;
+                    } else if ( (flags & State_On) || (flags & State_Sunken) ) {
+                        themeObjId += CokoonStyleSpec::MenuBarItem0_pressed;
+                    } else {
+                        themeObjId += CokoonStyleSpec::MenuBarItem0_normal;
+                    }
+
+                    theme.drawLayers( themeObjId, p,
+                                      r.left(), r.top(), r.width(), r.height(),
+                                      /*this, this*/ 0,0 );
+
+                    return;
+                }
+            }
+        }
+        break;
+
+        case WT_Menu:
+        {
+            switch (primitive)
+            {
+                case Generic::Frame:
+                {
+                    int themeObjId = CokoonStyleSpec::MenuFrame;
+                    theme.drawLayers( themeObjId, p,
+                                      r.left(), r.top(), r.width(), r.height(),
+                                      /*this, this*/ 0,0 );
+
+                    return;
+                }
+
+                case Menu::Background:
+                {
+                    // TODO!
+                    p->fillRect( r, pal.color(QPalette::Background).light( 105 ) );
+                    return;
+                }
+
+                case Menu::TearOff:
+                {
+                    // TODO
+                    return;
+                }
+
+                case Menu::Scroller:
+                {
+                    // TODO
+                    return;
+                }
+            }
+        }
+        break;
+
+        case WT_MenuItem:
+        {
+            switch (primitive)
+            {
+                case MenuItem::Separator:
+                {
+                    int themeObjId = CokoonStyleSpec::MenuItemSeparator;
+                    theme.drawLayers( themeObjId, p,
+                                      r.left(), r.top(), r.width(), r.height(),
+                                      /*this, this*/ 0,0 );
+
+                    return;
+                }
+
+                case MenuItem::ItemIndicator:
+                {
+                    int themeObjId = CokoonStyleSpec::MenuItem;
+
+                    themeObjId += CokoonStyleSpec::MenuItem0_prelight;
+
+                    theme.drawLayers( themeObjId, p,
+                                      r.left(), r.top(), r.width(), r.height(),
+                                      /*this, this*/ 0,0 );
+
+                    return;
+                }
+
+                case MenuItem::CheckColumn:
+                {
+                    // TODO
+                    return;
+                }
+
+                case MenuItem::CheckOn:
+                {
+                    drawKStylePrimitive(WT_CheckBox, CheckBox::CheckOn, opt, r, pal, flags, p, widget);
+                    return;
+                }
+
+                case MenuItem::CheckOff:
+                {
+                    
+                    drawKStylePrimitive(WT_CheckBox, CheckBox::CheckOff, opt, r, pal, flags, p, widget);
+                    return;
+                }
+
+                case MenuItem::RadioOn:
+                {
+                    drawKStylePrimitive(WT_RadioButton, RadioButton::RadioOn, opt, r, pal, flags, p, widget);
+                    return;
+                }
+
+                case MenuItem::RadioOff:
+                {
+                    drawKStylePrimitive(WT_RadioButton, RadioButton::RadioOff, opt, r, pal, flags, p, widget);
+                    return;
+                }
+
+                case MenuItem::CheckIcon:
+                {
+                    // empty since for now only checkAlongsideicon... is supported
+                    return;
+                }
+            }
+        }
+        break;
+
+        case WT_ToolButton:
+        {
+            switch (primitive)
+            {
+                case ToolButton::Panel:
+                {
+                    int themeObjId = CokoonStyleSpec::ToolButton;
+
+                    if ( !enabled ) {
+                        themeObjId += CokoonStyleSpec::ToolButton0_disabled;
+                    } else if ( (flags & State_On) || (flags & State_Sunken) ) {
+                        themeObjId += CokoonStyleSpec::ToolButton0_pressed;
+                    } else if (mouseOver) {
+                        themeObjId += CokoonStyleSpec::ToolButton0_prelight;
+                    }else {
+                        themeObjId += CokoonStyleSpec::ToolButton0_normal;
+                    }
+
+                    theme.drawLayers( themeObjId, p,
+                                      r.left(), r.top(), r.width(), r.height(),
+                                      /*this, this*/ 0,0 );
+
+                    return;
+                }
+            }
+
+        }
+        break;
+
+        case WT_Splitter:
+        {
+            switch (primitive)
+            {
+                case Splitter::HandleHor:
+                case Splitter::HandleVert:
+                {
+                    int themeObjId = CokoonStyleSpec::Splitter;
+
+                    if ( mouseOver ) {
+                        themeObjId += CokoonStyleSpec::Splitter0_prelight;
+                    } else if ( (flags & State_On) || (flags & State_Sunken) ) {
+                        themeObjId += CokoonStyleSpec::Splitter0_pressed;
+                    } else {
+                        themeObjId += CokoonStyleSpec::Splitter0_normal;
+                    }
+
+                    if ( flags & State_Horizontal ) {
+                        themeObjId += CokoonStyleSpec::Splitter1_horizontal;
+                    } else {
+                        themeObjId += CokoonStyleSpec::Splitter1_vertical;
+                    }
+
+                    theme.drawLayers( themeObjId, p,
+                                      r.left(), r.top(), r.width(), r.height(),
+                                      /*this, this*/ 0,0 );
+
+                    return;
+                }
+            }
+        }
+        break;
+
+        case WT_DockWidget:
+        {
+            switch (primitive)
+            {
+                case Generic::Frame:
+                {
+                    int themeObjId = CokoonStyleSpec::DockWidgetFrame;
+
+                    theme.drawLayers( themeObjId, p,
+                                      r.left(), r.top(), r.width(), r.height(),
+                                      /*this, this*/ 0,0 );
+
+                    return;
+                }
+
+                case DockWidget::TitlePanel:
+                {
+                    int themeObjId = CokoonStyleSpec::DockWidgetTitle;
+
+                    theme.drawLayers( themeObjId, p,
+                                      r.left(), r.top(), r.width(), r.height(),
+                                      /*this, this*/ 0,0 );
+
+                    return;
+                }
+            }
+        }
+        break;
+
+        case WT_Window:
+        {
+            switch (primitive)
+            {
+                case Generic::Frame:
+                {
+                    int themeObjId = CokoonStyleSpec::WindowFrame;
+
+                    if ( !enabled ) {
+                        themeObjId += CokoonStyleSpec::WindowFrame0_inactive;
+                    } else {
+                        themeObjId += CokoonStyleSpec::WindowFrame0_active;
+                    }
+
+                    theme.drawLayers( themeObjId, p,
+                                      r.left(), r.top(), r.width(), r.height(),
+                                      /*this, this*/ 0,0 );
+
+                    return;
+                }
+
+                case Window::TitlePanel:
+                {
+                    int themeObjId = CokoonStyleSpec::WindowTitle;
+
+                    if ( !enabled ) {
+                        themeObjId += CokoonStyleSpec::WindowTitle0_inactive;
+                    } else {
+                        themeObjId += CokoonStyleSpec::WindowTitle0_active;
+                    }
+
+                    theme.drawLayers( themeObjId, p,
+                                      r.left(), r.top(), r.width(), r.height(),
+                                      /*this, this*/ 0,0 );
+
+                    return;
+                }
+
+                case Window::ButtonMin:
+                case Window::ButtonMax:
+                case Window::ButtonRestore:
+                case Window::ButtonClose:
+                case Window::ButtonShade:
+                case Window::ButtonUnshade:
+                case Window::ButtonHelp:
+                {
+                    int themeObjId = CokoonStyleSpec::WindowButton;
+
+                    if ( !enabled ) {
+                        themeObjId += CokoonStyleSpec::WindowButton0_inactive;
+                    } else {
+                        themeObjId += CokoonStyleSpec::WindowButton0_active;
+                    }
+
+                    KStyle::TitleButtonOption* bOpt =
+                            extractOption<KStyle::TitleButtonOption*>(kOpt);
+                    if (bOpt->active) {
+                        themeObjId += CokoonStyleSpec::WindowButton1_pressed;
+                    } else {
+                        themeObjId += CokoonStyleSpec::WindowButton1_normal;
+                    }
+
+                    switch (primitive) {
+                        case Window::ButtonMin:
+                            themeObjId += CokoonStyleSpec::WindowButton2_minimize;
+                            break;
+                        case Window::ButtonMax:
+                            themeObjId += CokoonStyleSpec::WindowButton2_maximize;
+                            break;
+                        case Window::ButtonRestore:
+                            themeObjId += CokoonStyleSpec::WindowButton2_restore;
+                            break;
+                        case Window::ButtonClose:
+                            themeObjId += CokoonStyleSpec::WindowButton2_close;
+                            break;
+                        case Window::ButtonShade:
+                            themeObjId += CokoonStyleSpec::WindowButton2_shade;
+                            break;
+                        case Window::ButtonUnshade:
+                            themeObjId += CokoonStyleSpec::WindowButton2_unshade;
+                            break;
+                        default:
+                        case Window::ButtonHelp:
+                            themeObjId += CokoonStyleSpec::WindowButton2_help;
+                            break;
+                    }
+
+                    theme.drawLayers( themeObjId, p,
+                                      r.left(), r.top(), r.width(), r.height(),
+                                      /*this, this*/ 0,0 );
+
+                    return;
+                }
+            }
+        }
+        break;
     }
 
     switch (primitive)

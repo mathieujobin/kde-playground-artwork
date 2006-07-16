@@ -56,6 +56,168 @@
 			<expression type="Int" id="ScrollBar_ButtonHeight">
 				<desc>Height of a vertical ScrollBar button (and width for a horizontal one)</desc>
 			</expression>
+
+			<expression type="Int" id="TabBarTab_ContentsMargin">
+				<desc>margin around the tab contents, used to size the tab</desc>
+			</expression>
+			<expression type="Int" id="TabBarTab_FocusMargin">
+				<desc>where the tab focus rect is placed, measured from the tab sides</desc>
+			</expression>
+			<expression type="Int" id="TabBarTab_TextToIconSpace">
+				<desc>space between icon and text if the tab contains both</desc>
+			</expression>
+
+			<expression type="Int" id="TabBar_BaseHeight">
+				<desc>the height of the tabBar's base, usually the frame width</desc>
+			</expression>
+			<expression type="Int" id="TabBar_BaseOverlap">
+				<desc>the number of pixels the tabs overlap with the base (i.e. tabWidget frame)</desc>
+			</expression>
+
+			<expression type="Int" id="SliderHandle_Thickness">
+				<desc>The height of a (hor) slider handle</desc>
+			</expression>
+			<expression type="Int" id="SliderHandle_Length">
+				<desc>The width of a (hor) slider handle</desc>
+			</expression>
+
+			<expression type="Int" id="ProgressBar_GrooveMargin">
+				<desc>Margin to allocate for the groove. Content area will be inside of it.</desc>
+			</expression>
+			<expression type="Int" id="ProgressBar_SideText">
+				<desc>set this to non-zero to have the text positionned to the side</desc>
+			</expression>
+			<expression type="Int" id="ProgressBar_BusyIndicatorSize">
+				<desc>The busy indicator size, in percent of area size.</desc>
+			</expression>
+
+			<expression type="Int" id="TabBar_ScrollButtonWidth">
+				<desc>buttons which are shown when there's not enough space for tabs (A ToolButton is used for this)</desc>
+			</expression>
+
+			<expression type="Int" id="Header_ContentsMargin">
+				<desc>margin around contents used to size the header</desc>
+			</expression>
+			<expression type="Int" id="Header_TextToIconSpace">
+				<desc>space that is allocated between icon and text if both exist</desc>
+			</expression>
+<!--			<expression type="Int" id="Header_MarkSize">
+	<desc>TODO size of the sort indicator in a header</desc>
+			</expression>-->
+
+			<expression type="Int" id="ToolBoxTab_Margin">
+				<desc>used to specify the position of the tab contents, doesn't influence the tab size</desc>
+			</expression>
+
+			<expression type="Int" id="ToolBarHandle_Extent">
+				<desc>the width(hor)/height(vert) of a ToolBar handle</desc>
+			</expression>
+			<expression type="Int" id="ToolBar_ExtensionExtent">
+				<desc>the width(hor)/height(vert) of a ToolBar handle</desc>
+			</expression>
+
+			<expression type="Int" id="ToolBarSeparator_Extent">
+				<desc>the width/height of a ToolBar separator</desc>
+			</expression>
+
+			<expression type="Int" id="ToolBar_ItemMargin">
+				<desc>margin around toolbar items (such as ToolButton)</desc>
+			</expression>
+			<expression type="Int" id="ToolBar_ItemSpacing">
+				<desc>spacing between toolbar items</desc>
+			</expression>
+
+			<expression type="Int" id="MenuBarItem_Margin">
+				<desc>Margin rectangle to allocate for any bevel, etc.</desc>
+			</expression>
+
+			<expression type="Int" id="MenuFrame_Width">
+				<desc>The width of the frame, note that this does not affect the layout.</desc>
+			</expression>
+
+			<expression type="Int" id="MenuItem_Margin">
+				<desc>margin for each entry</desc>
+			</expression>
+<!--		TODO do we want this controllable?	<expression type="Int" id="MenuItem_CheckAlongsideIcon">
+				<desc>Set to non-zero to have checkmarks painted separate from icons.</desc>
+			</expression>-->
+			<expression type="Int" id="MenuItem_CheckSpace">
+				<desc>Space between the checkmark column and the icon column</desc>
+			</expression>
+			<expression type="Int" id="MenuItem_IconWidth">
+				<desc>minimum size of the icon column</desc>
+			</expression>
+			<expression type="Int" id="MenuItem_IconSpace">
+				<desc>space between the icon column and text column</desc>
+			</expression>
+			<expression type="Int" id="MenuItem_AccelSpace">
+				<desc>space between text and keyboard accelerator</desc>
+			</expression>
+			<expression type="Int" id="MenuItem_ArrowSpace">
+				<desc>space between the text column and arrow column (indicating sub menus)</desc>
+			</expression>
+			<expression type="Int" id="MenuItem_ArrowWidth">
+				<desc>space to reserve for the menu arrow column</desc>
+			</expression>
+			<expression type="Int" id="MenuItem_MinHeight">
+				<desc>limit on the size of item contents</desc>
+			</expression>
+<!--	TODO		<expression type="Int" id="MenuItem_ActiveTextColor">
+	<desc>color for active text and arrow</desc>
+			</expression>-->
+<!--			<expression type="Int" id="MenuItem_TextColor">
+				<desc>TODO color for inactive text and arrow</desc>
+			</expression>-->
+			
+<!--			<expression type="Int" id="MenuItem_DisabledTextColor">
+				<desc>TODO color for inactive and disabled text and arrow</desc>
+			</expression>-->
+
+			<expression type="Int" id="MenuItemSeparator_Height">
+				<desc>heigh of separator in a menu</desc>
+			</expression>
+
+			<expression type="Int" id="ToolButton_ContentsMargin">
+				<desc>Margin reserved around the contents size of a toolbutton. Used to size the contents.</desc>
+			</expression>
+			<expression type="Int" id="ToolButton_FocusMargin">
+				<desc>Where the focus rect will be drawn, measured from the widget sides</desc>
+			</expression>
+
+			<expression type="Int" id="Splitter_Width">
+				<desc>size of the splitter handle</desc>
+			</expression>
+
+			<!-- 	TODO: DockWidget_TitleTextColor		 -->
+<!--		TODO	<expression type="Int" id="DockWidget_TitleMargin">
+				<desc></desc>
+			</expression>-->
+			<expression type="Int" id="DockWidget_FrameWidth">
+				<desc>width of the frame around floating dockwidgets</desc>
+			</expression>
+			<expression type="Int" id="DockWidget_SeparatorExtent">
+				<desc>width of the area which separates the (docked) dock window from the window contents</desc>
+			</expression>
+
+<!-- 	TODO: Window_TitleTextColor		 -->
+			<expression type="Int" id="Window_TitleHeight">
+				<desc>height of the titlebar</desc>
+			</expression>
+			<expression type="Int" id="Window_NoTitleFrame">
+				<desc>if set to non-zero, the frame primitive is not expected to paint around the titlebar area</desc>
+			</expression>
+			<expression type="Int" id="Window_TitleMargin">
+				<desc>margin around titlebar contents (buttons, text label), used to position them and determine the height of titlebar buttons, doesn't influence size</desc>
+			</expression>
+			<expression type="Int" id="Window_ButtonWidth">
+				<desc>width of a titlebar button</desc>
+			</expression>
+			<expression type="Int" id="Window_ButtonSpace">
+				<desc>space between titlebar buttons</desc>
+			</expression>
+			<expression type="Int" id="Window_ButtonToTextSpace">
+				<desc>space between buttons and the title text</desc>
+			</expression>
 		</required>
 	</item>
 
@@ -86,6 +248,40 @@
 			</state>
 		</states>
 	</item>
+
+<!--	<item id="GenericArrow">
+		<desc>An arrow...</desc>
+
+		<states>
+			<desc>The arrow orientation.</desc>
+			
+			<state id="up">
+				<desc>Pointing up.</desc>
+			</state>
+			<state id="down">
+				<desc>Pointing down.</desc>
+			</state>
+			<state id="left">
+				<desc>Pointing left.</desc>
+			</state>
+			<state id="right">
+				<desc>Pointing right.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>The state.</desc>
+			
+			<state id="normal">
+				<desc>Enabled.</desc>
+			</state>
+			<state id="pressed">
+				<desc>Pressed button.</desc>
+			</state>
+			<state id="disabled">
+				<desc>Disabled button.</desc>
+			</state>
+		</states>
+	</item>-->
 
 	<item id="Button">
 		<desc>Push button and similar.</desc>
@@ -355,6 +551,530 @@
 			</state>
 			<state id="vertical">
 				<desc>Vertical ScrollBar.</desc>
+			</state>
+		</states>
+	</item>
+	<item id="SliderGroove">
+		<desc>A tab in the tab bar.</desc>
+		
+		<states>
+			<desc>The slider state.</desc>
+			
+			<state id="normal">
+				<desc>Normal.</desc>
+			</state>
+			<state id="disabled">
+				<desc>Disabled.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>The slider orientation.</desc>
+			
+			<state id="horizontal">
+				<desc>TabBar on top of the TabWidget.</desc>
+			</state>
+			<state id="vertical">
+				<desc>TabBar right of the TabWidget.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>The focused state.</desc>
+			
+			<state id="notFocused">
+				<desc>Normal, unfocused.</desc>
+			</state>
+			<state id="focused">
+				<desc>Has keyboard focus (doesn't make sense for disabled state).</desc>
+			</state>
+		</states>
+	</item>
+	<item id="SliderHandle">
+		<desc>A tab in the tab bar.</desc>
+		
+		<states>
+			<desc>The slider state.</desc>
+			
+			<state id="normal">
+				<desc>Normal.</desc>
+			</state>
+			<state id="prelight">
+				<desc>Mouse rolled over the handle.</desc>
+			</state>
+			<state id="pressed">
+				<desc>Handle is hold by the mouse.</desc>
+			</state>
+			<state id="disabled">
+				<desc>Disabled.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>The slider orientation.</desc>
+			
+			<state id="horizontal">
+				<desc>TabBar on top of the TabWidget.</desc>
+			</state>
+			<state id="vertical">
+				<desc>TabBar right of the TabWidget.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>The focused state.</desc>
+			
+			<state id="notFocused">
+				<desc>Normal, unfocused.</desc>
+			</state>
+			<state id="focused">
+				<desc>Has keyboard focus (doesn't make sense for disabled state).</desc>
+			</state>
+		</states>
+	</item>
+	<item id="ProgressBarGroove">
+		<desc>ProgressBar groove, painted before the contents.</desc>
+		
+		<states>
+			<desc>The state.</desc>
+			
+			<state id="normal">
+				<desc>Enabled.</desc>
+			</state>
+			<state id="disabled">
+				<desc>Disabled.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>ProgressBar orientation.</desc>
+
+			<state id="horizontal">
+				<desc>TabBar on top of the TabWidget.</desc>
+			</state>
+			<state id="vertical">
+				<desc>TabBar right of the TabWidget.</desc>
+			</state>
+		</states>
+	</item>
+	<item id="ProgressBarBar">
+		<desc>ProgressBar groove, painted before the contents.</desc>
+		
+		<states>
+			<desc>The state.</desc>
+			
+			<state id="normal">
+				<desc>Enabled.</desc>
+			</state>
+			<state id="disabled">
+				<desc>Disabled.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>ProgressBar orientation.</desc>
+			
+			<state id="horizontal">
+				<desc>TabBar on top of the TabWidget.</desc>
+			</state>
+			<state id="vertical">
+				<desc>TabBar right of the TabWidget.</desc>
+			</state>
+		</states>
+	</item>
+	<item id="TabBarTab">
+		<desc>A tab in the tab bar.</desc>
+		
+		<states>
+			<desc>The tab state.</desc>
+			
+			<state id="normal">
+				<desc>Normal button.</desc>
+			</state>
+			<state id="prelight">
+				<desc>Mouse rolled over the button.</desc>
+			</state>
+			<state id="disabled">
+				<desc>Disabled button.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>The selected state.</desc>
+			
+			<state id="selected">
+				<desc>Selected, It's the active tab.</desc>
+			</state>
+			<state id="nextIsSelected">
+				<desc>The next tab is selected.</desc>
+			</state>
+			<state id="previousIsSelected">
+				<desc>The previous tab is selected.</desc>
+			</state>
+			<state id="notAdjacent">
+				<desc>The tab is not next to a selected one.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>The position within the tabbar.</desc>
+			
+			<state id="beginning">
+				<desc>First tab in the bar.</desc>
+			</state>
+			<state id="middle">
+				<desc>Middle tab.</desc>
+			</state>
+			<state id="end">
+				<desc>Tab is at the end.</desc>
+			</state>
+			<state id="onlyOne">
+				<desc>There is only this single tab.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>TabBar orientation.</desc>
+			
+			<state id="north">
+				<desc>TabBar on top of the TabWidget.</desc>
+			</state>
+			<state id="east">
+				<desc>TabBar right of the TabWidget.</desc>
+			</state>
+			<state id="south">
+				<desc>TabBar at the bottom of the TabWidget.</desc>
+			</state>
+			<state id="west">
+				<desc>TabBar left of the TabWidget.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>The focused state.</desc>
+			
+			<state id="notFocused">
+				<desc>Normal, unfocused.</desc>
+			</state>
+			<state id="focused">
+				<desc>Has keyboard focus (doesn't make sense for disabled state).</desc>
+			</state>
+		</states>
+		<states>
+			<desc>The shape.</desc>
+			
+			<state id="rounded">
+				<desc>A normal tab.</desc>
+			</state>
+			<state id="triangular">
+				<desc>A 'triangular' tab.</desc>
+			</state>
+		</states>
+	</item>
+	<item id="Header">
+		<desc>A Header section, e.g. in a list view.</desc>
+		
+		<states>
+			<desc>The tab state.</desc>
+			
+			<state id="normal">
+				<desc>Enabled.</desc>
+			</state>
+			<state id="prelight">
+				<desc>Mouse rolled over the item.</desc>
+			</state>
+			<state id="disabled">
+				<desc>Disabled.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>The selected state.</desc>
+			
+			<state id="selected">
+				<desc>Selected, It's the active item.</desc>
+			</state>
+			<state id="nextIsSelected">
+				<desc>The next item is selected.</desc>
+			</state>
+			<state id="previousIsSelected">
+				<desc>The previous item is selected.</desc>
+			</state>
+			<state id="nextAndPreviousAreSelected">
+				<desc>The surounding header items selected.</desc>
+			</state>
+			<state id="notAdjacent">
+				<desc>The item is not next to a selected one.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>The position within the header.</desc>
+			
+			<state id="beginning">
+				<desc>First section in the bar.</desc>
+			</state>
+			<state id="middle">
+				<desc>Middle section.</desc>
+			</state>
+			<state id="end">
+				<desc>Section is at the end.</desc>
+			</state>
+			<state id="onlyOne">
+				<desc>There is only this single section.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>Header orientation.</desc>
+			
+			<state id="horizontal">
+				<desc>Horizontal oriented.</desc>
+			</state>
+			<state id="vertical">
+				<desc>Vertical oriented.</desc>
+			</state>
+		</states>
+	</item>
+	<item id="ToolBoxTab">
+		<desc>A section in a ToolBox.</desc>
+		
+		<states>
+			<desc>The state.</desc>
+			
+			<state id="normal">
+				<desc>Enabled.</desc>
+			</state>
+			<state id="pressed">
+				<desc>Pressed.</desc>
+			</state>
+<!--			<state id="prelight">
+				<desc>Mouse rolled over the item.</desc>
+			</state>-->
+			<state id="disabled">
+				<desc>Disabled.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>The selected state.</desc>
+			
+			<state id="selected">
+				<desc>Selected, It's the active item.</desc>
+			</state>
+			<state id="notSelected">
+				<desc>Selected, It's the active item.</desc>
+			</state>
+		</states>
+	</item>
+	<item id="ToolBarHandle">
+		<desc>A ToolBar handle.</desc>
+		
+		<states>
+			<desc>The state.</desc>
+			
+			<state id="normal">
+				<desc>Enabled.</desc>
+			</state>
+			<state id="pressed">
+				<desc>Pressed.</desc>
+			</state>
+			<state id="prelight">
+				<desc>Mouse rolled over the item.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>ToolBar orientation.</desc>
+			
+			<state id="horizontal">
+				<desc>Horizontal oriented.</desc>
+			</state>
+			<state id="vertical">
+				<desc>Vertical oriented.</desc>
+			</state>
+		</states>
+	</item>
+	<item id="ToolBarSeparator">
+		<desc>A ToolBar item separator.</desc>
+		
+		<states>
+			<desc>ToolBar orientation.</desc>
+			
+			<state id="horizontal">
+				<desc>Horizontal oriented.</desc>
+			</state>
+			<state id="vertical">
+				<desc>Vertical oriented.</desc>
+			</state>
+		</states>
+	</item>
+	<item id="MenuBarItem">
+		<desc>A menu item in a MenuBar.</desc>
+		
+		<states>
+			<desc>The state.</desc>
+			
+			<state id="normal">
+				<desc>Enabled.</desc>
+			</state>
+			<state id="pressed">
+				<desc>Pressed.</desc>
+			</state>
+			<state id="prelight">
+				<desc>Mouse rolled over the item.</desc>
+			</state>
+		</states>
+	</item>
+	<item id="MenuFrame">
+		<desc>A frame around a Menu, no states.</desc>
+	</item>
+	<item id="MenuItem">
+		<desc>A menu item in a MenuBar.</desc>
+		
+		<states>
+			<desc>The state.</desc>
+			
+<!--			<state id="normal">
+				<desc>TODO Enabled.</desc>
+			</state>-->
+			<state id="prelight">
+				<desc>Mouse rolled over the item.</desc>
+			</state>
+<!--			<state id="disabled">
+				<desc>TODO Disabled.</desc>
+			</state>-->
+		</states>
+<!--		<states>
+			<desc>TODO Menu properties.</desc>
+			
+			<state id="notCheckable">
+				<desc>No checkable menu item in the menu.</desc>
+			</state>
+			<state id="checkable">
+				<desc>The menu (not necessarily the item) is checkable, e.g. there is an additional check item column...</desc>
+			</state>
+		</states>-->
+	</item>
+	<item id="MenuItemSeparator">
+		<desc>A menu item separator.</desc>
+	</item>
+	<item id="ToolButton">
+		<desc>A tool button, usually in a ToolBar.</desc>
+		
+		<states>
+			<desc>The state.</desc>
+			
+			<state id="normal">
+				<desc>Enabled.</desc>
+			</state>
+			<state id="pressed">
+				<desc>Button is pressed.</desc>
+			</state>
+			<state id="prelight">
+				<desc>Mouse rolled over the item.</desc>
+			</state>
+			<state id="disabled">
+				<desc>Disabled.</desc>
+			</state>
+		</states>
+	</item>
+	<item id="Splitter">
+		<desc>A splitter layout handle.</desc>
+		
+		<states>
+			<desc>The state.</desc>
+			
+			<state id="normal">
+				<desc>Enabled.</desc>
+			</state>
+			<state id="pressed">
+				<desc>Button is pressed.</desc>
+			</state>
+			<state id="prelight">
+				<desc>Mouse rolled over the item.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>Splitter orientation.</desc>
+			
+			<state id="horizontal">
+				<desc>Horizontal oriented.</desc>
+			</state>
+			<state id="vertical">
+				<desc>Vertical oriented.</desc>
+			</state>
+		</states>
+		
+	</item>
+	<item id="DockWidgetFrame">
+		<desc>Frame around a floating DockWidget.</desc>
+	</item>
+	<item id="DockWidgetTitle">
+		<desc>Frame around a DockWidget.</desc>
+	</item>
+	<item id="WindowFrame">
+		<desc>Frame around a floating DockWidget.</desc>
+		
+		<states>
+			<desc>The state.</desc>
+			
+			<state id="active">
+				<desc>Active dock widget.</desc>
+			</state>
+			<state id="inactive">
+				<desc>Mouse rolled over the item.</desc>
+			</state>
+		</states>
+	</item>
+	<item id="WindowTitle">
+		<desc>Frame around a DockWidget.</desc>
+		
+		<states>
+			<desc>The state.</desc>
+			
+			<state id="active">
+				<desc>Active dock widget.</desc>
+			</state>
+			<state id="inactive">
+				<desc>Mouse rolled over the item.</desc>
+			</state>
+		</states>
+	</item>
+	<item id="WindowButton">
+		<desc>Frame around a DockWidget.</desc>
+		
+		<states>
+			<desc>The window state.</desc>
+			
+			<state id="active">
+				<desc>Active dock widget.</desc>
+			</state>
+			<state id="inactive">
+				<desc>Mouse rolled over the item.</desc>
+			</state>
+		</states>
+		<states>
+			<desc>The button state.</desc>
+			
+			<state id="normal">
+				<desc>Enabled.</desc>
+			</state>
+			<state id="pressed">
+				<desc>Button is pressed.</desc>
+			</state>
+<!--			<state id="prelight">
+				<desc>Mouse rolled over the item.</desc>
+			</state>-->
+		</states>
+		<states>
+			<desc>The button type.</desc>
+			
+			<state id="minimize">
+				<desc>Active dock widget.</desc>
+			</state>
+			<state id="maximize">
+				<desc>Mouse rolled over the item.</desc>
+			</state>
+			<state id="restore">
+				<desc>Mouse rolled over the item.</desc>
+			</state>
+			<state id="close">
+				<desc>Mouse rolled over the item.</desc>
+			</state>
+			<state id="shade">
+				<desc>Mouse rolled over the item.</desc>
+			</state>
+			<state id="unshade">
+				<desc>Mouse rolled over the item.</desc>
+			</state>
+			<state id="help">
+				<desc>Mouse rolled over the item.</desc>
 			</state>
 		</states>
 	</item>
