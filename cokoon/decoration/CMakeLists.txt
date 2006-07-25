@@ -15,12 +15,12 @@ kde4_install_libtool_file( ${PLUGIN_INSTALL_DIR} kwin3_cokoon )
 
 target_link_libraries(kwin3_cokoon  ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} cokoon kdecorations )
 
-install_targets(${PLUGIN_INSTALL_DIR} kwin3_cokoon )
+install(TARGETS kwin3_cokoon DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 
 ########### install files ###############
 
-install_files( ${DATA_INSTALL_DIR}/kwin/ FILES  cokoon.desktop )
+install(FILES cokoon.desktop DESTINATION ${DATA_INSTALL_DIR}/kwin/  )
 
 
 

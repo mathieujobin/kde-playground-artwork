@@ -5,12 +5,12 @@ include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
 set(COKOONTEST_LIB_SRCS ../bridges.cpp ../expression.cpp ../document.cpp ../object.cpp ../tile.cpp ../tilesource.cpp ../tilelayout.cpp)
 
 ########### next target ###############
+if(KDE4_BUILD_TESTS)
 
 set(cokoontest_SRCS cokoontest.cpp ${COKOONTEST_LIB_SRCS})
 
 kde4_automoc(${cokoontest_SRCS})
 
-if(KDE4_BUILD_TESTS)
 
 kde4_add_executable(cokoontest ${cokoontest_SRCS})
 
@@ -19,12 +19,12 @@ target_link_libraries(cokoontest  ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} )
 endif(KDE4_BUILD_TESTS)
 
 ########### next target ###############
+if(KDE4_BUILD_TESTS)
 
 set(themewidget_SRCS themewidget.cpp ${COKOONTEST_LIB_SRCS})
 
 kde4_automoc(${themewidget_SRCS})
 
-if(KDE4_BUILD_TESTS)
 
 kde4_add_executable(themewidget ${themewidget_SRCS})
 
