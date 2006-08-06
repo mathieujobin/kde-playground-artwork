@@ -19,4 +19,4 @@ install_targets(${PLUGIN_INSTALL_DIR}/plugins/styles/ cokoonstyle )
 
 ########### install files ###############
 
-install_files(FILES cokoonstyle.themerc DESTINATION ${DATA_INSTALL_DIR}/kstyle/themes  )
+install(FILES cokoonstyle.themerc DESTINATION ${DATA_INSTALL_DIR}/kstyle/themes  )
