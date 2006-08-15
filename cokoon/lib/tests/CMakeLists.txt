@@ -1,3 +1,4 @@
+if(KDE4_BUILD_TESTS)
 
 include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
 
@@ -5,7 +6,6 @@ include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
 set(COKOONTEST_LIB_SRCS ../bridges.cpp ../expression.cpp ../document.cpp ../object.cpp ../tile.cpp ../tilesource.cpp ../tilelayout.cpp)
 
 ########### next target ###############
-if(KDE4_BUILD_TESTS)
 
 set(cokoontest_SRCS cokoontest.cpp ${COKOONTEST_LIB_SRCS})
 
@@ -16,7 +16,6 @@ kde4_add_executable(cokoontest ${cokoontest_SRCS})
 
 target_link_libraries(cokoontest  ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} )
 
-endif(KDE4_BUILD_TESTS)
 
 ########### next target ###############
 if(KDE4_BUILD_TESTS)
@@ -32,23 +31,3 @@ target_link_libraries(themewidget  ${KDE4_KDECORE_LIBS} )
 
 endif(KDE4_BUILD_TESTS)
 
-
-
-#original Makefile.am contents follow:
-
-#INCLUDES = $(all_includes)
-#
-#AM_LDFLAGS = $(QT_LDFLAGS) $(X_LDFLAGS) $(KDE_RPATH)
-#
-#check_PROGRAMS = cokoontest themewidget
-#
-#TESTS = cokoontest
-#
-#METASOURCES = AUTO
-#
-#LDADD = ../libcokoon.la $(LIB_KDEUI) $(LIB_KDECORE) -lQtTest_debug
-#
-#cokoontest_SOURCES = cokoontest.cpp
-#
-#themewidget_SOURCES = themewidget.cpp
-#

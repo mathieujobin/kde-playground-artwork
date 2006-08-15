@@ -16,12 +16,6 @@ add_subdirectory( lib )
 add_subdirectory( decoration )
 add_subdirectory( style )
 
-include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
 
 
 
-
-#original Makefile.am contents follow:
-
-#include $(top_srcdir)/admin/Doxyfile.am
-#SUBDIRS=lib decoration
