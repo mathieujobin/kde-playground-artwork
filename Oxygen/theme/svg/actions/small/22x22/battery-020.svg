@@ -15,13 +15,28 @@
    sodipodi:version="0.32"
    inkscape:version="0.44"
    version="1.0"
-   sodipodi:docbase="/home/pinheiro/artwork/Oxygen/theme/svg/actions/small/22x22svg's"
-   sodipodi:docname="battery-20.svg"
+   sodipodi:docbase="/home/pinheiro/artwork/Oxygen/theme/svg/actions/small/22x22"
+   sodipodi:docname="battery-020.svg"
    inkscape:export-filename="/home/pinheiro/artwork/Oxygen/theme/svg/actions/small/battery22-100.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
      id="defs1309">
+    <linearGradient
+       id="linearGradient2845">
+      <stop
+         style="stop-color:#bf0000;stop-opacity:1;"
+         offset="0"
+         id="stop2847" />
+      <stop
+         id="stop2853"
+         offset="0.5"
+         style="stop-color:#bf0000;stop-opacity:0;" />
+      <stop
+         style="stop-color:#bf0000;stop-opacity:0;"
+         offset="1"
+         id="stop2849" />
+    </linearGradient>
     <linearGradient
        inkscape:collect="always"
        id="linearGradient3846">
@@ -402,6 +417,17 @@
        y2="18.5"
        gradientUnits="userSpaceOnUse"
        spreadMethod="reflect" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2845"
+       id="linearGradient2851"
+       x1="-70.026154"
+       y1="-107.9012"
+       x2="-31.896311"
+       y2="-107.9012"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="reflect"
+       gradientTransform="matrix(1,0,0,0.607494,0,-42.03426)" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -622,5 +648,15 @@
        id="path3840"
        style="opacity:1;fill:url(#radialGradient3842);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.04;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:4;stroke-opacity:1"
        sodipodi:type="arc" />
+    <rect
+       rx="0.04110394"
+       transform="scale(-1,-1)"
+       ry="0.024970405"
+       y="-113"
+       x="-84.610558"
+       height="10.832777"
+       width="43.851925"
+       id="rect1957"
+       style="opacity:1;fill:url(#linearGradient2851);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.59500003;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:4;stroke-opacity:1" />
   </g>
 </svg>
