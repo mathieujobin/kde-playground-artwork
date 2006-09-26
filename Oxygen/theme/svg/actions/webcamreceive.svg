@@ -13,10 +13,10 @@
    height="128"
    id="svg1307"
    sodipodi:version="0.32"
-   inkscape:version="0.43+0.44pre3"
+   inkscape:version="0.44"
    version="1.0"
-   sodipodi:docbase="/home/pinheiro/artwork/Oxygen/theme/svg/actions"
-   sodipodi:docname="webcamreceive2.svg">
+   sodipodi:docbase="/Users/David/Progetti/oxygen-svn/artwork/Oxygen/theme/svg/actions"
+   sodipodi:docname="webcamreceive.svg">
   <defs
      id="defs1309">
     <linearGradient
@@ -510,7 +510,7 @@
          offset="0"
          id="stop2227" />
       <stop
-         style="stop-color:#42ad33;stop-opacity:1;"
+         style="stop-color:#00bf00;stop-opacity:1;"
          offset="1"
          id="stop2229" />
     </linearGradient>
@@ -523,6 +523,50 @@
        x2="67.887672"
        y2="39.095695"
        gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       id="polygon3477_1_"
+       gradientUnits="userSpaceOnUse"
+       x1="557.27148"
+       y1="-568.40808"
+       x2="567.27148"
+       y2="-568.40808"
+       gradientTransform="matrix(-3.9299,0,0,3.9299,2273.809,2297.625)">
+      <stop
+         offset="0"
+         style="stop-color:#FFFFFF"
+         id="stop7328" />
+      <stop
+         offset="0.5413"
+         style="stop-color:#FCFCFC"
+         id="stop7330" />
+      <stop
+         offset="0.8664"
+         style="stop-color:#F4F4F4"
+         id="stop7332" />
+      <stop
+         offset="1"
+         style="stop-color:#EEEEEE"
+         id="stop7334" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2225"
+       id="linearGradient14242"
+       gradientUnits="userSpaceOnUse"
+       x1="62.112335"
+       y1="90.513916"
+       x2="67.887672"
+       y2="39.095695" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#polygon3477_1_"
+       id="linearGradient14244"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-3.9299,0,0,3.9299,2273.809,2297.625)"
+       x1="557.27148"
+       y1="-568.40808"
+       x2="567.27148"
+       y2="-568.40808" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -531,7 +575,7 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="5.9279779"
+     inkscape:zoom="1"
      inkscape:cx="64.135361"
      inkscape:cy="63.808169"
      inkscape:current-layer="layer1"
@@ -542,9 +586,9 @@
      showguides="true"
      inkscape:guide-bbox="true"
      inkscape:window-width="1106"
-     inkscape:window-height="958"
-     inkscape:window-x="468"
-     inkscape:window-y="25">
+     inkscape:window-height="852"
+     inkscape:window-x="77"
+     inkscape:window-y="22">
     <sodipodi:guide
        orientation="horizontal"
        position="32.155576"
@@ -853,11 +897,10 @@
        inkscape:r_cx="true"
        inkscape:r_cy="true" />
     <g
-       transform="translate(31.97416,28.93525)"
-       id="g25305"
-       inkscape:r_cx="true"
-       inkscape:r_cy="true">
+       id="g14238"
+       transform="translate(-0.277159,5.155752)">
       <circle
+         transform="translate(31.97416,28.93525)"
          r="31.302999"
          ry="8.0010004"
          rx="8.0010004"
@@ -868,38 +911,14 @@
          sodipodi:cy="62.605999"
          sodipodi:rx="31.302999"
          sodipodi:ry="31.302999"
-         style="fill:url(#linearGradient4564);fill-opacity:1"
+         style="fill:url(#linearGradient14242);fill-opacity:1"
          inkscape:r_cx="true"
          inkscape:r_cy="true" />
-      <linearGradient
-         gradientTransform="matrix(-3.9299,0,0,3.9299,2273.809,2297.625)"
-         y2="-568.40808"
-         x2="567.27148"
-         y1="-568.40808"
-         x1="557.27148"
-         gradientUnits="userSpaceOnUse"
-         id="polygon3477_1_">
-        <stop
-           id="stop7328"
-           style="stop-color:#FFFFFF"
-           offset="0" />
-        <stop
-           id="stop7330"
-           style="stop-color:#FCFCFC"
-           offset="0.5413" />
-        <stop
-           id="stop7332"
-           style="stop-color:#F4F4F4"
-           offset="0.8664" />
-        <stop
-           id="stop7334"
-           style="stop-color:#EEEEEE"
-           offset="1" />
-      </linearGradient>
       <polygon
+         transform="translate(31.97416,28.93525)"
          points="48.76,57.287 45.486,60.565 65.136,83.487 84.785,60.565 81.512,57.287 68.409,68.629 68.409,44.19 61.862,44.19 61.862,68.9 48.76,57.287 "
          id="polygon3477"
-         style="fill:url(#polygon3477_1_)"
+         style="fill:url(#linearGradient14244)"
          inkscape:r_cx="true"
          inkscape:r_cy="true" />
     </g>

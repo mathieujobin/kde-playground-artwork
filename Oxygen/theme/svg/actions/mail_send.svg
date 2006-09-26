@@ -7,18 +7,48 @@
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="128"
    height="128"
    id="svg3876"
    sodipodi:version="0.32"
-   inkscape:version="0.43"
+   inkscape:version="0.44"
    version="1.0"
-   sodipodi:docbase="/Users/David/Documents/Version Cue/Oxygen/documents/FTP/Nuno/oxygen/svg/actions"
-   sodipodi:docname="sendmail.svg">
+   sodipodi:docbase="/Users/David/Progetti/oxygen-svn/artwork/Oxygen/theme/svg/actions"
+   sodipodi:docname="mail_send.svg">
   <defs
      id="defs3878">
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#polygon3477_1_"
+       id="linearGradient6677"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-3.9299,0,0,3.9299,2273.809,2297.625)"
+       x1="557.27148"
+       y1="-568.40808"
+       x2="567.27148"
+       y2="-568.40808" />
+    <linearGradient
+       id="linearGradient5763">
+      <stop
+         style="stop-color:#0057ae;stop-opacity:1;"
+         offset="0"
+         id="stop5765" />
+      <stop
+         id="stop5767"
+         offset="1"
+         style="stop-color:#06f;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5763"
+       id="linearGradient6675"
+       gradientUnits="userSpaceOnUse"
+       x1="67.355637"
+       y1="84.424911"
+       x2="67.041977"
+       y2="23.704058" />
     <linearGradient
        inkscape:collect="always"
        id="linearGradient28088">
@@ -526,17 +556,17 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.25"
-     inkscape:cx="-848.15305"
-     inkscape:cy="72.318022"
+     inkscape:zoom="2"
+     inkscape:cx="185.66087"
+     inkscape:cy="91.458473"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
-     inkscape:window-width="1653"
+     inkscape:window-width="1440"
      inkscape:window-height="753"
-     inkscape:window-x="525"
-     inkscape:window-y="215"
+     inkscape:window-x="-28"
+     inkscape:window-y="71"
      showguides="true"
      inkscape:guide-bbox="true" />
   <metadata
@@ -899,24 +929,30 @@
        style="fill:#ff0000;fill-opacity:1"
        transform="matrix(4,0,0,4,1.01049,480)" />
     <g
-       id="g25305"
-       transform="translate(-1.00001,1.39438)">
+       id="g6679"
+       transform="translate(-286.1022,-398.1726)">
       <circle
-         transform="matrix(3.912368,0,0,3.912368,-465.6799,470.894)"
-         sodipodi:ry="8.0010004"
-         sodipodi:rx="8.0010004"
-         sodipodi:cy="-96.000999"
-         sodipodi:cx="143.99899"
-         style="fill:#0066ff;fill-opacity:1"
-         r="8.0010004"
-         cy="-96.000999"
-         cx="143.99899"
-         id="circle3581" />
+         inkscape:r_cy="true"
+         inkscape:r_cx="true"
+         style="fill:url(#linearGradient6675);fill-opacity:1"
+         sodipodi:ry="31.302999"
+         sodipodi:rx="31.302999"
+         sodipodi:cy="62.605999"
+         sodipodi:cx="65"
+         id="circle6671"
+         cy="62.605999"
+         cx="65"
+         rx="8.0010004"
+         ry="8.0010004"
+         r="31.302999"
+         transform="translate(317.7992,432.2636)" />
       <polygon
-         transform="matrix(3.92986,0,0,3.92986,3.24455,472.4332)"
-         id="polygon3477"
-         points="28.167,-94.612 29,-95.446 24,-101.279 19,-95.446 19.833,-94.612 23.167,-97.498 23.167,-91.279 24.833,-91.279 24.833,-97.567 28.167,-94.612 "
-         style="fill:url(#linearGradient25309)" />
+         transform="matrix(1,0,0,-1,317.6637,558.7081)"
+         inkscape:r_cy="true"
+         inkscape:r_cx="true"
+         style="fill:url(#linearGradient6677)"
+         id="polygon6673"
+         points="48.76,57.287 45.486,60.565 65.136,83.487 84.785,60.565 81.512,57.287 68.409,68.629 68.409,44.19 61.862,44.19 61.862,68.9 48.76,57.287 " />
     </g>
   </g>
 </svg>
