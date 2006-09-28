@@ -20,6 +20,18 @@
   <defs
      id="defs1309">
     <linearGradient
+       inkscape:collect="always"
+       id="linearGradient3135">
+      <stop
+         style="stop-color:black;stop-opacity:1;"
+         offset="0"
+         id="stop3137" />
+      <stop
+         style="stop-color:black;stop-opacity:0;"
+         offset="1"
+         id="stop3139" />
+    </linearGradient>
+    <linearGradient
        id="linearGradient3233">
       <stop
          style="stop-color:#363636;stop-opacity:1;"
@@ -1352,7 +1364,7 @@
        xlink:href="#linearGradient6119"
        id="radialGradient7018"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1.189465,0,0,0.951829,222.1351,-118.3621)"
+       gradientTransform="matrix(1.702109,0,0,1.172727,280.8329,-172.0906)"
        cx="-114.50024"
        cy="243.22734"
        fx="-114.50024"
@@ -1414,6 +1426,17 @@
        x2="80.75"
        y2="75.796143"
        gradientUnits="userSpaceOnUse" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3135"
+       id="radialGradient3141"
+       cx="40.827896"
+       cy="10.100401"
+       fx="40.129253"
+       fy="1.6483246"
+       r="29.482988"
+       gradientTransform="matrix(0.100366,0.459178,-0.206866,4.521632e-2,38.94695,2.702862)"
+       gradientUnits="userSpaceOnUse" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -1422,9 +1445,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="16"
-     inkscape:cx="94.44868"
-     inkscape:cy="39.418064"
+     inkscape:zoom="2.8284271"
+     inkscape:cx="56.241517"
+     inkscape:cy="98.137946"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:document-units="px"
@@ -1539,6 +1562,10 @@
        y="30.52318"
        ry="20.524298"
        rx="20.524298" />
+    <path
+       id="path2247"
+       d="M 47.828872,18.026781 C 31.55893,18.02678 18.366574,31.260516 18.366574,47.530459 L 36.159816,47.530459 C 46.637893,34.080139 56.1084,26.75005 64.132447,22.950957 C 59.457475,19.838126 53.855057,18.026781 47.828872,18.026781 z M 66.160049,24.440624 C 59.556468,29.491622 53.006106,37.634597 46.504723,47.530459 L 77.332549,47.530459 C 77.332549,38.188279 72.955934,29.850151 66.160049,24.440624 z "
+       style="opacity:0.92;fill:url(#radialGradient3141);fill-opacity:1.0;fill-rule:nonzero;stroke:none;stroke-width:0.30000001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:4;stroke-opacity:1" />
     <rect
        rx="20.524298"
        ry="20.524298"
