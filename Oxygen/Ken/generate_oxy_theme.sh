@@ -47,9 +47,11 @@ echo "-----------------------------"
 echo "Exporting special small versions"
   for smallsize in $smallsizes; do
   for folder in $folders; do
-    for icon in $(ls $folder/small/${smallsize}x${smallsize}/*.svg); do
-      inkscape --without-gui --export-png="../oxygen/${smallsize}x${smallsize}/"$( echo $icon | cut -d . -f -1 ).png --export-dpi=72 --export-background-opacity=0 --export-width=${smallsize} --export-height=${smallsize} $icon > /dev/null
+    cd $folder/small/${smallsize}x${smallsize}
+    for icon in $(ls *.svg); do
+      inkscape --without-gui --export-png="${curdir}/../oxygen/${smallsize}x${smallsize}/${folder}/"$( echo $icon | cut -d . -f -1 ).png --export-dpi=72 --export-background-opacity=0 --export-width=${smallsize} --export-height=${smallsize} $icon > /dev/null
     done
+    cd $curdir
   done
   done
 fi
