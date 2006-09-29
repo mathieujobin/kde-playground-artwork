@@ -58,7 +58,7 @@ echo "-----------------------------"
 echo "Creating index.theme"
 
 #create theme file
-cd ../
+cd ../oxygen/
 cat > index.theme <<EOF
 [Icon Theme]
 Name=Oxygen
