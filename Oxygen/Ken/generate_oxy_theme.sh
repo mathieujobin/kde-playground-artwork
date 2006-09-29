@@ -3,9 +3,9 @@
 sizes="128x128 64x64 48x48 32x32 22x22 16x16"
 folders="actions apps devices filesystems mimetypes"
 smallexport="yes"
-smallfolders="apps/small"
-smallsize="22" #size of small version - currently only works with 22x22!
+smallsizes="16 22"
 date=`date '+%F-%H-%M'`
+curdir=`pwd`
 
 #create every size dir and within the size dir create all the icon folders
 for size in $sizes; do
@@ -15,13 +15,6 @@ for size in $sizes; do
     echo "$prefix/$folder created"
   done
 done
-if [ "$smallexport" == "yes" ]; then
-    prefix="../oxygen/${smallsize}x${smallsize}"
-    for folder in $smallfolders; do
-      mkdir -p $prefix/$folder
-      echo "$prefix/$folder created"
-    done
-fi
 
 echo "-----------------------------"
 echo "Exporting to 128 and smaller (if available)"
@@ -32,15 +25,6 @@ for folder in $folders; do
     inkscape --without-gui --export-png="../oxygen/128x128/"$( echo $icon | cut -d . -f -1 ).png --export-dpi=72 --export-background-opacity=0 --export-width=128 --export-height=128 $icon > /dev/null
   done
 done
-
-#export small versions if available
-if [ "$smallexport" == "yes" ]; then
-  for folder in $smallfolders; do
-    for icon in $(ls $folder/*.svg); do
-      inkscape --without-gui --export-png="../oxygen/${smallsize}x${smallsize}/"$( echo $icon | cut -d . -f -1 ).png --export-dpi=72 --export-background-opacity=0 --export-width=${smallsize} --export-height=${smallsize} $icon > /dev/null
-    done
-  done
-fi
 
 cd ../oxygen/128x128
 
@@ -55,19 +39,18 @@ for i in $(ls */*.png); do
   convert -filter Sinc -resize 16x16 -sharpen 1 -contrast $i "../16x16/"$i
 done
 
-#do a resize for small exported icons
+cd $curdir
+
+#export small versions if available
 if [ "$smallexport" == "yes" ]; then
-  cd ../${smallsize}x${smallsize}
-
-  #first fix the directory which is currently size/iconfolder/smallsize
-  for folder in $smallfolders; do
-    mv $folder/* $folder/..
-    rm -r $folder
+echo "-----------------------------"
+echo "Exporting special small versions"
+  for smallsize in $smallsizes; do
+  for folder in $folders; do
+    for icon in $(ls $folder/small/${smallsize}x${smallsize}/*.svg); do
+      inkscape --without-gui --export-png="../oxygen/${smallsize}x${smallsize}/"$( echo $icon | cut -d . -f -1 ).png --export-dpi=72 --export-background-opacity=0 --export-width=${smallsize} --export-height=${smallsize} $icon > /dev/null
+    done
   done
-
-  #resize to 16x16
-  for i in $(ls */*.png); do 
-      convert -filter Sinc -resize 16x16 -sharpen 1 -contrast $i "../16x16/"$i
   done
 fi
 
