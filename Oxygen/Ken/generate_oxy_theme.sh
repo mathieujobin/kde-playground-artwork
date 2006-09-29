@@ -34,9 +34,9 @@ echo "Scaling PNGs, be patient DUDE"
 for i in $(ls */*.png); do 
   convert -filter Sinc -resize 64x64 $i "../64x64/"$i 
   convert -filter Sinc -resize 48x48 $i "../48x48/"$i
-  convert -filter Sinc -resize 32x32 -sharpen 1 $i "../32x32/"$i 
-  convert -filter Sinc -resize 22x22 -sharpen 1 -contrast $i "../22x22/"$i
-  convert -filter Sinc -resize 16x16 -sharpen 1 -contrast $i "../16x16/"$i
+  convert -filter Sinc -resize 32x32 $i "../32x32/"$i 
+  convert -filter Sinc -resize 22x22 $i "../22x22/"$i
+  convert -filter Sinc -resize 16x16 $i "../16x16/"$i
 done
 
 cd $curdir
