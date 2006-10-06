@@ -675,9 +675,11 @@ void SUSE2Client::update_captionBuffer()
     int logoOffset = Handler()->titleLogoOffset();
     QFontMetrics fm(s_titleFont);
     int captionWidth  = fm.width(c);
+    int logoWidth = 0;
 
     if (Handler()->titleLogo()) {
-        captionWidth += logo.width() + logoOffset;
+        logoWidth = logo.width() + logoOffset;
+        captionWidth += logoWidth;
         if (logo.height()+1 > fm.height())
             logo.scaleHeight(fm.height()-1);
     }
@@ -721,18 +723,12 @@ void SUSE2Client::update_captionBuffer()
     }
     painter.setFont(s_titleFont);
     painter.setPen(Handler()->getColor(TitleFont,true));
-    if (Handler()->titleLogo()) {
-        painter.drawText(aCaptionBuffer->rect().left(), aCaptionBuffer->rect().top() + titleEdgeTop,
-                         aCaptionBuffer->rect().width()-logo.width()-logoOffset, aCaptionBuffer->rect().height() - titleEdgeTop-titleEdgeBottom,
-                         AlignCenter, c);
+    painter.drawText(aCaptionBuffer->rect().left(), aCaptionBuffer->rect().top() + titleEdgeTop,
+            aCaptionBuffer->rect().width()-logoWidth, aCaptionBuffer->rect().height() - titleEdgeTop-titleEdgeBottom,
+            AlignCenter, c);
+    if (Handler()->titleLogo())
         painter.drawImage(captionWidth - logo.width(), aCaptionBuffer->rect().top() + TOPMARGIN, logo);
-    } else {
-        painter.drawText(aCaptionBuffer->rect().left(), aCaptionBuffer->rect().top() + titleEdgeTop,
-                         aCaptionBuffer->rect().width(), aCaptionBuffer->rect().height() - titleEdgeTop - titleEdgeBottom,
-                         AlignCenter, c);
-    }
     painter.end();
-
 
     // inactive -> no shadow and no logo
     iCaptionBuffer->resize(captionWidth+4, titleHeight + TOPMARGIN + DECOHEIGHT);
@@ -741,7 +737,7 @@ void SUSE2Client::update_captionBuffer()
     painter.setFont(s_titleFont);
     painter.setPen(Handler()->getColor(TitleFont,false));
     painter.drawText(iCaptionBuffer->rect().left(), iCaptionBuffer->rect().top() + titleEdgeTop,
-                     iCaptionBuffer->rect().width(), iCaptionBuffer->rect().height() - titleEdgeTop - titleEdgeBottom,
+                     iCaptionBuffer->rect().width() - logoWidth, iCaptionBuffer->rect().height() - titleEdgeTop - titleEdgeBottom,
                      AlignCenter, c);
     painter.end();
 
