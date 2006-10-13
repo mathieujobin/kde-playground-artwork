@@ -7,7 +7,7 @@ include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
 
 set(cokoon_PART_SRCS cokoonstyle.cpp )
 
-kde4_automoc(${cokoon_PART_SRCS})
+kde4_automoc(cokoon ${cokoon_PART_SRCS})
 
 kde4_add_plugin(cokoonstyle ${cokoon_PART_SRCS})
 

@@ -9,7 +9,7 @@ set(COKOONTEST_LIB_SRCS ../bridges.cpp ../expression.cpp ../document.cpp ../obje
 
 set(cokoontest_SRCS cokoontest.cpp ${COKOONTEST_LIB_SRCS})
 
-kde4_automoc(${cokoontest_SRCS})
+kde4_automoc(cokoontest ${cokoontest_SRCS})
 
 
 kde4_add_executable(cokoontest ${cokoontest_SRCS})
@@ -22,7 +22,7 @@ if(KDE4_BUILD_TESTS)
 
 set(themewidget_SRCS themewidget.cpp ${COKOONTEST_LIB_SRCS})
 
-kde4_automoc(${themewidget_SRCS})
+kde4_automoc(themewidget ${themewidget_SRCS})
 
 
 kde4_add_executable(themewidget ${themewidget_SRCS})
