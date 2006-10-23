@@ -15,7 +15,7 @@ set(cokoon_LIB_SRCS
    tilesource.cpp 
    bridges.cpp )
 
-kde4_automoc(cokoon ${cokoon_LIB_SRCS})
+kde4_automoc(${cokoon_LIB_SRCS})
 
 kde4_add_library(cokoon SHARED ${cokoon_LIB_SRCS})
 
