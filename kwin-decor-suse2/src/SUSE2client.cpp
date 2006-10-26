@@ -135,18 +135,10 @@ int SUSE2Client::layoutMetric(LayoutMetric lm, bool respectWindowState, const KC
     switch (lm) {
         case LM_BorderLeft:
         case LM_BorderRight:
-            if (respectWindowState && maximized) {
-                return 0;
-            } else {
-                return Handler()->borderSize();
-            }
-
         case LM_BorderBottom:
-            if (respectWindowState && maximized && !isShade()) {
+            if (respectWindowState && maximized)
                 return 0;
-            } else {
-                return Handler()->borderSize();
-            }
+            return Handler()->borderSize();
 
         case LM_TitleEdgeTop:
             if (respectWindowState && maximized) {
@@ -165,7 +157,7 @@ int SUSE2Client::layoutMetric(LayoutMetric lm, bool respectWindowState, const KC
         case LM_TitleEdgeLeft:
         case LM_TitleEdgeRight:
             if (respectWindowState && maximized) {
-                return 1;
+                return 0;
             } else {
                 return 6;
             }
@@ -176,12 +168,6 @@ int SUSE2Client::layoutMetric(LayoutMetric lm, bool respectWindowState, const KC
 
         case LM_ButtonWidth:
         case LM_ButtonHeight:
-            if (respectWindowState && isToolWindow()) {
-                return Handler()->titleHeightTool();
-            } else {
-                return Handler()->titleHeight() - 1;
-            }
-
         case LM_TitleHeight:
             if (respectWindowState && isToolWindow()) {
                 return Handler()->titleHeightTool();
@@ -193,11 +179,7 @@ int SUSE2Client::layoutMetric(LayoutMetric lm, bool respectWindowState, const KC
             return 1;
 
         case LM_ButtonMarginTop:
-            if (respectWindowState && maximized) {
-                return 1;
-            } else {
-                return 0;
-            }
+            return 0;
 
         case LM_ExplicitButtonSpacer:
             return 3;
