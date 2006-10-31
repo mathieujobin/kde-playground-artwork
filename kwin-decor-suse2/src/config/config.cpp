@@ -74,6 +74,7 @@ SUSE2Config::SUSE2Config(KConfig *config, QWidget *parent)
     connect(m_dialog->menuClose, SIGNAL(toggled(bool)), SIGNAL(changed()));
     connect(m_dialog->titleShadow, SIGNAL(toggled(bool)), SIGNAL(changed()));
     connect(m_dialog->addSpace, SIGNAL(valueChanged(int)), SIGNAL(changed()));
+    connect(m_dialog->titlebarStyle, SIGNAL(activated(int)), SIGNAL(changed()));
 
     connect(m_dialog->buttonType, SIGNAL(activated(int)), SIGNAL(changed()));
     connect(m_dialog->customColors, SIGNAL(toggled(bool)), SIGNAL(changed()));
@@ -121,6 +122,9 @@ void SUSE2Config::load(KConfig *)
 
     int addSpace = m_config->readNumEntry("AddSpace", 4);
     m_dialog->addSpace->setValue(addSpace);
+
+    int titlebarStyle = m_config->readNumEntry("TitleBarStyle", 0);
+    m_dialog->titlebarStyle->setCurrentItem(titlebarStyle);
 
     int titleButtonType = m_config->readNumEntry("TitleBarButtonType", 0);
     m_dialog->buttonType->setCurrentItem(titleButtonType);
@@ -186,6 +190,7 @@ void SUSE2Config::save(KConfig *) const
     m_config->writeEntry("CloseOnMenuDoubleClick", m_dialog->menuClose->isChecked());
     m_config->writeEntry("TitleShadow", m_dialog->titleShadow->isChecked());
     m_config->writeEntry("AddSpace", m_dialog->addSpace->value());
+    m_config->writeEntry("TitleBarStyle", m_dialog->titlebarStyle->currentItem());
 
     m_config->writeEntry("TitleBarButtonType", m_dialog->buttonType->currentItem());
     m_config->writeEntry("CustomColors", m_dialog->customColors->isChecked());
@@ -215,6 +220,7 @@ void SUSE2Config::defaults()
     m_dialog->menuClose->setChecked(false);
     m_dialog->titleShadow->setChecked(true);
     m_dialog->addSpace->setValue(4);
+    m_dialog->titlebarStyle->setCurrentItem(0);
 
     m_dialog->buttonType->setCurrentItem(0);
     m_dialog->customColors->setChecked(false);

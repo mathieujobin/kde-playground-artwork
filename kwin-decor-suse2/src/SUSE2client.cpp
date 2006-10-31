@@ -66,7 +66,7 @@ SUSE2Client::~SUSE2Client()
 // pure virtual methods from KCommonDecoration
 QString SUSE2Client::visibleName() const
 {
-    return i18n("SUSE2 (Version %1)").arg("0.3.5");
+    return i18n("SUSE2 (Version %1)").arg("0.3.99");
 }
 
 QString SUSE2Client::defaultButtonsLeft() const
@@ -598,18 +598,35 @@ void SUSE2Client::create_pixmaps()
     aTitleBarTile = new QPixmap(1, titleHeight + TOPMARGIN + DECOHEIGHT);
     painter.begin(aTitleBarTile);
     painter.drawPixmap(0, 0, tempPixmap);
-    QImage t(1, (titleHeight + TOPMARGIN + DECOHEIGHT)/3 + 1, 32 );
-    t = KImageEffect::gradient(QSize(1, t.height()),
-                               Handler()->getColor(TitleGradientFrom, true).light(130),
-                               Handler()->getColor(TitleGradientTo, true),
-                               KImageEffect::VerticalGradient/*, 100, 100*/);
-    painter.drawImage(0, 2, t, 0, 0, -1, tempPixmap.height()-2);
-    t.create(t.width(), t.height()*2, t.depth());
-    t = KImageEffect::unbalancedGradient(QSize(1, t.height()),
-                               Handler()->getColor(TitleGradientTo, true),
-                               Handler()->getColor(TitleGradientFrom, true),
-                               KImageEffect::VerticalGradient, 100, 100);
-    painter.drawImage(0, t.height()/2, t, 0, 0, -1, t.height());
+
+    QImage t;
+    if (Handler()->titlebarStyle() == 0) {
+        t = QImage(1, (titleHeight + TOPMARGIN + DECOHEIGHT)/3 + 1, 32 );
+        t = KImageEffect::gradient(QSize(1, t.height()),
+                                Handler()->getColor(TitleGradientFrom, true).light(130),
+                                Handler()->getColor(TitleGradientTo, true),
+                                KImageEffect::VerticalGradient/*, 100, 100*/);
+        painter.drawImage(0, 2, t, 0, 0, -1, tempPixmap.height()-2);
+        t.create(t.width(), t.height()*2, t.depth());
+        t = KImageEffect::unbalancedGradient(QSize(1, t.height()),
+                                Handler()->getColor(TitleGradientTo, true),
+                                Handler()->getColor(TitleGradientFrom, true),
+                                KImageEffect::VerticalGradient, 100, 100);
+        painter.drawImage(0, t.height()/2, t, 0, 0, -1, t.height());
+    } else {
+        t = QImage(1, (titleHeight + TOPMARGIN + DECOHEIGHT)/2 + 1, 32 );
+        t = KImageEffect::gradient(QSize(1, t.height()),
+                                Handler()->getColor(TitleGradientFrom, true).light(150),
+                                Handler()->getColor(TitleGradientTo, true).light(110),
+                                KImageEffect::VerticalGradient);
+        painter.drawImage(0, 2, t, 0, 0, -1, tempPixmap.height()-2);
+        t = KImageEffect::gradient(QSize(1, t.height()),
+                                Handler()->getColor(TitleGradientTo, true),
+                                Handler()->getColor(TitleGradientFrom, true),
+                                KImageEffect::VerticalGradient);
+        painter.drawImage(0, t.height(), t, 0, 0, -1, t.height());
+    }
+
     painter.end();
 
     // iTitleBarTile

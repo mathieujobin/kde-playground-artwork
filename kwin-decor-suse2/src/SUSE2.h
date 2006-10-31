@@ -88,6 +88,7 @@ public:
     QString titleLogoURL() const { return m_titleLogoURL; }
     bool titleShadow() const { return m_titleShadow; }
     int  borderSize() const { return m_borderSize; }
+    int titlebarStyle() const { return m_titlebarStyle; }
     int buttonType() const { return m_buttonType; }
     bool customColors() const { return m_customColors; }
     bool useTitleProps() const { return m_useTitleProps; }
@@ -111,6 +112,7 @@ private:
     int  m_buttonType;
     bool m_customColors;
     float m_iconSize;
+    int m_titlebarStyle;
     bool m_customIconColors;
     QColor m_aFgColor;
     QColor m_aBgColor;

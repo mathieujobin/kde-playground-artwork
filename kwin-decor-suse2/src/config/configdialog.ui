@@ -8,18 +8,21 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>524</width>
-            <height>278</height>
+            <width>535</width>
+            <height>277</height>
         </rect>
     </property>
     <property name="caption">
         <string>Config Dialog</string>
     </property>
-    <vbox>
+    <grid>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QTabWidget">
+        <property name="margin">
+            <number>0</number>
+        </property>
+        <widget class="QTabWidget" row="0" column="0">
             <property name="name">
                 <cstring>tabWidget2</cstring>
             </property>
@@ -30,11 +33,11 @@
                 <attribute name="title">
                     <string>Ge&amp;neral</string>
                 </attribute>
-                <vbox>
+                <grid>
                     <property name="name">
                         <cstring>unnamed</cstring>
                     </property>
-                    <widget class="QButtonGroup">
+                    <widget class="QButtonGroup" row="0" column="0">
                         <property name="name">
                             <cstring>titleAlign</cstring>
                         </property>
@@ -89,7 +92,7 @@
                             </widget>
                         </hbox>
                     </widget>
-                    <widget class="QButtonGroup">
+                    <widget class="QButtonGroup" row="1" column="0">
                         <property name="name">
                             <cstring>roundCorners</cstring>
                         </property>
@@ -144,7 +147,7 @@
                             </widget>
                         </hbox>
                     </widget>
-                    <widget class="QCheckBox">
+                    <widget class="QCheckBox" row="2" column="0">
                         <property name="name">
                             <cstring>menuClose</cstring>
                         </property>
@@ -158,7 +161,7 @@
                             <string>Check this option if you want windows to be closed when you double click the menu button, similar to Microsoft Windows.</string>
                         </property>
                     </widget>
-                    <widget class="QCheckBox">
+                    <widget class="QCheckBox" row="3" column="0">
                         <property name="name">
                             <cstring>titleShadow</cstring>
                         </property>
@@ -172,7 +175,7 @@
                             <string>Check this option if you want the titlebar text to have a 3D look with a shadow behind it.</string>
                         </property>
                     </widget>
-                    <widget class="QLayoutWidget">
+                    <widget class="QLayoutWidget" row="4" column="0">
                         <property name="name">
                             <cstring>layout6</cstring>
                         </property>
@@ -229,7 +232,68 @@
                             </spacer>
                         </hbox>
                     </widget>
-                </vbox>
+                    <widget class="QLayoutWidget" row="5" column="0">
+                        <property name="name">
+                            <cstring>layout7</cstring>
+                        </property>
+                        <hbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QLabel">
+                                <property name="name">
+                                    <cstring>textLabel1_5</cstring>
+                                </property>
+                                <property name="sizePolicy">
+                                    <sizepolicy>
+                                        <hsizetype>1</hsizetype>
+                                        <vsizetype>0</vsizetype>
+                                        <horstretch>0</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                </property>
+                                <property name="text">
+                                    <string>Titlebarstyle:</string>
+                                </property>
+                            </widget>
+                            <widget class="QComboBox">
+                                <item>
+                                    <property name="text">
+                                        <string>Toplight</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property name="text">
+                                        <string>Balanced</string>
+                                    </property>
+                                </item>
+                                <property name="name">
+                                    <cstring>titlebarStyle</cstring>
+                                </property>
+                                <property name="whatsThis" stdset="0">
+                                    <string>Select the titlebar style.</string>
+                                </property>
+                            </widget>
+                            <spacer>
+                                <property name="name">
+                                    <cstring>spacer9</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>301</width>
+                                        <height>21</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                        </hbox>
+                    </widget>
+                </grid>
             </widget>
             <widget class="QWidget">
                 <property name="name">
@@ -785,10 +849,8 @@
                 </grid>
             </widget>
         </widget>
-    </vbox>
+    </grid>
 </widget>
-<customwidgets>
-</customwidgets>
 <tabstops>
     <tabstop>AlignLeft</tabstop>
     <tabstop>AlignHCenter</tabstop>
