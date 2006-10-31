@@ -18,8 +18,6 @@ target_link_libraries(cokoontest  ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} )
 
 
 ########### next target ###############
-if(KDE4_BUILD_TESTS)
-
 set(themewidget_SRCS themewidget.cpp ${COKOONTEST_LIB_SRCS})
 
 kde4_automoc(${themewidget_SRCS})
