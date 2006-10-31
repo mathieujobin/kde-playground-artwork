@@ -92,9 +92,9 @@ public:
     int buttonType() const { return m_buttonType; }
     bool customColors() const { return m_customColors; }
     bool useTitleProps() const { return m_useTitleProps; }
-    float iconSize() const { return m_iconSize; }
     bool animateButtons() const { return m_animateButtons; }
     bool redCloseButton() const { return m_redCloseButton; }
+    float iconSize() const { return m_iconSize; }
     bool iconShadow() const { return m_iconShadow; }
     bool menuClose() const { return m_menuClose; }
     Qt::AlignmentFlags titleAlign() const { return m_titleAlign; }

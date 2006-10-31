@@ -600,7 +600,7 @@ void SUSE2Client::create_pixmaps()
     painter.drawPixmap(0, 0, tempPixmap);
 
     QImage t;
-    if (Handler()->titlebarStyle() == 0) {
+    if (Handler()->titlebarStyle() == 0) { // new, Toplight
         t = QImage(1, (titleHeight + TOPMARGIN + DECOHEIGHT)/3 + 1, 32 );
         t = KImageEffect::gradient(QSize(1, t.height()),
                                 Handler()->getColor(TitleGradientFrom, true).light(130),
@@ -613,7 +613,7 @@ void SUSE2Client::create_pixmaps()
                                 Handler()->getColor(TitleGradientFrom, true),
                                 KImageEffect::VerticalGradient, 100, 100);
         painter.drawImage(0, t.height()/2, t, 0, 0, -1, t.height());
-    } else {
+    } else { // older, Balanced
         t = QImage(1, (titleHeight + TOPMARGIN + DECOHEIGHT)/2 + 1, 32 );
         t = KImageEffect::gradient(QSize(1, t.height()),
                                 Handler()->getColor(TitleGradientFrom, true).light(150),

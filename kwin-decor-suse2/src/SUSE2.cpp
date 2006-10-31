@@ -156,8 +156,6 @@ void SUSE2Handler::readConfig()
 
     m_menuClose = config.readBoolEntry("CloseOnMenuDoubleClick", true);
     m_titleShadow = config.readBoolEntry("TitleShadow", true);
-    m_iconSize = (config.readNumEntry("IconSize", 45))/100.0;
-    m_titlebarStyle = config.readNumEntry("TitleBarStyle", 0);
 
     QFontMetrics fm(m_titleFont);  // active font = inactive font
     int addSpace = config.readNumEntry("AddSpace", 4);
@@ -167,11 +165,14 @@ void SUSE2Handler::readConfig()
     fm = QFontMetrics(m_titleFontTool);  // active font = inactive font
     m_titleHeightTool = QMAX(13, fm.height() ); // don't care about the shadow etc.
 
+    m_titlebarStyle = config.readNumEntry("TitleBarStyle", 0);
+
     m_buttonType = config.readNumEntry("TitleBarButtonType", 0);
     m_customColors = config.readBoolEntry("CustomColors", false);
     m_useTitleProps = config.readBoolEntry("UseTitleProps", false);
     m_animateButtons = config.readBoolEntry("AnimateButtons", true);
     m_redCloseButton = config.readBoolEntry("RedCloseButton", false);
+    m_iconSize = (config.readNumEntry("IconSize", 45))/100.0;
     m_customIconColors = config.readBoolEntry("CustomIconColors", false);
     QColor afgcolor = QColor(10, 20, 40);
     m_aFgColor = config.readColorEntry("AFgColor", &afgcolor);
