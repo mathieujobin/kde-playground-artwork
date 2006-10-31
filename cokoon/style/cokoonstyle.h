@@ -21,8 +21,8 @@
 
 #include <kstyle.h>
 
-#include <cokoon/document.h>
-#include <cokoon/bridges.h>
+#include <document.h>
+#include <bridges.h>
 
 class CokoonStyle : public KStyle
 {

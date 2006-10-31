@@ -2,7 +2,7 @@
 find_package(KDE4 REQUIRED)
 include (KDE4Defaults)
 
-set(CMAKE_VERBOSE_MAKEFILE ON)
+set(CMAKE_VERBOSE_MAKEFILE OFF)
 
 add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 

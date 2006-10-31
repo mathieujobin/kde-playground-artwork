@@ -1,7 +1,7 @@
 
 project(kstyle-cokoon)
 
-include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
+include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_SOURCE_DIR}/lib )
 
 ########### next target ###############
 

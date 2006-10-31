@@ -1,6 +1,6 @@
 
 #include_directories( ${CMAKE_SOURCE_DIR}/lib ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
-include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
+include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_SOURCE_DIR}/lib )
 
 
 ########### next target ###############
@@ -13,7 +13,7 @@ kde4_add_plugin(kwin3_cokoon ${kwin3_cokoon_PART_SRCS})
 
 kde4_install_libtool_file( ${PLUGIN_INSTALL_DIR} kwin3_cokoon )
 
-target_link_libraries(kwin3_cokoon  ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} cokoon kdecorations )
+target_link_libraries(kwin3_cokoon  ${KDE4_KDEUI_LIBS} cokoon kdecorations )
 
 install(TARGETS kwin3_cokoon DESTINATION ${PLUGIN_INSTALL_DIR} )
 
