@@ -11,14 +11,14 @@ Name:         kwin-decor-suse2
 URL:          http://www.gerdfleischer.de/kwin-decor-suse2/
 License:      GPL
 Group:        System/GUI/KDE
-Summary:      The KDE window decoration from SUSE 9.3/10.0
-Version:      0.3.5
+Summary:      The KDE window decoration from SUSE 9.3 - 10.1
+Version:      0.4
 Release:      1
 BuildRoot:    %{_tmppath}/%{name}-%{version}-build
 Source:       %name-%version.tar.bz2
 
 %description
-The KDE window decoration from SUSE 9.3/10.0 extracted from the kdebase3-SUSE package.
+The KDE window decoration from SUSE 9.3 - 10.1 extracted from the kdebase3-SUSE package.
 
 Authors:
 --------
