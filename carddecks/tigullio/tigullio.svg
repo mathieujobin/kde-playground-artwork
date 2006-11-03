@@ -1,0 +1,666 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<!--
+*
+* Copyright 2004, 2006 Luciano Montanaro
+*
+-->
+<svg id="svgtest"
+	xmlns="http://www.w3.org/2000/svg"
+	xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 754 440"
+	width="754mm"
+	height="440mm"
+	>
+	<desc lang="en">
+		"Tigullio" is a 52-cards deck based on a "Genovese" card deck.
+	</desc>
+	<defs id="definitions"> 
+		
+		<!-- The card outline -->
+		
+		<g id="card-outline" width="58" height="88" viewBox="0 0 58 88">
+			<rect style="fill:white;stroke:black;stroke-width:.1;"
+				x="0.1" y="0.1" width="57.8" height="87.8" rx="3" />
+		</g>
+		
+		<!-- The suit symbols -->
+		
+		<g id="diamond" transform="scale(.28)"
+			width="14" height="14" viewBox="0 0 50 50" overflow="visible"> 
+			<path style="fill:red;" 
+				d="M 49.68215 25.24465 C 37.80715 21.93215 28.43215 12.74465 24.99465 0.869646 C 21.55715 12.74465 12.18215 21.93215 0.307148 25.24465 C 12.18215 28.55715 21.55715 37.74465 24.99465 49.61965 C 28.43215 37.74465 37.80715 28.55715 49.68215 25.24465 z " />
+		</g>
+		<g id="heart" transform="scale(.28)"
+			width="14" height="14" viewBox="0 0 51 50" overflow="visible"> 
+			<path style="fill:red;" 
+				d="M 25.12500 9.562500 C 23.62500 4.937500 20.25000 0.125000 12.68750 0.062500 C 5.812500 0 0.125000 5.187500 0.062500 12.62500 C 0 26.56250 16.06250 29.18750 25.06250 49.50000 L 25.06250 49.81250 C 34.06250 29.37500 50.18750 26.81250 50.12500 12.81250 C 50.06250 5.375000 44.37500 0.187500 37.56250 0.250000 C 30 0.312500 26.68750 5.062500 25.12500 9.625000 L 25.12500 9.562500 z " />
+		</g>
+		<g id="spade" transform="scale(.28)"
+			width="14" height="14" viewBox="0 0 51 50" overflow="visible"> 
+			<path style="fill:black;" 
+				d="M 25.18750 48.75000 C 26.68750 48.75000 29.31250 48.93750 30.37500 49.62500 C 26.81250 39.43750 26.62500 36.18750 26.43750 28.25000 C 27.68750 31.62500 30.43750 38.31250 38.56250 38.31250 C 44.81250 38.37500 50.31250 33.31250 50.31250 26.50000 C 50.37500 14.50000 34.12500 12.50000 25.18750 0.312500 C 16.18750 12.50000 0 14.50000 0 26.50000 C 0 33.31250 5.562500 38.37500 11.81250 38.31250 C 19.93750 38.31250 22.68750 31.62500 23.93750 28.25000 C 23.68750 36.18750 23.50000 39.43750 19.93750 49.62500 C 21 48.93750 23.68750 48.75000 25.12500 48.75000 " />
+		</g>
+		<g id="club" transform="scale(.28)"
+			width="14" height="14" viewBox="0 0 51 50" overflow="visible"> 
+			<path style="fill:black;" 
+				d="M 25.1479 48.7742 C 23.6635 48.7742 21.0131 48.9289 19.9339 49.6058 C 23.503 39.4233 23.7175 33.5995 23.9126 25.6677 C 19.9467 25.7977 16.5042 33.605 9.14113 33.5345 C 3.47255 33.4695 0.13003 28.8015 0.13003 24.5756 C 0.179076 21.3876 3.00495 15.8618 9.16709 15.8636 C 16.9558 15.866 19.5564 23.7173 23.9124 23.7045 C 23.9387 19.184 16.0977 16.568 16.0587 8.97204 C 16.0587 4.78615 19.2706 0.468206 25.1607 0.325065 C 31.0508 0.468206 34.2627 4.78615 34.2627 8.97204 C 34.2237 16.568 26.3827 19.184 26.409 23.7045 C 30.765 23.7173 33.3656 15.866 41.1543 15.8636 C 47.3165 15.8618 50.1424 21.3876 50.1914 24.5756 C 50.1914 28.8015 46.8489 33.4695 41.1803 33.5345 C 33.8172 33.605 30.3747 25.7977 26.4088 25.6677 C 26.6039 33.5995 26.8184 39.4233 30.3875 49.6058 C 29.3083 48.9289 26.6579 48.7742 25.1735 48.7742 " /> 
+		</g>
+		
+		<!-- Rotated suit symbols -->
+		
+		<g id="diamond-r"> 
+			<use width="14" height="14" href="#diamond" transform="rotate(180,7,7)" />	
+		</g> 
+		<g id="heart-r"> 
+			<use width="14" height="14" href="#heart" transform="rotate(180,7,7)" />	
+		</g> 
+		<g id="club-r"> 
+			<use width="14" height="14" href="#club" transform="rotate(180,7,7)" />	
+		</g> 
+		<g id="spade-r"> 
+			<use width="14" height="14" href="#spade" transform="rotate(180,7,7)" />	
+		</g> 
+		
+		<!-- Outlines for the figures -->
+		
+		<g id="diamond-fig" overflow="visible" >
+			<rect style="fill:none;stroke:black;stroke-width:.3" 
+				x="4" y="4" width="50" height="80" rx="1.5" />
+			<use x="6" y="6" href="#diamond" />
+			<use x="38" y="68" href="#diamond-r" />
+		</g>
+		<g id="heart-fig" overflow="visible" >
+			<rect style="fill:none;stroke:black;stroke-width:.3" 
+				x="4" y="4" width="50" height="80" rx="1.5" />
+			<use x="6" y="6" width="14" height="14" href="#heart" />
+			<use x="38" y="68" width="14" height="14" href="#heart-r" />
+		</g>
+		<g id="club-fig" overflow="visible" >
+			<rect style="fill:none;stroke:black;stroke-width:.3" 
+				x="4" y="4" width="50" height="80" rx="1.5" />
+			<use x="6" y="6" width="14" height="14" href="#club" />
+			<use x="38" y="68" width="14" height="14" href="#club-r" />
+		</g>
+		<g id="spade-fig" overflow="visible" >
+			<rect style="fill:none;stroke:black;stroke-width:.3" 
+				x="4" y="4" width="50" height="80" rx="1.5" />
+			<use x="6" y="6" width="14" height="14" href="#spade" />
+			<use x="38" y="68" width="14" height="14" href="#spade-r" />
+		</g>
+		
+		<!-- Components for the numeric cards: Diamonds -->
+		
+		<g id="diamond-g1" >
+			<use x="0" y="37" href="#diamond" />
+		</g>
+		<g id="diamond-g2" >
+			<use x="0" y="7" href="#diamond" />
+			<use x="0" y="67" href="#diamond-r" />
+		</g>
+		<g id="diamond-g2-r" >
+			<use x="0" y="0" href="#diamond-g2" transform="rotate(180,7,44) "/>
+		</g>
+		<g id="diamond-g3" >
+			<use href="#diamond-g1" />
+			<use href="#diamond-g2" />
+		</g>
+		<g id="diamond-g3-r" > 
+			<use href="#diamond-g3" transform="rotate(180,7,44)" />	
+		</g> 
+		<g id="diamond-g4" >
+			<use href="#diamond-g2" />
+			<use x="0" y="27" href="#diamond" />
+			<use x="0" y="47" href="#diamond-r" />
+		</g>
+		<g id="diamond-g4-r" >
+			<use href="#diamond-g4" transform="rotate(180,7,44)" />	
+		</g>
+
+		<!-- Components for the numeric cards: Hearts -->
+
+		<g id="heart-g1" >
+			<use x="0" y="37" href="#heart" />
+		</g>
+		<g id="heart-g2" >
+			<use x="0" y="7" href="#heart" />
+			<use x="0" y="67" href="#heart-r" />
+		</g>
+		<g id="heart-g2-r" >
+			<use x="0" y="0" href="#heart-g2" transform="rotate(180,7,44) "/>
+		</g>
+		<g id="heart-g3" >
+			<use href="#heart-g1" />
+			<use href="#heart-g2" />
+		</g>
+		<g id="heart-g3-r" > 
+			<use href="#heart-g3" transform="rotate(180,7,44)" />	
+		</g> 
+		<g id="heart-g4" >
+			<use href="#heart-g2" />
+			<use x="0" y="27" href="#heart" />
+			<use x="0" y="47" href="#heart-r" />
+		</g>
+		<g id="heart-g4-r" >
+			<use href="#heart-g4" transform="rotate(180,7,44)" />	
+		</g>
+		
+		<!-- Components for the numeric cards: Clubs -->
+		
+		<g id="club-g1" >
+			<use x="0" y="37" href="#club" />
+		</g>
+		<g id="club-g2" >
+			<use x="0" y="7" href="#club" />
+			<use x="0" y="67" href="#club-r" />
+		</g>
+		<g id="club-g2-r" >
+			<use x="0" y="0" href="#club-g2" transform="rotate(180,7,44) "/>
+		</g>
+		<g id="club-g3" >
+			<use href="#club-g1" />
+			<use href="#club-g2" />
+		</g>
+		<g id="club-g3-r" > 
+			<use href="#club-g3" transform="rotate(180,7,44)" />	
+		</g> 
+		<g id="club-g4" >
+			<use href="#club-g2" />
+			<use x="0" y="27" href="#club" />
+			<use x="0" y="47" href="#club-r" />
+		</g>
+		<g id="club-g4-r" >
+			<use href="#club-g4" transform="rotate(180,7,44)" />	
+		</g>
+
+		<!-- Components for the numeric cards: Spades -->
+		
+		<g id="spade-g1" >
+			<use x="0" y="37" href="#spade" />
+		</g>
+		<g id="spade-g2" >
+			<use x="0" y="7" href="#spade" />
+			<use x="0" y="67" href="#spade-r" />
+		</g>
+		<g id="spade-g2-r" >
+			<use x="0" y="0" href="#spade-g2" transform="rotate(180,7,44) "/>
+		</g>
+		<g id="spade-g3" >
+			<use href="#spade-g1" />
+			<use href="#spade-g2" />
+		</g>
+		<g id="spade-g3-r" > 
+			<use href="#spade-g3" transform="rotate(180,7,44)" />	
+		</g> 
+		<g id="spade-g4" >
+			<use href="#spade-g2" />
+			<use x="0" y="27" href="#spade" />
+			<use x="0" y="47" href="#spade-r" />
+		</g>
+		<g id="spade-g4-r" >
+			<use href="#spade-g4" transform="rotate(180,7,44)" />	
+		</g>
+
+		<!-- The K-gear logo, for the firm logo on the ace of hearts --> 
+
+		<g id="k-logo" viewBox="0 0 225 223.83838" transform="scale(0.03555)">
+			<!--
+			<path
+			   d="M 23.296880,0.0000000 L 201.70313,0.0000000 C 214.51758,0.0000000 225.00000,10.483400 225.00000,23.296880 L 225.00000,200.54150 C 225.00000,213.35400 214.51758,223.83838 201.70312,223.83838 L 23.296880,223.83838 C 10.482420,223.83838 0.0000000,213.35400 0.0000000,200.54150 L 0.0000000,23.296880 C 0.0000000,10.483400 10.482420,0.0000000 23.296880,0.0000000 z "
+			   id="path1065_2_" 
+			   style="fill:#0068c6;fill-opacity:1.0000000;fill-rule:evenodd"			/>
+
+			<path
+			   d="M 25.281250,9.3125000 C 16.499030,9.3125000 9.3125002,16.498530 9.3125000,25.281250 L 9.3125000,198.56250 C 9.3125000,207.34473 16.499019,214.59374 25.281250,214.59375 L 199.71875,214.59375 C 208.50098,214.59375 215.68750,207.34474 215.68750,198.56250 L 215.68750,25.281250 C 215.68750,16.498530 208.50097,9.3124997 199.71875,9.3125000 L 25.281250,9.3125000 z M 25.625000,16.218750 L 199.37500,16.218750 C 204.51562,16.218750 208.68751,20.433591 208.68750,25.625000 L 208.68750,198.31250 C 208.68750,203.45508 204.51562,207.62500 199.37500,207.62500 L 25.625000,207.62500 C 20.483890,207.62500 16.312499,203.45508 16.312500,198.31250 L 16.312500,25.625000 C 16.312500,20.433590 20.483891,16.218750 25.625000,16.218750 z "
+			   style="fill:#ffffff"
+			   id="path73" />
+		   	-->
+			<polygon
+			   points="95.642090,148.22705 95.642090,30.529300 124.22656,27.792970 123.92383,79.494140 161.63672,29.010740 192.04688,36.002930 152.81445,86.487790 191.74219,140.01514 161.93945,149.44482 123.92383,93.786620 123.92383,143.96826 95.642090,148.22705 "
+			   id="path5692_2_" />
+
+			<path
+			   d="M 163.82031,156.83643 L 161.35058,157.61768 C 160.99023,157.73096 160.59765,157.59620 160.38574,157.28272 C 160.38574,157.28272 155.51367,150.15284 149.22265,140.94581 C 141.70214,155.66456 126.40136,165.74659 108.73242,165.74659 C 83.629390,165.74659 63.277340,145.39405 63.277340,120.28956 C 63.277340,101.82179 74.292970,85.939460 90.105950,78.824720 L 90.105950,67.098630 C 87.228020,68.105470 84.446280,69.318840 81.803700,70.758300 C 81.801260,70.756350 81.797840,70.751460 81.790520,70.747560 L 60.378420,56.704590 C 59.801270,56.327640 59.041510,56.405760 58.556640,56.894040 L 47.337890,68.110840 C 46.866210,68.583980 46.777340,69.318850 47.125000,69.891600 L 60.259280,91.522950 C 57.929690,95.439450 56.063970,99.662600 54.729490,104.11719 L 30.615720,109.13282 C 29.944820,109.27198 29.461420,109.86622 29.461420,110.55470 L 29.461420,126.41749 C 29.461420,127.08839 29.919430,127.66944 30.565910,127.82569 L 53.970210,133.54639 C 55.218260,138.70557 57.152830,143.59717 59.708980,148.09229 L 46.162590,168.75049 C 45.784660,169.32764 45.863760,170.08838 46.352040,170.57471 L 57.567370,181.79151 C 58.039050,182.26221 58.775380,182.35303 59.350570,182.00733 L 80.578600,169.11475 C 84.748520,171.52100 89.245590,173.41455 93.998520,174.69873 L 98.951160,198.51318 C 99.090810,199.18798 99.687980,199.66845 100.37206,199.66845 L 116.23729,199.66845 C 116.90428,199.66845 117.48534,199.21337 117.64452,198.55907 L 123.47948,174.69481 C 128.37889,173.37254 133.01268,171.40184 137.28417,168.88622 L 158.20410,182.60400 C 158.77930,182.98291 159.53906,182.90673 160.02734,182.41845 L 171.24609,171.20165 C 171.72070,170.72704 171.80664,169.99364 171.45800,169.42235 L 163.82031,156.83643 z "
+			   id="path79" />
+		</g>	   
+
+		<!-- Court cards figures -->
+
+		<g id="jack-of-diamonds" width="58" height="88">
+			<image width="58" height="88" xlink:href="jack-of-diamonds.svg"/>
+		</g>
+		<g id="jack-of-hearts" width="58" height="88">
+			<image width="58" height="88" xlink:href="jack-of-hearts.svg"/>
+		</g>
+		<g id="jack-of-clubs" width="58" height="88">
+			<image width="58" height="88" xlink:href="jack-of-clubs.svg"/>
+		</g>
+		<g id="jack-of-spades" width="58" height="88">
+			<image width="58" height="88" xlink:href="jack-of-spades.svg"/>
+		</g>
+		
+		<g id="queen-of-diamonds">
+			<image width="58" height="88" xlink:href="queen-of-diamonds.svg"/>
+		</g>
+		<g id="queen-of-hearts" width="58" height="88">
+			<image width="58" height="88" xlink:href="queen-of-hearts.svg"/>
+		</g>
+		<g id="queen-of-clubs" width="58" height="88">
+			<image width="58" height="88" xlink:href="queen-of-clubs.svg"/>
+		</g>
+		<g id="queen-of-spades" width="58" height="88">
+			<image width="58" height="88" xlink:href="queen-of-spades.svg"/>
+		</g>
+		
+		<g id="king-of-diamonds" width="58" height="88">
+			<image width="58" height="88" xlink:href="king-of-diamonds.svg"/>
+		</g>
+		<g id="king-of-hearts" width="58" height="88">
+			<image width="58" height="88" xlink:href="king-of-hearts.svg"/>
+		</g>
+		<g id="king-of-clubs" width="58" height="88">
+			<image width="58" height="88" xlink:href="king-of-clubs.svg"/>
+		</g>
+		<g id="king-of-spades" width="58" height="88">
+			<image width="58" height="88" xlink:href="king-of-spades.svg"/>
+		</g>
+		
+		<!-- Cards -->
+		
+		<!-- Diamond suit -->
+
+		<g id="1_diamond" > 
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#diamond-g1" x="22" y="0"/>
+		</g>
+		<g id="2_diamond" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#diamond-g2" x="22" y="0"/>
+		</g>
+		<g id="3_diamond" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#diamond-g3" x="22" y="0" />
+		</g>
+		<g id="4_diamond" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#diamond-g2" x="7" y="0" />
+			<use xlink:href="#diamond-g2-r" x="37" y="0" />
+		</g>
+		<g id="5_diamond" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#diamond-g2" x="7" y="0" />
+			<use xlink:href="#diamond-g2-r" x="37" y="0" />
+			<use xlink:href="#diamond-g1" x="22" y="0"/>
+		</g>
+		<g id="6_diamond" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#diamond-g3" x="7" y="0" />
+			<use xlink:href="#diamond-g3-r" x="37" y="0" />
+		</g>
+		<g id="7_diamond" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#diamond-g3" x="7" y="0" />
+			<use xlink:href="#diamond" x="22" y="22" />
+			<use xlink:href="#diamond-g3-r" x="37" y="0" />
+		</g>
+		<g id="8_diamond" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#diamond-g3" x="7" y="0" />
+			<use xlink:href="#diamond" x="22" y="22" />
+			<use xlink:href="#diamond-r" x="22" y="52" />
+			<use xlink:href="#diamond-g3-r" x="37" y="0" />
+		</g>
+		<g id="9_diamond" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#diamond-g4" x="7" y="0" />
+			<use xlink:href="#diamond-g1" x="22" y="0" />
+			<use xlink:href="#diamond-g4-r" x="37" y="0" />
+		</g>
+		<g id="10_diamond" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#diamond-g4" x="7" y="0" />
+			<use xlink:href="#diamond" x="22" y="17" />
+			<use xlink:href="#diamond-r" x="22" y="57" />
+			<use xlink:href="#diamond-g4-r" x="37" y="0" />
+		</g>
+		<g id="jack_diamond" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#diamond-fig" />
+			<use xlink:href="#jack-of-diamonds" />
+		</g>
+		<g id="queen_diamond" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#diamond-fig" />
+			<use xlink:href="#queen-of-diamonds" />
+		</g>
+		<g id="king_diamond" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#diamond-fig" />
+			<use xlink:href="#king-of-diamonds" />
+		</g>
+		
+		<!-- Heart suit -->
+
+		<g id="1_heart" > 
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#heart-g1" x="22" y="0"/>
+			<use xlink:href="#k-logo" x="25" y="58"/>
+		</g>
+		<g id="2_heart" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#heart-g2" x="22" y="0"/>
+		</g>
+		<g id="3_heart" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#heart-g3" x="22" y="0" />
+		</g>
+		<g id="4_heart" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#heart-g2" x="7" y="0" />
+			<use xlink:href="#heart-g2-r" x="37" y="0" />
+		</g>
+		<g id="5_heart" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#heart-g2" x="7" y="0" />
+			<use xlink:href="#heart-g2-r" x="37" y="0" />
+			<use xlink:href="#heart-g1" x="22" y="0"/>
+		</g>
+		<g id="6_heart" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#heart-g3" x="7" y="0" />
+			<use xlink:href="#heart-g3-r" x="37" y="0" />
+		</g>
+		<g id="7_heart" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#heart-g3" x="7" y="0" />
+			<use xlink:href="#heart" x="22" y="22" />
+			<use xlink:href="#heart-g3-r" x="37" y="0" />
+		</g>
+		<g id="8_heart" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#heart-g3" x="7" y="0" />
+			<use xlink:href="#heart" x="22" y="22" />
+			<use xlink:href="#heart-r" x="22" y="52" />
+			<use xlink:href="#heart-g3-r" x="37" y="0" />
+		</g>
+		<g id="9_heart" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#heart-g4" x="7" y="0" />
+			<use xlink:href="#heart-g1" x="22" y="0" />
+			<use xlink:href="#heart-g4-r" x="37" y="0" />
+		</g>
+		<g id="10_heart" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#heart-g4" x="7" y="0" />
+			<use xlink:href="#heart" x="22" y="17" />
+			<use xlink:href="#heart-r" x="22" y="57" />
+			<use xlink:href="#heart-g4-r" x="37" y="0" />
+		</g>
+		<g id="jack_heart" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#heart-fig" />
+			<use xlink:href="#jack-of-hearts" />
+		</g>
+		<g id="queen_heart" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#heart-fig" />
+			<use xlink:href="#queen-of-hearts" />
+		</g>
+		<g id="king_heart" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#heart-fig" />
+			<use xlink:href="#king-of-hearts" />
+		</g>
+		
+		<!-- Club suit -->
+		
+		<g id="1_club" > 
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#club-g1" x="22" y="0"/>
+		</g>
+		<g id="2_club" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#club-g2" x="22" y="0"/>
+		</g>
+		<g id="3_club" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#club-g3" x="22" y="0" />
+		</g>
+		<g id="4_club" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#club-g2" x="7" y="0" />
+			<use xlink:href="#club-g2-r" x="37" y="0" />
+		</g>
+		<g id="5_club" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#club-g2" x="7" y="0" />
+			<use xlink:href="#club-g2-r" x="37" y="0" />
+			<use xlink:href="#club-g1" x="22" y="0"/>
+		</g>
+		<g id="6_club" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#club-g3" x="7" y="0" />
+			<use xlink:href="#club-g3-r" x="37" y="0" />
+		</g>
+		<g id="7_club" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#club-g3" x="7" y="0" />
+			<use xlink:href="#club" x="22" y="22" />
+			<use xlink:href="#club-g3-r" x="37" y="0" />
+		</g>
+		<g id="8_club" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#club-g3" x="7" y="0" />
+			<use xlink:href="#club" x="22" y="22" />
+			<use xlink:href="#club-r" x="22" y="52" />
+			<use xlink:href="#club-g3-r" x="37" y="0" />
+		</g>
+		<g id="9_club" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#club-g4" x="7" y="0" />
+			<use xlink:href="#club-g1" x="22" y="0" />
+			<use xlink:href="#club-g4-r" x="37" y="0" />
+		</g>
+		<g id="10_club" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#club-g4" x="7" y="0" />
+			<use xlink:href="#club" x="22" y="17" />
+			<use xlink:href="#club-r" x="22" y="57" />
+			<use xlink:href="#club-g4-r" x="37" y="0" />
+		</g>
+		<g id="jack_club" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#club-fig" />
+			<use xlink:href="#jack-of-clubs" />
+		</g>
+		<g id="queen_club" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#club-fig" />
+			<use xlink:href="#queen-of-clubs" />
+		</g>
+		<g id="king_club" width="58" height="88" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#club-fig" />
+			<use xlink:href="#king-of-clubs" />
+		</g>
+		
+		<!-- Spade suit -->
+		
+		<g id="1_spade" > 
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#spade-g1" x="22" y="0"/>
+		</g>
+		<g id="2_spade" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#spade-g2" x="22" y="0"/>
+		</g>
+		<g id="3_spade" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#spade-g3" x="22" y="0" />
+		</g>
+		<g id="4_spade" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#spade-g2" x="7" y="0" />
+			<use xlink:href="#spade-g2-r" x="37" y="0" />
+		</g>
+		<g id="5_spade" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#spade-g2" x="7" y="0" />
+			<use xlink:href="#spade-g2-r" x="37" y="0" />
+			<use xlink:href="#spade-g1" x="22" y="0"/>
+		</g>
+		<g id="6_spade" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#spade-g3" x="7" y="0" />
+			<use xlink:href="#spade-g3-r" x="37" y="0" />
+		</g>
+		<g id="7_spade" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#spade-g3" x="7" y="0" />
+			<use xlink:href="#spade" x="22" y="22" />
+			<use xlink:href="#spade-g3-r" x="37" y="0" />
+		</g>
+		<g id="8_spade" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#spade-g3" x="7" y="0" />
+			<use xlink:href="#spade" x="22" y="22" />
+			<use xlink:href="#spade-r" x="22" y="52" />
+			<use xlink:href="#spade-g3-r" x="37" y="0" />
+		</g>
+		<g id="9_spade" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#spade-g4" x="7" y="0" />
+			<use xlink:href="#spade-g1" x="22" y="0" />
+			<use xlink:href="#spade-g4-r" x="37" y="0" />
+		</g>
+		<g id="10_spade" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#spade-g4" x="7" y="0" />
+			<use xlink:href="#spade" x="22" y="17" />
+			<use xlink:href="#spade-r" x="22" y="57" />
+			<use xlink:href="#spade-g4-r" x="37" y="0" />
+		</g>
+		<g id="jack_spade" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#spade-fig" />
+			<use xlink:href="#jack-of-spades" />
+		</g>
+		<g id="queen_spade" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#spade-fig" />
+			<use xlink:href="#queen-of-spades" />
+		</g>
+		<g id="king_spade" >
+			<use xlink:href="#card-outline" />
+			<use xlink:href="#spade-fig" />
+			<use xlink:href="#king-of-spades" />
+		</g>
+		
+		<!-- Card groups, for easy displaying -->
+			
+		<g id="diamond-suit" >
+			<use xlink:href="#1_diamond" x="0" y="0" />
+			<use xlink:href="#2_diamond" x="58" y="0" />
+			<use xlink:href="#3_diamond" x="116" y="0" />
+			<use xlink:href="#4_diamond" x="174" y="0" />
+			<use xlink:href="#5_diamond" x="232" y="0" />
+			<use xlink:href="#6_diamond" x="290" y="0" />
+			<use xlink:href="#7_diamond" x="348" y="0" /> 
+			<use xlink:href="#8_diamond" x="406" y="0" /> 
+			<use xlink:href="#9_diamond" x="464" y="0" /> 
+			<use xlink:href="#10_diamond" x="522" y="0" /> 
+			<use xlink:href="#jack_diamond" x="580" y="0" />
+			<use xlink:href="#queen_diamond" x="638" y="0" />
+			<use xlink:href="#king_diamond" x="696" y="0" />
+		</g>
+		<g id="heart-suit" >
+			<use xlink:href="#1_heart" x="0" y="0" />
+			<use xlink:href="#2_heart" x="58" y="0" />
+			<use xlink:href="#3_heart" x="116" y="0" />
+			<use xlink:href="#4_heart" x="174" y="0" />
+			<use xlink:href="#5_heart" x="232" y="0" />
+			<use xlink:href="#6_heart" x="290" y="0" />
+			<use xlink:href="#7_heart" x="348" y="0" /> 
+			<use xlink:href="#8_heart" x="406" y="0" /> 
+			<use xlink:href="#9_heart" x="464" y="0" /> 
+			<use xlink:href="#10_heart" x="522" y="0" /> 
+			<use xlink:href="#jack_heart" x="580" y="0" />
+			<use xlink:href="#queen_heart" x="638" y="0" />
+			<use xlink:href="#king_heart" x="696" y="0" />
+		</g>
+		<g id="club-suit" >
+			<use xlink:href="#1_club" x="0" y="0" />
+			<use xlink:href="#2_club" x="58" y="0" />
+			<use xlink:href="#3_club" x="116" y="0" />
+			<use xlink:href="#4_club" x="174" y="0" />
+			<use xlink:href="#5_club" x="232" y="0" />
+			<use xlink:href="#6_club" x="290" y="0" />
+			<use xlink:href="#7_club" x="348" y="0" /> 
+			<use xlink:href="#8_club" x="406" y="0" /> 
+			<use xlink:href="#9_club" x="464" y="0" /> 
+			<use xlink:href="#10_club" x="522" y="0" /> 
+			<use xlink:href="#jack_club" x="580" y="0" />
+			<use xlink:href="#queen_club" x="638" y="0" />
+			<use xlink:href="#king_club" x="696" y="0" />
+		</g>
+		<g id="spade-suit" >
+			<use xlink:href="#1_spade" x="0" y="0" />
+			<use xlink:href="#2_spade" x="58" y="0" />
+			<use xlink:href="#3_spade" x="116" y="0" />
+			<use xlink:href="#4_spade" x="174" y="0" />
+			<use xlink:href="#5_spade" x="232" y="0" />
+			<use xlink:href="#6_spade" x="290" y="0" />
+			<use xlink:href="#7_spade" x="348" y="0" /> 
+			<use xlink:href="#8_spade" x="406" y="0" /> 
+			<use xlink:href="#9_spade" x="464" y="0" /> 
+			<use xlink:href="#10_spade" x="522" y="0" /> 
+			<use xlink:href="#jack_spade" x="580" y="0" />
+			<use xlink:href="#queen_spade" x="638" y="0" />
+			<use xlink:href="#king_spade" x="696" y="0" />
+		</g>
+		
+		<!-- Misc stuff: Card backs, jolly jockers... -->
+		<g id="big-logo">
+			<use xlink:href="#k-logo"
+				transform="translate(4.5,4.5) scale(7) translate(-4.5,-4.5)"/>
+		</g>
+		<g id="back">
+			<use xlink:href="#card-outline" />
+			<rect style="fill:black;" 
+				x="4" y="4" width="50" height="80" rx="1.5" />
+			<use x="29" y="44" xlink:href="#big-logo" style="fill:white;" />
+		</g>
+		<g id="blue_back">
+			<use xlink:href="#card-outline" />
+			<rect style="fill:blue;" 
+				x="4" y="4" width="50" height="80" rx="1.5" />
+			<use x="29" y="44" xlink:href="#big-logo" style="fill:white;" />
+		</g>
+		<g id="red_back">
+			<use xlink:href="#card-outline" />
+			<rect style="fill:red;" 
+				x="4" y="4" width="50" height="80" rx="1.5" />
+			<use x="29" y="44" xlink:href="#big-logo" style="fill:white;" />
+		</g>
+		
+		<g id="misc-cards">
+			<use xlink:href="#back" x="0" y="0" />
+			<use xlink:href="#red_back" x="58" y="0" />
+			<use xlink:href="#blue_back" x="116" y="0" />
+		</g>
+	</defs>
+	
+	<use xlink:href="#diamond-suit" y="0" />
+	<use xlink:href="#heart-suit" y="88" />
+	<use xlink:href="#club-suit" y="176" />
+	<use xlink:href="#spade-suit" y="264" />
+	<use xlink:href="#misc-cards" y="352" />
+</svg>
+
+<!--
+	Disabled stuff goes here
+-->
+
+<!--
+ vi: ts=4 sw=4
+-->

@@ -1,0 +1,596 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<!--
+*
+* Copyright 2004, 2006 Luciano Montanaro
+*
+-->
+<svg id="asso-di-fiori"
+    xmlns="http://www.w3.org/2000/svg"
+    width="1102mm"
+    height="440mm"
+    xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-348 0 754 440">
+	
+    <defs id="definitions"> 
+		
+		<symbol id="card" width="58" height="88" viewBox="0 0 58 88">
+			<rect style="fill:white;stroke:black;stroke-width:.1;"
+				x="0.1" y="0.1" width="57.8" height="87.8" rx="3" />
+		</symbol>
+		<symbol id="quadri" 
+			width="14" height="14" viewBox="0 0 50 50" overflow="visible"> 
+			<path style="fill:red;" 
+				 d="M 49.68215 25.24465 C 37.80715 21.93215 28.43215 12.74465 24.99465 0.869646 C 21.55715 12.74465 12.18215 21.93215 0.307148 25.24465 C 12.18215 28.55715 21.55715 37.74465 24.99465 49.61965 C 28.43215 37.74465 37.80715 28.55715 49.68215 25.24465 z " />
+		</symbol>
+		<symbol id="cuori" 
+			width="14" height="14" viewBox="0 0 51 50" overflow="visible"> 
+			<path style="fill:red;" 
+				d="M 25.12500 9.562500 C 23.62500 4.937500 20.25000 0.125000 12.68750 0.062500 C 5.812500 0 0.125000 5.187500 0.062500 12.62500 C 0 26.56250 16.06250 29.18750 25.06250 49.50000 L 25.06250 49.81250 C 34.06250 29.37500 50.18750 26.81250 50.12500 12.81250 C 50.06250 5.375000 44.37500 0.187500 37.56250 0.250000 C 30 0.312500 26.68750 5.062500 25.12500 9.625000 L 25.12500 9.562500 z " />
+		</symbol>
+		<symbol id="picche" 
+			width="14" height="14" viewBox="0 0 51 50" overflow="visible"> 
+			<path style="fill:black;" 
+				d="M 25.18750 48.75000 C 26.68750 48.75000 29.31250 48.93750 30.37500 49.62500 C 26.81250 39.43750 26.62500 36.18750 26.43750 28.25000 C 27.68750 31.62500 30.43750 38.31250 38.56250 38.31250 C 44.81250 38.37500 50.31250 33.31250 50.31250 26.50000 C 50.37500 14.50000 34.12500 12.50000 25.18750 0.312500 C 16.18750 12.50000 0 14.50000 0 26.50000 C 0 33.31250 5.562500 38.37500 11.81250 38.31250 C 19.93750 38.31250 22.68750 31.62500 23.93750 28.25000 C 23.68750 36.18750 23.50000 39.43750 19.93750 49.62500 C 21 48.93750 23.68750 48.75000 25.12500 48.75000 " />
+		</symbol>
+		<symbol id="fiori" 
+			width="14" height="14" viewBox="0 0 51 50" overflow="visible"> 
+			<path style="fill:black;" 
+					d="M 25.1479 48.7742 C 23.6635 48.7742 21.0131 48.9289 19.9339 49.6058 C 23.503 39.4233 23.7175 33.5995 23.9126 25.6677 C 19.9467 25.7977 16.5042 33.605 9.14113 33.5345 C 3.47255 33.4695 0.13003 28.8015 0.13003 24.5756 C 0.179076 21.3876 3.00495 15.8618 9.16709 15.8636 C 16.9558 15.866 19.5564 23.7173 23.9124 23.7045 C 23.9387 19.184 16.0977 16.568 16.0587 8.97204 C 16.0587 4.78615 19.2706 0.468206 25.1607 0.325065 C 31.0508 0.468206 34.2627 4.78615 34.2627 8.97204 C 34.2237 16.568 26.3827 19.184 26.409 23.7045 C 30.765 23.7173 33.3656 15.866 41.1543 15.8636 C 47.3165 15.8618 50.1424 21.3876 50.1914 24.5756 C 50.1914 28.8015 46.8489 33.4695 41.1803 33.5345 C 33.8172 33.605 30.3747 25.7977 26.4088 25.6677 C 26.6039 33.5995 26.8184 39.4233 30.3875 49.6058 C 29.3083 48.9289 26.6579 48.7742 25.1735 48.7742 " /> 
+		</symbol>
+		
+		<symbol id="seme" >
+			<use href="#cuori" overflow="visible"/>
+		</symbol> 
+		<symbol id="seme_r"> 
+			<use width="14" height="14" href="#seme" transform="rotate(180,7,7)" />	
+		</symbol> 
+		<symbol id="g1" viewBox="0 0 14 74"  >
+			<use x="0" y="30" width="14" height="14" href="#seme" />
+		</symbol>
+		<symbol id="g2" viewBox="0 0 14 74" >
+			<use x="0" y="0" width="14" height="14" href="#seme" />
+			<use x="0" y="60" width="14"  height="14" href="#seme_r" />
+		</symbol>
+		<symbol id="g3" viewBox="0 0 14 74" >
+			<use width="14" height="74" href="#g1" />
+			<use width="14" height="74" href="#g2" />
+		</symbol>
+		<symbol id="g3_r" viewBox="0 0 14 74" > 
+			<use width="14" height="74" href="#g3" transform="rotate(180,7,37)" />	
+		</symbol> 
+		<symbol id="g4" viewBox="0 0 14 74" >
+			<use width="14" height="74" href="#g2" />
+			<use x="0" y="20" width="14" height="14" href="#seme" />
+			<use x="0" y="40" width="14" height="14" href="#seme_r" />
+		</symbol>
+		<symbol id="ace" viewBox="0 0 44 74">
+			<use x="15" width="14" height="74" href="#g1" />
+		</symbol>
+		<symbol id="dice" viewBox="0 0 44 74">
+			<use x="15" width="14" height="74" href="#g2" />
+		</symbol>
+		<symbol id="trey" viewBox="0 0 44 74">
+			<use x="15" width="14" height="74" href="#g3" />
+		</symbol>
+		<symbol id="four" viewBox="0 0 44 74">
+			<use x="0" width="14" height="74" href="#g2" />
+			<use x="30" width="14" height="74" href="#g2" />
+		</symbol>
+		<symbol id="five" viewBox="0 0 44 74">
+			<use x="0" width="14" height="74" href="#g2" />
+			<use x="15" width="14" height="74" href="#g1" />
+			<use x="30" width="14" height="74" href="#g2" />
+		</symbol>
+		<symbol id="six" viewBox="0 0 44 74">
+			<use x="0" width="14" height="74" href="#g3" />
+			<use x="30" width="14" height="74" href="#g3_r" />
+		</symbol>
+		<symbol id="seven" viewBox="0 0 44 74">
+			<use x="0" width="14" height="74" href="#g3" />
+			<use x="15" y="15" width="14" height="14" href="#seme" />
+			<use x="30" width="14" height="74" href="#g3_r" />
+		</symbol>
+		<symbol id="eight" viewBox="0 0 44 74">
+			<use x="0" width="14" height="74" href="#g3" />
+			<use x="15" y="15" width="14" height="14" href="#seme" />
+			<use x="15" y="46" width="14" height="14" href="#seme_r" />
+			<use x="30" width="14" height="74" href="#g3_r" />
+		</symbol>
+		<symbol id="nine" viewBox="0 0 44 74">
+			<use x="0" width="14" height="74" href="#g4" />
+			<use x="15" width="14" height="74" href="#g1" />
+			<use x="30" width="14" height="74" href="#g4" />
+		</symbol>
+		<symbol id="ten" viewBox="0 0 44 74">
+			<use x="0" width="14" height="74" href="#g4" />
+			<use x="15" y="10" width="14" height="14" href="#seme" />
+			<use x="15" y="50" width="14" height="14" href="#seme_r" />
+			<use x="30" width="14" height="74" href="#g4" />
+		</symbol>
+		<symbol id="fig" viewBox="0 0 50 80" overflow="visible">
+			<rect style="fill:none;stroke:black;stroke-width:.3" 
+				x="0" y="0" width="50" height="80" rx="2" />
+			<use x="2" y="2" width="14" height="14" href="#seme" />
+			<use x="34" y="64" width="14" height="14" href="#seme_r" />
+		</symbol>
+
+        </defs>
+    
+	<rect style="fill:green;"
+			x="-348" y="0" width="100%" height="100%"/>
+
+	<!-- Hearts -->
+	<svg id="king_heart" x="-348" y="0" width="58" height="88">
+		<symbol id="seme">
+			<use href="#cuori"/>
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="-58.5" y="-88" href="#re" transform="rotate(180)"/>
+		<use x="4" y="4" width="50" height="80" href="#fig" />
+	</svg>
+	<svg id="queen_heart" x="-290" y="0" width="58" height="88">
+		<symbol id="seme">
+			<use href="#cuori"/>
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<image id="regina" width="58" height="88" href="queen-of-hearts.svg"/>
+		<use x="-58.5" y="-88" href="#regina" transform="rotate(180)"/>
+		<use x="4" y="4" width="50" height="80" href="#fig" />
+	</svg>
+	<svg id="jack_heart" x="-232" y="0" width="58" height="88">
+		<symbol id="seme">
+			<use href="#cuori"/>
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="-58.5" y="-88" href="#fante" transform="rotate(180)"/>
+		<use x="4" y="4" width="50" height="80" href="#fig" />
+	</svg>
+	<svg id="8_heart" x="-174" y="0" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#cuori" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#ten" />
+	</svg>
+	<svg id="8_heart" x="-116" y="0" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#cuori" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#nine" />
+	</svg>
+	<svg id="8_heart" x="-58" y="0" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#cuori" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#eight" />
+	</svg>
+	<svg id="7_heart" x="0" y="0" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#cuori" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#seven" />
+	</svg>
+	<svg id="6_heart" x="58" y="0" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#cuori" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#six" />
+	</svg>
+	<svg id="5_heart" x="116" y="0" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#cuori" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#five" />
+	</svg>
+	<svg id="4_heart" x="174" y="0" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#cuori" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#four" />
+	</svg>
+	<svg id="3_heart" x="232" y="0" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#cuori" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#trey" />
+	</svg>
+	<svg id="2_heart" x="290" y="0" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#cuori" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#dice" />
+	</svg>
+	<svg id="1_heart" x="348" y="0" width="58" height="88" visibility="visible">
+		<symbol id="seme">
+			<use width="14" height="14" href="#cuori" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#ace" />
+	</svg>
+	<svg id="king_diamond" x="-348" y="88" width="58" height="88">
+		<symbol id="seme">
+			<use href="#quadri"/>
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="-58.5" y="-88" href="#re" transform="rotate(180)"/>
+		<use x="4" y="4" width="50" height="80" href="#fig" />
+	</svg>
+	<svg id="queen_diamond" x="-290" y="88" width="58" height="88">
+		<symbol id="seme">
+			<use href="#quadri"/>
+		</symbol>
+		<use width="58" height="88" href="#card"/>
+		<image id="regina" width="58" height="88" href="queen-of-diamonds.svg"/>
+		<use x="-58" y="-88" href="#regina" transform="rotate(180) "/>
+		<use x="4" y="4" width="50" height="80" href="#fig"/>
+	</svg>
+	<svg id="jack_diamond" x="-232" y="88" width="58" height="88">
+		<symbol id="seme">
+			<use href="#quadri"/>
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="-58.5" y="-88" href="#fante" transform="rotate(180)"/>
+		<use x="4" y="4" width="50" height="80" href="#fig" />
+	</svg>
+	<svg id="10_diamond" x="-174" y="88" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#quadri" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#ten" />
+	</svg>
+	<svg id="9_diamond" x="-116" y="88" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#quadri" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#nine" />
+	</svg>
+	<svg id="8_diamond" x="-58" y="88" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#quadri" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#eight" />
+	</svg>
+	<svg id="7_diamond" x="0" y="88" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#quadri" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#seven" />
+	</svg>
+	<svg id="6_diamond" x="58" y="88" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#quadri" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#six" />
+	</svg>
+	<svg id="5_diamond" x="116" y="88" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#quadri" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#five" />
+	</svg>
+	<svg id="4_diamond" x="174" y="88" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#quadri" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#four" />
+	</svg>
+	<svg id="3_diamond" x="232" y="88" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#quadri" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#trey" />
+	</svg>
+	<svg id="2_diamond" x="290" y="88" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#quadri" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#dice" />
+	</svg>
+	<svg id="1_diamond" x="348" y="88" width="58" height="88" visibility="visible">
+		<symbol id="seme">
+			<use width="14" height="14" href="#quadri" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#ace" />
+	</svg>
+	<svg id="king_club" x="-348" y="176" width="58" height="88">
+		<symbol id="seme">
+			<use href="#fiori"/>
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="4" y="4" width="50" height="80" href="#fig" />
+	</svg>
+	<svg id="queen_club" x="-290" y="176" width="58" height="88">
+		<symbol id="seme" >
+			<use href="#fiori" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<image id="regina" width="58" height="88" href="queen-of-clubs.svg"/>
+		<use x="4" y="4" width="50" height="80" href="#fig" />
+	</svg>
+	<svg id="jack_club" x="-232" y="176" width="58" height="88">
+		<symbol id="seme">
+			<use href="#fiori"/>
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="-58.5" y="-88" href="#fante" transform="rotate(180)"/>
+		<use x="4" y="4" width="50" height="80" href="#fig" />
+	</svg>
+	<svg id="10_club" x="-174" y="176" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#fiori" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#ten" />
+	</svg>
+	<svg id="9_club" x="-116" y="176" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#fiori" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#nine" />
+	</svg>
+	<svg id="8_club" x="-58" y="176" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#fiori" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#eight" />
+	</svg>
+	<svg id="7_club" x="0" y="176" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#fiori" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#seven" />
+	</svg>
+	<svg id="6_club" x="58" y="176" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#fiori" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#six" />
+	</svg>
+	<svg id="5_club" x="116" y="176" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#fiori" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#five" />
+	</svg>
+	<svg id="4_club" x="174" y="176" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#fiori" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#four" />
+	</svg>
+	<svg id="3_club" x="232" y="176" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#fiori" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#trey" />
+	</svg>
+	<svg id="2_club" x="290" y="176" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#fiori" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#dice" />
+	</svg>
+	<svg id="1_club" x="348" y="176" width="58" height="88" visibility="visible">
+		<symbol id="seme">
+			<use width="14" height="14" href="#fiori" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#ace" />
+	</svg>
+	<svg id="king_spade" x="-348" y="264" width="58" height="88">
+		<symbol id="seme" >
+			<use href="#picche" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<image id="redipicche" width="58" height="88" href="king-of-spades.svg"/>
+		<use x="-58" y="-88" href="#redipicche" transform="rotate(180) "/>
+		<use x="4" y="4" width="50" height="80" href="#fig" />
+	</svg>
+	<svg id="queen_spade" x="-290" y="264" width="58" height="88">
+		<symbol id="seme" >
+			<use href="#picche" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<image id="regina" width="58" height="88" href="queen-of-spades.svg"/>
+		<use x="4" y="4" width="50" height="80" href="#fig" />
+	</svg>
+	<svg id="jack_spade" x="-232" y="264" width="58" height="88">
+		<symbol id="seme" >
+			<use href="#picche" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="-58" y="-88" href="#fante" transform="rotate(180) "/>
+		<use x="4" y="4" width="50" height="80" href="#fig" />
+	</svg>
+	<svg id="10_spade" x="-174" y="264" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#picche" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#ten" />
+	</svg>
+	<svg id="9_spade" x="-116" y="264" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#picche" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#nine" />
+	</svg>
+	<svg id="8_spade" x="-58" y="264" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#picche" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#eight" />
+	</svg>
+	<svg id="7_spade" x="0" y="264" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#picche" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#seven" />
+	</svg>
+	<svg id="6_spade" x="58" y="264" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#picche" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#six" />
+	</svg>
+	<svg id="5_spade" x="116" y="264" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#picche" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#five" />
+	</svg>
+	<svg id="4_spade" x="174" y="264" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#picche" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#four" />
+	</svg>
+	<svg id="3_spade" x="232" y="264" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#picche" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#trey" />
+	</svg>
+	<svg id="2_spade" x="290" y="264" width="58" height="88" visibility="visible">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#picche" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#dice" />
+	</svg>
+	<svg id="1_spade" x="348" y="264" width="58" height="88" visibility="visible">
+		<symbol id="seme">
+			<use width="14" height="14" href="#picche" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<use x="7" y="7" width="44" height="74" href="#ace" />
+	</svg>
+	<!-- Misc cards (Jolly, Card back) -->
+	<svg id="back" x="348" y="352" width="58" height="88" visibility="visible">
+		<use width="58" height="88" href="#card" />
+		<image id="regina" width="58" height="88" href="back.svg"/>
+	</svg>
+	
+	<!--
+	<svg id="7_diamond" x="0mm" y="0mm">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#quadri" />
+		</symbol>
+		<use width="58mm" height="88mm" href="#card" />
+		<svg x="7mm" y="7mm">
+			<use width="44mm" height="74mm" href="#seven" />
+		</svg>
+	</svg>
+	<svg id="s10" x="58mm" y="0mm" >
+		<symbol id="seme" >
+			<use width="14" height="14" href="#picche" overflow="visible"/>
+		</symbol>
+		<use width="58mm" height="88mm" href="#card" />
+		<svg x="7mm" y="7mm">
+			<use width="44mm" height="74mm" href="#ten" />
+		</svg>
+	</svg>
+	<svg id="3_spade" x="116mm" y="0mm" >
+		<symbol id="seme" >
+			<use width="14" height="14" href="#picche" overflow="visible"/>
+		</symbol>
+		<use width="58mm" height="88mm" href="#card" />
+		<svg x="7mm" y="7mm">
+			<use width="44mm" height="74mm" href="#trey" />
+		</svg>
+	</svg>
+	<svg id="5_club" x="0mm" y="88mm">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#fiori" />
+		</symbol>
+		<use width="58mm" height="88mm" href="#card" />
+		<svg x="7mm" y="7mm">
+			<use width="44mm" height="74mm" href="#five" />
+		</svg>
+	</svg>
+	<svg id="hq" x="58mm" y="88mm" >
+		<symbol id="seme" >
+			<use href="#cuori" />
+		</symbol>
+		<use width="58mm" height="88mm" href="#card" />
+		<svg id="regina" y="1mm" width="57mm" height="87mm" viewBox="0 0 206 315">
+			<image width="58mm" height="88mm" 
+				href="regina-di-cuori-alt2.svg"/>
+		</svg>
+		<svg x="58mm" y="88mm" >
+			<use href="#regina" transform="rotate(180) "/>
+		</svg>
+		<svg x="4mm" y="4mm">
+			<use width="50mm" height="80mm" href="#fig" />
+		</svg>
+	</svg>
+	<svg id="hqtest" width="58" height="88" >
+		<symbol id="seme" >
+			<use href="#cuori" />
+		</symbol>
+		<use width="58" height="88" href="#card" />
+		<svg id="regina" y="1" width="57mm" height="87mm" viewBox="0 0 206 315">
+			<image width="58" height="88" 
+				href="regina-di-cuori-alt-mod.svg"/>
+		</svg>
+		<svg x="58" y="88" >
+			<use href="#regina" transform="rotate(180) "/>
+		</svg>
+		<svg x="4" y="4">
+			<use width="50" height="80" href="#fig" />
+		</svg>
+	</svg>
+	<svg id="h4" x="116mm" y="88mm">
+		<symbol id="seme" >
+			<use width="14" height="14" href="#cuori" />
+		</symbol>
+		<use width="58mm" height="88mm" href="#card" />
+		<svg x="7mm" y="7mm">
+			<use width="44mm" height="74mm" href="#four" />
+		</svg>
+	</svg>
+	-->
+		<!--
+	<svg viewBox="0 0 232 176" >
+		<rect style="fill:green;"
+				x="0" y="0" width="100%" height="100%"/>
+		<use x="0" y="0" width="58" href="#hqtest"/>
+		<use x="58" y="88" width="58" href="#d1"/>
+		<use x="58" y="0" width="58" href="#d2"/>
+	</svg>
+	-->
+</svg>
