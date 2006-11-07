@@ -1,0 +1,467 @@
+# Translation of kwin_SUSE2.uk.po to Ukrainian
+# @TITLE@
+# Copyright (C) 2006, SUSE Linux GmbH, Nuremberg
+#
+# This file is distributed under the same license as @PACKAGE@ package. FIRST
+#
+# Ivan Petrouchtchak <ivanpetrouchtchak@yahoo.com>, 2006.
+msgid ""
+msgstr ""
+"Project-Id-Version: kwin_SUSE2.uk\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-10-26 10:34+0200\n"
+"PO-Revision-Date: 2006-11-06 18:22-0800\n"
+"Last-Translator: Ivan Petrouchtchak <ivanpetrouchtchak@yahoo.com>\n"
+"Language-Team: Ukrainian <translation@linux.org.ua>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: SUSE2client.cpp:69
+msgid "SUSE2 (Version %1)"
+msgstr "SUSE2 (версія %1)"
+
+#. i18n: file config/configdialog.ui line 16
+#: rc.cpp:3
+#, no-c-format
+msgid "Config Dialog"
+msgstr "Вікно налаштування"
+
+#. i18n: file config/configdialog.ui line 35
+#: rc.cpp:6
+#, no-c-format
+msgid "Ge&neral"
+msgstr "За&гальне"
+
+#. i18n: file config/configdialog.ui line 46
+#: rc.cpp:9
+#, no-c-format
+msgid "Title Alignment"
+msgstr "Вирівнювання заголовка"
+
+#. i18n: file config/configdialog.ui line 57
+#: rc.cpp:12
+#, no-c-format
+msgid "&Left"
+msgstr "&Ліворуч"
+
+#. i18n: file config/configdialog.ui line 60
+#: rc.cpp:15
+#, no-c-format
+msgid "Alt+L"
+msgstr "Alt+L"
+
+#. i18n: file config/configdialog.ui line 63
+#: rc.cpp:18
+#, no-c-format
+msgid "Align the title left."
+msgstr "Вирівнювати по лівому краю."
+
+#. i18n: file config/configdialog.ui line 71
+#: rc.cpp:21
+#, no-c-format
+msgid "&Center"
+msgstr "По &середині"
+
+#. i18n: file config/configdialog.ui line 74
+#: rc.cpp:24 rc.cpp:168 rc.cpp:230
+#, no-c-format
+msgid "Alt+C"
+msgstr "Alt+C"
+
+#. i18n: file config/configdialog.ui line 77
+#: rc.cpp:27
+#, no-c-format
+msgid "Center the title."
+msgstr "Заголовок по центру."
+
+#. i18n: file config/configdialog.ui line 85
+#: rc.cpp:30
+#, no-c-format
+msgid "&Right"
+msgstr "&Праворуч"
+
+#. i18n: file config/configdialog.ui line 88
+#: rc.cpp:33 rc.cpp:159
+#, no-c-format
+msgid "Alt+R"
+msgstr "Alt+R"
+
+#. i18n: file config/configdialog.ui line 91
+#: rc.cpp:36
+#, no-c-format
+msgid "Align the title right."
+msgstr "Вирівнювати по правому краю."
+
+#. i18n: file config/configdialog.ui line 101
+#: rc.cpp:39
+#, no-c-format
+msgid "Round Top Corners"
+msgstr "Закруглені верхні кутки"
+
+#. i18n: file config/configdialog.ui line 112
+#: rc.cpp:42
+#, no-c-format
+msgid "Alwa&ys"
+msgstr "Зав&жди"
+
+#. i18n: file config/configdialog.ui line 115
+#: rc.cpp:45
+#, no-c-format
+msgid "Alt+Y"
+msgstr "Alt+Y"
+
+#. i18n: file config/configdialog.ui line 118
+#: rc.cpp:48
+#, no-c-format
+msgid "Always draw round window top corners."
+msgstr "Завжди заокруглювати верхні кутки вікон."
+
+#. i18n: file config/configdialog.ui line 126
+#: rc.cpp:51
+#, no-c-format
+msgid "Not maximi&zed"
+msgstr "Не ма&ксимізоване"
+
+#. i18n: file config/configdialog.ui line 129
+#: rc.cpp:54
+#, no-c-format
+msgid "Alt+Z"
+msgstr "Alt+Z"
+
+#. i18n: file config/configdialog.ui line 132
+#: rc.cpp:57
+#, no-c-format
+msgid "Draw round top corners if the window is not maximized."
+msgstr "Якщо вікно не максимізоване, то малювати верхні кутки заокругленими."
+
+#. i18n: file config/configdialog.ui line 140
+#: rc.cpp:60
+#, no-c-format
+msgid "Ne&ver"
+msgstr "&Ніколи"
+
+#. i18n: file config/configdialog.ui line 143
+#: rc.cpp:63
+#, no-c-format
+msgid "Alt+V"
+msgstr "Alt+V"
+
+#. i18n: file config/configdialog.ui line 146
+#: rc.cpp:66
+#, no-c-format
+msgid "Never draw round window top corners."
+msgstr "Ніколи не заокруглювати верхні кутки вікон."
+
+#. i18n: file config/configdialog.ui line 156
+#: rc.cpp:69
+#, no-c-format
+msgid "Close &windows by double clicking the menu button"
+msgstr "Закривати &вікна при подвійному клацанні на кнопці меню"
+
+#. i18n: file config/configdialog.ui line 159
+#: rc.cpp:72 rc.cpp:205
+#, no-c-format
+msgid "Alt+W"
+msgstr "Alt+W"
+
+#. i18n: file config/configdialog.ui line 162
+#: rc.cpp:75
+#, no-c-format
+msgid "Check this option if you want windows to be closed when you double click the menu button, similar to Microsoft Windows."
+msgstr "Ввімкніть цей параметр, якщо ви хочете, щоб вікна закривались при подвійному клацанні мишки на кнопці меню, подібно до Microsoft Windows."
+
+#. i18n: file config/configdialog.ui line 170
+#: rc.cpp:78
+#, no-c-format
+msgid "Use shadowed &text"
+msgstr "Вживати тінь для текст&у"
+
+#. i18n: file config/configdialog.ui line 173
+#: rc.cpp:81 rc.cpp:239
+#, no-c-format
+msgid "Alt+T"
+msgstr "Alt+T"
+
+#. i18n: file config/configdialog.ui line 176
+#: rc.cpp:84
+#, no-c-format
+msgid "Check this option if you want the titlebar text to have a 3D look with a shadow behind it."
+msgstr "Ввімкніть, якщо ви бажаєте, щоб текст в заголовку вікна мав тривимірний вигляд внаслідок тіні, що малюється позаду тексту."
+
+#. i18n: file config/configdialog.ui line 192
+#: rc.cpp:87 rc.cpp:221
+#, no-c-format
+msgid " px"
+msgstr " пк"
+
+#. i18n: file config/configdialog.ui line 198
+#: rc.cpp:90
+#, no-c-format
+msgid "Here you can set some additional space for the titlebar height."
+msgstr "Тут можна вказати додатковий простір для висоти панелі заголовка."
+
+#. i18n: file config/configdialog.ui line 214
+#: rc.cpp:93
+#, no-c-format
+msgid "additional space for title height"
+msgstr "додатковий простір для висоти заголовка"
+
+#. i18n: file config/configdialog.ui line 243
+#: rc.cpp:96
+#, no-c-format
+msgid "Bu&ttons"
+msgstr "&Кнопки"
+
+#. i18n: file config/configdialog.ui line 270
+#: rc.cpp:99
+#, no-c-format
+msgid "Buttontype:"
+msgstr "Тип кнопок:"
+
+#. i18n: file config/configdialog.ui line 276
+#: rc.cpp:102
+#, no-c-format
+msgid "Plastik flat"
+msgstr "Пластик, плоский"
+
+#. i18n: file config/configdialog.ui line 281
+#: rc.cpp:105
+#, no-c-format
+msgid "Lipstik flat"
+msgstr "Помада, плоский"
+
+#. i18n: file config/configdialog.ui line 286
+#: rc.cpp:108
+#, no-c-format
+msgid "Plastik 3D"
+msgstr "Пластик, тривимірний"
+
+#. i18n: file config/configdialog.ui line 291
+#: rc.cpp:111
+#, no-c-format
+msgid "Lipstik 3D"
+msgstr "Помада, тривимірний"
+
+#. i18n: file config/configdialog.ui line 296
+#: rc.cpp:114
+#, no-c-format
+msgid "Lipstik bright"
+msgstr "Помада, яскравий"
+
+#. i18n: file config/configdialog.ui line 303
+#: rc.cpp:117
+#, no-c-format
+msgid "Select the buttontype."
+msgstr "Виберіть тип кнопок."
+
+#. i18n: file config/configdialog.ui line 347
+#: rc.cpp:120
+#, no-c-format
+msgid "Custom colors for button bac&kground"
+msgstr "Нетипові кольори для т&ла кнопок"
+
+#. i18n: file config/configdialog.ui line 350
+#: rc.cpp:123
+#, no-c-format
+msgid "Alt+K"
+msgstr "Alt+K"
+
+#. i18n: file config/configdialog.ui line 353
+#: rc.cpp:126
+#, no-c-format
+msgid "Allow custom colors for the button background. The colors for the buttonbackground from the colorscheme are used then."
+msgstr "Дозволити нетипові кольори для тла кнопки. Тоді будуть вживатись кольори для тла кнопок зі схеми кольорів."
+
+#. i18n: file config/configdialog.ui line 361
+#: rc.cpp:129
+#, no-c-format
+msgid "&Use titlefont settings for button icons"
+msgstr "&Вживати параметри шрифту заголовка для піктограм кнопок"
+
+#. i18n: file config/configdialog.ui line 364
+#: rc.cpp:132
+#, no-c-format
+msgid "Alt+U"
+msgstr "Alt+U"
+
+#. i18n: file config/configdialog.ui line 367
+#: rc.cpp:135
+#, no-c-format
+msgid "Use the titlefont settings (color, shadow) for the button icons. Overrides the custom color settings."
+msgstr "Вживати параметри шрифту заголовка (колір, тінь) для піктограм кнопок. Перезаписує нетипові параметри кольорів."
+
+#. i18n: file config/configdialog.ui line 375
+#: rc.cpp:138
+#, no-c-format
+msgid "A&nimate buttons"
+msgstr "А&німація кнопок"
+
+#. i18n: file config/configdialog.ui line 378
+#: rc.cpp:141
+#, no-c-format
+msgid "Alt+N"
+msgstr "Alt+N"
+
+#. i18n: file config/configdialog.ui line 381
+#: rc.cpp:144
+#, no-c-format
+msgid "Check this option if you want the buttons to fade in when the mouse pointer hovers over them and fade out again when it moves away."
+msgstr "Увімкніть цей параметр, якщо ви хочете, щоб кнопки реагували кольором, коли на них наводять вказівник мишки або коли його забирають."
+
+#. i18n: file config/configdialog.ui line 405
+#: rc.cpp:147
+#, no-c-format
+msgid "Iconsize:"
+msgstr "Розмір піктограми:"
+
+#. i18n: file config/configdialog.ui line 413
+#: rc.cpp:150
+#, no-c-format
+msgid " %"
+msgstr " %"
+
+#. i18n: file config/configdialog.ui line 422
+#: rc.cpp:153
+#, no-c-format
+msgid "Here you can set the size of the button icons relative to the button size."
+msgstr "Тут можна вказати розмір піктограм кнопок відносно розміру кнопок."
+
+#. i18n: file config/configdialog.ui line 449
+#: rc.cpp:156
+#, no-c-format
+msgid "&Red closebutton icon"
+msgstr "&Червона піктограма кнопки закриття"
+
+#. i18n: file config/configdialog.ui line 455
+#: rc.cpp:162
+#, no-c-format
+msgid "Paint the icon of the closebutton in red (this overrides all other colorsettings)."
+msgstr "Показувати червоним кольором піктограму кнопки закриття (цим перезаписуються всі інші параметри кольору)."
+
+#. i18n: file config/configdialog.ui line 463
+#: rc.cpp:165
+#, no-c-format
+msgid "&Custom icon colors"
+msgstr "Не&типові кольори піктограм"
+
+#. i18n: file config/configdialog.ui line 469
+#: rc.cpp:171
+#, no-c-format
+msgid "Allow custom colors for the button icons."
+msgstr "Дозволяти нетипові кольори для піктограм кнопок."
+
+#. i18n: file config/configdialog.ui line 510
+#: rc.cpp:174
+#, no-c-format
+msgid "Active:"
+msgstr "Активна:"
+
+#. i18n: file config/configdialog.ui line 518
+#: rc.cpp:177
+#, no-c-format
+msgid "Active down:"
+msgstr "Активні вниз:"
+
+#. i18n: file config/configdialog.ui line 526
+#: rc.cpp:180
+#, no-c-format
+msgid "Inactive:"
+msgstr "Неактивні:"
+
+#. i18n: file config/configdialog.ui line 534
+#: rc.cpp:183
+#, no-c-format
+msgid "Inactive down:"
+msgstr "Неактивні вниз:"
+
+#. i18n: file config/configdialog.ui line 555
+#: rc.cpp:187
+#, no-c-format
+msgid "Color for the icon of the active button."
+msgstr "Колір для піктограми активної кнопки."
+
+#. i18n: file config/configdialog.ui line 566
+#: rc.cpp:191
+#, no-c-format
+msgid "Color for the icon of the active button when pressed."
+msgstr "Колір для піктограми активної кнопки, коли її натиснуто."
+
+#. i18n: file config/configdialog.ui line 577
+#: rc.cpp:195
+#, no-c-format
+msgid "Color for the icon of the inactive button."
+msgstr "Колір для піктограми неактивної кнопки."
+
+#. i18n: file config/configdialog.ui line 588
+#: rc.cpp:199
+#, no-c-format
+msgid "Color for the icon of the inactive button when pressed."
+msgstr "Колір для піктограми неактивної кнопки, коли її натиснуто."
+
+#. i18n: file config/configdialog.ui line 600
+#: rc.cpp:202
+#, no-c-format
+msgid "Shado&w for icons"
+msgstr "Ті&нь для піктограм"
+
+#. i18n: file config/configdialog.ui line 606
+#: rc.cpp:208
+#, no-c-format
+msgid "Check this if you want to have shadows for the button icons on active windows."
+msgstr "Ввімкніть, якщо ви хочете, щоб піктограми кнопок на активних вікнах мали тіні."
+
+#. i18n: file config/configdialog.ui line 616
+#: rc.cpp:211
+#, no-c-format
+msgid "&Logo"
+msgstr "&Логотип"
+
+#. i18n: file config/configdialog.ui line 652
+#: rc.cpp:214
+#, no-c-format
+msgid "Logo preview:"
+msgstr "Перегляд логотипу:"
+
+#. i18n: file config/configdialog.ui line 702
+#: rc.cpp:218
+#, no-c-format
+msgid "Offset from title:"
+msgstr "Відступ від заголовка:"
+
+#. i18n: file config/configdialog.ui line 724
+#: rc.cpp:224
+#, no-c-format
+msgid "Set the offset of the logo from the titletext."
+msgstr "Встановіть для логотипу відступ від заголовка."
+
+#. i18n: file config/configdialog.ui line 749
+#: rc.cpp:227
+#, no-c-format
+msgid "Sele&ct Image"
+msgstr "Ви&беріть зображення"
+
+#. i18n: file config/configdialog.ui line 755
+#: rc.cpp:233
+#, no-c-format
+msgid "Select the titlebar logo image."
+msgstr "Виберіть зображення логотипу для панелі заголовка."
+
+#. i18n: file config/configdialog.ui line 780
+#: rc.cpp:236
+#, no-c-format
+msgid "Show &titlebar logo"
+msgstr "Показувати логотип в &панелі заголовка"
+
+#. i18n: file config/configdialog.ui line 786
+#: rc.cpp:242
+#, no-c-format
+msgid "Check this if you want to see the titlebar logo in the titlebar."
+msgstr "Ввімкніть, якщо хочете бачити логотип на панелі заголовка."
+
+#: config/config.cpp:255
+msgid "Select Logo Image"
+msgstr "Виберіть зображення логотипу"
+
