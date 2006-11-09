@@ -1,9 +1,16 @@
-  
+How to have Oxygen palette in Inkscape (0.41 at least): 
+Make sure to met the GIMP dependencies.
 
-How to have Oxygen palette in Inkscape (0.43+ at least): 
+If you have just granted normal user privileges:
 
 1) in .inkscape make a dir called palettes
 2) and then put the oxygen.gpl file in that dir
 3) and restart inkscape
 4) select the oxygen palette
 
+Better, if you have root access to your machine:
+
+1) put the oxygen.gpl file in /usr/share/inkscape/palettes
+2) restart inkscape and select the oxygen palette
+
+--The Oxygen team
