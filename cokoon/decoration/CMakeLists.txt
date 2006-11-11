@@ -11,7 +11,7 @@ kde4_automoc(${kwin3_cokoon_PART_SRCS})
 
 kde4_add_plugin(kwin3_cokoon ${kwin3_cokoon_PART_SRCS})
 
-kde4_install_libtool_file( ${PLUGIN_INSTALL_DIR} kwin3_cokoon )
+
 
 target_link_libraries(kwin3_cokoon  ${KDE4_KDEUI_LIBS} cokoon kdecorations )
 
