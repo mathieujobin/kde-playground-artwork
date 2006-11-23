@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: kwin_SUSE2.nl\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-10-26 10:34+0200\n"
-"PO-Revision-Date: 2006-10-18 23:30+0200\n"
+"PO-Revision-Date: 2006-11-07 17:30+0100\n"
 "Last-Translator: Rinse de Vries <rinsedevries@kde.nl>\n"
 "Language-Team: Dutch <kde-i18n-nl@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -429,9 +429,9 @@ msgstr "Logovoorbeeld:"
 
 #. i18n: file config/configdialog.ui line 702
 #: rc.cpp:218
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Offset from title:"
-msgstr "afstand vanaf titel"
+msgstr "Afstand vanaf titel:"
 
 #. i18n: file config/configdialog.ui line 724
 #: rc.cpp:224
@@ -441,7 +441,7 @@ msgstr "Stel de afstand in van het logo vanuit de titeltekst."
 
 #. i18n: file config/configdialog.ui line 749
 #: rc.cpp:227
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Sele&ct Image"
 msgstr "Afbeelding sele&cteren"
 
@@ -467,12 +467,3 @@ msgstr "Schakel dit in als u de titelbalklogo in de titelbalk wilt zien."
 msgid "Select Logo Image"
 msgstr "Logo-afbeelding selecteren"
 
-#~ msgid ""
-#~ "_: NAME OF TRANSLATORS\n"
-#~ "Your names"
-#~ msgstr "Rinse de Vries"
-
-#~ msgid ""
-#~ "_: EMAIL OF TRANSLATORS\n"
-#~ "Your emails"
-#~ msgstr "rinsedevries@kde.nl"

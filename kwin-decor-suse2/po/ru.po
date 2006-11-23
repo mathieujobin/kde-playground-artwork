@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: kwin_SUSE2.ru\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-10-26 10:34+0200\n"
-"PO-Revision-Date: 2006-11-03 15:00+0200\n"
+"PO-Revision-Date: 2006-11-09 23:12+0200\n"
 "Last-Translator: Aleksey Osipov <aliks-os@yandex.ru>\n"
 "Language-Team: Russian <i18n@suse.de>\n"
 "MIME-Version: 1.0\n"
@@ -225,7 +225,7 @@ msgstr "Тип кнопки:"
 #: rc.cpp:102
 #, no-c-format
 msgid "Plastik flat"
-msgstr ""
+msgstr "Пластик, плоский"
 
 #. i18n: file config/configdialog.ui line 281
 #: rc.cpp:105
@@ -237,7 +237,7 @@ msgstr ""
 #: rc.cpp:108
 #, no-c-format
 msgid "Plastik 3D"
-msgstr ""
+msgstr "Пластик 3D"
 
 #. i18n: file config/configdialog.ui line 291
 #: rc.cpp:111
@@ -273,7 +273,7 @@ msgstr "Alt+K"
 #: rc.cpp:126
 #, no-c-format
 msgid "Allow custom colors for the button background. The colors for the buttonbackground from the colorscheme are used then."
-msgstr ""
+msgstr "Разрешить пользовательские цвета для фона кнопок. Будут использованы цвета из цветовой схемы."
 
 #. i18n: file config/configdialog.ui line 361
 #: rc.cpp:129
@@ -309,7 +309,7 @@ msgstr "Alt+N"
 #: rc.cpp:144
 #, no-c-format
 msgid "Check this option if you want the buttons to fade in when the mouse pointer hovers over them and fade out again when it moves away."
-msgstr ""
+msgstr "Отметьте эту опцию, если вы хотите, чтобы кнопка изменялась при наведении мышки над ней."
 
 #. i18n: file config/configdialog.ui line 405
 #: rc.cpp:147
@@ -333,13 +333,13 @@ msgstr "Здесь вы можете установить размер икон�
 #: rc.cpp:156
 #, no-c-format
 msgid "&Red closebutton icon"
-msgstr ""
+msgstr "&Красная иконка кнопки закрытия"
 
 #. i18n: file config/configdialog.ui line 455
 #: rc.cpp:162
 #, no-c-format
 msgid "Paint the icon of the closebutton in red (this overrides all other colorsettings)."
-msgstr ""
+msgstr "Закрасить иконку кнопки закрытия в красный (это перекроет все другие цветовый настройки)."
 
 #. i18n: file config/configdialog.ui line 463
 #: rc.cpp:165

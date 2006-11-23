@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: kwin_SUSE2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-10-26 10:34+0200\n"
-"PO-Revision-Date: 2006-10-22 11:51+0200\n"
+"PO-Revision-Date: 2006-11-16 19:05+0100\n"
 "Last-Translator: Mattias Newzella <newzella@linux.se>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -57,7 +57,7 @@ msgstr "Alt+V"
 #: rc.cpp:18
 #, no-c-format
 msgid "Align the title left."
-msgstr ""
+msgstr "Justera rubriken till vänster."
 
 #. i18n: file config/configdialog.ui line 71
 #: rc.cpp:21
@@ -93,7 +93,7 @@ msgstr "Alt+R"
 #: rc.cpp:36
 #, no-c-format
 msgid "Align the title right."
-msgstr ""
+msgstr "Justera rubriken till höger."
 
 #. i18n: file config/configdialog.ui line 101
 #: rc.cpp:39
@@ -439,7 +439,7 @@ msgstr ""
 
 #. i18n: file config/configdialog.ui line 749
 #: rc.cpp:227
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Sele&ct Image"
 msgstr "Välj &bild"
 
@@ -474,3 +474,4 @@ msgstr "Välj logobild"
 #~ "_: EMAIL OF TRANSLATORS\n"
 #~ "Your emails"
 #~ msgstr "newzella@linux.se"
+
