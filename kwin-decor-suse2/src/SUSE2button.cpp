@@ -507,7 +507,11 @@ void SUSE2Button::renderBtnSurface(QPainter *p, const QRect &r)
     } else if (Handler()->customColors()) {
         backgroundColor = Handler()->getColor(BtnBg, active);
     } else {
-        backgroundColor = alphaBlendColors(Handler()->getColor(TitleGradientFrom, active), Qt::black, 220);
+        backgroundColor = Handler()->getColor(TitleGradientFrom, active);
+        if (!active)
+            backgroundColor = alphaBlendColors(backgroundColor,
+                    Handler()->getColor(TitleGradientTo, active), 128);
+        backgroundColor = alphaBlendColors(backgroundColor, Qt::black, 220);
     }
 
     QColor highlightColor;
