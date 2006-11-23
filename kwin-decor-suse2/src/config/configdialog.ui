@@ -55,9 +55,6 @@
                                 <property name="text">
                                     <string>&amp;Left</string>
                                 </property>
-                                <property name="accel">
-                                    <string>Alt+L</string>
-                                </property>
                                 <property name="whatsThis" stdset="0">
                                     <string>Align the title left.</string>
                                 </property>
@@ -69,9 +66,6 @@
                                 <property name="text">
                                     <string>&amp;Center</string>
                                 </property>
-                                <property name="accel">
-                                    <string>Alt+C</string>
-                                </property>
                                 <property name="whatsThis" stdset="0">
                                     <string>Center the title.</string>
                                 </property>
@@ -82,9 +76,6 @@
                                 </property>
                                 <property name="text">
                                     <string>&amp;Right</string>
-                                </property>
-                                <property name="accel">
-                                    <string>Alt+R</string>
                                 </property>
                                 <property name="whatsThis" stdset="0">
                                     <string>Align the title right.</string>
@@ -110,9 +101,6 @@
                                 <property name="text">
                                     <string>Alwa&amp;ys</string>
                                 </property>
-                                <property name="accel">
-                                    <string>Alt+Y</string>
-                                </property>
                                 <property name="whatsThis" stdset="0">
                                     <string>Always draw round window top corners.</string>
                                 </property>
@@ -124,9 +112,6 @@
                                 <property name="text">
                                     <string>Not maximi&amp;zed</string>
                                 </property>
-                                <property name="accel">
-                                    <string>Alt+Z</string>
-                                </property>
                                 <property name="whatsThis" stdset="0">
                                     <string>Draw round top corners if the window is not maximized.</string>
                                 </property>
@@ -137,9 +122,6 @@
                                 </property>
                                 <property name="text">
                                     <string>Ne&amp;ver</string>
-                                </property>
-                                <property name="accel">
-                                    <string>Alt+V</string>
                                 </property>
                                 <property name="whatsThis" stdset="0">
                                     <string>Never draw round window top corners.</string>
@@ -154,9 +136,6 @@
                         <property name="text">
                             <string>Close &amp;windows by double clicking the menu button</string>
                         </property>
-                        <property name="accel">
-                            <string>Alt+W</string>
-                        </property>
                         <property name="whatsThis" stdset="0">
                             <string>Check this option if you want windows to be closed when you double click the menu button, similar to Microsoft Windows.</string>
                         </property>
@@ -167,9 +146,6 @@
                         </property>
                         <property name="text">
                             <string>Use shadowed &amp;text</string>
-                        </property>
-                        <property name="accel">
-                            <string>Alt+T</string>
                         </property>
                         <property name="whatsThis" stdset="0">
                             <string>Check this option if you want the titlebar text to have a 3D look with a shadow behind it.</string>
@@ -406,9 +382,6 @@
                         <property name="text">
                             <string>Custom colors for button bac&amp;kground</string>
                         </property>
-                        <property name="accel">
-                            <string>Alt+K</string>
-                        </property>
                         <property name="whatsThis" stdset="0">
                             <string>Allow custom colors for the button background. The colors for the buttonbackground from the colorscheme are used then.</string>
                         </property>
@@ -420,9 +393,6 @@
                         <property name="text">
                             <string>&amp;Use titlefont settings for button icons</string>
                         </property>
-                        <property name="accel">
-                            <string>Alt+U</string>
-                        </property>
                         <property name="whatsThis" stdset="0">
                             <string>Use the titlefont settings (color, shadow) for the button icons. Overrides the custom color settings.</string>
                         </property>
@@ -433,9 +403,6 @@
                         </property>
                         <property name="text">
                             <string>A&amp;nimate buttons</string>
-                        </property>
-                        <property name="accel">
-                            <string>Alt+N</string>
                         </property>
                         <property name="whatsThis" stdset="0">
                             <string>Check this option if you want the buttons to fade in when the mouse pointer hovers over them and fade out again when it moves away.</string>
@@ -508,9 +475,6 @@
                         <property name="text">
                             <string>&amp;Red closebutton icon</string>
                         </property>
-                        <property name="accel">
-                            <string>Alt+R</string>
-                        </property>
                         <property name="whatsThis" stdset="0">
                             <string>Paint the icon of the closebutton in red (this overrides all other colorsettings).</string>
                         </property>
@@ -521,9 +485,6 @@
                         </property>
                         <property name="text">
                             <string>&amp;Custom icon colors</string>
-                        </property>
-                        <property name="accel">
-                            <string>Alt+C</string>
                         </property>
                         <property name="whatsThis" stdset="0">
                             <string>Allow custom colors for the button icons.</string>
@@ -658,9 +619,6 @@
                         </property>
                         <property name="text">
                             <string>Shado&amp;w for icons</string>
-                        </property>
-                        <property name="accel">
-                            <string>Alt+W</string>
                         </property>
                         <property name="whatsThis" stdset="0">
                             <string>Check this if you want to have shadows for the button icons on active windows.</string>
@@ -808,9 +766,6 @@
                         <property name="text">
                             <string>Sele&amp;ct Image</string>
                         </property>
-                        <property name="accel">
-                            <string>Alt+C</string>
-                        </property>
                         <property name="whatsThis" stdset="0">
                             <string>Select the titlebar logo image.</string>
                         </property>
@@ -839,9 +794,6 @@
                         <property name="text">
                             <string>Show &amp;titlebar logo</string>
                         </property>
-                        <property name="accel">
-                            <string>Alt+T</string>
-                        </property>
                         <property name="whatsThis" stdset="0">
                             <string>Check this if you want to see the titlebar logo in the titlebar.</string>
                         </property>
@@ -867,13 +819,4 @@
     <tabstop>selectButton</tabstop>
 </tabstops>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>knuminput.h</includehint>
-    <includehint>knuminput.h</includehint>
-    <includehint>kcolorbutton.h</includehint>
-    <includehint>kcolorbutton.h</includehint>
-    <includehint>kcolorbutton.h</includehint>
-    <includehint>kcolorbutton.h</includehint>
-    <includehint>knuminput.h</includehint>
-</includehints>
 </UI>
