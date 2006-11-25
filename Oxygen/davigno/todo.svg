@@ -14,7 +14,7 @@
 <path opacity="0.3" fill="#323232" d="M2.293,5.432C2.105,5.619,2,5.874,2,6.139V77c0,0.553,0.448,1,1,1h82c0.553,0,1-0.447,1-1
 	V6.204c0-0.552-0.447-1-0.999-1l-82-0.065C2.735,5.139,2.481,5.244,2.293,5.432z"/>
 <polygon opacity="0.35" fill="#323232" points="85,77 3,77 3,6.139 85,6.204 "/>
-<radialGradient id="XMLID_7_" cx="13.8359" cy="-21.8101" r="111.2527" gradientTransform="matrix(1 8.000000e-04 -7.000000e-04 0.8192 0.2714 21.433)" gradientUnits="userSpaceOnUse">
+<radialGradient id="XMLID_8_" cx="13.8359" cy="-21.8101" r="111.2527" gradientTransform="matrix(1 8.000000e-04 -7.000000e-04 0.8192 0.2714 21.433)" gradientUnits="userSpaceOnUse">
 	<stop  offset="0" style="stop-color:#FFFFFF"/>
 	<stop  offset="0.6627" style="stop-color:#FFFFFF"/>
 	<stop  offset="0.75" style="stop-color:#FBFBFB"/>
@@ -23,18 +23,18 @@
 	<stop  offset="0.978" style="stop-color:#C4C4C4"/>
 	<stop  offset="1" style="stop-color:#BBBBBB"/>
 </radialGradient>
-<polygon fill="url(#XMLID_7_)" points="85,76 3,76 3,5.139 85,5.204 "/>
-<linearGradient id="XMLID_8_" gradientUnits="userSpaceOnUse" x1="286" y1="24.2715" x2="286" y2="7.2715" gradientTransform="matrix(-1 0 0 -1 330 27.4111)">
+<polygon fill="url(#XMLID_8_)" points="85,76 3,76 3,5.139 85,5.204 "/>
+<linearGradient id="XMLID_9_" gradientUnits="userSpaceOnUse" x1="286" y1="24.2715" x2="286" y2="7.2715" gradientTransform="matrix(-1 0 0 -1 330 27.4111)">
 	<stop  offset="0" style="stop-color:#008C00"/>
 	<stop  offset="0.574" style="stop-color:#72D13D"/>
 </linearGradient>
-<rect x="3" y="3" fill="url(#XMLID_8_)" width="82" height="17"/>
-<linearGradient id="XMLID_9_" gradientUnits="userSpaceOnUse" x1="68" y1="14" x2="68" y2="3">
+<rect x="3" y="3" fill="url(#XMLID_9_)" width="82" height="17"/>
+<linearGradient id="XMLID_10_" gradientUnits="userSpaceOnUse" x1="68" y1="14" x2="68" y2="3">
 	<stop  offset="0" style="stop-color:#008C00"/>
 	<stop  offset="1" style="stop-color:#005333"/>
 </linearGradient>
-<rect x="60" y="3" fill="url(#XMLID_9_)" width="16" height="11"/>
-<linearGradient id="XMLID_10_" gradientUnits="userSpaceOnUse" x1="68" y1="0" x2="68" y2="12">
+<rect x="60" y="3" fill="url(#XMLID_10_)" width="16" height="11"/>
+<linearGradient id="XMLID_11_" gradientUnits="userSpaceOnUse" x1="68" y1="0" x2="68" y2="12">
 	<stop  offset="0.1" style="stop-color:#666666"/>
 	<stop  offset="0.1241" style="stop-color:#858585"/>
 	<stop  offset="0.1581" style="stop-color:#AAAAAA"/>
@@ -50,13 +50,13 @@
 	<stop  offset="0.8945" style="stop-color:#929292"/>
 	<stop  offset="1" style="stop-color:#666666"/>
 </linearGradient>
-<rect x="62" fill="url(#XMLID_10_)" width="12" height="12"/>
-<linearGradient id="XMLID_11_" gradientUnits="userSpaceOnUse" x1="22" y1="14" x2="22" y2="3">
+<rect x="62" fill="url(#XMLID_11_)" width="12" height="12"/>
+<linearGradient id="XMLID_12_" gradientUnits="userSpaceOnUse" x1="22" y1="14" x2="22" y2="3">
 	<stop  offset="0" style="stop-color:#008C00"/>
 	<stop  offset="1" style="stop-color:#005333"/>
 </linearGradient>
-<rect x="14" y="3" fill="url(#XMLID_11_)" width="16" height="11"/>
-<linearGradient id="XMLID_12_" gradientUnits="userSpaceOnUse" x1="22" y1="0" x2="22" y2="12">
+<rect x="14" y="3" fill="url(#XMLID_12_)" width="16" height="11"/>
+<linearGradient id="XMLID_13_" gradientUnits="userSpaceOnUse" x1="22" y1="0" x2="22" y2="12">
 	<stop  offset="0.1" style="stop-color:#666666"/>
 	<stop  offset="0.1241" style="stop-color:#858585"/>
 	<stop  offset="0.1581" style="stop-color:#AAAAAA"/>
@@ -72,35 +72,13 @@
 	<stop  offset="0.8945" style="stop-color:#929292"/>
 	<stop  offset="1" style="stop-color:#666666"/>
 </linearGradient>
-<rect x="16" fill="url(#XMLID_12_)" width="12" height="12"/>
-<rect x="10" y="32" fill="#BBBBBB" width="8" height="7.999"/>
-<rect x="20" y="32" fill="#BBBBBB" width="8" height="7.999"/>
-<rect x="30" y="32" fill="#BBBBBB" width="8" height="8"/>
-<rect x="40" y="32" fill="#BBBBBB" width="8" height="8"/>
-<rect x="50" y="32" fill="#BBBBBB" width="8" height="8"/>
-<rect x="60" y="32" fill="#BBBBBB" width="8" height="8"/>
-<rect x="70" y="32" fill="#C3B4DA" width="8" height="8"/>
-<rect x="50" y="22" fill="#BBBBBB" width="8" height="8"/>
-<rect x="60" y="22" fill="#BBBBBB" width="8" height="8"/>
-<rect x="70" y="22" fill="#C3B4DA" width="8" height="8"/>
-<rect x="10" y="42" fill="#BBBBBB" width="8" height="8"/>
-<rect x="20" y="42" fill="#BBBBBB" width="8" height="8"/>
-<rect x="30" y="42" fill="#BBBBBB" width="8" height="8"/>
-<rect x="50" y="42" fill="#BBBBBB" width="8" height="8"/>
-<rect x="60" y="42" fill="#BBBBBB" width="8" height="8"/>
-<rect x="70" y="42" fill="#C3B4DA" width="8" height="8"/>
-<rect x="10" y="52" fill="#BBBBBB" width="8" height="8"/>
-<rect x="20" y="52" fill="#BBBBBB" width="8" height="8"/>
-<rect x="30" y="52" fill="#BBBBBB" width="8" height="8"/>
-<rect x="40" y="52" fill="#BBBBBB" width="8" height="8"/>
-<rect x="50" y="52" fill="#BBBBBB" width="8" height="8"/>
-<rect x="60" y="52" fill="#BBBBBB" width="8" height="8"/>
-<rect x="70" y="52" fill="#C3B4DA" width="8" height="8"/>
-<rect x="10" y="62" fill="#BBBBBB" width="8" height="8"/>
-<rect x="20" y="62" fill="#BBBBBB" width="8" height="8"/>
-<rect x="30" y="62" fill="#BBBBBB" width="8" height="8"/>
-<rect x="40" y="62" fill="#BBBBBB" width="8" height="8"/>
-<rect x="50" y="62" fill="#BBBBBB" width="8" height="8"/>
-<rect x="60" y="62" fill="#BBBBBB" width="8" height="8"/>
-<rect x="38" y="40" fill="#BF0303" width="12" height="12"/>
+<rect x="16" fill="url(#XMLID_13_)" width="12" height="12"/>
+<g>
+	<linearGradient id="XMLID_14_" gradientUnits="userSpaceOnUse" x1="44.0005" y1="72" x2="44.0005" y2="24.0005">
+		<stop  offset="0" style="stop-color:#37A42C"/>
+		<stop  offset="1" style="stop-color:#00BF00"/>
+	</linearGradient>
+	<path fill="url(#XMLID_14_)" d="M37.596,54.734C32.165,49.168,20.42,37.132,20.42,37.132L12,45.764L37.596,72L76,32.632L67.578,24
+		C67.578,24,44.071,48.098,37.596,54.734z"/>
+</g>
 </svg>
