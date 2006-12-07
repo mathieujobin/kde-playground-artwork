@@ -24,6 +24,20 @@
 				x="0.1" y="0.1" width="57.8" height="87.8" rx="3" />
 		</g>
 		
+		<!-- The jocker star -->
+		<g id="star" viewbox="0 0 32 32" transform="scale(.28)">
+			<path
+				style="opacity:1;fill-opacity:1;fill-rule:nonzero;stroke:none;visibility:visible;display:inline;overflow:visible"
+				d="M 16.03125 0.375 C 7.4267157 0.375 0.4375 7.4111591 0.4375 16.0625 C 0.4375 24.713841 7.4267152 31.718751 16.03125 31.71875 C 24.635784 31.71875 31.624999 24.713841 31.625 16.0625 C 31.625 7.4111591 24.635784 0.375 16.03125 0.375 z M 15.71875 2.4375 C 23.212835 2.297012 29.421361 8.3028693 29.5625 15.84375 C 29.703639 23.384631 23.744085 29.609512 16.25 29.75 C 8.7559159 29.890488 2.5473894 23.884631 2.40625 16.34375 C 2.2651107 8.8028702 8.2246651 2.5779881 15.71875 2.4375 z "
+				/>
+			<path
+				style="opacity:1;fill-opacity:1;fill-rule:nonzero;stroke:none;visibility:visible;display:inline;overflow:visible"
+				d="M 25.272817,28.785083 L 16.068476,22.865274 L 6.8565889,28.770726 L 9.6423646,18.187557 L 1.1793156,11.251416 L 12.10536,10.630467 L 16.086796,0.43824386 L 20.053687,10.637646 L 30.977398,11.274646 L 22.503027,18.199172 L 25.272817,28.785083 z " />
+		</g>
+
+		<g id="star-r"> 
+			<use width="14" height="14" href="#star" transform="rotate(180,7,7)" />	
+		</g> 
 		<!-- The suit symbols -->
 		
 		<g id="diamond" transform="scale(.28)"
@@ -643,10 +657,25 @@
 			<use x="29" y="44" xlink:href="#big-logo" style="fill:white;" />
 		</g>
 		
+		<!-- Jolly Jockers -->
+		
+		<g id="black_jocker">
+			<use xlink:href="#card-outline" />
+			<use style="fill:black;" x="6" y="6" width="14" height="14" href="#star" />
+			<use style="fill:black;" x="38" y="68" width="14" height="14" href="#star-r" />
+		</g>
+		<g id="red_jocker">
+			<use xlink:href="#card-outline" />
+			<use style="fill:red;" x="6" y="6" width="14" height="14" href="#star" />
+			<use  style="fill:red;" x="38" y="68" width="14" height="14" href="#star-r" />
+		</g>
+
 		<g id="misc-cards">
 			<use xlink:href="#back" x="0" y="0" />
 			<use xlink:href="#red_back" x="58" y="0" />
 			<use xlink:href="#blue_back" x="116" y="0" />
+			<use xlink:href="#black_jocker" x="174" y="0" />
+			<use xlink:href="#red_jocker" x="232" y="0" />
 		</g>
 	</defs>
 	
