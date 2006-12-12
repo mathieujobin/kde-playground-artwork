@@ -7,13 +7,13 @@
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="128"
    height="128"
    id="svg1307"
    sodipodi:version="0.32"
-   inkscape:version="0.43"
+   inkscape:version="0.44"
    version="1.0"
    sodipodi:docbase="/home/me/KDE_SVN/trunk/playground/artwork/Oxygen/theme/svg/actions"
    sodipodi:docname="cdburn.svg">
@@ -558,7 +558,7 @@
        xlink:href="#linearGradient5593"
        id="linearGradient1477"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1.63492,-5.852726e-18,0,1.63492,-41.10489,-11.44395)"
+       gradientTransform="matrix(1.63492,0,0,1.63492,-41.10489,-11.44395)"
        x1="64.740204"
        y1="19.090599"
        x2="65.4282"
@@ -568,7 +568,7 @@
        xlink:href="#linearGradient2949"
        id="radialGradient1479"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(0.702152,1.256798e-18,0,0.782141,19.57516,1.996962)"
+       gradientTransform="matrix(0.702152,0,0,0.782141,19.57516,1.996962)"
        cx="65.722099"
        cy="20.491507"
        fx="65.722099"
@@ -605,7 +605,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="5.6505767"
      inkscape:cx="69.004292"
-     inkscape:cy="64.765533"
+     inkscape:cy="57.509636"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:document-units="px"
@@ -613,10 +613,10 @@
      guidetolerance="0.1px"
      showguides="true"
      inkscape:guide-bbox="true"
-     inkscape:window-width="1276"
-     inkscape:window-height="926"
+     inkscape:window-width="1274"
+     inkscape:window-height="727"
      inkscape:window-x="0"
-     inkscape:window-y="47">
+     inkscape:window-y="0">
     <sodipodi:guide
        orientation="horizontal"
        position="-19.347525"
@@ -673,7 +673,7 @@
        sodipodi:rx="63.766422"
        sodipodi:ry="8.9414167"
        d="M 128.47405 120.47038 A 63.766422 8.9414167 0 1 1  0.94120407,120.47038 A 63.766422 8.9414167 0 1 1  128.47405 120.47038 z"
-       transform="matrix(1.089785,0,0,0.860357,-5.565026,19.77016)" />
+       transform="matrix(1.035666,0,0,0.603054,-5.514089,49.70567)" />
     <g
        id="g5140"
        transform="matrix(0.948868,0,0,0.948868,11.24798,-1.53093)">
@@ -793,7 +793,7 @@
     </g>
     <g
        id="g5126"
-       transform="matrix(0.989797,1.419737e-2,-1.419737e-2,0.989797,15.53179,0.725694)">
+       transform="matrix(0.989797,1.419737e-2,-1.419737e-2,0.989797,15.35482,1.433586)">
       <path
          transform="matrix(3.805193,0,0,3.876667,-178.1076,46.99692)"
          sodipodi:nodetypes="cscscsscssccscc"
@@ -809,7 +809,7 @@
     </g>
     <g
        id="g5110"
-       transform="matrix(0.948868,0,0,0.948868,-20.54244,6.087536)">
+       transform="matrix(0.948868,0,0,0.948868,-20.18849,6.972401)">
       <path
          transform="matrix(3.805193,0,0,3.876667,-178.1076,46.99692)"
          sodipodi:nodetypes="cscscsscssccscc"
@@ -823,16 +823,6 @@
          id="path5114"
          sodipodi:nodetypes="cscscsscssccscc" />
     </g>
-    <rect
-       style="opacity:0.23770495;fill:url(#radialGradient1475);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:7.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:4;stroke-opacity:1"
-       id="rect4522"
-       width="119.53265"
-       height="65.413528"
-       x="5.17661"
-       y="61.174671"
-       rx="1.4534065"
-       ry="1.3148017"
-       transform="matrix(1.048095,0,0,1.737877,-2.036343,-104.9731)" />
     <path
        transform="matrix(3.493165,5.010493e-2,-5.104608e-2,3.558778,-151.5118,50.68)"
        sodipodi:nodetypes="cscscsscssccscc"
