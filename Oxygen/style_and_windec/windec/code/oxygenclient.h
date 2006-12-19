@@ -27,7 +27,7 @@
 #ifndef EXAMPLECLIENT_H
 #define EXAMPLECLIENT_H
 
-#include <qabstractbutton.h>
+#include <q3button.h>
 #include <qlayout.h>
 //Added by qt3to4:
 #include <QResizeEvent>
@@ -84,7 +84,7 @@ inline Qt::Alignment MinimalisticFactory::titleAlign()
 
 // MinimalisticButton //////////////////////////////////////////////////////////////
 
-class MinimalisticButton : public QAbstractButton
+class MinimalisticButton : public Q3Button
 {
 public:
     MinimalisticButton(MinimalisticClient *parent=0, const char *name=0,
@@ -95,8 +95,8 @@ public:
 
     void setBitmap(const unsigned char *bitmap);
     QSize sizeHint() const;
-    int lastMousePress() const;
-    void reset();
+    const int lastMousePress(){return lastmouse_;};
+    void reset(){repaint();};
 
 private:
     void enterEvent(QEvent *e);
@@ -112,11 +112,11 @@ private:
     int lastmouse_;
 };
 
-inline int MinimalisticButton::lastMousePress() const
-    { return lastmouse_; }
-
-inline void MinimalisticButton::reset()
-    { repaint(false); }
+// inline int MinimalisticButton::lastMousePress() const
+//     { return lastmouse_; }
+// 
+// inline void MinimalisticButton::reset()
+//     { repaint(); }
 
 // MinimalisticClient //////////////////////////////////////////////////////////////
 
