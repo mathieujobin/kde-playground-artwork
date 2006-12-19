@@ -18,8 +18,16 @@
 #include <qlayout.h>
 #include <qpainter.h>
 #include <qtooltip.h>
+//Added by qt3to4:
+#include <Q3HBoxLayout>
+#include <Q3GridLayout>
+#include <QResizeEvent>
+#include <QMouseEvent>
+#include <QEvent>
+#include <QShowEvent>
+#include <QPaintEvent>
 
-#include "minimalisticclient.h"
+#include "oxygenclient.h"
 
 using namespace Minimalistic;
 
@@ -185,9 +193,9 @@ MinimalisticButton::MinimalisticButton(MinimalisticClient *parent, const char *n
     : QButton(parent->widget(), name), client_(parent), type_(type),
       deco_(0), lastmouse_(0)
 {
-    setBackgroundMode(NoBackground);
+    setBackgroundMode(Qt::NoBackground);
     setFixedSize(BUTTONSIZE, BUTTONSIZE);
-    setCursor(arrowCursor);
+    setCursor(Qt::arrowCursor);
     if (bitmap) setBitmap(bitmap);
     QToolTip::add(this, tip);
 }
@@ -254,9 +262,9 @@ void MinimalisticButton::mousePressEvent(QMouseEvent* e)
     lastmouse_ = e->button();
 
     // translate and pass on mouse event
-    int button = LeftButton;
-    if ((type_ != ButtonMax) && (e->button() != LeftButton)) {
-        button = NoButton; // middle & right buttons inappropriate
+    int button = Qt::LeftButton;
+    if ((type_ != ButtonMax) && (e->button() != Qt::LeftButton)) {
+        button = Qt::NoButton; // middle & right buttons inappropriate
     }
     QMouseEvent me(e->type(), e->pos(), e->globalPos(),
                    button, e->state());
@@ -273,9 +281,9 @@ void MinimalisticButton::mouseReleaseEvent(QMouseEvent* e)
     lastmouse_ = e->button();
 
     // translate and pass on mouse event
-    int button = LeftButton;
-    if ((type_ != ButtonMax) && (e->button() != LeftButton)) {
-        button = NoButton; // middle & right buttons inappropriate
+    int button = Qt::LeftButton;
+    if ((type_ != ButtonMax) && (e->button() != Qt::LeftButton)) {
+        button = Qt::NoButton; // middle & right buttons inappropriate
     }
     QMouseEvent me(e->type(), e->pos(), e->globalPos(), button, e->state());
     QButton::mouseReleaseEvent(&me);
@@ -301,8 +309,8 @@ void MinimalisticButton::drawButton(QPainter *painter)
         // we paint the mini icon (which is 16 pixels high)
         dx = (width() - 16) / 2;
         dy = (height() - 16) / 2;
-        painter->drawPixmap(dx, dy, client_->icon().pixmap(QIconSet::Small,
-                                                           QIconSet::Normal));
+        painter->drawPixmap(dx, dy, client_->icon().pixmap(QIcon::Small,
+                                                           QIcon::Normal));
     } else {
 //       painter->fillRect(rect(), group.button());
        int x,y,w,h;
@@ -348,19 +356,19 @@ MinimalisticClient::~MinimalisticClient()
 
 void MinimalisticClient::init()
 {
-    createMainWidget(WResizeNoErase | WRepaintNoErase);
+    createMainWidget(Qt::WResizeNoErase | Qt::WNoAutoErase);
     widget()->installEventFilter(this);
 
     // for flicker-free redraws
-    widget()->setBackgroundMode(NoBackground);
+    widget()->setBackgroundMode(Qt::NoBackground);
 
     // setup layout
-    QGridLayout *mainlayout = new QGridLayout(widget(), 4, 3); // 4x3 grid
-    QHBoxLayout *titlelayout = new QHBoxLayout();
+    Q3GridLayout *mainlayout = new Q3GridLayout(widget(), 4, 3); // 4x3 grid
+    Q3HBoxLayout *titlelayout = new Q3HBoxLayout();
     titlebar_ = new QSpacerItem(1, TITLESIZE, QSizePolicy::Expanding,
                                 QSizePolicy::Fixed);
 
-    mainlayout->setResizeMode(QLayout::FreeResize);
+    mainlayout->setResizeMode(QLayout::SetNoConstraint);
     mainlayout->addRowSpacing(0, TFRAMESIZE);
     mainlayout->addRowSpacing(3, BFRAMESIZE);
     mainlayout->addColSpacing(0, LFRAMESIZE);
@@ -391,7 +399,7 @@ void MinimalisticClient::init()
 // ------------
 // Add buttons to title layout
 
-void MinimalisticClient::addButtons(QBoxLayout *layout, const QString& s)
+void MinimalisticClient::addButtons(Q3BoxLayout *layout, const QString& s)
 {
     const unsigned char *bitmap;
     QString tip;
@@ -703,7 +711,7 @@ void MinimalisticClient::paintEvent(QPaintEvent*)
     painter.setPen(options()->color(KDecoration::ColorFont, isActive()));
     painter.drawText(title.x() + LFRAMESIZE, title.y(),
                      title.width() - RFRAMESIZE, title.height(),
-                     MinimalisticFactory::titleAlign() | AlignVCenter,
+                     MinimalisticFactory::titleAlign() | Qt::AlignVCenter,
                      caption());
 
     // draw frame
@@ -856,10 +864,10 @@ void MinimalisticClient::maxButtonPressed()
 {
     if (button[ButtonMax]) {
         switch (button[ButtonMax]->lastMousePress()) {
-          case MidButton:
+          case Qt::MidButton:
               maximize(maximizeMode() ^ MaximizeVertical);
               break;
-          case RightButton:
+          case Qt::RightButton:
               maximize(maximizeMode() ^ MaximizeHorizontal);
               break;
           default:
@@ -886,4 +894,4 @@ void MinimalisticClient::menuButtonPressed()
     }
 }
 
-//#include "minimalisticclient.moc"
+//#include "oxygenclient.moc"

@@ -27,8 +27,14 @@
 #ifndef EXAMPLECLIENT_H
 #define EXAMPLECLIENT_H
 
-#include <qbutton.h>
-#include<qlayout.h>
+#include <qabstractbutton.h>
+#include <qlayout.h>
+//Added by qt3to4:
+#include <QResizeEvent>
+#include <QShowEvent>
+#include <QEvent>
+#include <QMouseEvent>
+#include <QPaintEvent>
 #include <kdecoration.h>
 #include <kdecorationfactory.h>
 
@@ -60,25 +66,25 @@ public:
     virtual bool reset(unsigned long changed);
 
     static bool initialized();
-    static Qt::AlignmentFlags titleAlign();
+    static Qt::Alignment titleAlign();
 
 private:
     bool readConfig();
 
 private:
     static bool initialized_;
-    static Qt::AlignmentFlags titlealign_;
+    static Qt::Alignment titlealign_;
 };
 
 inline bool MinimalisticFactory::initialized()
     { return initialized_; }
 
-inline Qt::AlignmentFlags MinimalisticFactory::titleAlign()
+inline Qt::Alignment MinimalisticFactory::titleAlign()
     { return titlealign_; }
 
 // MinimalisticButton //////////////////////////////////////////////////////////////
 
-class MinimalisticButton : public QButton
+class MinimalisticButton : public QAbstractButton
 {
 public:
     MinimalisticButton(MinimalisticClient *parent=0, const char *name=0,
@@ -136,7 +142,7 @@ public:
     virtual Position mousePosition(const QPoint &point) const;
 
 private:
-    void addButtons(QBoxLayout* layout, const QString& buttons);
+    void addButtons(Q3BoxLayout* layout, const QString& buttons);
 
     bool eventFilter(QObject *obj, QEvent *e);
     void mouseDoubleClickEvent(QMouseEvent *e);
