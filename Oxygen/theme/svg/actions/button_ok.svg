@@ -9,7 +9,7 @@
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.1"
    id="Livello_1"
@@ -20,9 +20,9 @@
    enable-background="new 0 0 128 128"
    xml:space="preserve"
    sodipodi:version="0.32"
-   inkscape:version="0.43"
+   inkscape:version="0.44"
    sodipodi:docname="button_ok.svg"
-   sodipodi:docbase="/Users/David/Progetti/oxygen-svn/Oxygen/theme/svg/actions"><defs
+   sodipodi:docbase="/home/david/Progetti/oxygen-svn/Oxygen/theme/svg/actions"><defs
    id="defs28"><linearGradient
    inkscape:collect="always"
    id="linearGradient3291"><stop
@@ -62,7 +62,8 @@
    x1="64.000504"
    y1="113"
    x2="64.000504"
-   y2="29.0005">
+   y2="29.0005"
+   gradientTransform="matrix(1.017858,0,0,1.017858,-1.142857,-8.267858)">
 			<stop
    offset="0"
    style="stop-color:#00bf00;stop-opacity:1;"
@@ -75,8 +76,8 @@
 		
 		
 	</defs><sodipodi:namedview
-   inkscape:window-height="540"
-   inkscape:window-width="835"
+   inkscape:window-height="579"
+   inkscape:window-width="849"
    inkscape:pageshadow="2"
    inkscape:pageopacity="0.0"
    borderopacity="1.0"
@@ -111,7 +112,7 @@
      rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
        rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata>
 <path
-   d="M 52.793,82.785 C 43.287,73.043 22.736,51.98 22.736,51.98 L 8,67.086 L 52.793,113 L 120,44.105 L 105.262,29 C 105.262,29 64.123,71.172 52.793,82.785 z "
+   d="M 52.592874,75.995446 C 42.917124,66.079482 21.999142,44.640358 21.999142,44.640358 L 7,60.016108 L 52.592874,106.75 L 121,36.624732 L 105.99882,21.25 C 105.99882,21.25 64.125196,64.175072 52.592874,75.995446 z "
    id="path24"
    style="fill:url(#XMLID_2_)" /><rect
    id="_x3C_Sezione_x3E_"
