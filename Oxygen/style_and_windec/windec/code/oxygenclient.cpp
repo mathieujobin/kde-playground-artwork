@@ -258,7 +258,7 @@ void MinimalisticButton::leaveEvent(QEvent *e)
 // ------------
 // Draw the button
 
-void MinimalisticButton::paintEvent(QPaintEvent *e)
+void MinimalisticButton::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
 
@@ -277,11 +277,9 @@ void MinimalisticButton::paintEvent(QPaintEvent *e)
         dy = (height() - 16) / 2;
 //PORT qt4        painter.drawPixmap(dx, dy, client_->icon().pixmap(QIcon::Small, QIcon::Normal));
     } else {
-//       painter->fillRect(rect(), group.button());
+//       painter->fillRect(rect(), palette.button());
        int x,y,w,h;
        rect().getRect(&x, &y, &w, &h);
-       int x2=x+w-1;
-       int y2=y+h-1;
        painter.setBrush(palette.dark());
        painter.drawEllipse(x, y, w, h);
 
@@ -344,7 +342,7 @@ void MinimalisticClient::init()
 
     // the window should stretch
     mainlayout->setRowStretch(2, 10);
-    mainlayout->setColStretch(1, 10);
+    mainlayout->setColumnStretch(1, 10);
 
     // setup titlebar buttons
     for (int n=0; n<ButtonTypeCount; n++) button[n] = 0;
@@ -364,9 +362,9 @@ void MinimalisticClient::addButtons(QHBoxLayout *layout, const QString& s)
     QString tip;
 
     if (s.length() > 0) {
-        for (unsigned n=0; n < s.length(); n++) {
+        for (int n=0; n < s.length(); n++) {
             layout->addSpacing(5);
-            switch (s[n]) {
+            switch (s[n].toLatin1()) {
               case 'M': // Menu button
                   if (!button[ButtonMenu]) {
                       button[ButtonMenu] =
@@ -424,8 +422,7 @@ void MinimalisticClient::addButtons(QHBoxLayout *layout, const QString& s)
               tip = i18n("Maximize");
               }
                       button[ButtonMax]  =
-                          new MinimalisticButton(this, "maximize", tip,
-                                            ButtonMax, bitmap);
+                          new MinimalisticButton(this, tip, ButtonMax, bitmap);
                       connect(button[ButtonMax], SIGNAL(clicked()),
                               this, SLOT(maxButtonPressed()));
                       layout->addWidget(button[ButtonMax]);
@@ -435,8 +432,7 @@ void MinimalisticClient::addButtons(QHBoxLayout *layout, const QString& s)
               case 'X': // Close button
                   if ((!button[ButtonClose]) && isCloseable()) {
                       button[ButtonClose] =
-                          new MinimalisticButton(this, "close", i18n("Close"),
-                                            ButtonClose, close_bits);
+                          new MinimalisticButton(this, i18n("Close"), ButtonClose, close_bits);
                       connect(button[ButtonClose], SIGNAL(clicked()),
                               this, SLOT(closeWindow()));
                       layout->addWidget(button[ButtonClose]);
@@ -460,7 +456,7 @@ void MinimalisticClient::activeChange()
 {
     for (int n=0; n<ButtonTypeCount; n++)
         if (button[n]) button[n]->reset();
-    widget()->repaint(false);
+    widget()->repaint();
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -470,7 +466,7 @@ void MinimalisticClient::activeChange()
 
 void MinimalisticClient::captionChange()
 {
-    widget()->repaint(titlebar_->geometry(), false);
+    widget()->repaint(titlebar_->geometry());
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -483,8 +479,7 @@ void MinimalisticClient::desktopChange()
     bool d = isOnAllDesktops();
     if (button[ButtonSticky]) {
         button[ButtonSticky]->setBitmap(d ? stickydown_bits : sticky_bits);
-    QToolTip::remove(button[ButtonSticky]);
-    QToolTip::add(button[ButtonSticky], d ? i18n("Un-Sticky") : i18n("Sticky"));
+    button[ButtonSticky]->setToolTip( d ? i18n("Un-Sticky") : i18n("Sticky"));
     }
 }
 
@@ -497,7 +492,7 @@ void MinimalisticClient::iconChange()
 {
     if (button[ButtonMenu]) {
         button[ButtonMenu]->setBitmap(0);
-        button[ButtonMenu]->repaint(false);
+        button[ButtonMenu]->repaint();
     }
 }
 
@@ -511,8 +506,7 @@ void MinimalisticClient::maximizeChange()
     bool m = (maximizeMode() == MaximizeFull);
     if (button[ButtonMax]) {
         button[ButtonMax]->setBitmap(m ? minmax_bits : max_bits);
-    QToolTip::remove(button[ButtonMax]);
-    QToolTip::add(button[ButtonMax], m ? i18n("Restore") : i18n("Maximize"));
+    button[ButtonMax]->setToolTip(m ? i18n("Restore") : i18n("Maximize"));
     }
 }
 
@@ -653,12 +647,12 @@ void MinimalisticClient::paintEvent(QPaintEvent*)
 
     doShape();
 
-    QColorGroup group;
+    QPalette palette;
     QPainter painter(widget());
 
     // draw the titlebar+buttton background
-    group = options()->colorGroup(KDecoration::ColorTitleBar, isActive());
-    painter.fillRect(QRect(0,TFRAMESIZE,width(), TITLESIZE+TFRAMESIZE), group.background());
+    palette = options()->palette(KDecoration::ColorTitleBar, isActive());
+    painter.fillRect(QRect(0,TFRAMESIZE,width(), TITLESIZE+TFRAMESIZE), palette.background());
 
     // draw title text
     QRect title(titlebar_->geometry());
@@ -670,25 +664,25 @@ void MinimalisticClient::paintEvent(QPaintEvent*)
                      caption());
 
     // draw frame
-    group = options()->colorGroup(KDecoration::ColorFrame, isActive());
+    palette = options()->palette(KDecoration::ColorFrame, isActive());
 
     QRect frame(0, 0, width(), TFRAMESIZE);
-    painter.fillRect(frame, group.background());
+    painter.fillRect(frame, palette.background());
     frame.setRect(0, 0, LFRAMESIZE, height());
-    painter.fillRect(frame, group.background());
+    painter.fillRect(frame, palette.background());
     frame.setRect(0, height() - BFRAMESIZE, width(), BFRAMESIZE);
-    painter.fillRect(frame, group.background());
+    painter.fillRect(frame, palette.background());
     frame.setRect(width()-RFRAMESIZE, 0, RFRAMESIZE, height());
-    painter.fillRect(frame, group.background());
+    painter.fillRect(frame, palette.background());
 
     
     // outline the frame
     frame = widget()->rect();
     int x,y,w,h;
-    frame.rect(&x, &y, &w, &h);
+    frame.getRect(&x, &y, &w, &h);
     int x2=x+w-1;
     int y2=y+h-1;
-    painter.setPen(group.background().light(140));
+    painter.setBrush(palette.light());
     painter.drawLine(x, y, x2, y);
     painter.drawLine(x, y, x, y2);
     painter.drawPoint(x+4, y+1);
@@ -696,7 +690,7 @@ void MinimalisticClient::paintEvent(QPaintEvent*)
     painter.drawPoint(x+2, y+2);
     painter.drawPoint(x+1, y+3);
     painter.drawPoint(x+1, y+4);
-    painter.setPen(group.background().dark(140));
+    painter.setBrush(palette.dark());
     painter.drawLine(x, y2, x2, y2);
     painter.drawLine(x2, y, x2, y2);
     painter.drawPoint(x2-4, y2-1);
@@ -712,13 +706,13 @@ void MinimalisticClient::paintEvent(QPaintEvent*)
 
     for(int j = 0, x = step; j < numDotGroups; j++, x += step)
     {
-        renderDot(&painter, QPoint(x-5, 2), group.background(), true);
-        renderDot(&painter, QPoint(x, 2), group.background(), true);
-        renderDot(&painter, QPoint(x+5, 2), group.background(), true);
+        renderDot(&painter, QPoint(x-5, 2), palette.background().color(), true);
+        renderDot(&painter, QPoint(x, 2), palette.background().color(), true);
+        renderDot(&painter, QPoint(x+5, 2), palette.background().color(), true);
 
-        renderDot(&painter, QPoint(x-5, frame.height()-5), group.background(), true);
-        renderDot(&painter, QPoint(x, frame.height()-5), group.background(), true);
-        renderDot(&painter, QPoint(x+5, frame.height()-5), group.background(), true);
+        renderDot(&painter, QPoint(x-5, frame.height()-5), palette.background().color(), true);
+        renderDot(&painter, QPoint(x, frame.height()-5), palette.background().color(), true);
+        renderDot(&painter, QPoint(x+5, frame.height()-5), palette.background().color(), true);
     }
 
     numDotGroups = 1;
@@ -728,30 +722,30 @@ void MinimalisticClient::paintEvent(QPaintEvent*)
 
     for(int j = 0, y = step; j < numDotGroups; j++, y += step)
     {
-        renderDot(&painter, QPoint(3, y-5), group.background(), true);
-        renderDot(&painter, QPoint(3, y), group.background(), true);
-        renderDot(&painter, QPoint(3, y+5), group.background(), true);
+        renderDot(&painter, QPoint(3, y-5), palette.background().color(), true);
+        renderDot(&painter, QPoint(3, y), palette.background().color(), true);
+        renderDot(&painter, QPoint(3, y+5), palette.background().color(), true);
 
-        renderDot(&painter, QPoint(frame.width()-5, y-5), group.background(), true);
-        renderDot(&painter, QPoint(frame.width()-5, y), group.background(), true);
-        renderDot(&painter, QPoint(frame.width()-5, y+5), group.background(), true);
+        renderDot(&painter, QPoint(frame.width()-5, y-5), palette.background().color(), true);
+        renderDot(&painter, QPoint(frame.width()-5, y), palette.background().color(), true);
+        renderDot(&painter, QPoint(frame.width()-5, y+5), palette.background().color(), true);
     }
 
-    renderDot(&painter, QPoint(3, 8), group.background(), true);
-    renderDot(&painter, QPoint(4, 4), group.background(), true);
-    renderDot(&painter, QPoint(8, 3), group.background(), true);
+    renderDot(&painter, QPoint(3, 8), palette.background().color(), true);
+    renderDot(&painter, QPoint(4, 4), palette.background().color(), true);
+    renderDot(&painter, QPoint(8, 3), palette.background().color(), true);
 
-    renderDot(&painter, QPoint(3, frame.height()-11), group.background(), true);
-    renderDot(&painter, QPoint(4, frame.height()-7), group.background(), true);
-    renderDot(&painter, QPoint(8, frame.height()-5), group.background(), true);
+    renderDot(&painter, QPoint(3, frame.height()-11), palette.background().color(), true);
+    renderDot(&painter, QPoint(4, frame.height()-7), palette.background().color(), true);
+    renderDot(&painter, QPoint(8, frame.height()-5), palette.background().color(), true);
 
-    renderDot(&painter, QPoint(frame.width()-5, 8), group.background(), true);
-    renderDot(&painter, QPoint(frame.width()-7, 4), group.background(), true);
-    renderDot(&painter, QPoint(frame.width()-11, 3), group.background(), true);
+    renderDot(&painter, QPoint(frame.width()-5, 8), palette.background().color(), true);
+    renderDot(&painter, QPoint(frame.width()-7, 4), palette.background().color(), true);
+    renderDot(&painter, QPoint(frame.width()-11, 3), palette.background().color(), true);
 
-    renderDot(&painter, QPoint(frame.width()-5, frame.height()-11), group.background(), true);
-    renderDot(&painter, QPoint(frame.width()-7, frame.height()-7), group.background(), true);
-    renderDot(&painter, QPoint(frame.width()-11, frame.height()-5), group.background(), true);
+    renderDot(&painter, QPoint(frame.width()-5, frame.height()-11), palette.background().color(), true);
+    renderDot(&painter, QPoint(frame.width()-7, frame.height()-7), palette.background().color(), true);
+    renderDot(&painter, QPoint(frame.width()-11, frame.height()-5), palette.background().color(), true);
 }
 
 void MinimalisticClient::doShape()
@@ -793,10 +787,10 @@ QRegion mask(0,0,r,b);
 
 void MinimalisticClient::resizeEvent(QResizeEvent *)
 {
-    if (widget()->isShown()) {
+    if (widget()->isVisible()) {
         QRegion region = widget()->rect();
         region = region.subtract(titlebar_->geometry());
-    widget()->erase(region);
+    widget()->update();
     }
 }
 
