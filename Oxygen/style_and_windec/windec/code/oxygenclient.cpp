@@ -19,8 +19,8 @@
 #include <qpainter.h>
 #include <qtooltip.h>
 //Added by qt3to4:
-#include <Q3HBoxLayout>
-#include <Q3GridLayout>
+#include <QBoxLayout>
+#include <QGridLayout>
 #include <QResizeEvent>
 #include <QMouseEvent>
 #include <QEvent>
@@ -97,7 +97,7 @@ static const unsigned char sticky_bits[] = {
 //////////////////////////////////////////////////////////////////////////////
 
 bool MinimalisticFactory::initialized_              = false;
-Qt::AlignmentFlags MinimalisticFactory::titlealign_ = Qt::AlignHCenter;
+Qt::Alignment MinimalisticFactory::titlealign_ = Qt::AlignHCenter;
 
 extern "C" KDecorationFactory* create_factory()
 {
@@ -166,7 +166,7 @@ bool MinimalisticFactory::readConfig()
     config.setGroup("General");
 
     // grab settings
-    Qt::AlignmentFlags oldalign = titlealign_;
+    Qt::Alignment oldalign = titlealign_;
     QString value = config.readEntry("TitleAlignment", "AlignHCenter");
     if (value == "AlignLeft") titlealign_ = Qt::AlignLeft;
     else if (value == "AlignHCenter") titlealign_ = Qt::AlignHCenter;
@@ -187,17 +187,17 @@ bool MinimalisticFactory::readConfig()
 // ---------------
 // Constructor
 
-MinimalisticButton::MinimalisticButton(MinimalisticClient *parent, const char *name,
+MinimalisticButton::MinimalisticButton(MinimalisticClient *parent,
                              const QString& tip, ButtonType type,
                              const unsigned char *bitmap)
-    : QButton(parent->widget(), name), client_(parent), type_(type),
+    : QAbstractButton(parent->widget()), client_(parent), type_(type),
       deco_(0), lastmouse_(0)
 {
-    setBackgroundMode(Qt::NoBackground);
+    //setBackgroundMode(Qt::NoBackground); PORT to qt4
     setFixedSize(BUTTONSIZE, BUTTONSIZE);
-    setCursor(Qt::arrowCursor);
+    //setCursor(Qt::arrowCursor); PORT to qt4
     if (bitmap) setBitmap(bitmap);
-    QToolTip::add(this, tip);
+    setToolTip(tip);
 }
 
 MinimalisticButton::~MinimalisticButton()
@@ -215,9 +215,10 @@ void MinimalisticButton::setBitmap(const unsigned char *bitmap)
     if (!bitmap) return; // no bitmap, probably the menu button
 
     if (deco_) delete deco_;
-    deco_ = new QBitmap(DECOSIZE, DECOSIZE, bitmap, true);
+    deco_ = new QBitmap(DECOSIZE, DECOSIZE);
+    //PORT to qt4 set actual pixels   , bitmap, true);
     deco_->setMask(*deco_);
-    repaint(false);
+    repaint();
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -238,7 +239,7 @@ QSize MinimalisticButton::sizeHint() const
 void MinimalisticButton::enterEvent(QEvent *e)
 {
     // if we wanted to do mouseovers, we would keep track of it here
-    QButton::enterEvent(e);
+    QAbstractButton::enterEvent(e);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -249,44 +250,7 @@ void MinimalisticButton::enterEvent(QEvent *e)
 void MinimalisticButton::leaveEvent(QEvent *e)
 {
     // if we wanted to do mouseovers, we would keep track of it here
-    QButton::leaveEvent(e);
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// mousePressEvent()
-// -----------------
-// Button has been pressed
-
-void MinimalisticButton::mousePressEvent(QMouseEvent* e)
-{
-    lastmouse_ = e->button();
-
-    // translate and pass on mouse event
-    int button = Qt::LeftButton;
-    if ((type_ != ButtonMax) && (e->button() != Qt::LeftButton)) {
-        button = Qt::NoButton; // middle & right buttons inappropriate
-    }
-    QMouseEvent me(e->type(), e->pos(), e->globalPos(),
-                   button, e->state());
-    QButton::mousePressEvent(&me);
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// mouseReleaseEvent()
-// -----------------
-// Button has been released
-
-void MinimalisticButton::mouseReleaseEvent(QMouseEvent* e)
-{
-    lastmouse_ = e->button();
-
-    // translate and pass on mouse event
-    int button = Qt::LeftButton;
-    if ((type_ != ButtonMax) && (e->button() != Qt::LeftButton)) {
-        button = Qt::NoButton; // middle & right buttons inappropriate
-    }
-    QMouseEvent me(e->type(), e->pos(), e->globalPos(), button, e->state());
-    QButton::mouseReleaseEvent(&me);
+    QAbstractButton::leaveEvent(e);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -294,38 +258,39 @@ void MinimalisticButton::mouseReleaseEvent(QMouseEvent* e)
 // ------------
 // Draw the button
 
-void MinimalisticButton::drawButton(QPainter *painter)
+void MinimalisticButton::paintEvent(QPaintEvent *e)
 {
+    QPainter painter(this);
+
     if (!MinimalisticFactory::initialized()) return;
 
-    QColorGroup group;
+    QPalette palette;
     int dx, dy;
 
     // paint a plain box with border
-    group = KDecoration::options()->colorGroup(KDecoration::ColorFrame, client_->isActive());
-    painter->fillRect(rect(), group.button());
+    palette = KDecoration::options()->palette(KDecoration::ColorFrame, client_->isActive());
+    painter.fillRect(rect(), palette.button());
     
     if (type_ == ButtonMenu) {
         // we paint the mini icon (which is 16 pixels high)
         dx = (width() - 16) / 2;
         dy = (height() - 16) / 2;
-        painter->drawPixmap(dx, dy, client_->icon().pixmap(QIcon::Small,
-                                                           QIcon::Normal));
+//PORT qt4        painter.drawPixmap(dx, dy, client_->icon().pixmap(QIcon::Small, QIcon::Normal));
     } else {
 //       painter->fillRect(rect(), group.button());
        int x,y,w,h;
-       rect().rect(&x, &y, &w, &h);
+       rect().getRect(&x, &y, &w, &h);
        int x2=x+w-1;
        int y2=y+h-1;
-       painter->setPen(group.dark());
-       painter->drawEllipse(x, y, w, h);
+       painter.setBrush(palette.dark());
+       painter.drawEllipse(x, y, w, h);
 
        if (deco_) {
            // otherwise we paint the deco
            dx = (width() - DECOSIZE) / 2;
            dy = (height() - DECOSIZE) / 2;
-           painter->setPen(group.dark());
-           painter->drawPixmap(dx, dy, *deco_);
+           painter.setBrush(palette.dark());
+           painter.drawPixmap(dx, dy, *deco_);
        }
     }
 }
@@ -356,24 +321,18 @@ MinimalisticClient::~MinimalisticClient()
 
 void MinimalisticClient::init()
 {
-    createMainWidget(Qt::WResizeNoErase | Qt::WNoAutoErase);
+    createMainWidget(); //PORT  Qt::WResizeNoErase | Qt::WNoAutoErase);
     widget()->installEventFilter(this);
 
-    // for flicker-free redraws
-    widget()->setBackgroundMode(Qt::NoBackground);
-
     // setup layout
-    Q3GridLayout *mainlayout = new Q3GridLayout(widget(), 4, 3); // 4x3 grid
-    Q3HBoxLayout *titlelayout = new Q3HBoxLayout();
+    QGridLayout *mainlayout = new QGridLayout(widget());
+    QHBoxLayout *titlelayout = new QHBoxLayout();
     titlebar_ = new QSpacerItem(1, TITLESIZE, QSizePolicy::Expanding,
                                 QSizePolicy::Fixed);
 
-    mainlayout->setResizeMode(QLayout::SetNoConstraint);
-    mainlayout->addRowSpacing(0, TFRAMESIZE);
-    mainlayout->addRowSpacing(3, BFRAMESIZE);
-    mainlayout->addColSpacing(0, LFRAMESIZE);
-    mainlayout->addColSpacing(2, RFRAMESIZE);
-
+    mainlayout->addItem(new QSpacerItem(LFRAMESIZE, TFRAMESIZE), 0, 0);
+    mainlayout->addItem(new QSpacerItem(0, TFRAMESIZE), 3, 0);
+    mainlayout->addItem(new QSpacerItem(RFRAMESIZE, 0), 0, 2);
     mainlayout->addLayout(titlelayout, 1, 1);
     if (isPreview()) {
         mainlayout->addWidget(
@@ -399,7 +358,7 @@ void MinimalisticClient::init()
 // ------------
 // Add buttons to title layout
 
-void MinimalisticClient::addButtons(Q3BoxLayout *layout, const QString& s)
+void MinimalisticClient::addButtons(QHBoxLayout *layout, const QString& s)
 {
     const unsigned char *bitmap;
     QString tip;
@@ -411,8 +370,7 @@ void MinimalisticClient::addButtons(Q3BoxLayout *layout, const QString& s)
               case 'M': // Menu button
                   if (!button[ButtonMenu]) {
                       button[ButtonMenu] =
-                          new MinimalisticButton(this, "menu", i18n("Menu"),
-                                            ButtonMenu, 0);
+                          new MinimalisticButton(this, i18n("Menu"), ButtonMenu, 0);
                       connect(button[ButtonMenu], SIGNAL(pressed()),
                               this, SLOT(menuButtonPressed()));
                       layout->addWidget(button[ButtonMenu]);
@@ -429,8 +387,7 @@ void MinimalisticClient::addButtons(Q3BoxLayout *layout, const QString& s)
               tip = i18n("Sticky");
               }
                       button[ButtonSticky] =
-                          new MinimalisticButton(this, "sticky", tip,
-                                            ButtonSticky, bitmap);
+                          new MinimalisticButton(this, tip, ButtonSticky, bitmap);
                       connect(button[ButtonSticky], SIGNAL(clicked()),
                               this, SLOT(toggleOnAllDesktops()));
                       layout->addWidget(button[ButtonSticky]);
@@ -440,8 +397,7 @@ void MinimalisticClient::addButtons(Q3BoxLayout *layout, const QString& s)
               case 'H': // Help button
                   if ((!button[ButtonHelp]) && providesContextHelp()) {
                       button[ButtonHelp] =
-                          new MinimalisticButton(this, "help", i18n("Help"),
-                                            ButtonHelp, help_bits);
+                          new MinimalisticButton(this, i18n("Help"), ButtonHelp, help_bits);
                       connect(button[ButtonHelp], SIGNAL(clicked()),
                               this, SLOT(showContextHelp()));
                       layout->addWidget(button[ButtonHelp]);
@@ -451,8 +407,7 @@ void MinimalisticClient::addButtons(Q3BoxLayout *layout, const QString& s)
               case 'I': // Minimize button
                   if ((!button[ButtonMin]) && isMinimizable())  {
                       button[ButtonMin] =
-                          new MinimalisticButton(this, "iconify", i18n("Minimize"),
-                                            ButtonMin, min_bits);
+                          new MinimalisticButton(this, i18n("Minimize"), ButtonMin, min_bits);
                       connect(button[ButtonMin], SIGNAL(clicked()),
                               this, SLOT(minimize()));
                       layout->addWidget(button[ButtonMin]);

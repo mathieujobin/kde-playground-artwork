@@ -84,10 +84,10 @@ inline Qt::Alignment MinimalisticFactory::titleAlign()
 
 // MinimalisticButton //////////////////////////////////////////////////////////////
 
-class MinimalisticButton : public Q3Button
+class MinimalisticButton : public QAbstractButton
 {
 public:
-    MinimalisticButton(MinimalisticClient *parent=0, const char *name=0,
+    MinimalisticButton(MinimalisticClient *parent=0,
                   const QString &tip=NULL,
                   ButtonType type=ButtonHelp,
                   const unsigned char *bitmap=0);
@@ -101,9 +101,7 @@ public:
 private:
     void enterEvent(QEvent *e);
     void leaveEvent(QEvent *e);
-    void mousePressEvent(QMouseEvent *e);
-    void mouseReleaseEvent(QMouseEvent *e);
-    void drawButton(QPainter *painter);
+    void paintEvent(QPaintEvent *e);
 
 private:
     MinimalisticClient *client_;
@@ -142,7 +140,7 @@ public:
     virtual Position mousePosition(const QPoint &point) const;
 
 private:
-    void addButtons(Q3BoxLayout* layout, const QString& buttons);
+    void addButtons(QHBoxLayout* layout, const QString& buttons);
 
     bool eventFilter(QObject *obj, QEvent *e);
     void mouseDoubleClickEvent(QMouseEvent *e);
