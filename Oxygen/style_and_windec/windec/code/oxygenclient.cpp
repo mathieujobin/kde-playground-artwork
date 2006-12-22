@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////////
 // exampleclient.cc
 // -------------------
-// Minimalistic window decoration for KDE
+// Oxygen window decoration for KDE
 // -------------------
 // Copyright (c) 2003, 2004 David Johnson
 // Please see the header file for copyright and license information.
@@ -28,8 +28,9 @@
 #include <QPaintEvent>
 
 #include "oxygenclient.h"
+#include "oxygenclient.moc"
 
-using namespace Minimalistic;
+using namespace Oxygen;
 
 // global constants
 
@@ -93,43 +94,43 @@ static const unsigned char sticky_bits[] = {
     0x00, 0x00, 0x00, 0x7e, 0x7e, 0x00, 0x00, 0x00};
 
 //////////////////////////////////////////////////////////////////////////////
-// MinimalisticFactory Class                                                     //
+// OxygenFactory Class                                                     //
 //////////////////////////////////////////////////////////////////////////////
 
-bool MinimalisticFactory::initialized_              = false;
-Qt::Alignment MinimalisticFactory::titlealign_ = Qt::AlignHCenter;
+bool OxygenFactory::initialized_              = false;
+Qt::Alignment OxygenFactory::titlealign_ = Qt::AlignHCenter;
 
 extern "C" KDecorationFactory* create_factory()
 {
-    return new Minimalistic::MinimalisticFactory();
+    return new Oxygen::OxygenFactory();
 }
 
 //////////////////////////////////////////////////////////////////////////////
-// MinimalisticFactory()
+// OxygenFactory()
 // ----------------
 // Constructor
 
-MinimalisticFactory::MinimalisticFactory()
+OxygenFactory::OxygenFactory()
 {
     readConfig();
     initialized_ = true;
 }
 
 //////////////////////////////////////////////////////////////////////////////
-// ~MinimalisticFactory()
+// ~OxygenFactory()
 // -----------------
 // Destructor
 
-MinimalisticFactory::~MinimalisticFactory() { initialized_ = false; }
+OxygenFactory::~OxygenFactory() { initialized_ = false; }
 
 //////////////////////////////////////////////////////////////////////////////
 // createDecoration()
 // -----------------
 // Create the decoration
 
-KDecoration* MinimalisticFactory::createDecoration(KDecorationBridge* b)
+KDecoration* OxygenFactory::createDecoration(KDecorationBridge* b)
 {
-    return new MinimalisticClient(b, this);
+    return new OxygenClient(b, this);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -138,7 +139,7 @@ KDecoration* MinimalisticFactory::createDecoration(KDecorationBridge* b)
 // Reset the handler. Returns true if decorations need to be remade, false if
 // only a repaint is necessary
 
-bool MinimalisticFactory::reset(unsigned long changed)
+bool OxygenFactory::reset(unsigned long changed)
 {
     // read in the configuration
     initialized_ = false;
@@ -159,7 +160,7 @@ bool MinimalisticFactory::reset(unsigned long changed)
 // ------------
 // Read in the configuration file
 
-bool MinimalisticFactory::readConfig()
+bool OxygenFactory::readConfig()
 {
     // create a config object
     KConfig config("kwinexamplerc");
@@ -179,15 +180,15 @@ bool MinimalisticFactory::readConfig()
 }
 
 //////////////////////////////////////////////////////////////////////////////
-// MinimalisticButton Class                                                      //
+// OxygenButton Class                                                      //
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
-// MinimalisticButton()
+// OxygenButton()
 // ---------------
 // Constructor
 
-MinimalisticButton::MinimalisticButton(MinimalisticClient *parent,
+OxygenButton::OxygenButton(OxygenClient *parent,
                              const QString& tip, ButtonType type,
                              const unsigned char *bitmap)
     : QAbstractButton(parent->widget()), client_(parent), type_(type),
@@ -200,7 +201,7 @@ MinimalisticButton::MinimalisticButton(MinimalisticClient *parent,
     setToolTip(tip);
 }
 
-MinimalisticButton::~MinimalisticButton()
+OxygenButton::~OxygenButton()
 {
     if (deco_) delete deco_;
 }
@@ -210,7 +211,7 @@ MinimalisticButton::~MinimalisticButton()
 // -----------
 // Set the button decoration
 
-void MinimalisticButton::setBitmap(const unsigned char *bitmap)
+void OxygenButton::setBitmap(const unsigned char *bitmap)
 {
     if (!bitmap) return; // no bitmap, probably the menu button
 
@@ -226,7 +227,7 @@ void MinimalisticButton::setBitmap(const unsigned char *bitmap)
 // ----------
 // Return size hint
 
-QSize MinimalisticButton::sizeHint() const
+QSize OxygenButton::sizeHint() const
 {
     return QSize(BUTTONSIZE, BUTTONSIZE);
 }
@@ -236,7 +237,7 @@ QSize MinimalisticButton::sizeHint() const
 // ------------
 // Mouse has entered the button
 
-void MinimalisticButton::enterEvent(QEvent *e)
+void OxygenButton::enterEvent(QEvent *e)
 {
     // if we wanted to do mouseovers, we would keep track of it here
     QAbstractButton::enterEvent(e);
@@ -247,7 +248,7 @@ void MinimalisticButton::enterEvent(QEvent *e)
 // ------------
 // Mouse has left the button
 
-void MinimalisticButton::leaveEvent(QEvent *e)
+void OxygenButton::leaveEvent(QEvent *e)
 {
     // if we wanted to do mouseovers, we would keep track of it here
     QAbstractButton::leaveEvent(e);
@@ -258,11 +259,11 @@ void MinimalisticButton::leaveEvent(QEvent *e)
 // ------------
 // Draw the button
 
-void MinimalisticButton::paintEvent(QPaintEvent *)
+void OxygenButton::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
 
-    if (!MinimalisticFactory::initialized()) return;
+    if (!OxygenFactory::initialized()) return;
 
     QPalette palette;
     int dx, dy;
@@ -294,18 +295,18 @@ void MinimalisticButton::paintEvent(QPaintEvent *)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-// MinimalisticClient Class                                                      //
+// OxygenClient Class                                                      //
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
-// MinimalisticClient()
+// OxygenClient()
 // ---------------
 // Constructor
 
-MinimalisticClient::MinimalisticClient(KDecorationBridge *b, KDecorationFactory *f)
+OxygenClient::OxygenClient(KDecorationBridge *b, KDecorationFactory *f)
     : KDecoration(b, f) { ; }
 
-MinimalisticClient::~MinimalisticClient()
+OxygenClient::~OxygenClient()
 {
     for (int n=0; n<ButtonTypeCount; n++) {
         if (button[n]) delete button[n];
@@ -317,7 +318,7 @@ MinimalisticClient::~MinimalisticClient()
 // ------
 // Actual initializer for class
 
-void MinimalisticClient::init()
+void OxygenClient::init()
 {
     createMainWidget(); //PORT  Qt::WResizeNoErase | Qt::WNoAutoErase);
     widget()->installEventFilter(this);
@@ -334,7 +335,7 @@ void MinimalisticClient::init()
     mainlayout->addLayout(titlelayout, 1, 1);
     if (isPreview()) {
         mainlayout->addWidget(
-        new QLabel(i18n("<b><center>Minimalistic preview</center></b>"),
+        new QLabel(i18n("<b><center>Oxygen preview</center></b>"),
         widget()), 2, 1);
     } else {
         mainlayout->addItem(new QSpacerItem(0, 0), 2, 1);
@@ -356,7 +357,7 @@ void MinimalisticClient::init()
 // ------------
 // Add buttons to title layout
 
-void MinimalisticClient::addButtons(QHBoxLayout *layout, const QString& s)
+void OxygenClient::addButtons(QHBoxLayout *layout, const QString& s)
 {
     const unsigned char *bitmap;
     QString tip;
@@ -368,7 +369,7 @@ void MinimalisticClient::addButtons(QHBoxLayout *layout, const QString& s)
               case 'M': // Menu button
                   if (!button[ButtonMenu]) {
                       button[ButtonMenu] =
-                          new MinimalisticButton(this, i18n("Menu"), ButtonMenu, 0);
+                          new OxygenButton(this, i18n("Menu"), ButtonMenu, 0);
                       connect(button[ButtonMenu], SIGNAL(pressed()),
                               this, SLOT(menuButtonPressed()));
                       layout->addWidget(button[ButtonMenu]);
@@ -385,7 +386,7 @@ void MinimalisticClient::addButtons(QHBoxLayout *layout, const QString& s)
               tip = i18n("Sticky");
               }
                       button[ButtonSticky] =
-                          new MinimalisticButton(this, tip, ButtonSticky, bitmap);
+                          new OxygenButton(this, tip, ButtonSticky, bitmap);
                       connect(button[ButtonSticky], SIGNAL(clicked()),
                               this, SLOT(toggleOnAllDesktops()));
                       layout->addWidget(button[ButtonSticky]);
@@ -395,7 +396,7 @@ void MinimalisticClient::addButtons(QHBoxLayout *layout, const QString& s)
               case 'H': // Help button
                   if ((!button[ButtonHelp]) && providesContextHelp()) {
                       button[ButtonHelp] =
-                          new MinimalisticButton(this, i18n("Help"), ButtonHelp, help_bits);
+                          new OxygenButton(this, i18n("Help"), ButtonHelp, help_bits);
                       connect(button[ButtonHelp], SIGNAL(clicked()),
                               this, SLOT(showContextHelp()));
                       layout->addWidget(button[ButtonHelp]);
@@ -405,7 +406,7 @@ void MinimalisticClient::addButtons(QHBoxLayout *layout, const QString& s)
               case 'I': // Minimize button
                   if ((!button[ButtonMin]) && isMinimizable())  {
                       button[ButtonMin] =
-                          new MinimalisticButton(this, i18n("Minimize"), ButtonMin, min_bits);
+                          new OxygenButton(this, i18n("Minimize"), ButtonMin, min_bits);
                       connect(button[ButtonMin], SIGNAL(clicked()),
                               this, SLOT(minimize()));
                       layout->addWidget(button[ButtonMin]);
@@ -422,7 +423,7 @@ void MinimalisticClient::addButtons(QHBoxLayout *layout, const QString& s)
               tip = i18n("Maximize");
               }
                       button[ButtonMax]  =
-                          new MinimalisticButton(this, tip, ButtonMax, bitmap);
+                          new OxygenButton(this, tip, ButtonMax, bitmap);
                       connect(button[ButtonMax], SIGNAL(clicked()),
                               this, SLOT(maxButtonPressed()));
                       layout->addWidget(button[ButtonMax]);
@@ -432,7 +433,7 @@ void MinimalisticClient::addButtons(QHBoxLayout *layout, const QString& s)
               case 'X': // Close button
                   if ((!button[ButtonClose]) && isCloseable()) {
                       button[ButtonClose] =
-                          new MinimalisticButton(this, i18n("Close"), ButtonClose, close_bits);
+                          new OxygenButton(this, i18n("Close"), ButtonClose, close_bits);
                       connect(button[ButtonClose], SIGNAL(clicked()),
                               this, SLOT(closeWindow()));
                       layout->addWidget(button[ButtonClose]);
@@ -452,7 +453,7 @@ void MinimalisticClient::addButtons(QHBoxLayout *layout, const QString& s)
 // --------------
 // window active state has changed
 
-void MinimalisticClient::activeChange()
+void OxygenClient::activeChange()
 {
     for (int n=0; n<ButtonTypeCount; n++)
         if (button[n]) button[n]->reset();
@@ -464,7 +465,7 @@ void MinimalisticClient::activeChange()
 // ---------------
 // The title has changed
 
-void MinimalisticClient::captionChange()
+void OxygenClient::captionChange()
 {
     widget()->repaint(titlebar_->geometry());
 }
@@ -474,7 +475,7 @@ void MinimalisticClient::captionChange()
 // ---------------
 // Called when desktop/sticky changes
 
-void MinimalisticClient::desktopChange()
+void OxygenClient::desktopChange()
 {
     bool d = isOnAllDesktops();
     if (button[ButtonSticky]) {
@@ -488,7 +489,7 @@ void MinimalisticClient::desktopChange()
 // ------------
 // The title has changed
 
-void MinimalisticClient::iconChange()
+void OxygenClient::iconChange()
 {
     if (button[ButtonMenu]) {
         button[ButtonMenu]->setBitmap(0);
@@ -501,7 +502,7 @@ void MinimalisticClient::iconChange()
 // ----------------
 // Maximized state has changed
 
-void MinimalisticClient::maximizeChange()
+void OxygenClient::maximizeChange()
 {
     bool m = (maximizeMode() == MaximizeFull);
     if (button[ButtonMax]) {
@@ -515,7 +516,7 @@ void MinimalisticClient::maximizeChange()
 // -------------
 // Called when window shading changes
 
-void MinimalisticClient::shadeChange()
+void OxygenClient::shadeChange()
 { ; }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -523,7 +524,7 @@ void MinimalisticClient::shadeChange()
 // ----------
 // Get the size of the borders
 
-void MinimalisticClient::borders(int &l, int &r, int &t, int &b) const
+void OxygenClient::borders(int &l, int &r, int &t, int &b) const
 {
     l = LFRAMESIZE;
     r = RFRAMESIZE;
@@ -536,7 +537,7 @@ void MinimalisticClient::borders(int &l, int &r, int &t, int &b) const
 // --------
 // Called to resize the window
 
-void MinimalisticClient::resize(const QSize &size)
+void OxygenClient::resize(const QSize &size)
 {
     widget()->resize(size);
 }
@@ -546,7 +547,7 @@ void MinimalisticClient::resize(const QSize &size)
 // -------------
 // Return the minimum allowable size for this window
 
-QSize MinimalisticClient::minimumSize() const
+QSize OxygenClient::minimumSize() const
 {
     return widget()->minimumSize();
 }
@@ -556,7 +557,7 @@ QSize MinimalisticClient::minimumSize() const
 // ---------------
 // Return logical mouse position
 
-KDecoration::Position MinimalisticClient::mousePosition(const QPoint &point) const
+KDecoration::Position OxygenClient::mousePosition(const QPoint &point) const
 {
     const int corner = 24;
     Position pos;
@@ -593,7 +594,7 @@ KDecoration::Position MinimalisticClient::mousePosition(const QPoint &point) con
 // -------------
 // Event filter
 
-bool MinimalisticClient::eventFilter(QObject *obj, QEvent *e)
+bool OxygenClient::eventFilter(QObject *obj, QEvent *e)
 {
     if (obj != widget()) return false;
 
@@ -631,7 +632,7 @@ bool MinimalisticClient::eventFilter(QObject *obj, QEvent *e)
 // -----------------------
 // Doubleclick on title
 
-void MinimalisticClient::mouseDoubleClickEvent(QMouseEvent *e)
+void OxygenClient::mouseDoubleClickEvent(QMouseEvent *e)
 {
     if (titlebar_->geometry().contains(e->pos())) titlebarDblClickOperation();
 }
@@ -641,9 +642,9 @@ void MinimalisticClient::mouseDoubleClickEvent(QMouseEvent *e)
 // ------------
 // Repaint the window
 
-void MinimalisticClient::paintEvent(QPaintEvent*)
+void OxygenClient::paintEvent(QPaintEvent*)
 {
-    if (!MinimalisticFactory::initialized()) return;
+    if (!OxygenFactory::initialized()) return;
 
     doShape();
 
@@ -660,7 +661,7 @@ void MinimalisticClient::paintEvent(QPaintEvent*)
     painter.setPen(options()->color(KDecoration::ColorFont, isActive()));
     painter.drawText(title.x() + LFRAMESIZE, title.y(),
                      title.width() - RFRAMESIZE, title.height(),
-                     MinimalisticFactory::titleAlign() | Qt::AlignVCenter,
+                     OxygenFactory::titleAlign() | Qt::AlignVCenter,
                      caption());
 
     // draw frame
@@ -748,7 +749,7 @@ void MinimalisticClient::paintEvent(QPaintEvent*)
     renderDot(&painter, QPoint(frame.width()-11, frame.height()-5), palette.background().color(), true);
 }
 
-void MinimalisticClient::doShape()
+void OxygenClient::doShape()
 {
   int r=widget()->width();
   int b=widget()->height();
@@ -785,7 +786,7 @@ QRegion mask(0,0,r,b);
 // -------------
 // Window is being resized
 
-void MinimalisticClient::resizeEvent(QResizeEvent *)
+void OxygenClient::resizeEvent(QResizeEvent *)
 {
     if (widget()->isVisible()) {
         QRegion region = widget()->rect();
@@ -799,7 +800,7 @@ void MinimalisticClient::resizeEvent(QResizeEvent *)
 // -----------
 // Window is being shown
 
-void MinimalisticClient::showEvent(QShowEvent *)
+void OxygenClient::showEvent(QShowEvent *)
 {
    widget()->repaint();
 }
@@ -809,7 +810,7 @@ void MinimalisticClient::showEvent(QShowEvent *)
 // -----------------
 // Max button was pressed
 
-void MinimalisticClient::maxButtonPressed()
+void OxygenClient::maxButtonPressed()
 {
     if (button[ButtonMax]) {
         switch (button[ButtonMax]->lastMousePress()) {
@@ -831,7 +832,7 @@ void MinimalisticClient::maxButtonPressed()
 // -------------------
 // Menu button was pressed (popup the menu)
 
-void MinimalisticClient::menuButtonPressed()
+void OxygenClient::menuButtonPressed()
 {
     if (button[ButtonMenu]) {
         QPoint p(button[ButtonMenu]->rect().bottomLeft().x(),

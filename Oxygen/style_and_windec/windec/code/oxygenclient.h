@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////////
 // exampleclient.h
 // -------------------
-// Minimalistic window decoration for KDE
+// Oxygen window decoration for KDE
 // -------------------
 // Copyright (c) 2003, 2004 David Johnson <david@usermode.org>
 //
@@ -41,9 +41,9 @@
 class QSpacerItem;
 class QPoint;
 
-namespace Minimalistic {
+namespace Oxygen {
 
-class MinimalisticClient;
+class OxygenClient;
 
 enum ButtonType {
     ButtonHelp=0,
@@ -55,13 +55,13 @@ enum ButtonType {
     ButtonTypeCount
 };
 
-// MinimalisticFactory /////////////////////////////////////////////////////////////
+// OxygenFactory /////////////////////////////////////////////////////////////
 
-class MinimalisticFactory: public KDecorationFactory
+class OxygenFactory: public KDecorationFactory
 {
 public:
-    MinimalisticFactory();
-    virtual ~MinimalisticFactory();
+    OxygenFactory();
+    virtual ~OxygenFactory();
     virtual KDecoration *createDecoration(KDecorationBridge *b);
     virtual bool reset(unsigned long changed);
 
@@ -76,22 +76,22 @@ private:
     static Qt::Alignment titlealign_;
 };
 
-inline bool MinimalisticFactory::initialized()
+inline bool OxygenFactory::initialized()
     { return initialized_; }
 
-inline Qt::Alignment MinimalisticFactory::titleAlign()
+inline Qt::Alignment OxygenFactory::titleAlign()
     { return titlealign_; }
 
-// MinimalisticButton //////////////////////////////////////////////////////////////
+// OxygenButton //////////////////////////////////////////////////////////////
 
-class MinimalisticButton : public QAbstractButton
+class OxygenButton : public QAbstractButton
 {
 public:
-    MinimalisticButton(MinimalisticClient *parent=0,
+    OxygenButton(OxygenClient *parent=0,
                   const QString &tip=NULL,
                   ButtonType type=ButtonHelp,
                   const unsigned char *bitmap=0);
-    ~MinimalisticButton();
+    ~OxygenButton();
 
     void setBitmap(const unsigned char *bitmap);
     QSize sizeHint() const;
@@ -104,26 +104,26 @@ private:
     void paintEvent(QPaintEvent *e);
 
 private:
-    MinimalisticClient *client_;
+    OxygenClient *client_;
     ButtonType type_;
     QBitmap *deco_;
     int lastmouse_;
 };
 
-// inline int MinimalisticButton::lastMousePress() const
+// inline int OxygenButton::lastMousePress() const
 //     { return lastmouse_; }
 // 
-// inline void MinimalisticButton::reset()
+// inline void OxygenButton::reset()
 //     { repaint(); }
 
-// MinimalisticClient //////////////////////////////////////////////////////////////
+// OxygenClient //////////////////////////////////////////////////////////////
 
-class MinimalisticClient : public KDecoration
+class OxygenClient : public KDecoration
 {
     Q_OBJECT
 public:
-    MinimalisticClient(KDecorationBridge *b, KDecorationFactory *f);
-    virtual ~MinimalisticClient();
+    OxygenClient(KDecorationBridge *b, KDecorationFactory *f);
+    virtual ~OxygenClient();
 
     virtual void init();
 
@@ -153,10 +153,10 @@ private slots:
     void menuButtonPressed();
 
 private:
-    MinimalisticButton *button[ButtonTypeCount];
+    OxygenButton *button[ButtonTypeCount];
     QSpacerItem *titlebar_;
 };
 
-} // namespace Minimalistic
+} // namespace Oxygen
 
 #endif // EXAMPLECLIENT_H

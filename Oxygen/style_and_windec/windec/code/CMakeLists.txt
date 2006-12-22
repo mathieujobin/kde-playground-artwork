@@ -13,7 +13,7 @@ kde4_automoc(${kwin_oxy_SRCS})
 kde4_add_plugin(kwin_oxy ${kwin_oxy_SRCS})
 
 
-target_link_libraries(kwin_oxy ${KDE4_KDEFX_LIBS} kdecorations)
+target_link_libraries(kwin_oxy ${KDE4_KDEFX_LIBS} kdecore kdecorations)
 
 install(TARGETS kwin_oxy  DESTINATION ${PLUGIN_INSTALL_DIR} )
 
