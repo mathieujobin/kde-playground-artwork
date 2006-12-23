@@ -658,7 +658,7 @@ void OxygenClient::paintEvent(QPaintEvent*)
     // draw title text
     QRect title(titlebar_->geometry());
     painter.setFont(options()->font(isActive(), false));
-    painter.setBrush(palette.windowText()));
+    painter.setBrush(palette.windowText());
     painter.drawText(title.x() + LFRAMESIZE, title.y(),
                      title.width() - RFRAMESIZE, title.height(),
                      OxygenFactory::titleAlign() | Qt::AlignVCenter,
