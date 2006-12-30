@@ -15,8 +15,8 @@
    id="svg6804"
    sodipodi:version="0.32"
    inkscape:version="0.44"
-   sodipodi:docname="mail2_replyall.svg"
-   sodipodi:docbase="/home/david/Progetti/oxygen-svn/Oxygen/davigno">
+   sodipodi:docname="mail_replyall.svg"
+   sodipodi:docbase="/home/david/Progetti/oxygen-svn/Oxygen/theme/svg/actions/small/22x22">
   <metadata
      id="metadata2964">
     <rdf:RDF>
@@ -48,6 +48,16 @@
      inkscape:current-layer="svg6804" />
   <defs
      id="defs6806">
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#polygon3477_11_"
+       id="linearGradient2043"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0,4.024704,-4.024589,0,-2486.958,-4639.067)"
+       x1="1163.3115"
+       y1="-632.84857"
+       x2="1172.0283"
+       y2="-632.84906" />
     <linearGradient
        inkscape:collect="always"
        xlink:href="#polygon3293_13_"
@@ -844,9 +854,10 @@
          offset="1"
          style="stop-color:#eee;stop-opacity:1" />
     </linearGradient>
-    <polygon
-       id="polygon3477_2_"
-       style="fill:url(#polygon3477_12_)"
-       points="360.757,45.474 357.826,42.546 337.321,60.122 357.826,77.698 360.757,74.77 350.612,63.05 372.474,63.05 372.474,57.193 350.369,57.193 360.757,45.474 " />
   </g>
+  <path
+     sodipodi:nodetypes="cccccccccc"
+     id="polygon3477_4_"
+     d="M 64,76 L 60,80 L 40,60 L 60,40 L 64,44 L 56,56 L 80,56 L 80,64 L 56,64 L 64,76 z "
+     style="fill:url(#linearGradient2043)" />
 </svg>

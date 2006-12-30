@@ -15,8 +15,8 @@
    id="svg6804"
    sodipodi:version="0.32"
    inkscape:version="0.44"
-   sodipodi:docname="mail2_reply.svg"
-   sodipodi:docbase="/home/david/Progetti/oxygen-svn/Oxygen/davigno">
+   sodipodi:docname="mail_reply.svg"
+   sodipodi:docbase="/home/david/Progetti/oxygen-svn/Oxygen/theme/svg/actions/small/22x22">
   <metadata
      id="metadata2830">
     <rdf:RDF>
@@ -42,12 +42,26 @@
      id="base"
      inkscape:zoom="1"
      inkscape:cx="44"
-     inkscape:cy="44"
+     inkscape:cy="40"
      inkscape:window-x="168"
      inkscape:window-y="114"
-     inkscape:current-layer="svg6804" />
+     inkscape:current-layer="g3479"
+     gridspacingx="4px"
+     gridspacingy="4px"
+     gridempspacing="0"
+     showgrid="true" />
   <defs
      id="defs6806">
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#polygon3477_11_"
+       id="linearGradient2043"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0,4.024704,-4.024589,0,-2486.958,-4639.067)"
+       x1="1163.3115"
+       y1="-632.84857"
+       x2="1172.0283"
+       y2="-632.84906" />
     <linearGradient
        inkscape:collect="always"
        xlink:href="#polygon3293_13_"
@@ -250,11 +264,11 @@
        gradientUnits="userSpaceOnUse"
        gradientTransform="matrix(0,1,-1,0,520.0029,-459.9985)">
       <stop
-         style="stop-color:#008cff;stop-opacity:1"
+         style="stop-color:#0079dd;stop-opacity:1;"
          offset="0"
          id="stop5711" />
       <stop
-         style="stop-color:#0063cc;stop-opacity:1"
+         style="stop-color:#0057b3;stop-opacity:1;"
          offset="1"
          id="stop5713" />
     </linearGradient>
@@ -742,6 +756,48 @@
        x2="231.98985"
        y2="51.062332"
        gradientTransform="translate(-186,11)" />
+    <linearGradient
+       x1="491.99899"
+       y1="314.0029"
+       x2="547.99847"
+       y2="314.0029"
+       id="linearGradient8505"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0,1,-1,0,520.0029,-459.9985)">
+      <stop
+         style="stop-color:#008cff;stop-opacity:1"
+         offset="0"
+         id="stop8507" />
+      <stop
+         style="stop-color:#0063cc;stop-opacity:1"
+         offset="1"
+         id="stop8509" />
+    </linearGradient>
+    <linearGradient
+       x1="1163.3115"
+       y1="-518.34229"
+       x2="1172.2559"
+       y2="-518.34229"
+       id="linearGradient8512"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0,-3.9299,-3.9299,0,-1832.138,4648.502)">
+      <stop
+         style="stop-color:white;stop-opacity:1"
+         offset="0"
+         id="stop8514" />
+      <stop
+         style="stop-color:#fcfcfc;stop-opacity:1"
+         offset="0.5413"
+         id="stop8516" />
+      <stop
+         style="stop-color:#f4f4f4;stop-opacity:1"
+         offset="0.8664"
+         id="stop8518" />
+      <stop
+         style="stop-color:#eee;stop-opacity:1"
+         offset="1"
+         id="stop8520" />
+    </linearGradient>
   </defs>
   <path
      id="path4416"
@@ -781,7 +837,7 @@
      id="polygon4316" />
   <polygon
      points="220,174.666 220,171.834 179.998,142.709 140,171.834 140,174.666 179.998,145.543 220,174.666 "
-     transform="translate(-136,-115)"
+     transform="translate(-136,-114.709)"
      style="fill:url(#linearGradient5146)"
      id="polygon4318" />
   <polygon
@@ -790,26 +846,9 @@
      style="fill:white"
      id="polygon4320" />
   <g
-     id="g5708"
-     transform="translate(-146,0)">
-    <linearGradient
-       gradientTransform="matrix(0,1,-1,0,520.0029,-459.9985)"
-       gradientUnits="userSpaceOnUse"
-       id="linearGradient8505"
-       y2="314.0029"
-       x2="547.99847"
-       y1="314.0029"
-       x1="491.99899">
-      <stop
-         id="stop8507"
-         offset="0"
-         style="stop-color:#008cff;stop-opacity:1" />
-      <stop
-         id="stop8509"
-         offset="1"
-         style="stop-color:#0063cc;stop-opacity:1" />
-    </linearGradient>
+     id="g3479">
     <circle
+       transform="translate(-146,0)"
        sodipodi:ry="28"
        sodipodi:rx="28"
        sodipodi:cy="60"
@@ -819,34 +858,10 @@
        r="28"
        cy="60"
        cx="206" />
-    <linearGradient
-       gradientTransform="matrix(0,-3.9299,-3.9299,0,-1832.138,4648.502)"
-       gradientUnits="userSpaceOnUse"
-       id="linearGradient8512"
-       y2="-518.34229"
-       x2="1172.2559"
-       y1="-518.34229"
-       x1="1163.3115">
-      <stop
-         id="stop8514"
-         offset="0"
-         style="stop-color:white;stop-opacity:1" />
-      <stop
-         id="stop8516"
-         offset="0.5413"
-         style="stop-color:#fcfcfc;stop-opacity:1" />
-      <stop
-         id="stop8518"
-         offset="0.8664"
-         style="stop-color:#f4f4f4;stop-opacity:1" />
-      <stop
-         id="stop8520"
-         offset="1"
-         style="stop-color:#eee;stop-opacity:1" />
-    </linearGradient>
-    <polygon
-       id="polygon3477_1_"
-       style="fill:url(#polygon3477_10_)"
-       points="210.757,45.474 207.826,42.546 187.321,60.122 207.826,77.698 210.757,74.77 200.612,63.05 222.474,63.05 222.474,57.193 200.369,57.193 210.757,45.474 " />
+    <path
+       sodipodi:nodetypes="cccccccccc"
+       id="polygon3477_4_"
+       d="M 64,76 L 60,80 L 40,60 L 60,40 L 64,44 L 56,56 L 80,56 L 80,64 L 56,64 L 64,76 z "
+       style="fill:url(#linearGradient2043)" />
   </g>
 </svg>

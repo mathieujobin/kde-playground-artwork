@@ -40,14 +40,53 @@
      bordercolor="#666666"
      pagecolor="#ffffff"
      id="base"
-     inkscape:zoom="1"
+     inkscape:zoom="4.2954545"
      inkscape:cx="44"
      inkscape:cy="44"
      inkscape:window-x="169"
      inkscape:window-y="0"
-     inkscape:current-layer="svg6658" />
+     inkscape:current-layer="svg6658"
+     showgrid="true"
+     gridspacingx="4px"
+     gridspacingy="4px"
+     gridempspacing="0" />
   <defs
      id="defs6660">
+    <linearGradient
+       x1="1163.3115"
+       y1="-632.84857"
+       x2="1172.2568"
+       y2="-632.84857"
+       id="polygon3477_11_"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0,3.9299,3.9299,0,3141.93,-4528.256)">
+      <stop
+         style="stop-color:white;stop-opacity:1"
+         offset="0"
+         id="stop5861" />
+      <stop
+         style="stop-color:#fcfcfc;stop-opacity:1"
+         offset="0.5413"
+         id="stop5863" />
+      <stop
+         style="stop-color:#f4f4f4;stop-opacity:1"
+         offset="0.8664"
+         id="stop5865" />
+      <stop
+         style="stop-color:#eee;stop-opacity:1"
+         offset="1"
+         id="stop5867" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#polygon3477_11_"
+       id="linearGradient2043"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(4.024704,0,0,4.024589,-4655.067,2574.958)"
+       x1="1167.5559"
+       y1="-637.81866"
+       x2="1167.5559"
+       y2="-627.87976" />
     <linearGradient
        x1="1285.4521"
        y1="-591.11719"
@@ -368,6 +407,47 @@
        fx="63.912209"
        fy="115.7093"
        r="63.912209" />
+    <linearGradient
+       x1="40"
+       y1="0"
+       x2="40"
+       y2="56.0005"
+       id="linearGradient5391"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         style="stop-color:#00bf00;stop-opacity:1"
+         offset="0"
+         id="stop5393" />
+      <stop
+         style="stop-color:#008c00;stop-opacity:1"
+         offset="1"
+         id="stop5395" />
+    </linearGradient>
+    <linearGradient
+       x1="1285.4521"
+       y1="-591.11719"
+       x2="1294.3965"
+       y2="-591.11719"
+       id="linearGradient5398"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-3.9299,0,0,3.9299,5108.502,2352.137)">
+      <stop
+         style="stop-color:white;stop-opacity:1"
+         offset="0"
+         id="stop5400" />
+      <stop
+         style="stop-color:#fcfcfc;stop-opacity:1"
+         offset="0.5413"
+         id="stop5402" />
+      <stop
+         style="stop-color:#f4f4f4;stop-opacity:1"
+         offset="0.8664"
+         id="stop5404" />
+      <stop
+         style="stop-color:#eee;stop-opacity:1"
+         offset="1"
+         id="stop5406" />
+    </linearGradient>
   </defs>
   <path
      id="path4416"
@@ -465,63 +545,20 @@
        transform="translate(437.1429,-463.5714)"
        points="75,60 68,44 68,42 80,60 75,60 " />
   </g>
-  <g
-     id="g94"
-     transform="translate(4,0)">
-    <linearGradient
-       gradientUnits="userSpaceOnUse"
-       id="linearGradient5391"
-       y2="56.0005"
-       x2="40"
-       y1="0"
-       x1="40">
-      <stop
-         id="stop5393"
-         offset="0"
-         style="stop-color:#00bf00;stop-opacity:1" />
-      <stop
-         id="stop5395"
-         offset="1"
-         style="stop-color:#008c00;stop-opacity:1" />
-    </linearGradient>
-    <circle
-       sodipodi:ry="28"
-       sodipodi:rx="28"
-       sodipodi:cy="28"
-       sodipodi:cx="40"
-       id="circle3581"
-       style="fill:url(#linearGradient5421)"
-       r="28"
-       cy="28"
-       cx="40" />
-    <linearGradient
-       gradientTransform="matrix(-3.9299,0,0,3.9299,5108.502,2352.137)"
-       gradientUnits="userSpaceOnUse"
-       id="linearGradient5398"
-       y2="-591.11719"
-       x2="1294.3965"
-       y1="-591.11719"
-       x1="1285.4521">
-      <stop
-         id="stop5400"
-         offset="0"
-         style="stop-color:white;stop-opacity:1" />
-      <stop
-         id="stop5402"
-         offset="0.5413"
-         style="stop-color:#fcfcfc;stop-opacity:1" />
-      <stop
-         id="stop5404"
-         offset="0.8664"
-         style="stop-color:#f4f4f4;stop-opacity:1" />
-      <stop
-         id="stop5406"
-         offset="1"
-         style="stop-color:#eee;stop-opacity:1" />
-    </linearGradient>
-    <polygon
-       id="polygon3477"
-       style="fill:url(#linearGradient5423)"
-       points="25.473,23.243 22.545,26.174 40.121,46.68 57.698,26.174 54.769,23.243 43.05,33.388 43.05,11.527 37.193,11.527 37.193,33.63 25.473,23.243 " />
-  </g>
+  <circle
+     cx="40"
+     cy="28"
+     r="28"
+     style="fill:url(#linearGradient5421)"
+     id="circle3581"
+     sodipodi:cx="40"
+     sodipodi:cy="28"
+     sodipodi:rx="28"
+     sodipodi:ry="28"
+     transform="translate(4,0)" />
+  <path
+     sodipodi:nodetypes="cccccccccc"
+     id="polygon3477_4_"
+     d="M 60,24 L 64,28 L 44,48 L 24,28 L 28,24 L 40,32 L 40,8 L 48,8 L 48,32 L 60,24 z "
+     style="fill:url(#linearGradient2043)" />
 </svg>
