@@ -6,12 +6,17 @@ document size: 128x128 px.
 Goal: perfect looking 22x22 action
 document size: 88x88 px.
 
-In both cases ratio is 4:1, which mean every 4 pixel will look as 1 in the 
-final icon.
+In both cases ratio is 4:1, which mean every 4 pixel will look as 1 in the final icon.
 You should keep open kcalc and try to make objects boundaries dividable for 4.
-Also it's important to place objects in dividable for 4 coordinates.
 
-PS: Focus only on 22x22 and 32x32 icons, that's already a lot of work, hopefully we'll get rid of 16x16 and 48x48 ;p
+The Grid:
+Grid show lines every 4 pixel. 
+To snap nodes to the grid do that:
+1.	Shift+Ctrl+D
+2.	select "Snap" tab
+3.	select "snap nodes to grid"
+
+PS: For action icons focus only on 22x22 and 32x32 sizes, that's already a lot of work, hopefully we'll get rid of 16x16 and 48x48 ;p
 
 - - - 
 blame to David Vignoni davigno@oxygen-icons.org
