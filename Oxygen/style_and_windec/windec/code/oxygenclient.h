@@ -1,9 +1,10 @@
 //////////////////////////////////////////////////////////////////////////////
-// exampleclient.h
+// oxygenclient.h
 // -------------------
 // Oxygen window decoration for KDE
 // -------------------
 // Copyright (c) 2003, 2004 David Johnson <david@usermode.org>
+// Copyright (c) 2006, 2007 Riccardo Iaconelli <ruphy@fsfe.org>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to
@@ -24,10 +25,10 @@
 // IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef EXAMPLECLIENT_H
-#define EXAMPLECLIENT_H
+#ifndef OXYGENCLIENT_H
+#define OXYGENCLIENT_H
 
-#include <q3button.h>
+// #include <q3button.h>
 #include <qlayout.h>
 //Added by qt3to4:
 #include <QResizeEvent>
@@ -38,77 +39,19 @@
 #include <kdecoration.h>
 #include <kdecorationfactory.h>
 
+#include "oxygenbutton.h"
+// #include "oxygen.h"
+
 class QSpacerItem;
 class QPoint;
 
 namespace Oxygen {
 
-class OxygenClient;
-
-enum ButtonType {
-    ButtonHelp=0,
-    ButtonMax,
-    ButtonMin,
-    ButtonClose, 
-    ButtonMenu,
-    ButtonSticky,
-    ButtonTypeCount
-};
-
-// OxygenFactory /////////////////////////////////////////////////////////////
-
-class OxygenFactory: public KDecorationFactory
-{
-public:
-    OxygenFactory();
-    virtual ~OxygenFactory();
-    virtual KDecoration *createDecoration(KDecorationBridge *b);
-    virtual bool reset(unsigned long changed);
-
-    static bool initialized();
-    static Qt::Alignment titleAlign();
-
-private:
-    bool readConfig();
-
-private:
-    static bool initialized_;
-    static Qt::Alignment titlealign_;
-};
-
-inline bool OxygenFactory::initialized()
-    { return initialized_; }
-
-inline Qt::Alignment OxygenFactory::titleAlign()
-    { return titlealign_; }
-
+// class OxygenClient;
+class OxygenButton;
 // OxygenButton //////////////////////////////////////////////////////////////
 
-class OxygenButton : public QAbstractButton
-{
-public:
-    OxygenButton(OxygenClient *parent=0,
-                  const QString &tip=NULL,
-                  ButtonType type=ButtonHelp,
-                  const unsigned char *bitmap=0);
-    ~OxygenButton();
 
-    void setBitmap(const unsigned char *bitmap);
-    QSize sizeHint() const;
-    const int lastMousePress(){return lastmouse_;};
-    void reset(){repaint();};
-
-private:
-    void enterEvent(QEvent *e);
-    void leaveEvent(QEvent *e);
-    void paintEvent(QPaintEvent *e);
-
-private:
-    OxygenClient *client_;
-    ButtonType type_;
-    QBitmap *deco_;
-    int lastmouse_;
-};
 
 // inline int OxygenButton::lastMousePress() const
 //     { return lastmouse_; }
@@ -156,6 +99,7 @@ private:
     OxygenButton *button[ButtonTypeCount];
     QSpacerItem *titlebar_;
 };
+
 
 } // namespace Oxygen
 

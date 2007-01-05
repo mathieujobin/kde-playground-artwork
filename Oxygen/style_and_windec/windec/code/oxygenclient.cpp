@@ -1,11 +1,15 @@
 //////////////////////////////////////////////////////////////////////////////
-// exampleclient.cc
+// oxygenclient.cpp
 // -------------------
 // Oxygen window decoration for KDE
 // -------------------
 // Copyright (c) 2003, 2004 David Johnson
+// Copyright (c) 2006, 2007 Riccardo Iaconelli <ruphy@fsfe.org>
+//
 // Please see the header file for copyright and license information.
 //////////////////////////////////////////////////////////////////////////////
+// #ifndef OXYGENCLIENT_H
+// #define OXYGENCLIENT_H
 
 #include <kconfig.h>
 #include <kglobal.h>
@@ -26,26 +30,32 @@
 #include <QEvent>
 #include <QShowEvent>
 #include <QPaintEvent>
+#include <QPainterPath>
 
 #include "oxygenclient.h"
 #include "oxygenclient.moc"
+#include "oxygenbutton.h"
+#include "oxygen.h"
 
-using namespace Oxygen;
+#include "definitions.cpp"
+
+namespace Oxygen
+{
 
 // global constants
 
-static const int BUTTONSIZE      = 18;
-static const int DECOSIZE        = 8;
-static const int TITLESIZE       = 18;
-static const int TFRAMESIZE       = 8;
-static const int BFRAMESIZE       = 7;
-static const int LFRAMESIZE       = 8;
-static const int RFRAMESIZE       = 7;
-static const int FRAMEBUTTONSPACE       = 67;
+// static const int BUTTONSIZE      = 18;
+// static const int DECOSIZE        = 8;
+// static const int TITLESIZE       = 18;
+// static const int TFRAMESIZE       = 8;
+// static const int BFRAMESIZE       = 7;
+// static const int LFRAMESIZE       = 8;
+// static const int RFRAMESIZE       = 7;BUTTONSIZE     
+// static const int FRAMEBUTTONSPACE       = 67;
 
 
 
-// this method "stolen" from Plastic theme
+// this method "stolen" from Plastik theme
 void renderDot(QPainter *p,
                              const QPoint &point,
                              const QColor &baseColor,
@@ -94,207 +104,6 @@ static const unsigned char sticky_bits[] = {
     0x00, 0x00, 0x00, 0x7e, 0x7e, 0x00, 0x00, 0x00};
 
 //////////////////////////////////////////////////////////////////////////////
-// OxygenFactory Class                                                     //
-//////////////////////////////////////////////////////////////////////////////
-
-bool OxygenFactory::initialized_              = false;
-Qt::Alignment OxygenFactory::titlealign_ = Qt::AlignHCenter;
-
-extern "C" KDecorationFactory* create_factory()
-{
-    return new Oxygen::OxygenFactory();
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// OxygenFactory()
-// ----------------
-// Constructor
-
-OxygenFactory::OxygenFactory()
-{
-    readConfig();
-    initialized_ = true;
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// ~OxygenFactory()
-// -----------------
-// Destructor
-
-OxygenFactory::~OxygenFactory() { initialized_ = false; }
-
-//////////////////////////////////////////////////////////////////////////////
-// createDecoration()
-// -----------------
-// Create the decoration
-
-KDecoration* OxygenFactory::createDecoration(KDecorationBridge* b)
-{
-    return new OxygenClient(b, this);
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// reset()
-// -------
-// Reset the handler. Returns true if decorations need to be remade, false if
-// only a repaint is necessary
-
-bool OxygenFactory::reset(unsigned long changed)
-{
-    // read in the configuration
-    initialized_ = false;
-    bool confchange = readConfig();
-    initialized_ = true;
-
-    if (confchange ||
-        (changed & (SettingDecoration | SettingButtons | SettingBorder))) {
-        return true;
-    } else {
-        resetDecorations(changed);
-        return false;
-    }
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// readConfig()
-// ------------
-// Read in the configuration file
-
-bool OxygenFactory::readConfig()
-{
-    // create a config object
-    KConfig config("kwinexamplerc");
-    config.setGroup("General");
-
-    // grab settings
-    Qt::Alignment oldalign = titlealign_;
-    QString value = config.readEntry("TitleAlignment", "AlignHCenter");
-    if (value == "AlignLeft") titlealign_ = Qt::AlignLeft;
-    else if (value == "AlignHCenter") titlealign_ = Qt::AlignHCenter;
-    else if (value == "AlignRight") titlealign_ = Qt::AlignRight;
-
-    if (oldalign == titlealign_)
-        return false;
-    else
-        return true;
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// OxygenButton Class                                                      //
-//////////////////////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////////////////////
-// OxygenButton()
-// ---------------
-// Constructor
-
-OxygenButton::OxygenButton(OxygenClient *parent,
-                             const QString& tip, ButtonType type,
-                             const unsigned char *bitmap)
-    : QAbstractButton(parent->widget()), client_(parent), type_(type),
-      deco_(0), lastmouse_(0)
-{
-    //setBackgroundMode(Qt::NoBackground); PORT to qt4
-    setFixedSize(BUTTONSIZE, BUTTONSIZE);
-    //setCursor(Qt::arrowCursor); PORT to qt4
-    if (bitmap) setBitmap(bitmap);
-    setToolTip(tip);
-}
-
-OxygenButton::~OxygenButton()
-{
-    if (deco_) delete deco_;
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// setBitmap()
-// -----------
-// Set the button decoration
-
-void OxygenButton::setBitmap(const unsigned char *bitmap)
-{
-    if (!bitmap) return; // no bitmap, probably the menu button
-
-    if (deco_) delete deco_;
-    deco_ = new QBitmap(DECOSIZE, DECOSIZE);
-    //PORT to qt4 set actual pixels   , bitmap, true);
-    deco_->setMask(*deco_);
-    repaint();
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// sizeHint()
-// ----------
-// Return size hint
-
-QSize OxygenButton::sizeHint() const
-{
-    return QSize(BUTTONSIZE, BUTTONSIZE);
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// enterEvent()
-// ------------
-// Mouse has entered the button
-
-void OxygenButton::enterEvent(QEvent *e)
-{
-    // if we wanted to do mouseovers, we would keep track of it here
-    QAbstractButton::enterEvent(e);
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// leaveEvent()
-// ------------
-// Mouse has left the button
-
-void OxygenButton::leaveEvent(QEvent *e)
-{
-    // if we wanted to do mouseovers, we would keep track of it here
-    QAbstractButton::leaveEvent(e);
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// drawButton()
-// ------------
-// Draw the button
-
-void OxygenButton::paintEvent(QPaintEvent *)
-{
-    QPainter painter(this);
-
-    if (!OxygenFactory::initialized()) return;
-
-    QPalette palette;
-    int dx, dy;
-
-    // paint a plain box with border
-    palette = KDecoration::options()->palette(KDecoration::ColorFrame, client_->isActive());
-    painter.fillRect(rect(), palette.button());
-    
-    if (type_ == ButtonMenu) {
-        // we paint the mini icon (which is 16 pixels high)
-        dx = (width() - 16) / 2;
-        dy = (height() - 16) / 2;
-//PORT qt4        painter.drawPixmap(dx, dy, client_->icon().pixmap(QIcon::Small, QIcon::Normal));
-    } else {
-//       painter->fillRect(rect(), palette.button());
-       int x,y,w,h;
-       rect().getRect(&x, &y, &w, &h);
-       painter.setBrush(palette.dark());
-       painter.drawEllipse(x, y, w, h);
-
-       if (deco_) {
-           // otherwise we paint the deco
-           dx = (width() - DECOSIZE) / 2;
-           dy = (height() - DECOSIZE) / 2;
-           painter.setBrush(palette.dark());
-           painter.drawPixmap(dx, dy, *deco_);
-       }
-    }
-}
-
-//////////////////////////////////////////////////////////////////////////////
 // OxygenClient Class                                                      //
 //////////////////////////////////////////////////////////////////////////////
 
@@ -334,7 +143,7 @@ void OxygenClient::init()
     mainlayout->addLayout(titlelayout, 1, 1);
     if (isPreview()) {
         mainlayout->addWidget(
-        new QLabel(i18n("<b><center>Oxygen preview</center></b>"),
+        new QLabel(i18n("<b><center>Oxygen preview! =D</center></b>"),
         widget()), 2, 1);
     } else {
         mainlayout->addItem(new QSpacerItem(0, 0), 2, 1);
@@ -842,4 +651,8 @@ void OxygenClient::menuButtonPressed()
     }
 }
 
+} //namespace Oxygen
+
 //#include "oxygenclient.moc"
+
+// #endif

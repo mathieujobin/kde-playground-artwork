@@ -3,9 +3,11 @@ include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_CURRENT_SOURCE_D
 
 ########### next target ###############
 
-set(
-     kwin_oxy_SRCS 
+set(kwin_oxy_SRCS 
      oxygenclient.cpp 
+     oxygenbutton.cpp	
+     oxygen.cpp
+     definitions.cpp
    )
 
 kde4_automoc(${kwin_oxy_SRCS})
