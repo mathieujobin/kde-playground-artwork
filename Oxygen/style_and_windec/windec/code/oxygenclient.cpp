@@ -139,16 +139,21 @@ void OxygenClient::init()
                                 QSizePolicy::Fixed);
 
     mainlayout->addItem(new QSpacerItem(LFRAMESIZE, TFRAMESIZE), 0, 0);
-    mainlayout->addItem(new QSpacerItem(RFRAMESIZE, BFRAMESIZE), 3, 2);
+//     mainlayout->addItem(new QSpacerItem(RFRAMESIZE, BFRAMESIZE), 2, 2);
+    mainlayout->addItem(new QSpacerItem(0, TFRAMESIZE), 3, 0);
+    mainlayout->addItem(new QSpacerItem(RFRAMESIZE, 0), 0, 2);
+
     mainlayout->addLayout(titlelayout, 1, 1);
     if (isPreview()) {
         mainlayout->addWidget(
-        new QLabel(i18n("<b><center>Oxygen preview! =D</center></b>"),
+        new QLabel(i18n("<b><center>Oxygen preview! =)</center></b>"),
         widget()), 2, 1);
     } else {
         mainlayout->addItem(new QSpacerItem(0, 0), 2, 1);
     }
 
+    mainlayout->setRowStretch(2, 10);
+    mainlayout->setColumnStretch(1, 10);
 
     // setup titlebar buttons
     for (int n=0; n<ButtonTypeCount; n++) button[n] = 0;
