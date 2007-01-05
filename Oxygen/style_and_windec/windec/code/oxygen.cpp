@@ -26,6 +26,13 @@
 
 #include "oxygenclient.h"
 #include "oxygen.h"
+extern "C"
+{
+KDE_EXPORT KDecorationFactory* create_factory()
+{
+    return new Oxygen::OxygenFactory();
+}
+}
 namespace Oxygen
 {
 
@@ -36,11 +43,6 @@ namespace Oxygen
 
 bool OxygenFactory::initialized_ = false;
 Qt::Alignment OxygenFactory::titlealign_ = Qt::AlignHCenter;
-
-extern "C" KDecorationFactory* create_factory()
-{
-    return new Oxygen::OxygenFactory();
-}
 
 //////////////////////////////////////////////////////////////////////////////
 // OxygenFactory()

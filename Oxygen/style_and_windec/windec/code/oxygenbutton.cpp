@@ -129,22 +129,18 @@ void OxygenButton::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
 
-    QRadialGradient grad1(QPointF(5.0, 5.0),5.0);
-    grad1.setColorAt(0.9, QColor(0,0,0,100));
+    QRadialGradient grad1(QPointF(5.0, 5.0),5.0, QPointF(5.0, 7.5));
+    grad1.setColorAt(0.0, QColor(0,0,0,255));
     grad1.setColorAt(1.0, QColor(0,0,0,0));
-    QRadialGradient grad2(QPointF(5.0, 5.0),5.0);
-    grad2.setColorAt(0.0, QColor(235,235,235));
+    QRadialGradient grad2(QPointF(5.0, 5.0),5.0, QPointF(5.0, 8.0));
+    grad2.setColorAt(0.0, QColor(240,240,240));
     grad2.setColorAt(1.0, QColor(220,220,220));
     QRadialGradient grad3(QPointF(5.0, 3.75), 3.5,QPointF(5.0, 2.5));
-    grad3.setColorAt(0, QColor(255,255,255,50));
-    grad3.setColorAt(1, QColor(255,255,255,0));
-    QRadialGradient grad4(QPointF(5.0, 3.3), 3.5, QPointF(5.0, 2.1));
-    grad4.setColorAt(0, QColor(255,255,255,50));
-    grad4.setColorAt(1, QColor(255,255,255,0));
+    grad3.setColorAt(0, QColor(255,255,255,211));
+    grad3.setColorAt(1, QColor(255,255,255,25));
     QBrush brush1(grad1);
     QBrush brush2(grad2);
     QBrush brush3(grad3);
-    QBrush brush4(grad4);
 
     painter.scale(1.6, 1.6);
     painter.setRenderHint(QPainter::Antialiasing,true);
@@ -161,9 +157,6 @@ void OxygenButton::paintEvent(QPaintEvent *)
     path3.addEllipse(1.5, 0.5, 7.0, 6.0);
     painter.fillPath(path3, brush3);
 
-    QPainterPath path4;
-    path4.addEllipse(1.5, 0.5, 7.0, 6.0);
-    painter.fillPath(path4, brush4);
 //     QPainter painter(this);
 // 
 //     if (!OxygenFactory::initialized()) return;
