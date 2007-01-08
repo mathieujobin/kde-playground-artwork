@@ -14,7 +14,7 @@
    id="svg6645"
    sodipodi:version="0.32"
    inkscape:version="0.44"
-   sodipodi:docbase="/home/pinheiro/artwork/Oxygen/theme/svg/actions"
+   sodipodi:docbase="/home/pinheiro/artwork/Oxygen/Pinheiro"
    sodipodi:docname="bottom.svg"
    version="1.0"
    inkscape:r_cx="true"
@@ -247,16 +247,6 @@
        fx="60.836517"
        fy="25.623783"
        r="63.144386" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient4632"
-       id="linearGradient8323"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(0.914399,0,0,0.916667,5.369695,5.031241)"
-       x1="39.238892"
-       y1="-12.986332"
-       x2="47.066605"
-       y2="68.505501" />
     <radialGradient
        inkscape:collect="always"
        xlink:href="#linearGradient4601"
@@ -300,6 +290,17 @@
        fy="15.594903"
        r="63.144386"
        gradientTransform="matrix(0.751863,0,0,0.784203,15.90101,14.14336)" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4632"
+       id="radialGradient2814"
+       cx="63.219772"
+       cy="36.040401"
+       fx="64.088974"
+       fy="19.896902"
+       r="37.190357"
+       gradientTransform="matrix(1.054534,0,0,0.771735,-3.447609,8.226763)"
+       gradientUnits="userSpaceOnUse" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -308,9 +309,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.2202746"
-     inkscape:cx="-8.7049588"
-     inkscape:cy="-115.18168"
+     inkscape:zoom="3.4514578"
+     inkscape:cx="110.81295"
+     inkscape:cy="31.008491"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:grid-bbox="true"
@@ -391,7 +392,7 @@
        sodipodi:cy="65.540108"
        sodipodi:cx="64.17112"
        id="path6664"
-       style="fill:#00438a;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.69999999;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:4;stroke-opacity:0.9908257"
+       style="fill:#0057ae;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.69999999;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:4;stroke-opacity:0.9908257"
        sodipodi:type="arc" />
     <path
        style="fill:url(#linearGradient8332);fill-opacity:1;stroke:none;stroke-width:67.69140625;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:4;stroke-opacity:1"
@@ -406,12 +407,12 @@
        d="M 63.891285,16.031277 C 39.663335,16.031277 20.000085,35.743277 20.000085,60.031297 C 20.000085,64.992027 20.831325,69.761007 22.343235,74.210987 C 32.996025,85.662407 48.166005,92.830787 65.005715,92.830787 C 80.022035,92.830787 93.695445,87.145137 104.03915,77.791717 C 106.43408,72.359807 107.78249,66.348737 107.78249,60.031297 C 107.78249,35.743277 88.119245,16.031277 63.891285,16.031277 z "
        id="path6670" />
     <path
-       style="opacity:0.77289381;fill:url(#linearGradient8323);fill-opacity:1;stroke:none;stroke-width:0.412;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:4;stroke-opacity:1"
+       style="opacity:0.77289381;fill:url(#radialGradient2814);fill-opacity:1.0;stroke:none;stroke-width:0.412;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:4;stroke-opacity:1"
        d="M 63.891285,16.031277 C 47.757975,16.031277 33.656425,24.790007 26.029415,37.802127 C 28.630965,48.115437 44.227675,56.049527 63.062615,56.049527 C 83.203205,56.049527 99.605275,46.977357 100.41013,35.625037 C 92.536875,23.813837 79.115465,16.031277 63.891285,16.031277 z "
        id="path6672" />
     <path
        sodipodi:type="arc"
-       style="opacity:0.59706941;fill:url(#radialGradient8319);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.69999999;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:4;stroke-opacity:0.9908257"
+       style="opacity:0.59706936;fill:url(#radialGradient8319);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.69999999;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:4;stroke-opacity:0.9908257"
        id="path6726"
        sodipodi:cx="64.17112"
        sodipodi:cy="65.540108"
