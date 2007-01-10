@@ -21,6 +21,137 @@
   <defs
      id="defs2011">
     <linearGradient
+       y2="69.8576"
+       x2="67.4215"
+       y1="90.0518"
+       x1="118.1514"
+       gradientUnits="userSpaceOnUse"
+       id="linearGradient4132">
+      <stop
+         id="stop4134"
+         style="stop-color:#FFFFFF"
+         offset="0" />
+      <stop
+         id="stop4136"
+         style="stop-color:#ddd;stop-opacity:1;"
+         offset="0.5" />
+      <stop
+         id="stop4138"
+         style="stop-color:#888;stop-opacity:1;"
+         offset="1" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4132"
+       id="linearGradient2356"
+       gradientUnits="userSpaceOnUse"
+       x1="118.1514"
+       y1="90.051804"
+       x2="67.421501"
+       y2="69.857597" />
+    <radialGradient
+       id="radialGradient9888"
+       cx="102"
+       cy="112.3047"
+       r="139.55859"
+       gradientUnits="userSpaceOnUse">
+	<stop
+   offset="0"
+   style="stop-color:white;stop-opacity:1;"
+   id="stop9890" />
+
+	
+	
+	
+	
+	<stop
+   offset="0.20296688"
+   style="stop-color:#ECECEC"
+   id="stop9892" />
+
+	<stop
+   offset="0.2363"
+   style="stop-color:#FAFAFA"
+   id="stop9894" />
+
+	<stop
+   offset="0.2722"
+   style="stop-color:#FFFFFF"
+   id="stop9896" />
+
+	<stop
+   offset="0.5313"
+   style="stop-color:#FAFAFA"
+   id="stop9898" />
+
+	<stop
+   offset="0.8449"
+   style="stop-color:#EBECEC"
+   id="stop9900" />
+
+	<stop
+   offset="1"
+   style="stop-color:#E1E2E3"
+   id="stop9902" />
+
+</radialGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#radialGradient9888"
+       id="linearGradient11156"
+       gradientUnits="userSpaceOnUse"
+       x1="101.001"
+       y1="111.001"
+       x2="3.0004001"
+       y2="13.0004"
+       gradientTransform="translate(-31.00529,-57.59788)" />
+    <radialGradient
+       gradientUnits="userSpaceOnUse"
+       r="139.55859"
+       cy="112.3047"
+       cx="102"
+       id="radialGradient9872">
+	<stop
+   id="stop9874"
+   style="stop-color:white;stop-opacity:1;"
+   offset="0" />
+
+	
+	
+	
+	
+	<stop
+   id="stop9876"
+   style="stop-color:#ECECEC"
+   offset="0.20296688" />
+
+	<stop
+   id="stop9878"
+   style="stop-color:#FAFAFA"
+   offset="0.2363" />
+
+	<stop
+   id="stop9880"
+   style="stop-color:#FFFFFF"
+   offset="0.2722" />
+
+	<stop
+   id="stop9882"
+   style="stop-color:#FAFAFA"
+   offset="0.5313" />
+
+	<stop
+   id="stop9884"
+   style="stop-color:#EBECEC"
+   offset="0.8449" />
+
+	<stop
+   id="stop9886"
+   style="stop-color:#E1E2E3"
+   offset="1" />
+
+</radialGradient>
+    <linearGradient
        id="XMLID_21_"
        gradientUnits="userSpaceOnUse"
        x1="67"
@@ -72,7 +203,9 @@
        x1="9.6436005"
        y1="114.5342"
        x2="47.642399"
-       y2="56.209999">
+       y2="56.209999"
+       xlink:href="#linearGradient4132"
+       spreadMethod="pad">
       <stop
          offset="0"
          style="stop-color:#FFFFFF"
@@ -382,13 +515,33 @@
     </foreignObject>
     <linearGradient
        inkscape:collect="always"
-       xlink:href="#XMLID_21_"
+       xlink:href="#radialGradient9888"
        id="linearGradient2272"
        gradientUnits="userSpaceOnUse"
        x1="101.001"
        y1="111.001"
        x2="3.0004"
        y2="13.0004" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#XMLID_21_"
+       id="linearGradient11152"
+       gradientUnits="userSpaceOnUse"
+       x1="101.001"
+       y1="111.001"
+       x2="3.0004"
+       y2="13.0004"
+       gradientTransform="translate(-46.24339,-3.079365)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4132"
+       id="linearGradient11176"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="pad"
+       x1="9.6436005"
+       y1="114.5342"
+       x2="47.642399"
+       y2="56.209999" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -404,7 +557,7 @@
      inkscape:cx="64"
      inkscape:cy="64"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="g11"
      width="128px"
      height="128px"
      inkscape:showpageshadow="false"
@@ -519,11 +672,11 @@
            style="stop-color:#6C96D4"
            id="stop3891" />
       </linearGradient>
-      <polygon
-         points="53.194,59.302 15.158,66.448 15.158,83.324 40.104,72.6 28.42,93.983 33.724,97.296 69.818,61.795 53.194,59.302 "
-         id="polygon3810"
-         style="fill:url(#XMLID_2_)"
-         transform="matrix(0.951336,0,0,0.951336,1.57965,4.734823)" />
+      <path
+         transform="matrix(0.951336,0,0,0.951336,1.57965,4.734823)"
+         style="fill:url(#linearGradient11176)"
+         d="M 53.194,59.302 L 15.158,66.448 L 15.158,83.324 L 40.104,72.6 L 28.42,93.983 L 33.724,97.296 L 69.818,61.795 L 53.194,59.302 z "
+         id="polygon3810" />
       <linearGradient
          id="linearGradient3894"
          gradientUnits="userSpaceOnUse"

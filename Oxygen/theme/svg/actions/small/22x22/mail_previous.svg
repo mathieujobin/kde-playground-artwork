@@ -49,6 +49,71 @@
   <defs
      id="defs1914">
     <linearGradient
+       y2="69.8576"
+       x2="67.4215"
+       y1="90.0518"
+       x1="118.1514"
+       gradientUnits="userSpaceOnUse"
+       id="linearGradient4132">
+      <stop
+         id="stop4134"
+         style="stop-color:#FFFFFF"
+         offset="0" />
+      <stop
+         id="stop4136"
+         style="stop-color:#ddd;stop-opacity:1;"
+         offset="0.5" />
+      <stop
+         id="stop4138"
+         style="stop-color:#888;stop-opacity:1;"
+         offset="1" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4132"
+       id="linearGradient5674"
+       gradientUnits="userSpaceOnUse"
+       x1="80.101601"
+       y1="70.011703"
+       x2="46.037102"
+       y2="56.451599"
+       gradientTransform="translate(-62.46032,-11.34059)" />
+    <radialGradient
+       gradientUnits="userSpaceOnUse"
+       r="139.55859"
+       cy="112.3047"
+       cx="102"
+       id="radialGradient3216">
+      <stop
+         id="stop3218"
+         style="stop-color:white;stop-opacity:1;"
+         offset="0" />
+      <stop
+         id="stop3222"
+         style="stop-color:#ECECEC"
+         offset="0.20296688" />
+      <stop
+         id="stop3224"
+         style="stop-color:#FAFAFA"
+         offset="0.2363" />
+      <stop
+         id="stop3226"
+         style="stop-color:#FFFFFF"
+         offset="0.2722" />
+      <stop
+         id="stop3228"
+         style="stop-color:#FAFAFA"
+         offset="0.5313" />
+      <stop
+         id="stop3230"
+         style="stop-color:#EBECEC"
+         offset="0.8449" />
+      <stop
+         id="stop3232"
+         style="stop-color:#E1E2E3"
+         offset="1" />
+    </radialGradient>
+    <linearGradient
        id="XMLID_21_"
        gradientUnits="userSpaceOnUse"
        x1="67"
@@ -77,7 +142,7 @@
        y1="73"
        x2="4.9997"
        y2="10.9997"
-       gradientTransform="translate(-30.17989,-4.518519)" />
+       gradientTransform="translate(-74.32804,-10.20106)" />
     <linearGradient
        id="linearGradient3291">
       <stop
@@ -171,7 +236,7 @@
        x2="-14.6918"
        y2="40.522301"
        id="linearGradient1981"
-       xlink:href="#XMLID_2_"
+       xlink:href="#linearGradient4132"
        gradientUnits="userSpaceOnUse"
        gradientTransform="matrix(-1,0,0,1,32,0)" />
     <linearGradient
@@ -255,7 +320,7 @@
        x2="5.0007"
        y2="11.0007"
        id="linearGradient1924"
-       xlink:href="#XMLID_21_"
+       xlink:href="#radialGradient3216"
        gradientUnits="userSpaceOnUse"
        gradientTransform="translate(8,0)" />
   </defs>
