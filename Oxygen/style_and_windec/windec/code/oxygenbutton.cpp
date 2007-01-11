@@ -4,6 +4,7 @@
 // Oxygen window decoration for KDE. Buttons.
 // -------------------
 // Copyright (c) 2006, 2007 Riccardo Iaconelli <ruphy@fsfe.org>
+// Copyright (c) 2006, 2007 Casper Boemann <cbr@boemann.dk>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to
@@ -62,7 +63,7 @@ OxygenButton::OxygenButton(OxygenClient *parent,
 {
     //setBackgroundMode(Qt::NoBackground); PORT to qt4
     setFixedSize(BUTTONSIZE, BUTTONSIZE);
-    //setCursor(Qt::arrowCursor); PORT to qt4
+    setCursor(Qt::ArrowCursor);
     if (bitmap) setBitmap(bitmap);
     setToolTip(tip);
 }
@@ -129,6 +130,14 @@ void OxygenButton::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
 
+    if (type_ == ButtonMenu) {
+        // we paint the mini icon (which is 16 pixels high)
+        int dx = (width() - 16) / 2;
+        int dy = (height() - 16) / 2;
+        painter.drawPixmap(dx, dy, client_->icon().pixmap(16));
+        return;
+    }
+
     QRadialGradient grad1(QPointF(5.0, 5.0),5.0, QPointF(5.0, 7.5));
     grad1.setColorAt(0.0, QColor(0,0,0,255));
     grad1.setColorAt(1.0, QColor(0,0,0,0));
@@ -142,7 +151,7 @@ void OxygenButton::paintEvent(QPaintEvent *)
     QBrush brush2(grad2);
     QBrush brush3(grad3);
 
-    painter.scale(1.6, 1.6);
+    painter.scale(width()/10.0, height()/10.0);
     painter.setRenderHint(QPainter::Antialiasing,true);
 
     QPainterPath path1;

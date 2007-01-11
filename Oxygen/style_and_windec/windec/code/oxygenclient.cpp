@@ -4,6 +4,7 @@
 // Oxygen window decoration for KDE
 // -------------------
 // Copyright (c) 2003, 2004 David Johnson
+// Copyright (c) 2006, 2007 Casper Boemann <cbr@boemann.dk>
 // Copyright (c) 2006, 2007 Riccardo Iaconelli <ruphy@fsfe.org>
 //
 // Please see the header file for copyright and license information.
@@ -157,9 +158,13 @@ void OxygenClient::init()
 
     // setup titlebar buttons
     for (int n=0; n<ButtonTypeCount; n++) button[n] = 0;
+    titlelayout->addSpacing(5);
     addButtons(titlelayout, options()->titleButtonsLeft());
+    titlelayout->addSpacing(15);
     titlelayout->addItem(titlebar_);
+    titlelayout->addSpacing(15);
     addButtons(titlelayout, options()->titleButtonsRight());
+    titlelayout->addSpacing(5);
 
     titlelayout->setSpacing(0);
     titlelayout->setMargin(0);
@@ -179,7 +184,8 @@ void OxygenClient::addButtons(QHBoxLayout *layout, const QString& s)
 
     if (s.length() > 0) {
         for (int n=0; n < s.length(); n++) {
-            layout->addSpacing(5);
+            if(n>0)
+                layout->addSpacing(3);
             switch (s[n].toLatin1()) {
               case 'M': // Menu button
                   if (!button[ButtonMenu]) {
@@ -260,7 +266,6 @@ void OxygenClient::addButtons(QHBoxLayout *layout, const QString& s)
             }
         }
     }
-    layout->addSpacing(10);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -465,6 +470,7 @@ void OxygenClient::paintEvent(QPaintEvent*)
 
     QPalette palette = widget()->palette();
     QPainter painter(widget());
+    painter.setRenderHint(QPainter::Antialiasing,true);
 
     // draw the titlebar+buttton background
     painter.fillRect(QRect(0,TFRAMESIZE,width(), TITLESIZE), palette.window());
@@ -473,10 +479,8 @@ void OxygenClient::paintEvent(QPaintEvent*)
     QRect title(titlebar_->geometry());
     painter.setFont(options()->font(isActive(), false));
     painter.setBrush(palette.windowText());
-    painter.drawText(title.x() + LFRAMESIZE, title.y(),
-                     title.width() - RFRAMESIZE, title.height(),
-                     OxygenFactory::titleAlign() | Qt::AlignVCenter,
-                     caption());
+    painter.drawText(title.x(), title.y(), title.width(), title.height(),
+             OxygenFactory::titleAlign() | Qt::AlignVCenter, caption());
 
     // draw frame
     QRect frame(0, 0, width(), TFRAMESIZE);
@@ -487,6 +491,28 @@ void OxygenClient::paintEvent(QPaintEvent*)
     painter.fillRect(frame, palette.window());
     frame.setRect(width()-RFRAMESIZE, 0, RFRAMESIZE, height());
     painter.fillRect(frame, palette.window());
+    
+    // Draw depression lines where the buttons are
+    QLinearGradient grad1(LFRAMESIZE, TFRAMESIZE + title.height()/2, title.x(), TFRAMESIZE + title.height()/2);
+    grad1.setColorAt(0.0, QColor(0,0,0,64));
+    grad1.setColorAt(1.0, QColor(0,0,0,5));
+    QBrush brush1(grad1);
+    painter.fillRect(LFRAMESIZE, TFRAMESIZE + title.height()/2-1, title.width(), 1, brush1);
+    QLinearGradient grad2(LFRAMESIZE, TFRAMESIZE + title.height()/2, title.x(), TFRAMESIZE + title.height()/2);
+    grad2.setColorAt(0.0, QColor(255,255,255,128));
+    grad2.setColorAt(1.0, QColor(255,255,255,5));
+    QBrush brush2(grad2);
+    painter.fillRect(LFRAMESIZE, TFRAMESIZE + title.height()/2, title.width(), 1, brush2);
+    QLinearGradient grad3(width()-RFRAMESIZE, TFRAMESIZE + title.height()/2, title.right(), TFRAMESIZE + title.height()/2);
+    grad3.setColorAt(0.0, QColor(0,0,0,64));
+    grad3.setColorAt(1.0, QColor(0,0,0,5));
+    QBrush brush3(grad3);
+    painter.fillRect(title.right(), TFRAMESIZE + title.height()/2-1, width() - title.right()-RFRAMESIZE, 1, brush3);
+    QLinearGradient grad4(width()-RFRAMESIZE, TFRAMESIZE + title.height()/2, title.right(), TFRAMESIZE + title.height()/2);
+    grad4.setColorAt(0.0, QColor(255,255,255,128));
+    grad4.setColorAt(1.0, QColor(255,255,255,5));
+    QBrush brush4(grad4);
+    painter.fillRect(title.right(), TFRAMESIZE + title.height()/2, width() -title.right()-RFRAMESIZE, 1, brush4);
 
     
     // outline the frame

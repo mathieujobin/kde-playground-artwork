@@ -28,8 +28,8 @@
 #define BUTTONSIZE 18
 #define DECOSIZE 8
 #define TITLESIZE 18
-#define TFRAMESIZE 8
+#define TFRAMESIZE 7
 #define BFRAMESIZE 7
-#define LFRAMESIZE 8
+#define LFRAMESIZE 7
 #define RFRAMESIZE 7
 #define FRAMEBUTTONSPACE 67
