@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SIZE=32
+SIZE=24
 
 #Prepare the layout
 mkdir oxygen
