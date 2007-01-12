@@ -1,5 +1,7 @@
 #!/bin/bash
 
+SIZE=32
+
 #Prepare the layout
 mkdir oxygen
 mkdir oxygen/cursors
@@ -14,7 +16,7 @@ mkdir oxygen/tmp-sources
 cd oxygen/tmp-sources
 
 for icon in $(ls ../../svgs/*.svg); do
-inkscape --without-gui --export-png=$( echo $icon | sed s/......svgs.//|sed s/.svg// ).png --export-dpi=72 --export-background-opacity=0 --export-width=32 --export-height=32 $icon > /dev/null
+inkscape --without-gui --export-png=$( echo $icon | sed s/......svgs.//|sed s/.svg// ).png --export-dpi=72 --export-background-opacity=0 --export-width=$SIZE --export-height=$SIZE $icon > /dev/null
 done
 
 #PNG+config file = cursor file
