@@ -1140,12 +1140,8 @@ void OxygenStyle::polish( QPalette &pal )
       if (v < 70) // very dark colors won't make nice backgrounds ;)
          c.setHsv(h,s,70);
       originalBgColor_ = c;
-      _SHIFTCOLOR_(c);
-      groupShadowColor_ = originalBgColor_.dark(105);
-      c.getHsv(&h,&s,&v);
-      if (v < 70) groupShadowColor_.setHsv(h,s,70);
-      _SHIFTCOLOR_(groupShadowColor_);
-      
+      if (config.acceleration == None)
+         _SHIFTCOLOR_(c);
       pal.setColor( QPalette::Window, c );
       
       if (!_bgBrush)
@@ -1211,7 +1207,8 @@ void OxygenStyle::polish( QWidget * widget)
 {
    // installs dynamic brush to all widgets, taking care of a correct bg pixmap size
    //TODO maybe we can exclude some more widgets here... (currently only popup menus)
-   if (!qobject_cast<QMenu*>(widget) || qobject_cast<QMenuBar*>(widget))
+   if (!(qobject_cast<QMenu*>(widget) ||
+         widget->inherits("QAlphaWidget")))
       widget->installEventFilter(_bgBrush);
 
 #ifdef MOUSEDEBUG

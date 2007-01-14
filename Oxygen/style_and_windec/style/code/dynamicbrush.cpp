@@ -320,7 +320,7 @@ QPixmap DynamicBrush::glPixmap(const QRect &rect, int darkness)
    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
    glDisable(GL_DEPTH_TEST);
    glBegin (GL_QUADS);
-      glColor4f (r*0.6, g*0.6, b*0.6, 1.0);
+      glColor4f (r*0.8, g*0.8, b*0.8, 1.0);
       glVertex2f (0.0, 30.0);
       glVertex2f (30.0, 30.0);
       glColor4f (r, g, b, 1.0);
@@ -335,6 +335,7 @@ QPixmap DynamicBrush::glPixmap(const QRect &rect, int darkness)
       glVertex2f (30.0, 0.0);
    glEnd();
    glBegin (GL_TRIANGLE_FAN);
+      r *= 1.1; g *= 1.1; b *=1.1;
       glColor4f (r, g, b, 1.0);
       glVertex2f (15.0, 00.0);
       glColor4f (r, g, b, 0.0);
@@ -358,6 +359,30 @@ void DynamicBrush::updateBrushGL()
 
 void DynamicBrush::updateBrushRender()
 {
+   QColor c = QApplication::palette().color(QPalette::Window);
+   QPixmap qPix(_size);
+   QLinearGradient lg1(QPoint(0,0), QPoint(0, _size.height()));
+   lg1.setColorAt(0, c);
+   lg1.setColorAt(1, c.dark(110));
+   QLinearGradient lg2(QPoint(_size.width()/2, _size.height()/2), QPoint(_size.width(), _size.height()));
+   QColor ct = c; ct.setAlpha(0);
+   lg2.setColorAt(0, ct);
+   ct.setAlpha(140);
+   lg2.setColorAt(1, ct);
+   QPainter p(&qPix);
+   p.setPen(Qt::NoPen);
+   p.setBrush(lg1);
+   p.drawRect( 0, 0, qPix.width(), qPix.height());
+   QPoint points[3] =
+   {
+      QPoint(_size.width(), 0),
+      QPoint(_size.width(), _size.height()),
+      QPoint(0, _size.height())
+   };
+   p.setBrush(lg2);
+   p.drawPolygon(points, 3);
+   p.end();
+   SETBACKGROUND(qPix);
 }
 
 QPixmap DynamicBrush::shadow(const QRect &rect)
@@ -469,8 +494,34 @@ QPixmap DynamicBrush::shadow(const QRect &rect)
       }
       return *_glShadow;
    case XRender:
-   {
-   }
+      if (!_glShadow || _lastShadowRect != rect )
+      {
+         _lastShadowRect = rect;
+         QColor c = QApplication::palette().color(QPalette::Window).dark(110);
+         QLinearGradient lg1(QPoint(0,-rect.y()), QPoint(0, _size.height()-rect.y()));
+         lg1.setColorAt(0, c);
+         lg1.setColorAt(1, c.dark(110));
+         QLinearGradient lg2(QPoint(_size.width()/2-rect.x(), _size.height()/2-rect.y()), QPoint(_size.width()-rect.x(), _size.height()-rect.y()));
+         QColor ct = c; ct.setAlpha(0);
+         lg2.setColorAt(0, ct);
+         ct.setAlpha(140);
+         lg2.setColorAt(1, ct);
+         QPainter p(&qPix);
+         p.setPen(Qt::NoPen);
+         p.setBrush(lg1);
+         p.drawRect( 0, 0, qPix.width(), qPix.height());
+         QPoint points[3] =
+         {
+            QPoint(rect.right(), 0),
+            QPoint(rect.right(), rect.bottom()),
+            QPoint(rect.x(), rect.bottom())
+         };
+         p.setBrush(lg2);
+         p.drawPolygon(points, 3);
+         p.end();
+         _glShadow = new QPixmap(qPix);
+      }
+      return *_glShadow;
    }
    return qPix;
 }
