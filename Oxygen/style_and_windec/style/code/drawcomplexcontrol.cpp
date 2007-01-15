@@ -253,6 +253,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          if ((cmb->subControls & SC_ComboBoxArrow) &&
              (!(widget && qobject_cast<const QComboBox*>(widget)) || ((const QComboBox*)widget)->count() > 0))
          {
+            painter->save();
             QStyleOptionComboBox tmpOpt = *cmb;
             hover = hover && (cmb->activeSubControls == SC_ComboBoxArrow);
             QRect ar = subControlRect(CC_ComboBox, cmb, SC_ComboBoxArrow, widget);
@@ -263,9 +264,9 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                ar.adjust(2,2,-2,-2);
                renderFrame( painter, ar, Raised, Full, widget, false);
                ar.adjust(2,2,-2,-2);
-               painter->drawTiledPixmap(ar, colorRun(option->palette.color(QPalette::Button), ar.height(), Qt::Vertical, sunken?Sunken:Raised, !hover));
-               painter->setPen(PAL.color(QPalette::ButtonText));
-               tmpOpt.rect =  ar.adjusted(ar.width()/4,ar.height()/4,-ar.width()/4,-ar.height()/4);
+               painter->drawTiledPixmap(ar, gloss(btnBgColor(PAL, isEnabled, hasFocus, hover), ar.height(), Qt::Vertical, sunken?Sunken:Raised));
+               painter->setPen(btnFgColor(PAL, isEnabled, hasFocus, hover));
+               tmpOpt.rect =  ar.adjusted(ar.width()/3,ar.height()/3,-ar.width()/3,-ar.height()/3);
             }
             else
             {
@@ -275,8 +276,9 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                   painter->setPen( midColor(PAL.color(QPalette::Text), PAL.color(QPalette::Base)) );
                tmpOpt.rect =  ar.adjusted(ar.width()/3,ar.height()/3,-ar.width()/3,-ar.height()/3);
             }
-            
+            painter->setRenderHint ( QPainter::Antialiasing, true );
             drawPrimitive(PE_IndicatorArrowDown, &tmpOpt, painter, widget);
+            painter->restore();
          }
       }
       break;

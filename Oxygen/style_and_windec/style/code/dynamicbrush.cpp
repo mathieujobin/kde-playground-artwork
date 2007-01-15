@@ -112,7 +112,7 @@ static QPixmap *tint(const QImage &img, const QColor& c)
    return pix;
 }
 
-DynamicBrush::DynamicBrush(const QImage &leftCenter, const QImage &leftTile, QObject *parent) : QObject(parent), _mode(Tiled2) 
+DynamicBrush::DynamicBrush(const QImage &leftCenter, const QImage &leftTile, QObject *parent) : QObject(parent), _mode(Tiled2), _glShadow(0)
 {
    _timer = new QTimer(this);
    connect (_timer, SIGNAL(timeout()), this, SLOT(wipeBackground()));

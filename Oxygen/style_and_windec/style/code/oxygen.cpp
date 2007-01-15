@@ -404,7 +404,7 @@ OxygenStyle::OxygenStyle() : QCommonStyle(), progressShift(0), anmiationUpdate(f
    invColorRole(config.scrollbarFg, config.scrollbarBg, QPalette::Window, QPalette::WindowText);
    
    config.roundButtons = settings.value("RoundButtons", false).toBool();
-   config.raisedButtons = settings.value("RaisedButtons", false).toBool();
+   config.raisedButtons = settings.value("RaisedButtons", true).toBool();
    
    config.tabwidget3D = (Orientation3D)(settings.value("TabWidget3D", 1).toInt());
    
@@ -1208,7 +1208,9 @@ void OxygenStyle::polish( QWidget * widget)
    // installs dynamic brush to all widgets, taking care of a correct bg pixmap size
    //TODO maybe we can exclude some more widgets here... (currently only popup menus)
    if (!(qobject_cast<QMenu*>(widget) ||
-         widget->inherits("QAlphaWidget")))
+         widget->inherits("QAlphaWidget") ||
+         widget->inherits("QComboBoxPrivateContainer")
+        ))
       widget->installEventFilter(_bgBrush);
 
 #ifdef MOUSEDEBUG
