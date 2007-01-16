@@ -229,7 +229,7 @@ private:
 
    
    //anmiated progressbars
-   QMap<QWidget*, uint> progressbars;
+//    QMap<QWidget*, uint> progressbars;
    uint progressShift;
    bool anmiationUpdate;
 

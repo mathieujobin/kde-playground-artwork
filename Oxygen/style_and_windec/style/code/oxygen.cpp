@@ -128,6 +128,8 @@ static Pixmap bgPix = 0;
 static Pixmap fgPix = 0;
 static QPixmap nullPix;
 
+static QMap<QWidget*, uint> progressbars;
+
 Pixmap shadowPix;
 int bgYoffset_;
 Config config;
@@ -519,7 +521,7 @@ void OxygenStyle::updateProgressbars()
    QMap<QWidget*, uint>::iterator iter;
    QPainter p;
    QProgressBar *pb;
-   QStyleOptionProgressBarV2 *opt = new QStyleOptionProgressBarV2();
+   QStyleOptionProgressBarV2 *opt = 0L;
    anmiationUpdate = true;
    for (iter = progressbars.begin(); iter != progressbars.end(); iter++)
    {
@@ -528,8 +530,9 @@ void OxygenStyle::updateProgressbars()
       pb = (QProgressBar*)(iter.key());
       if (pb->paintingActive() || !pb->isVisible() || !(pb->value() > pb->minimum()) || !(pb->value() < pb->maximum()))
          continue;
-      
 #ifdef Q_WS_X11
+      if (!opt)
+         opt = new QStyleOptionProgressBarV2();
       opt->palette = pb->palette();
       opt->minimum = pb->minimum();
       opt->maximum = pb->maximum();
@@ -548,13 +551,11 @@ void OxygenStyle::updateProgressbars()
       opt->direction = pb->layoutDirection();
       opt->rect = visualRect(pb->layoutDirection(), pb->rect(), subElementRect( SE_ProgressBarContents, opt, pb ));
 #endif
-      
       // we want custom sized rings, depending on the height of the progress
       if (pb->orientation() == Qt::Horizontal)
          progressShift = ++iter.value() % (pb->width()<<1);
       else
          progressShift = ++iter.value() % ((opt->rect.height()<<1)-1);
-      
       // i don't want to paint the whole progressbar, as only the progress and maybe the percentage needs an update - saves cpu especially on lack of HW accelerated XRender alpha blending
       // TODO: this is X11 only, find a better way (maybe just repaint the whole widget)
 #ifndef Q_WS_X11
@@ -570,7 +571,8 @@ void OxygenStyle::updateProgressbars()
       pb->setAttribute ( Qt::WA_PaintOutsidePaintEvent, false );
 #endif
    }
-   delete opt;
+   if (opt)
+      delete opt;
    anmiationUpdate = false;
 #endif
 }
@@ -1425,7 +1427,7 @@ void OxygenStyle::unPolish( QApplication *app )
       timer->stop();
 //    inExitPolish = true;
 //    QPalette pal( app->palette() );
-//    // reset bg Tileset
+//    // rQWidgeteset bg Tileset
 //    for (int i = QPalette::Disabled; i < QPalette::NColorGroups; i++)
 //    {
 //       if ( !pal.brush( (QPalette::ColorGroup)i, QPalette::Background ).texture().isNull() )
@@ -1445,6 +1447,8 @@ void OxygenStyle::unPolish( QWidget *widget )
       disconnect(widget, SIGNAL(destroyed(QObject*)), this, SLOT(progressbarDestroyed(QObject*)));
    }
    if (qobject_cast<QAbstractScrollArea*>(widget) || qobject_cast<Q3ScrollView*>(widget))
+      widget->removeEventFilter(this);
+   if (_bgBrush)
       widget->removeEventFilter(this);
 //    w->removeEventFilter(this);
 //    if (w->isTopLevel() || qobject_cast<QGroupBox*>(w) || w->inherits("KActiveLabel"))

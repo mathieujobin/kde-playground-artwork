@@ -53,6 +53,7 @@ DynamicBrush::DynamicBrush(Mode mode, QObject *parent) : QObject(parent), _mode(
 
 DynamicBrush::DynamicBrush(Pixmap pixmap, Pixmap shadow, int bgYoffset, QObject *parent) : QObject(parent), _pixmap(pixmap), _shadow(shadow), _bgYoffset(bgYoffset), _mode(Tiled) 
 {
+   qDebug() << "new brush requested";
    _timer = new QTimer(this);
    connect (_timer, SIGNAL(timeout()), this, SLOT(wipeBackground()));
    updateBrush = &DynamicBrush::updateBrushTiled;
