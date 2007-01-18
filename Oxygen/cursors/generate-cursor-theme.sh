@@ -26,11 +26,14 @@ inkscape --without-gui --export-png=watch1.png --export-background-opacity=0 --e
 
 #PNG+config file = cursor file
 #Warning, still in ./oxygen/tmp-sources
-cp ../../configs/* .
+cp ../../configs/*.in .
 
 for cursor in $(ls *.in); do
 xcursorgen $cursor ../cursors/$( echo $cursor | sed s/.in// )
 done
+
+#echo "WAITING 5 SECONDS AND THEN DELETING THE SOURCES"
+#sleep 5
 
 cd ../..
 rm -rf oxygen/tmp-sources
