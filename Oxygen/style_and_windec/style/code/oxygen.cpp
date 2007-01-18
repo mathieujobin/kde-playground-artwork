@@ -483,7 +483,7 @@ OxygenStyle::OxygenStyle() : QCommonStyle(), progressShift(0), anmiationUpdate(f
 
    // start being animated
    timer = new QTimer( this );
-   timer->start(50);
+//    timer->start(50);
    connect(timer, SIGNAL(timeout()), this, SLOT(updateProgressbars()));
 }
 
@@ -552,8 +552,8 @@ void OxygenStyle::updateProgressbars()
       opt->rect = visualRect(pb->layoutDirection(), pb->rect(), subElementRect( SE_ProgressBarContents, opt, pb ));
 #endif
       // we want custom sized rings, depending on the height of the progress
-      if (pb->orientation() == Qt::Horizontal)
-         progressShift = ++iter.value() % (pb->width()<<1);
+      if (pb->orientation() == Qt::Vertical)
+         progressShift = ++iter.value() % (opt->rect.width()<<1);
       else
          progressShift = ++iter.value() % ((opt->rect.height()<<1)-1);
       // i don't want to paint the whole progressbar, as only the progress and maybe the percentage needs an update - saves cpu especially on lack of HW accelerated XRender alpha blending
@@ -580,6 +580,8 @@ void OxygenStyle::updateProgressbars()
 void OxygenStyle::progressbarDestroyed(QObject* obj)
 {
    progressbars.remove(static_cast<QWidget*>(obj));
+   if (progressbars.count() == 0)
+      timer->stop();
 }
 
 /**handles updates to the bg pixmap*/
@@ -1114,8 +1116,8 @@ const QPixmap OxygenStyle::gloss(const QColor &oc, const int size, Qt::Orientati
 
 void OxygenStyle::polish ( QApplication * app )
 {
-   if (timer && !timer->isActive())
-      timer->start(50);
+//    if (timer && !timer->isActive())
+//       timer->start(50);
    loadPixmaps();
    if (app->desktop())
       bgYoffset_ = app->desktop()->height()*bgYoffset_/738;
@@ -1252,6 +1254,7 @@ void OxygenStyle::polish( QWidget * widget)
    if (qobject_cast<QProgressBar*>(widget))
    {
       widget->installEventFilter(this);
+      if (!timer->isActive()) timer->start(50);
       connect(widget, SIGNAL(destroyed(QObject*)), this, SLOT(progressbarDestroyed(QObject*)));
    }
    

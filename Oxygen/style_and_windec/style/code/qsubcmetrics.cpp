@@ -19,7 +19,7 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
          int fw = spinbox->frame ? pixelMetric(PM_SpinBoxFrameWidth, spinbox, widget) : 0;
          bs.setHeight(qMax(8, spinbox->rect.height()/2));
             // 1.6 -approximate golden mean
-         bs.setWidth(qMax(16, qMin(bs.height() * 8 / 5, spinbox->rect.width() / 4)));
+         bs.setWidth(qMax(18, qMin(bs.height() * 8 / 5, spinbox->rect.width() / 4)));
          bs = bs.expandedTo(QApplication::globalStrut());
          int x = spinbox->rect.width() - bs.width();
          switch (subControl)

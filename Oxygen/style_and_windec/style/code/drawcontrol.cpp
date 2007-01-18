@@ -492,7 +492,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
                   {
                      progressRect.setTop(RECT.bottom()-s+1);
                      progressRect.setHeight(s);
-                     QPixmap pix(widget->width(),widget->width()<<1);
+                     QPixmap pix(progressRect.width(), progressRect.width()<<1);
                      QPainter paint(&pix);
                      paint.drawTiledPixmap(0,0,pix.width(),pix.height()>>1, gradient(PAL.color(config.progressColor), pix.width(), Qt::Horizontal, Raised));
                      paint.drawTiledPixmap(0,pix.height()>>1,pix.width(),(pix.height()>>1)+1, gloss(PAL.color(config.progressColor), pix.width(), Qt::Horizontal, Raised));
@@ -563,21 +563,24 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          if (progress->invertedAppearance) reverse = !reverse;
          val = val / (progress->maximum - progress->minimum);
          QMatrix m;
+         if (progress->orientation == Qt::Vertical)
+         {
+            rect.setRect(RECT.x(), RECT.y(), RECT.height(), RECT.width());
+            if (progress->bottomToTop)
+            {
+               m.translate(0.0, RECT.height()); m.rotate(-90);
+            }
+            else
+            {
+               m.translate(RECT.width(), 0.0); m.rotate(90);
+            }
+         }
          if ( val > 0.0 )
          {
             int s;
             QRegion cr;
             if (progress->orientation == Qt::Vertical)
             {
-               rect.setRect(RECT.x(), RECT.y(), RECT.height(), RECT.width());
-               if (progress->bottomToTop)
-               {
-                  m.translate(0.0, rect.width()); m.rotate(-90);
-               }
-               else
-               {
-                  m.translate(rect.height(), 0.0); m.rotate(90);
-               }
                s = qMin( RECT.height(), ( int ) (val * RECT.height() ) );
                if ( s > 1 )
                   cr = QRect(RECT.x(), RECT.bottom()-s+1, RECT.width(), s);
@@ -1134,7 +1137,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       if (sunken)
          painter->drawTiledPixmap(innerRect, gradient(PAL.color(config.scrollbarFg), size, direction, Sunken));
       else if (hover)
-         painter->drawTiledPixmap(innerRect, gradient(PAL.color(config.scrollbarFg), size, direction, Raised));
+         painter->drawTiledPixmap(innerRect, gloss(PAL.color(config.scrollbarFg), size, direction, Raised));
       else
       {
 //          bool scrollerActive = false;
