@@ -14,9 +14,9 @@
    height="128"
    id="svg3007"
    sodipodi:version="0.32"
-   inkscape:version="0.44.1"
+   inkscape:version="0.44"
    version="1.0"
-   sodipodi:docbase="/Users/david/Progetti/oxygen-svn/theme/svg/actions"
+   sodipodi:docbase="/home/me/KDE_SVN/trunk/playground/artwork/Oxygen/theme/svg/actions"
    sodipodi:docname="mail_reply.svg">
   <defs
      id="defs3009">
@@ -260,6 +260,36 @@
        fy="92"
        r="36"
        gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient26907"
+       id="linearGradient1947"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0,1,-1,0,-39.9985,140.0029)"
+       x1="-70.002899"
+       y1="-383.9971"
+       x2="-11.91648"
+       y2="-383.9971" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3711"
+       id="radialGradient1949"
+       gradientUnits="userSpaceOnUse"
+       cx="343.99899"
+       cy="92"
+       fx="343.99899"
+       fy="92"
+       r="36" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3711"
+       id="linearGradient1951"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0,1.022977,-1.022977,0,-43.03147,141.8125)"
+       x1="-88.058083"
+       y1="-131.93112"
+       x2="-45.096584"
+       y2="-131.93112" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -273,16 +303,16 @@
      inkscape:pageshadow="2"
      inkscape:zoom="5.1015625"
      inkscape:cx="64"
-     inkscape:cy="64"
+     inkscape:cy="39.165796"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      width="128px"
      height="128px"
      inkscape:showpageshadow="false"
-     inkscape:window-width="1440"
-     inkscape:window-height="852"
-     inkscape:window-x="213"
-     inkscape:window-y="179"
+     inkscape:window-width="1272"
+     inkscape:window-height="725"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
      showgrid="true"
      gridspacingx="4px"
      gridspacingy="4px"
@@ -423,47 +453,51 @@
        sodipodi:ry="12.641975"
        d="M 127.82442 115.70919 A 63.912209 12.641975 0 1 1  0,115.70919 A 63.912209 12.641975 0 1 1  127.82442 115.70919 z"
        transform="matrix(1.001374,0,0,0.41035,-2.393169e-5,75.3311)" />
-    <circle
-       sodipodi:ry="36"
-       sodipodi:rx="36"
-       sodipodi:cy="92"
-       sodipodi:cx="343.99899"
-       style="fill:url(#linearGradient3724);fill-opacity:1.0"
-       r="36"
-       rx="8.0010004"
-       cx="343.99899"
-       cy="92"
-       ry="8.0010004"
-       id="circle3581_2_"
-       transform="matrix(-0.965728,0.258766,-0.258766,-0.965728,448.0159,91.83174)" />
-    <circle
-       transform="matrix(-0.429212,4.312772e-2,-0.115007,-0.160955,250.2291,117.9719)"
-       id="circle22111"
-       ry="8.0010004"
-       cy="92"
-       cx="343.99899"
-       rx="8.0010004"
-       r="36"
-       style="fill:url(#radialGradient23000);fill-opacity:1.0;opacity:0.4"
-       sodipodi:cx="343.99899"
-       sodipodi:cy="92"
-       sodipodi:rx="36"
-       sodipodi:ry="36" />
-    <path
-       style="opacity:0.8;fill:url(#linearGradient18554);fill-opacity:1"
-       d="M 91.999969,59.971384 C 76.290523,59.971384 63.163842,71.064378 59.999968,85.833523 C 66.306419,91.712461 78.272591,95.679677 91.999969,95.679677 C 105.72736,95.679677 117.69352,91.712462 123.99997,85.833523 C 120.83611,71.06438 107.70941,59.971385 91.999969,59.971384 z "
-       id="circle16776" />
-    <path
-       sodipodi:nodetypes="cccccccccc"
-       id="path21224"
-       d="M 347.999,112 L 343.999,116 L 319.999,92 L 343.999,68 L 347.999,72 L 335.999,88 L 367.999,88 L 367.999,96 L 335.999,96 L 347.999,112 z "
-       style="fill:none;fill-opacity:1;stroke:#0057ae;stroke-opacity:1;stroke-linejoin:round;stroke-width:4;stroke-miterlimit:4;stroke-dasharray:none;opacity:0.5"
-       transform="translate(-251.999,0)" />
-    <path
-       transform="translate(-251.999,0)"
-       style="fill:white;fill-opacity:1"
-       d="M 347.999,112 L 343.999,116 L 319.999,92 L 343.999,68 L 347.999,72 L 335.999,88 L 367.999,88 L 367.999,96 L 335.999,96 L 347.999,112 z "
-       id="polygon3477_2_"
-       sodipodi:nodetypes="cccccccccc" />
+    <g
+       id="g1940"
+       transform="translate(-55.99997,0)">
+      <circle
+         transform="matrix(-0.965728,0.258766,-0.258766,-0.965728,448.0159,91.83174)"
+         id="circle3581_2_"
+         ry="8.0010004"
+         cy="92"
+         cx="343.99899"
+         rx="8.0010004"
+         r="36"
+         style="fill:url(#linearGradient1947);fill-opacity:1"
+         sodipodi:cx="343.99899"
+         sodipodi:cy="92"
+         sodipodi:rx="36"
+         sodipodi:ry="36" />
+      <circle
+         sodipodi:ry="36"
+         sodipodi:rx="36"
+         sodipodi:cy="92"
+         sodipodi:cx="343.99899"
+         style="opacity:0.4;fill:url(#radialGradient1949);fill-opacity:1"
+         r="36"
+         rx="8.0010004"
+         cx="343.99899"
+         cy="92"
+         ry="8.0010004"
+         id="circle22111"
+         transform="matrix(-0.429212,4.312772e-2,-0.115007,-0.160955,250.2291,117.9719)" />
+      <path
+         id="circle16776"
+         d="M 91.999969,59.971384 C 76.290523,59.971384 63.163842,71.064378 59.999968,85.833523 C 66.306419,91.712461 78.272591,95.679677 91.999969,95.679677 C 105.72736,95.679677 117.69352,91.712462 123.99997,85.833523 C 120.83611,71.06438 107.70941,59.971385 91.999969,59.971384 z "
+         style="opacity:0.8;fill:url(#linearGradient1951);fill-opacity:1" />
+      <path
+         transform="translate(-251.999,0)"
+         style="opacity:0.5;fill:none;fill-opacity:1;stroke:#0057ae;stroke-width:4;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="M 347.999,112 L 343.999,116 L 319.999,92 L 343.999,68 L 347.999,72 L 335.999,88 L 367.999,88 L 367.999,96 L 335.999,96 L 347.999,112 z "
+         id="path21224"
+         sodipodi:nodetypes="cccccccccc" />
+      <path
+         sodipodi:nodetypes="cccccccccc"
+         id="polygon3477_2_"
+         d="M 347.999,112 L 343.999,116 L 319.999,92 L 343.999,68 L 347.999,72 L 335.999,88 L 367.999,88 L 367.999,96 L 335.999,96 L 347.999,112 z "
+         style="fill:white;fill-opacity:1"
+         transform="translate(-251.999,0)" />
+    </g>
   </g>
 </svg>
