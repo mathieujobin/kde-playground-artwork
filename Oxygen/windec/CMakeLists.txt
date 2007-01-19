@@ -1,4 +1,4 @@
-project(oxygen_theme)
+project(kwin_oxy)
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules )
 
 # search packages used by KDE
@@ -22,6 +22,5 @@ include (ConfigureChecks.cmake)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h )
 
-add_subdirectory( style )
-add_subdirectory( windec )
+add_subdirectory( code )
 
