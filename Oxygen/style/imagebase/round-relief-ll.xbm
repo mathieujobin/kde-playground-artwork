@@ -1,0 +1,4 @@
+#define round_relief_ll_width 5
+#define round_relief_ll_height 7
+static unsigned char round_relief_ll_bits[] = {
+   0x03, 0x07, 0x0f, 0x1f, 0x1f, 0x1f, 0x1f };
