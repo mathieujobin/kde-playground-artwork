@@ -1,3 +1,23 @@
+/***************************************************************************
+ *   Copyright (C) 2006-2007 by Thomas Lübking                             *
+ *   thomas.luebking@web.de                                                *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
+
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QResizeEvent>
@@ -5,13 +25,14 @@
 #include <QImage>
 #include <QPainter>
 #include <QX11Info>
-#include <QDebug>
+// #include <QDebug>
 
 #define GL_GLEXT_PROTOTYPES
 #include <QGLPixelBuffer>
 #include <GL/glut.h>
 
 #include <X11/Xatom.h>
+#include <X11/extensions/Xrender.h>
 
 #include "dynamicbrush.h"
 
@@ -53,7 +74,6 @@ DynamicBrush::DynamicBrush(Mode mode, QObject *parent) : QObject(parent), _mode(
 
 DynamicBrush::DynamicBrush(Pixmap pixmap, Pixmap shadow, int bgYoffset, QObject *parent) : QObject(parent), _pixmap(pixmap), _shadow(shadow), _bgYoffset(bgYoffset), _mode(Tiled) 
 {
-   qDebug() << "new brush requested";
    _timer = new QTimer(this);
    connect (_timer, SIGNAL(timeout()), this, SLOT(wipeBackground()));
    updateBrush = &DynamicBrush::updateBrushTiled;
@@ -360,11 +380,29 @@ void DynamicBrush::updateBrushGL()
 
 void DynamicBrush::updateBrushRender()
 {
+//    XRenderCreateRadialGradient (Display *dpy,
+//                                      const XRadialGradient *gradient,
+//                                      const XFixed *stops,
+//                                      const XRenderColor *colors,
+//                                      int nstops);
    QColor c = QApplication::palette().color(QPalette::Window);
    QPixmap qPix(_size);
+#if 0
+   XLinearGradient lg1a;
+   XRenderColor cs[2];
+   cs[0].red = c.red(); cs[0].green = c.green();
+   cs[0].blue = c.blue(); cs[0].alpha = c.alpha();
+   QColor tmp = c.dark(110);
+   cs[1].red = tmp.red(); cs[1].green = tmp.green();
+   cs[1].blue = tmp.blue(); cs[1].alpha = tmp.alpha();
+   lg1a.p1.x = 0; lg1a.p1.y = 0; lg1a.p2.x = 0; lg1a.p2.y = _size.height();
+   XFixed stops[4]; stops[0] = stops[1] = stops[2] = 0; stops[3] = _size.height();
+   XRenderCreateLinearGradient (QX11Info::display(), &lg1a, stops, cs, 4);
+#else
    QLinearGradient lg1(QPoint(0,0), QPoint(0, _size.height()));
    lg1.setColorAt(0, c);
    lg1.setColorAt(1, c.dark(110));
+#endif
    QLinearGradient lg2(QPoint(_size.width()/2, _size.height()/2), QPoint(_size.width(), _size.height()));
    QColor ct = c; ct.setAlpha(0);
    lg2.setColorAt(0, ct);

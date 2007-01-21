@@ -18,49 +18,53 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef DYNAMICBRUSH_H
-#define DYNAMICBRUSH_H
+#ifndef TILESET_H
+#define TILESET_H
 
-class QTimer;
-class QImage;
-class QPixmap;
-class QRect;
+#include <QBitmap>
+#include <QRegion>
 
-#include <QObject>
-#include <QSize>
-#include <QRect>
-#include <X11/Xlib.h>
-#include <fixx11h.h>
-
-class DynamicBrush : public QObject
+class TileSet
 {
-   Q_OBJECT
 public:
-   enum Mode {Tiled = 0, XRender, OpenGL, Tiled2};
-   DynamicBrush(Mode mode, QObject *parent = 0);
-   DynamicBrush(Pixmap pixmap = -1, Pixmap shadow = -1, int bgYoffset = 0, QObject *parent = 0);
-   DynamicBrush(const QImage &leftCenter, const QImage &leftTile, QObject *parent = 0);
-   QPixmap shadow(const QRect &rect);
-   void setMode(Mode);
-   void setXPixmap(Pixmap pixmap = -1, Pixmap shadow = -1);
-   virtual bool eventFilter ( QObject * watched, QEvent * event );
+   enum Tile {TopLeft = 0, TopRight, BtmLeft, BtmRight, TopMid, MidLeft, MidRight, BtmMid, Center };
+   TileSet(const QPixmap &pix, int xOff, int yOff, int width, int height,
+           int top, int bottom, int left, int right, QRegion *topLeft = 0, QRegion *topRight = 0, QRegion *btmLeft = 0, QRegion *btmRight = 0);
+   TileSet(){for (int i=0; i < 4; i++) border[i] = 0L;}
+   ~TileSet()
+   {
+//       for (int i=0; i < 4; i++)
+//          if (border[i]) delete border[i];
+   }
+   inline const QPixmap &pixmap( Tile pos ) const
+   {
+      return ( pixmaps[ ( int ) pos ] );
+   }
+   inline const QBitmap &mask( Tile pos ) const
+   {
+      return ( masks[ ( int ) pos ] );
+   }
+   inline int width(Tile pos) const
+   {
+      return pixmaps[pos].width();
+   }
+   inline int height(Tile pos) const
+   {
+      return pixmaps[pos].height();
+   }
+   inline QRegion *corner(Tile Pos) const
+   {
+      if (Pos < TopMid)
+         return border[Pos];
+      else
+         return 0L;
+   }
+   const QRegion outerRegion(const QRect &r) const;
+   const QRegion innerRegion(const QRect &r) const;
 private:
-   void updateBrushTiled();
-   void updateBrushGL();
-   void updateBrushRender();
-   void updateBrushEdMetal();
-   QPixmap glPixmap(const QRect &rect, int darkness = 0);
-   QSize _size;
-   Pixmap _pixmap, _shadow;
-   int _bgYoffset;
-   Mode _mode;
-   QTimer *_timer;
-   QPixmap *_center[2][2];
-   QPixmap *_tile[2][2];
-   QPixmap *_glShadow;
-   QRect _lastShadowRect;
-private slots:
-   void wipeBackground();
+   QPixmap pixmaps[ 9 ];
+   QBitmap masks[9];
+   QRegion *border[4];
+   int size[4];
 };
-
-#endif //DYNAMICBRUSH_H
+#endif //TILESET_H

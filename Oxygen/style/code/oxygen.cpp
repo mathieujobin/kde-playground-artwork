@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Thomas Lübking                                  *
+ *   Copyright (C) 2006-2007 by Thomas Lübking                             *
  *   thomas.luebking@web.de                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+/**================== Qt4 includes ======================*/
 #include <QFile>
 #include <QTextStream>
 #include <QSettings>
@@ -52,19 +53,24 @@
 #include <QFrame>
 #include <QLineEdit>
 #include <QAbstractScrollArea>
-// qt3 support
+/**============= Qt3 support includes ======================*/
 #include <Q3ScrollView>
+/**========================================================*/
 
+/**============= System includes ==========================*/
 // #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 #include <X11/keysym.h>
 #include <X11/extensions/XTest.h>
+#include <X11/extensions/Xrender.h>
 // #include <fixx11h.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <cmath>
+/**========================================================*/
 
+/**============= DEBUG includes ==========================*/
 #undef DEBUG
 #ifdef DEBUG
 #define MOUSEDEBUG #
@@ -79,14 +85,19 @@
 #define oDEBUG //
 #undef MOUSEDEBUG
 #endif
+/**========================================================*/
 
+/**============= Oxygen includes ==========================*/
 #include "../imagebase/round-ul.xbm"
 #include "../imagebase/round-ur.xbm"
 #include "../imagebase/round-ll.xbm"
 #include "../imagebase/round-lr.xbm"
 #include "oxygen.h"
 #include "dynamicbrush.h"
+/**=========================================================*/
 
+
+/**============= Convenience Defs ==========================*/
 #define _IsNotHtmlWidget(w) qstrcmp( w->name(), "__khtml" )
 #define _IsHtmlWidget(w) !qstrcmp( w->name(), "__khtml" )
 #define _IsViewportChild(w) w->parent() &&\
@@ -95,11 +106,14 @@
 
 #define _HighContrastColor(c) (qGray(c.rgb()) < 128 ) ? Qt::white : Qt::black
 
-
 #define _BLOCKEVENTS_(obj) obj->installEventFilter(eventKiller)
 #define _UNBLOCKEVENTS_(obj) obj->removeEventFilter(eventKiller)
 
-/** extern C stuff*/
+#define _IsTabStack(w) !qstrcmp( w->name(), "qt_tabwidget_stackedwidget" )
+/**=========================================================*/
+
+
+/**============= extern C stuff ==========================*/
 class OxygenStylePlugin : public QStylePlugin
 {
 public:
@@ -115,24 +129,29 @@ public:
 };
 
 Q_EXPORT_PLUGIN(OxygenStylePlugin)
-
-
+/**=========================================================*/
 using namespace Oxygen;
 
+/** static config object */
+Config config;
 
+/** The event killer*/
+bool EventKiller::eventFilter( QObject *object, QEvent *event)
+{
+   return true;
+}
+static EventKiller *eventKiller = new EventKiller();
+
+/** Get some excluded code */
 #include "inlinehelp.cpp"
+#include "animation.cpp"
+#include "gradients.cpp"
 
 /** Internal, handles the shared bg pixmaps*/
-
 static Pixmap bgPix = 0;
 static Pixmap fgPix = 0;
-static QPixmap nullPix;
-
-static QMap<QWidget*, uint> progressbars;
-
 Pixmap shadowPix;
 int bgYoffset_;
-Config config;
 
 static void loadPixmaps()
 {
@@ -155,14 +174,12 @@ static void loadPixmaps()
 }
 
 /**For painting the shared xpixmap on a qmenu*/
-
 inline void *qt_getClipRects( const QRegion &r, int &num )
 {
    return r.clipRectangles( num );
 }
-
 extern Drawable qt_x11Handle(const QPaintDevice *pd);
-/**==================================================================================================*/
+/**=====================================================================*/
 
 /**Some static variables*/
 
@@ -178,179 +195,6 @@ extern Drawable qt_x11Handle(const QPaintDevice *pd);
 
 static QColor originalBgColor_;
 static QColor groupShadowColor_;
-static EventKiller *eventKiller = 0L;
-
-/**Our frame tileset*/
-TileSet::TileSet(const QPixmap &pix, int xOff, int yOff, int width, int height, int top, int bottom, int left, int right, QRegion *topLeft, QRegion *topRight, QRegion *btmLeft, QRegion *btmRight)
-{
-   size[0] = top; size[1] = left; size[2] = bottom; size[3] = right;
-   
-   if (topLeft)
-      border[TopLeft] = new QRegion(*topLeft);
-   else
-      border[TopLeft] = 0;
-   if (topRight)
-      border[TopRight] = new QRegion(*topRight);
-   else
-      border[TopRight] = 0;
-   if (btmLeft)
-      border[BtmLeft] = new QRegion(*btmLeft);
-   else
-      border[BtmLeft] = 0;
-   if (btmRight)
-      border[BtmRight] = new QRegion(*btmRight);
-   else
-      border[BtmRight] = 0;
-   
-   int rOff = pix.width() - xOff - width;
-   int bOff = pix.height() - yOff - height;
-   int amount = 32/width+1;
-   int amount2 = 32/height+1;
-   int i;
-   
-   QPainter p;
-   QColor trans(0,0,0,0);
-   
-   pixmaps[TopLeft] = QPixmap(xOff, yOff);
-   pixmaps[TopLeft].fill(trans); p.begin(&pixmaps[TopLeft]);
-   p.drawPixmap(0, 0, pix, 0, 0, xOff, yOff);
-   p.end();
-//    masks[TopLeft] = alphaMask(pixmaps[TopLeft]);
-//    masks[TopLeft].setMask(masks[TopLeft]);
-   
-   pixmaps[TopMid] = QPixmap(amount*width, yOff);
-   pixmaps[TopMid].fill(trans); p.begin(&pixmaps[TopMid]);
-   for (i = 0; i < amount; i++)
-      p.drawPixmap(i*width, 0, pix, xOff, 0, width, yOff);
-   p.end();
-//    masks[TopMid] = alphaMask(pixmaps[TopMid]);
-//    masks[TopMid].setMask(masks[TopMid]);
-   
-   pixmaps[TopRight] = QPixmap(rOff, yOff);
-   pixmaps[TopRight].fill(trans); p.begin(&pixmaps[TopRight]);
-   p.drawPixmap(0, 0, pix, xOff+width, 0, rOff, yOff);
-   p.end();
-//    masks[TopRight] = alphaMask(pixmaps[TopRight]);
-//    masks[TopRight].setMask(masks[TopRight]);
-   
-   //----------------------------------
-   pixmaps[MidLeft] = QPixmap(xOff, amount2*height);
-   pixmaps[MidLeft].fill(trans); p.begin(&pixmaps[MidLeft]);
-   for (i = 0; i < amount2; i++)
-      p.drawPixmap(0, i*height, pix, 0, yOff, xOff, height);
-   p.end();
-//    masks[MidLeft] = alphaMask(pixmaps[MidLeft]);
-//    masks[MidLeft].setMask(masks[MidLeft]);
-   
-      // TODO: this is a bit of waste as we assume a *frame* to be empty inside ;)
-   pixmaps[Center] = QPixmap(amount*width, amount2*height);
-   pixmaps[Center].fill(trans); p.begin(&pixmaps[Center]);
-   for (i = 0; i < amount; i++)
-      for (int j = 0; i < amount2; i++)
-         p.drawPixmap(i*width, j*height, pix, xOff, yOff, width, height);
-   p.end();
-//    masks[Center] = alphaMask(pixmaps[Center]);
-//    masks[Center].setMask(masks[Center]);
-   pixmaps[MidRight] = QPixmap(rOff, amount2*height);
-   pixmaps[MidRight].fill(trans); p.begin(&pixmaps[MidRight]);
-   for (i = 0; i < amount2; i++)
-      p.drawPixmap(0, i*height, pix, xOff+width, yOff, rOff, height);
-   p.end();
-//    masks[MidRight] = alphaMask(pixmaps[MidRight]);
-//    masks[MidRight].setMask(masks[MidRight]);
-   
-   //----------------------------------
-   
-   pixmaps[BtmLeft] = QPixmap(xOff, bOff);
-   pixmaps[BtmLeft].fill(trans); p.begin(&pixmaps[BtmLeft]);
-   p.drawPixmap(0, 0, pix, 0, yOff+height, xOff, bOff);
-   p.end();
-//    masks[BtmLeft] = alphaMask(pixmaps[BtmLeft]);
-//    masks[BtmLeft].setMask(masks[BtmLeft]);
-   
-   pixmaps[BtmMid] = QPixmap(amount*width, bOff);
-   pixmaps[BtmMid].fill(trans); p.begin(&pixmaps[BtmMid]);
-   for (i = 0; i < amount; i++)
-      p.drawPixmap(i*width, 0, pix, xOff, yOff+height, width, bOff);
-   p.end();
-//    masks[BtmMid] = alphaMask(pixmaps[BtmMid]);
-//    masks[BtmMid].setMask(masks[BtmMid]);
-   
-   pixmaps[BtmRight] = QPixmap(rOff, bOff);
-   pixmaps[BtmRight].fill(trans); p.begin(&pixmaps[BtmRight]);
-   p.drawPixmap(0, 0, pix, xOff+width, yOff+height, rOff, bOff);
-   p.end();
-//    masks[BtmRight] = alphaMask(pixmaps[BtmRight]);
-//    masks[BtmRight].setMask(masks[BtmRight]);
-}
-
-const QRegion TileSet::innerRegion(const QRect &r) const
-{
-   QRegion tmpRegion;
-   
-   QRegion ret(r.x()+size[1], r.y()+size[0], r.width()-(size[1]+size[3]), r.height()-(size[0]+size[2]));
-
-   if (border[TopLeft])
-   {
-      tmpRegion = *border[TopLeft];
-      tmpRegion.translate(r.x(), r.y());
-      ret = ret.subtract(tmpRegion);
-   }
-   if (border[BtmLeft])
-   {
-      tmpRegion = *border[BtmLeft];
-      tmpRegion.translate(r.x(), r.bottom() - tmpRegion.boundingRect().height() + 1);
-      ret = ret.subtract(tmpRegion);
-   }
-   if (border[TopRight])
-   {
-      tmpRegion = *border[TopRight];
-      tmpRegion.translate(r.right() - tmpRegion.boundingRect().width() + 1, r.y());
-      ret = ret.subtract(tmpRegion);
-   }
-   if (border[BtmRight])
-   {
-      tmpRegion = *border[BtmRight];
-      tmpRegion.translate(r.right()-tmpRegion.boundingRect().width() + 1,
-                          r.bottom()-tmpRegion.boundingRect().height() + 1);
-      ret = ret.subtract(tmpRegion);
-   }
-   return ret;
-}
-
-const QRegion TileSet::outerRegion(const QRect &r) const
-{
-   QRegion tmpRegion;
-
-   QRegion ret = QRegion(r).subtract(QRect(r.x()+size[1], r.y()+size[0], r.width()-(size[1]+size[3]), r.height()-(size[0]+size[2])));
-   
-   if (border[TopLeft])
-   {
-      tmpRegion = *border[TopLeft];
-      tmpRegion.translate(r.x(), r.y());
-      ret = ret.unite(tmpRegion);
-   }
-   if (border[BtmLeft])
-   {
-      tmpRegion = *border[BtmLeft];
-      tmpRegion.translate(r.x(), r.bottom() - tmpRegion.boundingRect().height() + 1);
-      ret = ret.unite(tmpRegion);
-   }
-   if (border[TopRight])
-   {
-      tmpRegion = *border[TopRight];
-      tmpRegion.translate(r.right() - tmpRegion.boundingRect().width() + 1, r.y());
-      ret = ret.unite(tmpRegion);
-   }
-   if (border[BtmRight])
-   {
-      tmpRegion = *border[BtmRight];
-      tmpRegion.translate(r.right()-tmpRegion.boundingRect().width() + 1,
-                          r.bottom()-tmpRegion.boundingRect().height() + 1);
-      ret = ret.unite(tmpRegion);
-   }
-   return ret;
-}
 
 static bool invColorRole(QPalette::ColorRole &from, QPalette::ColorRole &to,
                          QPalette::ColorRole defFrom = QPalette::WindowText, QPalette::ColorRole defTo = QPalette::Window)
@@ -485,6 +329,7 @@ OxygenStyle::OxygenStyle() : QCommonStyle(), progressShift(0), anmiationUpdate(f
    timer = new QTimer( this );
 //    timer->start(50);
    connect(timer, SIGNAL(timeout()), this, SLOT(updateProgressbars()));
+   connect(timer, SIGNAL(timeout()), this, SLOT(updateTabAnimation()));
 }
 
 OxygenStyle::~OxygenStyle()
@@ -511,77 +356,6 @@ OxygenStyle::~OxygenStyle()
    bgPix = 0L;
    shadowPix = 0L;
    fgPix = 0L;
-}
-
-/**Slot to animate the progressbars*/
-void OxygenStyle::updateProgressbars()
-{
-#if 1
-   //Update the registered progressbars.
-   QMap<QWidget*, uint>::iterator iter;
-   QPainter p;
-   QProgressBar *pb;
-   QStyleOptionProgressBarV2 *opt = 0L;
-   anmiationUpdate = true;
-   for (iter = progressbars.begin(); iter != progressbars.end(); iter++)
-   {
-      if ( !qobject_cast<QProgressBar*>(iter.key()) )
-         continue;
-      pb = (QProgressBar*)(iter.key());
-      if (pb->paintingActive() || !pb->isVisible() || !(pb->value() > pb->minimum()) || !(pb->value() < pb->maximum()))
-         continue;
-#ifdef Q_WS_X11
-      if (!opt)
-         opt = new QStyleOptionProgressBarV2();
-      opt->palette = pb->palette();
-      opt->minimum = pb->minimum();
-      opt->maximum = pb->maximum();
-      opt->progress = pb->value();
-      opt->textAlignment = pb->alignment();
-      opt->textVisible = pb->isTextVisible();
-      opt->text = pb->text();
-      opt->rect = pb->rect();
-      opt->state = 0;
-      if (pb->isEnabled()) opt->state |= State_Enabled;
-      if (pb->hasFocus()) opt->state |= State_HasFocus;
-      if (pb->orientation() == Qt::Horizontal) opt->state |= State_Horizontal;
-      opt->bottomToTop = pb->textDirection() == QProgressBar::BottomToTop;
-      opt->invertedAppearance = pb->invertedAppearance();
-      opt->orientation = pb->orientation();
-      opt->direction = pb->layoutDirection();
-      opt->rect = visualRect(pb->layoutDirection(), pb->rect(), subElementRect( SE_ProgressBarContents, opt, pb ));
-#endif
-      // we want custom sized rings, depending on the height of the progress
-      if (pb->orientation() == Qt::Vertical)
-         progressShift = ++iter.value() % (opt->rect.width()<<1);
-      else
-         progressShift = ++iter.value() % ((opt->rect.height()<<1)-1);
-      // i don't want to paint the whole progressbar, as only the progress and maybe the percentage needs an update - saves cpu especially on lack of HW accelerated XRender alpha blending
-      // TODO: this is X11 only, find a better way (maybe just repaint the whole widget)
-#ifndef Q_WS_X11
-#warning not X11, animated progress may be slow
-      pb->repaint();
-#else
-      pb->setAttribute ( Qt::WA_PaintOutsidePaintEvent );
-      p.begin(pb);
-      drawControl( CE_ProgressBarContents, opt, &p, pb );
-      opt->rect = visualRect(pb->layoutDirection(), pb->rect(), subElementRect( SE_ProgressBarLabel, opt, pb ));
-      drawControl( CE_ProgressBarLabel, opt, &p, pb );
-      p.end();
-      pb->setAttribute ( Qt::WA_PaintOutsidePaintEvent, false );
-#endif
-   }
-   if (opt)
-      delete opt;
-   anmiationUpdate = false;
-#endif
-}
-
-void OxygenStyle::progressbarDestroyed(QObject* obj)
-{
-   progressbars.remove(static_cast<QWidget*>(obj));
-   if (progressbars.count() == 0)
-      timer->stop();
 }
 
 /**handles updates to the bg pixmap*/
@@ -784,332 +558,41 @@ void OxygenStyle::renderFrame( QPainter *p, const QRect &r, Orientation3D o3D, P
 
 }
 
-const QPixmap OxygenStyle::gradient(const QColor &oc, const int size, Qt::Orientation o, Orientation3D o3D) const
+
+#if 0
+Picture solid_picture (Bool argb, double a, double r, double g, double b)
 {
-   QColor c = oc;
-   PixmapCache *cache = &(const_cast<OxygenStyle*>( this )->gradientCache[o-1][o3D?1:0]);
-   int v = colorValue(c);
-   if (v < 80) // very dark colors won't make nice buttons ;)
-   {
-      int h,s;
-      c.getHsv(&h,&s,&v);
-      c.setHsv(h,s,80);
-   }
-   /*
-   Ok, we want to cache the gradients, but unfortunately we have no idea about what kind of gradients will be demanded in the future
-   Therefore creating a 2 component map (uint for color and uint for size) would be some overhead and cause a lot of unused space in the dictionaries
-   So we store all the gradients by a uint index
-   Therefore we substitute the alpha component (byte << 24) of the demanded color with the demanded size
-   As this would limit the size to 255/256 pixels we'll be a bit sloppy, depending on the users resolution (e.g. use 0 to store a gradient with 2px, usefull for demand of 1px or 2px) and shift the index (e.g. gradients from 0 to 6 px size will hardly be needed - maybe add statistics on this)
-   So the handled size is actually demandedSize + (demandedSize % sizeSloppyness), beeing at least demanded size and the next sloppy size above at max
-   */
-   int sizeSloppyness = 1;
-   uint magicNumber = 0;
-   PixmapCache::const_iterator it;
-   if (size < 105884) // this is where our dictionary reaches - should be enough for the moment ;)
-   {
-      int frameBase = 0;
-      int frameSize = 20;
+   Display *dpy = QX11Info::display();
+   Pixmap pixmap;
+   Picture picture;
+   XRenderPictureAttributes pa;
+   XRenderColor c;
 
-      while ((frameBase += frameSize) < size)
-      {
-         sizeSloppyness++;
-         frameSize += 20;
-      }
+   pixmap = XCreatePixmap (dpy, root, 1, 1, argb ? 32 : 8);
+   if (!pixmap)
+      return None;
 
-      frameBase -=frameSize;
-      frameSize -= 20;
-      // The mapping is done by the "magicNumber"
-//       magicNumber =  (((frameSize + (size - frameBase)/sizeSloppyness) & 0xff) << 24) | (c.rgb() & 0xffffff);
-      magicNumber =  (((frameSize + (size - frameBase)/sizeSloppyness) & 0xff) << 21) | 
-         (((c.red() >> 1) & 0x7f) << 14) |
-         (((c.green() >> 1) & 0x7f) << 7 ) |
-         ((c.blue() >> 1) & 0x7f);
-      
-      it = cache->find(magicNumber);
-      if (it != cache->end())
-         return it.value();
-   }
-   else
-   {
-      qWarning("gradient with more than 105883 steps requested, returning NULL pixmap");
-      return nullPix;
-   }
-   /*
-   adepted from kpixmapeffect.cpp - WARNING! this is specialised. only use for single column/row pixmaps. pixmaps with depth 8 will become plain (for the moment...)
-   also horizontal gradients will become bilinear!
-   */
-   QPixmap pix;
-   if (o == Qt::Horizontal)
-      pix = QPixmap(size + (size % sizeSloppyness), 32);
-   else
-      pix = QPixmap(32, size + (size % sizeSloppyness));
-   
-   if (pix.isNull())
-   {
-      qWarning("NULL Pixmap requested, size was %d",size);
-      return nullPix;
-   }
-   
-   QPainter p(&pix);
-   
-   QColor ca;
-   QColor cb;
-      
-   if (o3D == Raised)
-   {
-      ca = c.light(100+config.gradientIntensity*60/100);
-      cb = c.dark(100+config.gradientIntensity*20/100);
-   }
-   else
-   {
-      ca = c.dark(100+config.gradientIntensity*20/100);
-      cb = c.light(100+config.gradientIntensity*60/100);
-   }
+   pa.repeat = True;
+   picture = XRenderCreatePicture (dpy, pixmap,
+                  XRenderFindStandardFormat (dpy, argb ? PictStandardARGB32 : PictStandardA8),
+                  CPRepeat,
+                  &pa);
 
-   int rDiff, gDiff, bDiff;
-   int rca, gca, bca;
-   
-   register int x, y;
-
-   rDiff = (cb.red())   - (rca = ca.red());
-   gDiff = (cb.green()) - (gca = ca.green());
-   bDiff = (cb.blue())  - (bca = ca.blue());
-   
-   register int rl = rca << 16;
-   register int gl = gca << 16;
-   register int bl = bca << 16;
-   
-   int rcdelta = ((1<<16) / (o == Qt::Vertical ? pix.height() : pix.width())) * rDiff;
-   int gcdelta = ((1<<16) / (o == Qt::Vertical ? pix.height() : pix.width())) * gDiff;
-   int bcdelta = ((1<<16) / (o == Qt::Vertical ? pix.height() : pix.width())) * bDiff;
-   
-   // these for-loops could be merged, but the if's in the inner loop
-   // would make it slow
-   if (o == Qt::Vertical)
-      for ( y = 0; y < pix.height(); y++ )
-      {
-         rl += rcdelta;
-         gl += gcdelta;
-         bl += bcdelta;
-         
-         p.setPen(QColor(rl>>16, gl>>16, bl>>16));
-         p.drawLine(0, y, 31 , y);
-      }
-   else
+   if (!picture)
    {
-      for( x = 0; x < pix.width(); x++)
-      {
-         rl += rcdelta;
-         gl += gcdelta;
-         bl += bcdelta;
-         
-         p.setPen(QColor(rl>>16, gl>>16, bl>>16));
-         p.drawLine(x, 0, x, 31);
-      }
+      XFreePixmap (dpy, pixmap);
+      return false;
    }
-   
-//    if (size < 105883) // this is where our dictionary reaches - should be enough for the moment ;)
-   {
-      // cache for later ;)
-      if (cache->size() == cache->capacity())
-         // we're full, wipe for this time
-         cache->clear();
-      it = cache->insert(magicNumber, pix);
-      return it.value();
-   }
-//    return pix;
+   c.alpha = a * 0xffff;
+   c.red = r * 0xffff;
+   c.green = g * 0xffff;
+   c.blue = b * 0xffff;
+   XRenderFillRectangle (dpy, PictOpSrc, picture, &c, 0, 0, 1, 1);
+   XFreePixmap (dpy, pixmap);
+   return picture;
 }
+#endif
 
-const QPixmap OxygenStyle::gloss(const QColor &oc, const int size, Qt::Orientation o, Orientation3D o3D) const
-{
-   // SEE gradient(.)
-   PixmapCache *cache = &(const_cast<OxygenStyle*>( this )->glossCache[o-1][o3D?1:0]);
-   int sizeSloppyness = 1;
-   uint magicNumber = 0;
-   PixmapCache::const_iterator it;
-   if (size < 105884) // this is where our dictionary reaches - should be enough for the moment ;)
-   {
-      int frameBase = 0;
-      int frameSize = 20;
-      while ((frameBase += frameSize) < size)
-      {
-         sizeSloppyness++;
-         frameSize += 20;
-      }
-      frameBase -=frameSize;
-      frameSize -= 20;
-      // The mapping is done by the "magicNumber"
-//       magicNumber =  (((frameSize + (size - frameBase)/sizeSloppyness) & 0xff) << 24) | (oc.rgb() & 0xffffff);
-      magicNumber =  (((frameSize + (size - frameBase)/sizeSloppyness) & 0xff) << 21) | 
-         (((oc.red() >> 1) & 0x7f) << 14) |
-         (((oc.green() >> 1) & 0x7f) << 7 ) |
-         ((oc.blue() >> 1) & 0x7f);
-      it = cache->find(magicNumber);
-      if (it != cache->end())
-         return it.value();
-   }
-   else
-   {
-      qWarning("gradient with more than 105883 steps requested, returning NULL pixmap");
-      return nullPix;
-   }
-   
-   QPixmap pix;
-   if (o == Qt::Horizontal)
-      pix = QPixmap(size + (size % sizeSloppyness), 32);
-   else
-      pix = QPixmap(32, size + (size % sizeSloppyness));
-   
-   if (pix.isNull())
-   {
-      qWarning("NULL Pixmap requested, size was %d",size);
-      return nullPix;
-   }
-   
-   // calculate the determining colors
-   QColor d,dd,b,bb;
-   int h,s,v, ch,cs,cv, delta, add;
-   oc.getHsv(&h,&s,&v);
-   if (v < 85) v = 85;
-   b.setHsv(h,s,v); d = b;
-   if (o3D == Sunken) dd = b;
-   
-   add = ((180-qGray(b.rgb()))>>1);
-   if (add < 0) add = -add/2;
-   
-   if (o3D == Raised)
-   {
-      cv = v+27+add;
-      if (cv > 255)
-      {
-         delta = cv-255; cv = 255;
-         cs = s - delta; if (cs < 0) cs = 0;
-         ch = h - delta/6; if (ch < 0) ch = 360+ch;
-      }
-      else
-      {
-         ch = h; cs = s;
-      }
-      bb.setHsv(ch,cs,cv);
-   }
-   
-   cv = v - 14-add; if (cv < 0) cv = 0;
-   cs = s*13/7; if (cs > 255) cs = 255;
-   if (o3D == Raised)
-      dd.setHsv(h,cs,cv);
-   else
-      bb.setHsv(h,cs,cv);
-   
-   // real painting action
-   QPainter p(&pix);
-   
-   int rDiff = b.red() - bb.red();
-   int gDiff = b.green() - bb.green();
-   int bDiff = b.blue() - bb.blue();
-   
-   register int rl = (bb.red() << 16);
-   register int gl = (bb.green() << 16);
-   register int bl = (bb.blue() << 16);
-   
-   int rcdelta; int gcdelta; int bcdelta;
-   
-   if (o == Qt::Vertical)
-   {
-      register int y;
-      h = (1<<17) / (pix.height()+1);
-      rcdelta = h * rDiff;
-      gcdelta = h * gDiff;
-      bcdelta = h * bDiff;
-      
-      for ( y = 0; y < (pix.height()>>1); y++ )
-      {
-         rl += rcdelta; gl += gcdelta; bl += bcdelta;
-         p.setPen(QColor(rl>>16, gl>>16, bl>>16));
-         p.drawLine(0, y, 31 , y);
-      }
-      
-      
-      rDiff = d.red() - dd.red();
-      gDiff = d.green() - dd.green();
-      bDiff = d.blue() - dd.blue();
-      
-      rl = (dd.red() << 16);
-      gl = (dd.green() << 16);
-      bl = (dd.blue() << 16);
-      
-      rcdelta = h * rDiff;
-      gcdelta = h * gDiff;
-      bcdelta = h * bDiff;
-      
-      for ( ; y < pix.height(); y++ )
-      {
-         rl += rcdelta; gl += gcdelta; bl += bcdelta;
-         p.setPen(QColor(rl>>16, gl>>16, bl>>16));
-         p.drawLine(0, y, 31 , y);
-      }
-   }
-   else
-   {
-      register int x;
-      if (o3D == Raised)
-      {
-         h = (1<<16) / ((pix.width()+1)*8/18);
-         s = (pix.width()*8/18);
-      }
-      else
-      {
-         h = (1<<17) / (pix.width()+1);
-         s = pix.width()>>1;
-      }
-      rcdelta = h * rDiff;
-      gcdelta = h * gDiff;
-      bcdelta = h * bDiff;
-      
-      for ( x = 0; x < s; x++ )
-      {
-         rl += rcdelta; gl += gcdelta; bl += bcdelta;
-         p.setPen(QColor(rl>>16, gl>>16, bl>>16));
-         p.drawLine(x, 0, x , 31);
-      }
-      
-      rDiff = d.red() - dd.red();
-      gDiff = d.green() - dd.green();
-      bDiff = d.blue() - dd.blue();
-      
-      rl = (dd.red() << 16);
-      gl = (dd.green() << 16);
-      bl = (dd.blue() << 16);
-      
-      if (o3D == Raised)
-         h = (1<<16) / ((pix.width()+1)*10/18);
-      rcdelta = h * rDiff;
-      gcdelta = h * gDiff;
-      bcdelta = h * bDiff;
-      
-      for ( ; x < pix.width(); x++ )
-      {
-         rl += rcdelta; gl += gcdelta; bl += bcdelta;
-         p.setPen(QColor(rl>>16, gl>>16, bl>>16));
-         p.drawLine(x, 0, x , 31);
-      }
-   }
-
-   // store the result
-   // 1768 is where our dictionary reaches - should be enough for the moment ;)
-//    if (size < 105883)
-   {
-
-      // cache for later ;)
-      if (cache->size() == cache->capacity())
-      // we're full, wipe for this time
-         cache->clear();
-      it = cache->insert(magicNumber, pix);
-
-      return it.value();
-   }
-//    return pix;
-}
 /**======================================*/
 
 /**QStyle reimplementation ========================================= */
@@ -1258,6 +741,15 @@ void OxygenStyle::polish( QWidget * widget)
       connect(widget, SIGNAL(destroyed(QObject*)), this, SLOT(progressbarDestroyed(QObject*)));
    }
    
+   if (qobject_cast<QTabWidget*>(widget))
+   {
+      connect((QTabWidget*)widget, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
+      connect(widget, SIGNAL(destroyed(QObject*)), this, SLOT(tabDestroyed(QObject*)));
+   }
+   
+//    if (widget->inherits("QStackedWidget") && _IsTabStack(widget))
+//       widget->installEventFilter(this);
+   
    if (qobject_cast<QAbstractScrollArea*>(widget) || qobject_cast<Q3ScrollView*>(widget) ||
        widget->inherits("QWorkspaceTitleBar"))
       widget->installEventFilter(this);
@@ -1340,6 +832,19 @@ bool OxygenStyle::eventFilter( QObject *object, QEvent *ev )
 {
    switch (ev->type())
    {
+//    case QEvent::Paint:
+//       {
+//          QWidget *sw = qobject_cast<QWidget*>(object);
+//          if (!(sw && sw->inherits("QStackedWidget") && _IsTabStack(sw)))
+//             return false;
+//          QMap<QWidget*, TabAnimInfo>::const_iterator i = tabwidgets.find(sw->parentWidget());
+//          if (i == tabwidgets.end() || !i.value().animStep)
+//             return false;
+//          QPainter p (sw);
+//          p.drawPixmap(0,0, i.value().tabPix[2]);
+//          p.end();
+//          return true;
+//       }
    case QEvent::MouseButtonPress:
       {
          QMouseEvent *mev = (QMouseEvent*)ev;
@@ -1377,6 +882,13 @@ bool OxygenStyle::eventFilter( QObject *object, QEvent *ev )
          progressbars[(QWidget*)object] = 0;
          return false;
       }
+      if (qobject_cast<QTabWidget*>(object))
+      {
+         tabwidgets[(QTabWidget*)object] =
+            new TabAnimInfo((QTabWidget*)object, ((QTabWidget*)object)->currentIndex());
+         return false;
+      }
+      return false;
    }
 #define HANDLE_SCROLL_AREA_EVENT \
          if (area->horizontalScrollBar()->isVisible())\
@@ -1422,7 +934,6 @@ bool OxygenStyle::eventFilter( QObject *object, QEvent *ev )
       return false;
    }
 }
-
 
 void OxygenStyle::unPolish( QApplication *app )
 {

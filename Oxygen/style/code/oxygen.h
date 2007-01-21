@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Thomas Lübking                                  *
+ *   Copyright (C) 2006-2007 by Thomas Lübking                             *
  *   thomas.luebking@web.de                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -28,6 +28,7 @@ class QPushButton;
 class QScrollBar;
 class QTabBar;
 class DynamicBrush;
+class QPaintEvent;
 
 #include <QHash>
 #include <QMap>
@@ -36,66 +37,18 @@ class DynamicBrush;
 #include <QRegion>
 #include <X11/Xlib.h>
 #include <fixx11h.h>
+#include "tileset.h"
 
 namespace Oxygen {
 
 enum BGMode { Plain = 0, Scanlines, BrushedMetal, FullPix };
 enum Acceleration { None = 0, XRender, OpenGL };
 
-class TileSet
-{
-public:
-   enum Tile {TopLeft = 0, TopRight, BtmLeft, BtmRight, TopMid, MidLeft, MidRight, BtmMid, Center };
-   TileSet(const QPixmap &pix, int xOff, int yOff, int width, int height,
-           int top, int bottom, int left, int right, QRegion *topLeft = 0, QRegion *topRight = 0, QRegion *btmLeft = 0, QRegion *btmRight = 0);
-   TileSet(){for (int i=0; i < 4; i++) border[i] = 0L;}
-   ~TileSet()
-   {
-//       for (int i=0; i < 4; i++)
-//          if (border[i]) delete border[i];
-   }
-   inline const QPixmap &pixmap( Tile pos ) const
-   {
-      return ( pixmaps[ ( int ) pos ] );
-   }
-   inline const QBitmap &mask( Tile pos ) const
-   {
-      return ( masks[ ( int ) pos ] );
-   }
-   inline int width(Tile pos) const
-   {
-      return pixmaps[pos].width();
-   }
-   inline int height(Tile pos) const
-   {
-      return pixmaps[pos].height();
-   }
-   inline QRegion *corner(Tile Pos) const
-   {
-      if (Pos < TopMid)
-         return border[Pos];
-      else
-         return 0L;
-   }
-   const QRegion outerRegion(const QRect &r) const;
-   const QRegion innerRegion(const QRect &r) const;
-private:
-   QPixmap pixmaps[ 9 ];
-   QBitmap masks[9];
-   QRegion *border[4];
-   int size[4];
-};
-
-
-
 class EventKiller : public QObject 
 {
    Q_OBJECT
 public:
-   bool eventFilter( QObject *, QEvent *)
-   {
-      return true;
-   }
+   bool eventFilter( QObject *object, QEvent *event);
 };
 
 class OxygenStyle;
@@ -111,6 +64,20 @@ public:
    int timerId;
    int index;
    bool fadeIn;
+};
+
+class TabAnimInfo : public QObject
+{
+   Q_OBJECT
+public:
+   TabAnimInfo(QObject *parent = 0, int currentTab = -1) :
+      QObject(parent), lastTab(currentTab), animStep(0){}
+protected:
+   bool eventFilter( QObject* object, QEvent* event );
+public:
+   QList < QWidget* > autofillingWidgets;
+   int lastTab, animStep;
+   QPixmap tabPix[3];
 };
 
 enum Orientation3D {Sunken = 0, Relief, Raised};
@@ -196,8 +163,12 @@ signals:
 private slots:
    void fakeMouse();
    void handleIPC(int, int);
+   /** animation */
    void progressbarDestroyed(QObject*);
    void updateProgressbars();
+   void tabChanged(int index);
+   void updateTabAnimation();
+   void tabDestroyed(QObject* obj);
 
 private:
    OxygenStyle( const OxygenStyle & );
@@ -229,12 +200,10 @@ private:
 
    
    //anmiated progressbars
-//    QMap<QWidget*, uint> progressbars;
    uint progressShift;
    bool anmiationUpdate;
 
    // button fading
-   
    typedef QMap<uint, ButtonFadeInfo> ButtonFades;
    ButtonFades bfi;
    typedef QMap<QRgb, QRgb*> FadeColors;
