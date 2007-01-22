@@ -1,7 +1,9 @@
 #!/bin/bash
 
 sizes="128x128 64x64 48x48 32x32 22x22 16x16"
-folders="actions apps devices filesystems mimetypes"
+sizes2="32x32 22x22 16x16"
+folders="apps devices filesystems mimetypes"
+folders2="actions apps devices filesystems mimetypes"
 smallexport="yes"
 smallsizes="16 22"
 date=`date '+%F-%H-%M'`
@@ -16,7 +18,14 @@ for size in $sizes; do
   done
 done
 
-echo "WRNING: This version of the script requires much more resources and gives better results"
+for size in $sizes2; do
+  prefix="../oxygen/$size";
+  mkdir -p $prefix/actions
+#    echo "$prefix/$folder created"
+  done
+
+
+echo "WARNING: This version of the script requires much more resources but gives much better results"
 echo "-----------------------------"
 echo "Exporting to 128..." # and smaller (if available)"
 
@@ -39,19 +48,19 @@ for folder in $folders; do
   done
 done
 echo "Exporting to 32..."
-for folder in $folders; do
+for folder in $folders2; do
   for icon in $(ls $folder/*.svg); do
     inkscape --without-gui --export-png="../oxygen/32x32/"$( echo $icon | cut -d . -f -1 ).png --export-dpi=72 --export-background-opacity=0 --export-width=32 --export-height=32 $icon > /dev/null
   done
 done
 echo "Exporting to 22..."
-for folder in $folders; do
+for folder in $folders2; do
   for icon in $(ls $folder/*.svg); do
     inkscape --without-gui --export-png="../oxygen/22x22/"$( echo $icon | cut -d . -f -1 ).png --export-dpi=72 --export-background-opacity=0 --export-width=22 --export-height=22 $icon > /dev/null
   done
 done
 echo "Exporting to 16..."
-for folder in $folders; do
+for folder in $folders2; do
   for icon in $(ls $folder/*.svg); do
     inkscape --without-gui --export-png="../oxygen/16x16/"$( echo $icon | cut -d . -f -1 ).png --export-dpi=72 --export-background-opacity=0 --export-width=16 --export-height=16 $icon > /dev/null
   done
