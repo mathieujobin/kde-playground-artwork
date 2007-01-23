@@ -793,7 +793,7 @@ void OxygenStyle::polish( QWidget * widget)
                p.drawLine( 0, i, 63, i );
          }
          QBrush brush( c, *_scanlines[1] );
-         pal.setBrush( QColorGroup::Window, brush );
+         pal.setBrush( QPalette::Window, brush );
          widget->setPalette(pal);
       }
    }
