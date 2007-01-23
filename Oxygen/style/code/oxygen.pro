@@ -1,6 +1,6 @@
-HEADERS = oxygen.h dynamicbrush.h \
+HEADERS = oxrender.h oxygen.h dynamicbrush.h \
           tileset.h debug.h
-SOURCES = oxygen.cpp tileset.cpp stylehint.cpp \
+SOURCES = oxrender.cpp oxygen.cpp tileset.cpp stylehint.cpp \
           sizefromcontents.cpp qsubcmetrics.cpp \
           pixelmetric.cpp stdpix.cpp \
           drawcomplexcontrol.cpp drawcontrol.cpp \

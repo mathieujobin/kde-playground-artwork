@@ -32,7 +32,7 @@
 #include <GL/glut.h>
 
 #include <X11/Xatom.h>
-#include <X11/extensions/Xrender.h>
+#include "oxrender.h"
 
 #include "dynamicbrush.h"
 
@@ -387,22 +387,24 @@ void DynamicBrush::updateBrushRender()
 //                                      int nstops);
    QColor c = QApplication::palette().color(QPalette::Window);
    QPixmap qPix(_size);
-#if 0
-   XLinearGradient lg1a;
-   XRenderColor cs[2];
-   cs[0].red = c.red(); cs[0].green = c.green();
-   cs[0].blue = c.blue(); cs[0].alpha = c.alpha();
-   QColor tmp = c.dark(110);
-   cs[1].red = tmp.red(); cs[1].green = tmp.green();
-   cs[1].blue = tmp.blue(); cs[1].alpha = tmp.alpha();
-   lg1a.p1.x = 0; lg1a.p1.y = 0; lg1a.p2.x = 0; lg1a.p2.y = _size.height();
-   XFixed stops[4]; stops[0] = stops[1] = stops[2] = 0; stops[3] = _size.height();
-   XRenderCreateLinearGradient (QX11Info::display(), &lg1a, stops, cs, 4);
+#if 1
+   Display *dpy = QX11Info::display();
+   OXLinearGradient(lg1, 0,0,qPix.width(),qPix.height());
+   XRenderColor cs[3];
+   OXRender::setColor(cs[0], /*c*/Qt::red);
+   OXRender::setColor(cs[1], /*c.dark(110)*/Qt::white);
+   OXRender::setColor(cs[2], Qt::blue);
+   XFixed stops[3] = {0,0,1};
+   Picture lgp = XRenderCreateLinearGradient(dpy, &lg1, stops, cs, 3);
+//    XRenderPictureAttributes pa; pa.repeat = True;
+//    XRenderChangePicture (dpy, lgp, CPRepeat, &pa);
+   XRenderComposite (dpy, PictOpSrc, lgp, None, qPix.x11PictureHandle(),
+                     0, 0, 0, 0, 0, 0, qPix.width(), qPix.height());
+   XRenderFreePicture(dpy, lgp);
 #else
    QLinearGradient lg1(QPoint(0,0), QPoint(0, _size.height()));
    lg1.setColorAt(0, c);
    lg1.setColorAt(1, c.dark(110));
-#endif
    QLinearGradient lg2(QPoint(_size.width()/2, _size.height()/2), QPoint(_size.width(), _size.height()));
    QColor ct = c; ct.setAlpha(0);
    lg2.setColorAt(0, ct);
@@ -421,6 +423,7 @@ void DynamicBrush::updateBrushRender()
    p.setBrush(lg2);
    p.drawPolygon(points, 3);
    p.end();
+#endif
    SETBACKGROUND(qPix);
 }
 

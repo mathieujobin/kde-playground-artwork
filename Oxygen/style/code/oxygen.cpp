@@ -233,7 +233,7 @@ OxygenStyle::OxygenStyle() : QCommonStyle(), progressShift(0), anmiationUpdate(f
    QSettings settings("Oxygen", "Style");
    settings.beginGroup("Style");
    
-   config.acceleration = (Acceleration) settings.readNumEntry("Acceleration", None);
+   config.acceleration = (Acceleration) settings.value("Acceleration", None).toInt();
    config.gradientIntensity = settings.value("GradientIntensity",70).toInt();
    
    config.inversePopups = settings.value("InversePopups",false).toBool();
@@ -254,7 +254,7 @@ OxygenStyle::OxygenStyle() : QCommonStyle(), progressShift(0), anmiationUpdate(f
    
    config.tabwidget3D = (Orientation3D)(settings.value("TabWidget3D", 1).toInt());
    
-   config.bgMode = (BGMode) settings.readNumEntry("BackgroundMode", FullPix);
+   config.bgMode = (BGMode) settings.value("BackgroundMode", FullPix).toInt();
    settings.endGroup();
 
    
@@ -666,7 +666,7 @@ void OxygenStyle::polish( QPalette &pal )
          p.end();
       }
       QBrush brush( c, *_scanlines[0] );
-      pal.setBrush( QColorGroup::Background, brush );
+      pal.setBrush( QPalette::Background, brush );
       break;
    }
    case Plain:

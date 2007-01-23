@@ -19,7 +19,8 @@
  ***************************************************************************/
 
 #include <QtDebug>
-#include <private/qwidget_p.h>
+#include "oxrender.h"
+// #include <private/qwidget_p.h>
 
 bool TabAnimInfo::eventFilter( QObject* object, QEvent* event )
 {
@@ -30,7 +31,6 @@ bool TabAnimInfo::eventFilter( QObject* object, QEvent* event )
    p.end();
    return true;
 }
-
 
 // QPixmap::grabWidget(.) currently fails on the background offset,
 // so we use our own implementation
@@ -97,39 +97,6 @@ QPixmap grabWidget(QWidget * root)
    }
    
    return pix;
-}
-
-static Window root = RootWindow (QX11Info::display(), DefaultScreen (QX11Info::display()));
-
-bool XRenderBlend(const QPixmap &upper, const QPixmap &lower, double opacity = 0.5)
-{
-   Display *dpy = QX11Info::display();
-   
-   // create alphapix
-   Pixmap pixmap;
-   Picture alpha;
-   XRenderPictureAttributes pa;
-   XRenderColor c;
-   pixmap = XCreatePixmap (dpy, root, 1, 1, 32);
-   if (!pixmap)
-      return false;
-   pa.repeat = True;
-   alpha = XRenderCreatePicture (dpy, pixmap, XRenderFindStandardFormat (dpy, PictStandardARGB32), CPRepeat, &pa);
-   if (!alpha)
-   {
-      XFreePixmap (dpy, pixmap);
-      return false;
-   }
-   c.alpha = opacity * 0xffff;
-   c.red = 0;//r * 0xffff;
-   c.green = 0;//g * 0xffff;
-   c.blue = 0;//b * 0xffff;
-   XRenderFillRectangle (dpy, PictOpSrc, alpha, &c, 0, 0, 1, 1);
-   XFreePixmap (dpy, pixmap);
-   //done, alpha is now as expected
-   
-   XRenderComposite (dpy, PictOpOver, upper.x11PictureHandle(), alpha, lower.x11PictureHandle(), 0, 0, 0, 0, 0, 0, upper.width(), upper.height());
-   return true;
 }
 
 static QMap<QWidget*, uint> progressbars;
@@ -234,7 +201,7 @@ void OxygenStyle::tabChanged(int index)
    
    tai->animStep = 6;
    
-   XRenderBlend(tai->tabPix[1], tai->tabPix[2], 0.1666);
+   OXRender::blend(tai->tabPix[1], tai->tabPix[2], 0.1666);
    ctw->parentWidget()->installEventFilter(tai);
    _BLOCKEVENTS_(ctw);
    QList<QWidget*> widgets = ctw->findChildren<QWidget*>();
@@ -289,7 +256,7 @@ void OxygenStyle::updateTabAnimation()
       }
       ++activeTabs;
       tai->tabPix[2] = tai->tabPix[0];
-      XRenderBlend(tai->tabPix[1], tai->tabPix[2], 1.1666-0.1666*tai->animStep);
+      OXRender::blend(tai->tabPix[1], tai->tabPix[2], 1.1666-0.1666*tai->animStep);
       ctw->parentWidget()->repaint();
    }
    if (!activeTabs && progressbars.count() == 0)
