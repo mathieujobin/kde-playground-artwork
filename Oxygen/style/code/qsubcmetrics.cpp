@@ -22,6 +22,7 @@
 #include <QTabBar>
 #include <QStyleOption>
 #include <QStyleOptionTab>
+#include <limits.h>
 #include "oxygen.h"
 
 using namespace Oxygen;
