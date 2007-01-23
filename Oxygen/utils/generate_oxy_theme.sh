@@ -42,7 +42,7 @@ done
 cd $curdir
 
 #export small versions if available
-if [ "$smallexport" == "yes" ]; then
+if [ "$smallexport" = "yes" ]; then
 echo "-----------------------------"
 echo "Exporting special small versions"
   for smallsize in $smallsizes; do
