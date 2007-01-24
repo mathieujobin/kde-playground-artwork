@@ -177,6 +177,7 @@ void OxygenStyle::progressbarDestroyed(QObject* obj)
 // --- TabWidgets --------------------
 void OxygenStyle::tabChanged(int index)
 {
+   if (config.tabTransition == Jump) return; // ugly nothing ;)
    QTabWidget* tw = (QTabWidget*)sender();
    QMap<QTabWidget*, TabAnimInfo*>::iterator i = tabwidgets.find(tw);
    if (i == tabwidgets.end()) // this tab isn't handled for some reason?
@@ -200,16 +201,116 @@ void OxygenStyle::tabChanged(int index)
    tai->tabPix[2] = tai->tabPix[0];
    
    tai->animStep = 6;
-#if HAVE_RENDER
-   OXRender::blend(tai->tabPix[1], tai->tabPix[2], 0.1666);
-#else
+   // TAB Transitions, NOTE, I'm using a bit X11 code here as this prevents deep pixmap
+   // copies that are sometimes not necessary
+   // TODO make an - ifdef'd ? - qt version for other platforms
+   switch (config.tabTransition)
+   {
+   case CrossFade:
+      OXRender::blend(tai->tabPix[1], tai->tabPix[2], 0.1666);
+      break;
+   case SlideIn:
+   {
+      //TODO handle different bar positions
+      Display *dpy = QX11Info::display();
+      GC gc = XCreateGC( dpy, tai->tabPix[2].handle(), 0, 0 );
+      XCopyArea( dpy, tai->tabPix[1].handle(), tai->tabPix[2].handle(), gc,
+                  0, 6*tai->tabPix[1].height()/7,
+                 tai->tabPix[1].width(), tai->tabPix[1].height()/7, 0, 0 );
+      XFreeGC ( dpy , gc );
+      break;
+   }
+   case SlideOut:
+   {
+      tai->tabPix[2] = tai->tabPix[1];
+      //TODO handle different bar positions
+      QPainter p(&tai->tabPix[2]);
+      p.drawPixmap(0,0,tai->tabPix[0],0,tai->tabPix[0].height()/7,tai->tabPix[0].width(),6*tai->tabPix[0].height()/7);
+      break;
+   }
+   case RollOut:
+   {
+      Display *dpy = QX11Info::display();
+      GC gc = XCreateGC( dpy, tai->tabPix[2].handle(), 0, 0 );
+      int h = tai->tabPix[1].height()/7;
+      int y = (tai->tabPix[1].height()-h)/2;
+      XCopyArea( dpy, tai->tabPix[1].handle(), tai->tabPix[2].handle(), gc,
+                 0, y, tai->tabPix[1].width(), h, 0, y );
+      XFreeGC ( dpy , gc );
+      break;
+   }
+   case RollIn:
+   {
+      Display *dpy = QX11Info::display();
+      GC gc = XCreateGC( dpy, tai->tabPix[2].handle(), 0, 0 );
+      int h = tai->tabPix[1].height()/14;
+      XCopyArea( dpy, tai->tabPix[1].handle(), tai->tabPix[2].handle(), gc,
+                 0, 0, tai->tabPix[1].width(), h, 0, 0 );
+      XCopyArea( dpy, tai->tabPix[1].handle(), tai->tabPix[2].handle(), gc,
+                 0, tai->tabPix[1].height()-h, tai->tabPix[1].width(), h,
+                 0, tai->tabPix[1].height()-h );
+      XFreeGC ( dpy , gc );
+      break;
+   }
+   case CloseVertically:
+   {
+      Display *dpy = QX11Info::display();
+      GC gc = XCreateGC( dpy, tai->tabPix[2].handle(), 0, 0 );
+      int h = tai->tabPix[1].height()/14;
+      XCopyArea( dpy, tai->tabPix[1].handle(), tai->tabPix[2].handle(), gc,
+                 0, tai->tabPix[1].height()/2-h, tai->tabPix[1].width(), h, 0, 0 );
+      XCopyArea( dpy, tai->tabPix[1].handle(), tai->tabPix[2].handle(), gc,
+                 0, tai->tabPix[1].height()/2, tai->tabPix[1].width(), h,
+                 0, tai->tabPix[1].height()-h );
+      XFreeGC ( dpy , gc );
+      break;
+   }
+   case OpenVertically:
+   {
+      tai->tabPix[2] = tai->tabPix[1];
+      QPainter p(&tai->tabPix[2]);
+      int h = 6*tai->tabPix[0].height()/14;
+      p.drawPixmap(0,0,tai->tabPix[0],0,tai->tabPix[0].height()/2-h,
+                   tai->tabPix[0].width(),h);
+      p.drawPixmap(0,tai->tabPix[0].height()-h,tai->tabPix[0],
+                   0,tai->tabPix[0].height()/2,tai->tabPix[0].width(),h);
+      break;
+   }
+   case CloseHorizontally:
+   {
+      Display *dpy = QX11Info::display();
+      GC gc = XCreateGC( dpy, tai->tabPix[2].handle(), 0, 0 );
+      int w = tai->tabPix[1].width()/14;
+      XCopyArea( dpy, tai->tabPix[1].handle(), tai->tabPix[2].handle(), gc,
+                 tai->tabPix[1].width()/2-w, 0, w, tai->tabPix[1].height(), 0, 0 );
+      XCopyArea( dpy, tai->tabPix[1].handle(), tai->tabPix[2].handle(), gc,
+                 tai->tabPix[1].width()/2, 0, w, tai->tabPix[1].height(),
+                 tai->tabPix[1].width()-w, 0 );
+      XFreeGC ( dpy , gc );
+      break;
+   }
+   case OpenHorizontally:
+   {
+      tai->tabPix[2] = tai->tabPix[1];
+      QPainter p(&tai->tabPix[2]);
+      int w = 6*tai->tabPix[0].width()/14;
+      p.drawPixmap(0,0,tai->tabPix[0],tai->tabPix[0].width()/2-w,0,
+                   w,tai->tabPix[0].height());
+      p.drawPixmap(tai->tabPix[0].width()-w,0,tai->tabPix[0],
+                   tai->tabPix[0].width()/2,0,w,tai->tabPix[0].height());
+      break;
+   }
+   case ScanlineBlend:
+   default:
+   {
       Display *dpy = QX11Info::display();
       GC gc = XCreateGC( dpy, tai->tabPix[2].handle(), 0, 0 );
       for (int i = 6; i < tai->tabPix[2].height(); i+=6)
          XCopyArea( dpy, tai->tabPix[1].handle(), tai->tabPix[2].handle(), gc,
                      0, i, tai->tabPix[1].width(), 1, 0, i );
       XFreeGC ( dpy , gc );
-#endif
+   }
+   }
    ctw->parentWidget()->installEventFilter(tai);
    _BLOCKEVENTS_(ctw);
    QList<QWidget*> widgets = ctw->findChildren<QWidget*>();
@@ -247,7 +348,7 @@ void OxygenStyle::updateTabAnimation()
          ctw->parentWidget()->removeEventFilter(tai);
          _UNBLOCKEVENTS_(ctw);
          widgets = ctw->findChildren<QWidget*>();
-         ctw->update();
+//          ctw->repaint();
          foreach(widget, widgets)
          {
             index = tai->autofillingWidgets.indexOf(widget);
@@ -257,22 +358,121 @@ void OxygenStyle::updateTabAnimation()
                widget->setAutoFillBackground(true);
             }
             _UNBLOCKEVENTS_(widget);
-            widget->update();
+            widget->update(); //if necessary
          }
+         ctw->repaint(); //asap
          tai->autofillingWidgets.clear();
          continue;
       }
       ++activeTabs;
-#if HAVE_RENDER
-      OXRender::blend(tai->tabPix[1], tai->tabPix[2], 1.1666-0.1666*tai->animStep);
-#else
+      switch (config.tabTransition)
+      {
+      case CrossFade:
+         OXRender::blend(tai->tabPix[1], tai->tabPix[2], 1.1666-0.1666*tai->animStep);
+         break;
+      case SlideIn:
+      {
+         //TODO handle different bar positions
+         Display *dpy = QX11Info::display();
+         GC gc = XCreateGC( dpy, tai->tabPix[2].handle(), 0, 0 );
+         XCopyArea( dpy, tai->tabPix[1].handle(), tai->tabPix[2].handle(), gc,
+                     0, tai->animStep*tai->tabPix[1].height()/7,
+                    tai->tabPix[1].width(), (7-tai->animStep)*tai->tabPix[1].height()/7,
+                    0, 0 );
+         XFreeGC ( dpy , gc );
+         break;
+      }
+      case SlideOut:
+      {
+         tai->tabPix[2] = tai->tabPix[1];
+         //TODO handle different bar positions
+         QPainter p(&tai->tabPix[2]);
+         p.drawPixmap(0,0,tai->tabPix[0],0,(7-tai->animStep)*tai->tabPix[0].height()/7,tai->tabPix[0].width(),tai->animStep*tai->tabPix[0].height()/7);
+         break;
+      }
+      case RollOut:
+      {
+         Display *dpy = QX11Info::display();
+         GC gc = XCreateGC( dpy, tai->tabPix[2].handle(), 0, 0 );
+         int h = (7-tai->animStep)*tai->tabPix[1].height()/7;
+         int y = (tai->tabPix[1].height()-h)/2;
+         XCopyArea( dpy, tai->tabPix[1].handle(), tai->tabPix[2].handle(), gc,
+                     0, y, tai->tabPix[1].width(), h, 0, y );
+         XFreeGC ( dpy , gc );
+         break;
+      }
+      case RollIn:
+      {
+         Display *dpy = QX11Info::display();
+         GC gc = XCreateGC( dpy, tai->tabPix[2].handle(), 0, 0 );
+         int h = (7-tai->animStep)*tai->tabPix[1].height()/14;
+         XCopyArea( dpy, tai->tabPix[1].handle(), tai->tabPix[2].handle(), gc,
+                  0, 0, tai->tabPix[1].width(), h, 0, 0 );
+         XCopyArea( dpy, tai->tabPix[1].handle(), tai->tabPix[2].handle(), gc,
+                  0, tai->tabPix[1].height()-h, tai->tabPix[1].width(), h,
+                  0, tai->tabPix[1].height()-h );
+         XFreeGC ( dpy , gc );
+         break;
+      }
+      case CloseVertically:
+      {
+         Display *dpy = QX11Info::display();
+         GC gc = XCreateGC( dpy, tai->tabPix[2].handle(), 0, 0 );
+         int h = (7-tai->animStep)*tai->tabPix[1].height()/14;
+         XCopyArea( dpy, tai->tabPix[1].handle(), tai->tabPix[2].handle(), gc,
+                  0, tai->tabPix[1].height()/2-h, tai->tabPix[1].width(), h, 0, 0 );
+         XCopyArea( dpy, tai->tabPix[1].handle(), tai->tabPix[2].handle(), gc,
+                  0, tai->tabPix[1].height()/2, tai->tabPix[1].width(), h,
+                  0, tai->tabPix[1].height()-h );
+         XFreeGC ( dpy , gc );
+         break;
+      }
+      case OpenVertically:
+      {
+         tai->tabPix[2] = tai->tabPix[1];
+         QPainter p(&tai->tabPix[2]);
+         int h = tai->animStep*tai->tabPix[0].height()/14;
+         p.drawPixmap(0,0,tai->tabPix[0],0,tai->tabPix[0].height()/2-h,
+                     tai->tabPix[0].width(),h);
+         p.drawPixmap(0,tai->tabPix[0].height()-h,tai->tabPix[0],
+                     0,tai->tabPix[0].height()/2,tai->tabPix[0].width(),h);
+         break;
+      }
+      case CloseHorizontally:
+      {
+         Display *dpy = QX11Info::display();
+         GC gc = XCreateGC( dpy, tai->tabPix[2].handle(), 0, 0 );
+         int w = (7-tai->animStep)*tai->tabPix[1].width()/14;
+         XCopyArea( dpy, tai->tabPix[1].handle(), tai->tabPix[2].handle(), gc,
+                  tai->tabPix[1].width()/2-w, 0, w, tai->tabPix[1].height(), 0, 0 );
+         XCopyArea( dpy, tai->tabPix[1].handle(), tai->tabPix[2].handle(), gc,
+                  tai->tabPix[1].width()/2, 0, w, tai->tabPix[1].height(),
+                  tai->tabPix[1].width()-w, 0 );
+         XFreeGC ( dpy , gc );
+         break;
+      }
+      case OpenHorizontally:
+      {
+         tai->tabPix[2] = tai->tabPix[1];
+         QPainter p(&tai->tabPix[2]);
+         int w = tai->animStep*tai->tabPix[0].width()/14;
+         p.drawPixmap(0,0,tai->tabPix[0],tai->tabPix[0].width()/2-w,0,
+                     w,tai->tabPix[0].height());
+         p.drawPixmap(tai->tabPix[0].width()-w,0,tai->tabPix[0],
+                     tai->tabPix[0].width()/2,0,w,tai->tabPix[0].height());
+         break;
+      }
+      case ScanlineBlend:
+      default:
+      {
       Display *dpy = QX11Info::display();
       GC gc = XCreateGC( dpy, tai->tabPix[2].handle(), 0, 0 );
       for (int i = tai->animStep; i < tai->tabPix[2].height(); i+=6)
          XCopyArea( dpy, tai->tabPix[1].handle(), tai->tabPix[2].handle(), gc,
                      0, i, tai->tabPix[1].width(), 1, 0, i );
       XFreeGC ( dpy , gc );
-#endif
+      }
+      }
       ctw->parentWidget()->repaint();
    }
    if (!activeTabs && progressbars.count() == 0)

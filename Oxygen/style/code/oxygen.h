@@ -43,6 +43,7 @@ namespace Oxygen {
 
 enum BGMode { Plain = 0, Scanlines, BrushedMetal, FullPix };
 enum Acceleration { None = 0, XRender, OpenGL };
+enum TabTransition {Jump = 0, CrossFade, ScanlineBlend, SlideIn, SlideOut, RollIn, RollOut, OpenVertically, CloseVertically, OpenHorizontally, CloseHorizontally };
 
 class EventKiller : public QObject 
 {
@@ -98,6 +99,7 @@ typedef struct Config
    QPalette::ColorRole tabTextColor;
    BGMode bgMode;
    Acceleration acceleration;
+   TabTransition tabTransition;
    Oxygen::Orientation3D tabwidget3D;
    int gradientIntensity;
    int fullPixMode;

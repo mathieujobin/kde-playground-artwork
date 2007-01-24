@@ -136,7 +136,7 @@ using namespace Oxygen;
 Config config;
 
 /** The event killer*/
-bool EventKiller::eventFilter( QObject *object, QEvent *event)
+bool EventKiller::eventFilter( QObject *, QEvent *)
 {
    return true;
 }
@@ -255,6 +255,8 @@ OxygenStyle::OxygenStyle() : QCommonStyle(), progressShift(0), anmiationUpdate(f
    config.tabwidget3D = (Orientation3D)(settings.value("TabWidget3D", 1).toInt());
    
    config.bgMode = (BGMode) settings.value("BackgroundMode", FullPix).toInt();
+   
+   config.tabTransition = (TabTransition) settings.value("TabTransition", ScanlineBlend).toInt();
    settings.endGroup();
 
    
@@ -359,7 +361,7 @@ OxygenStyle::~OxygenStyle()
 }
 
 /**handles updates to the bg pixmap*/
-void OxygenStyle::handleIPC(int id, int data)
+void OxygenStyle::handleIPC(int /*id*/, int /*data*/)
 {
 #if 0
    if (id != 32 || data != 151616) //TODO: use custom ID as soon as kapp supports random values on this
@@ -935,7 +937,7 @@ bool OxygenStyle::eventFilter( QObject *object, QEvent *ev )
    }
 }
 
-void OxygenStyle::unPolish( QApplication *app )
+void OxygenStyle::unPolish( QApplication */*app */)
 {
    if (timer)
       timer->stop();
