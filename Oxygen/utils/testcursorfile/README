@@ -1,0 +1,39 @@
+This is a utility that can be used to test a cursor file.
+Supported image types are Xcursor files, PNG images, and SVG images.
+
+Usage:
+./testcursorfile <svg|png|xcur> [size]
+
+The size argument has no affect with PNG files.
+
+With SVG files, it specifies the size at which the SVG image will
+be rendered.
+
+For Xcursor files, the cursor with the size closest to the specified
+size will be loaded.
+
+If the size argument is omitted, the optimal size for your monitor
+will be computed automatically by the Xcursor library, using the
+formula: DPI * 16 / 72
+The logic is that the original 16x16 X11 cursors were designed for
+72 DPI displays.
+
+Animations are currently only supported for Xcursor files.
+For PNG and SVG files, the top-left corner is always used as the
+cursor hotspot.
+
+To stop testing the cursor, click anywhere on the screen.
+
+Examples
+========
+
+Testing the left_ptr cursor at 32x32:
+./testcursorfile left_ptr.svg 32
+
+Testing a generated PNG image:
+./testcursorfile left_ptr.png
+
+Testing the size 24 cursor in a generated Xcursor file:
+./testcursorfile left_ptr 24
+
+

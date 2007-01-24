@@ -1,0 +1,4 @@
+#define round_lr_width 5
+#define round_lr_height 5
+static unsigned char round_lr_bits[] = {
+   0x18, 0x1c, 0x1e, 0x1f, 0x1f };
