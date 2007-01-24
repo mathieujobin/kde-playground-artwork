@@ -200,8 +200,16 @@ void OxygenStyle::tabChanged(int index)
    tai->tabPix[2] = tai->tabPix[0];
    
    tai->animStep = 6;
-   
+#if HAVE_RENDER
    OXRender::blend(tai->tabPix[1], tai->tabPix[2], 0.1666);
+#else
+      Display *dpy = QX11Info::display();
+      GC gc = XCreateGC( dpy, tai->tabPix[2].handle(), 0, 0 );
+      for (int i = 6; i < tai->tabPix[2].height(); i+=6)
+         XCopyArea( dpy, tai->tabPix[1].handle(), tai->tabPix[2].handle(), gc,
+                     0, i, tai->tabPix[1].width(), 1, 0, i );
+      XFreeGC ( dpy , gc );
+#endif
    ctw->parentWidget()->installEventFilter(tai);
    _BLOCKEVENTS_(ctw);
    QList<QWidget*> widgets = ctw->findChildren<QWidget*>();
@@ -255,8 +263,16 @@ void OxygenStyle::updateTabAnimation()
          continue;
       }
       ++activeTabs;
-      tai->tabPix[2] = tai->tabPix[0];
+#if HAVE_RENDER
       OXRender::blend(tai->tabPix[1], tai->tabPix[2], 1.1666-0.1666*tai->animStep);
+#else
+      Display *dpy = QX11Info::display();
+      GC gc = XCreateGC( dpy, tai->tabPix[2].handle(), 0, 0 );
+      for (int i = tai->animStep; i < tai->tabPix[2].height(); i+=6)
+         XCopyArea( dpy, tai->tabPix[1].handle(), tai->tabPix[2].handle(), gc,
+                     0, i, tai->tabPix[1].width(), 1, 0, i );
+      XFreeGC ( dpy , gc );
+#endif
       ctw->parentWidget()->repaint();
    }
    if (!activeTabs && progressbars.count() == 0)

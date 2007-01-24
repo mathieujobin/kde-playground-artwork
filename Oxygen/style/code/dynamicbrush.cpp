@@ -25,16 +25,20 @@
 #include <QImage>
 #include <QPainter>
 #include <QX11Info>
-// #include <QDebug>
+#include <QDebug>
 
 #define GL_GLEXT_PROTOTYPES
 #include <QGLPixelBuffer>
 #include <GL/glut.h>
 
 #include <X11/Xatom.h>
+#include <cmath>
+
 #include "oxrender.h"
 
 #include "dynamicbrush.h"
+
+// #include "endian.h"
 
 #define SETBACKGROUND(_pix_)\
    const_cast<QBrush*>(&QApplication::palette().brush(QPalette::Active, QPalette::Window))->setTexture(_pix_);\
@@ -59,7 +63,7 @@ static Atom oxygen_isQtWindow = XInternAtom(QX11Info::display(), "OXYGEN_IS_QT_W
 
 void (DynamicBrush::*updateBrush)();
 
-DynamicBrush::DynamicBrush(Mode mode, QObject *parent) : QObject(parent), _mode(mode), _glShadow(0)
+DynamicBrush::DynamicBrush(Mode mode, QObject *parent) : QObject(parent), _mode(mode)
 {
    _timer = new QTimer(this);
    connect (_timer, SIGNAL(timeout()), this, SLOT(wipeBackground()));
@@ -67,6 +71,7 @@ DynamicBrush::DynamicBrush(Mode mode, QObject *parent) : QObject(parent), _mode(
    {
    case Tiled: updateBrush = &DynamicBrush::updateBrushTiled; break;
    case XRender: updateBrush = &DynamicBrush::updateBrushRender; break;
+   case QtGradient: updateBrush = &DynamicBrush::updateBrushQt; break;
    case OpenGL: updateBrush = &DynamicBrush::updateBrushGL; break;
    case Tiled2: updateBrush = &DynamicBrush::updateBrushEdMetal; break;
    }
@@ -107,9 +112,9 @@ DynamicBrush::DynamicBrush(Pixmap pixmap, Pixmap shadow, int bgYoffset, QObject 
       destG = CLAMP(destG, 0, 255);\
       destB = CLAMP(destB, 0, 255)
 
-static QPixmap *tint(const QImage &img, const QColor& c)
+static QPixmap tint(const QImage &img, const QColor& c)
 {
-   QImage *dest = new QImage( img.width(), img.height(), 32, 0 );
+   QImage *dest = new QImage( img.size(), QImage::Format_RGB32 );
    unsigned int *data = ( unsigned int * ) img.bits();
    unsigned int *destData = ( unsigned int* ) dest->bits();
    int total = img.width() * img.height();
@@ -128,12 +133,12 @@ static QPixmap *tint(const QImage &img, const QColor& c)
       COLOR_SPACE;
       destData[ current ] = qRgba( destR, destG, destB, qAlpha(data[ current ]) );
    }
-   QPixmap *pix = new QPixmap(*dest);
+   QPixmap pix = QPixmap::fromImage(*dest);
    delete dest;
    return pix;
 }
 
-DynamicBrush::DynamicBrush(const QImage &leftCenter, const QImage &leftTile, QObject *parent) : QObject(parent), _mode(Tiled2), _glShadow(0)
+DynamicBrush::DynamicBrush(const QImage &leftCenter, const QImage &leftTile, QObject *parent) : QObject(parent), _mode(Tiled2)
 {
    _timer = new QTimer(this);
    connect (_timer, SIGNAL(timeout()), this, SLOT(wipeBackground()));
@@ -160,6 +165,7 @@ void DynamicBrush::setMode(Mode mode)
    {
    case Tiled: updateBrush = &DynamicBrush::updateBrushTiled; break;
    case XRender: updateBrush = &DynamicBrush::updateBrushRender; break;
+   case QtGradient: updateBrush = &DynamicBrush::updateBrushQt; break;
    case OpenGL: updateBrush = &DynamicBrush::updateBrushGL; break;
    case Tiled2: updateBrush = &DynamicBrush::updateBrushEdMetal; break;
    }
@@ -267,16 +273,15 @@ void DynamicBrush::updateBrushTiled()
 
 void DynamicBrush::updateBrushEdMetal()
 {
-   if (_glShadow)
-   {
-      delete _glShadow; _glShadow = 0L;
-   }
+   if (!_glShadow.isNull())
+      _glShadow = QPixmap();
+   
    Display *dpy = QX11Info::display();
    int width = _size.width();
-   int height = _center[0][0]->height();
-   float factor = MIN(1.0, ((float)width)/(2*_tile[0][0]->width()+2*_center[0][0]->width()));
-   int wt = (int) (factor * _tile[0][0]->width());
-   int wc = (int) (factor * _center[0][0]->width());
+   int height = _center[0][0].height();
+   float factor = MIN(1.0, ((float)width)/(2*_tile[0][0].width()+2*_center[0][0].width()));
+   int wt = (int) (factor * _tile[0][0].width());
+   int wc = (int) (factor * _center[0][0].width());
    int x = width/2 - wc;
    int i;
    /* we tile this together from the tile and the center images
@@ -288,29 +293,29 @@ void DynamicBrush::updateBrushEdMetal()
    GC gc = XCreateGC( dpy, qPix.handle(), 0, 0 );
    // left tile ==================
    for (i = x-wt; i > -1; i-=wt)
-      XCopyArea( dpy, _tile[0][0]->handle(), qPix.handle(), gc,
+      XCopyArea( dpy, _tile[0][0].handle(), qPix.handle(), gc,
                  0, 0, wt, height, i, 0 );
    if (i != 0)
    {
       i = -i+1;
-      XCopyArea( dpy, _tile[0][0]->handle(), qPix.handle(), gc,
-                  _tile[0][0]->width()-i, 0, i, height, 0, 0 );
+      XCopyArea( dpy, _tile[0][0].handle(), qPix.handle(), gc,
+                  _tile[0][0].width()-i, 0, i, height, 0, 0 );
    }
    
    // left center ==================
-   XCopyArea( dpy, _center[0][0]->handle(), qPix.handle(), gc,
+   XCopyArea( dpy, _center[0][0].handle(), qPix.handle(), gc,
               0, 0, wc, height, x, 0 );
    x += wc;
    // right center ==================
-   XCopyArea( dpy, _center[0][1]->handle(), qPix.handle(), gc,
-              _center[0][1]->width() - wc, 0, wc, height, x, 0 );
+   XCopyArea( dpy, _center[0][1].handle(), qPix.handle(), gc,
+              _center[0][1].width() - wc, 0, wc, height, x, 0 );
    x += wc;
    // right tile ==================
    for (i = x; i < width-wt; i+=wt)
-      XCopyArea( dpy, _tile[0][1]->handle(), qPix.handle(), gc,
+      XCopyArea( dpy, _tile[0][1].handle(), qPix.handle(), gc,
                  0, 0, wt, height, i, 0 );
    if (i != width)
-      XCopyArea( dpy, _tile[0][1]->handle(), qPix.handle(), gc,
+      XCopyArea( dpy, _tile[0][1].handle(), qPix.handle(), gc,
                   0, 0, width-i, height, i, 0 );
    
    XFreeGC ( dpy , gc );
@@ -321,11 +326,18 @@ void DynamicBrush::updateBrushEdMetal()
 
 QPixmap DynamicBrush::glPixmap(const QRect &rect, int darkness)
 {
+   // so we'll use false colors here, avoiding image swap orgies
+# if __BYTE_ORDER == __BIG_ENDIAN // OpenGL talks RGBA; Qt wants ARGB
+#define _COLORS_ &a,&r,&g,&b
+   double r,g,b,a;
+#else // OpenGL talks ABGR; Qt wants ARGB
+#define _COLORS_ &b,&g,&r
    double r,g,b;
+#endif
    if (darkness)
-      QApplication::palette().color(QPalette::Window).dark(100+darkness).getRgbF(&r,&g,&b);
+      QApplication::palette().color(QPalette::Window).dark(100+darkness).getRgbF(_COLORS_);
    else
-      QApplication::palette().color(QPalette::Window).getRgbF(&r,&g,&b);
+      QApplication::palette().color(QPalette::Window).getRgbF(_COLORS_);
    QGLPixelBuffer pbuffer(_size);
    pbuffer.makeCurrent();
    glViewport(0, 0, (GLsizei) _size.width(), (GLsizei) _size.height());
@@ -333,7 +345,9 @@ QPixmap DynamicBrush::glPixmap(const QRect &rect, int darkness)
    glLoadIdentity ();
 //    gluOrtho2D (0.0, 30.0, 30.0, 0.0); //lrbt
    GLfloat fw = 30.0/_size.width(), fh = 30.0/_size.height();
-   gluOrtho2D (rect.x()*fw, rect.right()*fw, rect.bottom()*fh, rect.y()*fh);
+   // the statement is vertically mirrored, as is the buffer to a qimage
+   // we simply avoid a software mirror and paint "mirrored" in gl (no one will see ;)
+   gluOrtho2D (rect.x()*fw, rect.right()*fw, rect.y()*fh, rect.bottom()*fh);
    glMatrixMode(GL_MODELVIEW);
    glClearColor (0.0, 0.0, 0.0, 0.0);
    glShadeModel (GL_SMOOTH);
@@ -369,7 +383,12 @@ QPixmap DynamicBrush::glPixmap(const QRect &rect, int darkness)
       glVertex2f (4.0, 3.0);
       glVertex2f (0.0, 0.0);
    glEnd();
-   return QPixmap::fromImage(pbuffer.toImage());
+//    QImage::Format format = QImage::Format_RGB32;
+//    if (pbuffer.format().alpha())
+//         format = QImage::Format_ARGB32_Premultiplied;
+   QImage img(_size, QImage::Format_RGB32/*format*/);
+   glReadPixels(0, 0, _size.width(), _size.height(), GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
+   return QPixmap::fromImage(img);
 }
 
 void DynamicBrush::updateBrushGL()
@@ -380,28 +399,35 @@ void DynamicBrush::updateBrushGL()
 
 void DynamicBrush::updateBrushRender()
 {
+   QColor c = QApplication::palette().color(QPalette::Window);
+   QPixmap qPix(_size);
+   Display *dpy = QX11Info::display();
+   ColorArray ca = ColorArray() << c << c.dark(110);
+   Picture lgp = OXRender::gradient(QPoint(0,0), QPoint(0,qPix.height()), ca);
+   XRenderComposite (dpy, PictOpSrc, lgp, None, qPix.x11PictureHandle(),
+                     0, 0, 0, 0, 0, 0, qPix.width(), qPix.height());
+   XRenderFreePicture(dpy, lgp);
+   ca.replace(0, QColor(255,255,255,140)); ca.replace(1, QColor(255,255,255,0));
+   float f[2] = {
+         pow(0.5, (float)qPix.height()/qPix.width()),
+         pow(0.5, (float)qPix.width()/qPix.height())};
+   lgp = OXRender::gradient(QPoint(qPix.width(), qPix.height()),
+                            QPoint(qPix.width()*f[0], qPix.height()*f[1]), ca);
+   XRenderComposite (dpy, PictOpOver, lgp, None, qPix.x11PictureHandle(),
+                     0, 0, 0, 0, 0, 0, qPix.width(), qPix.height());
+   XRenderFreePicture(dpy, lgp);
 //    XRenderCreateRadialGradient (Display *dpy,
 //                                      const XRadialGradient *gradient,
 //                                      const XFixed *stops,
 //                                      const XRenderColor *colors,
 //                                      int nstops);
+   SETBACKGROUND(qPix);
+}
+
+void DynamicBrush::updateBrushQt()
+{
    QColor c = QApplication::palette().color(QPalette::Window);
    QPixmap qPix(_size);
-#if 1
-   Display *dpy = QX11Info::display();
-   OXLinearGradient(lg1, 0,0,qPix.width(),qPix.height());
-   XRenderColor cs[3];
-   OXRender::setColor(cs[0], /*c*/Qt::red);
-   OXRender::setColor(cs[1], /*c.dark(110)*/Qt::white);
-   OXRender::setColor(cs[2], Qt::blue);
-   XFixed stops[3] = {0,0,1};
-   Picture lgp = XRenderCreateLinearGradient(dpy, &lg1, stops, cs, 3);
-//    XRenderPictureAttributes pa; pa.repeat = True;
-//    XRenderChangePicture (dpy, lgp, CPRepeat, &pa);
-   XRenderComposite (dpy, PictOpSrc, lgp, None, qPix.x11PictureHandle(),
-                     0, 0, 0, 0, 0, 0, qPix.width(), qPix.height());
-   XRenderFreePicture(dpy, lgp);
-#else
    QLinearGradient lg1(QPoint(0,0), QPoint(0, _size.height()));
    lg1.setColorAt(0, c);
    lg1.setColorAt(1, c.dark(110));
@@ -423,40 +449,40 @@ void DynamicBrush::updateBrushRender()
    p.setBrush(lg2);
    p.drawPolygon(points, 3);
    p.end();
-#endif
    SETBACKGROUND(qPix);
 }
 
 QPixmap DynamicBrush::shadow(const QRect &rect)
 {
-   QPixmap qPix(rect.size());
    switch (_mode)
    {
    case Tiled2:
    {
+      QPixmap qPix(rect.size());
       int width = _size.width();
       int height = rect.height();
-      float factor = MIN(1.0, ((float)width)/(2*_tile[0][0]->width()+2*_center[0][0]->width()));
-      int wt = (int) (factor * _tile[0][0]->width());
-      int wc = (int) (factor * _center[0][0]->width());
+      float factor = MIN(1.0, ((float)width)/(2*_tile[0][0].width()+2*_center[0][0].width()));
+      int wt = (int) (factor * _tile[0][0].width());
+      int wc = (int) (factor * _center[0][0].width());
       int x = width/2 - wc;
       QPainter p(&qPix);
       //left
-      p.drawTiledPixmap(-rect.x(), 0, x, height, *_tile[1][0], x % wt);
+      p.drawTiledPixmap(-rect.x(), 0, x, height, _tile[1][0], x % wt);
       //left center
       x -= rect.x();
-      p.drawTiledPixmap(x, 0, wc, height, *_center[1][0]);
+      p.drawTiledPixmap(x, 0, wc, height, _center[1][0]);
       // right center
       x += wc;
-      p.drawTiledPixmap(x, 0, wc, height, *_center[1][1], _center[1][0]->width()-wc);
+      p.drawTiledPixmap(x, 0, wc, height, _center[1][1], _center[1][0].width()-wc);
       // right
       x += wc;
-      p.drawTiledPixmap(x, 0, rect.right()-x, height, *_tile[1][1]);
+      p.drawTiledPixmap(x, 0, rect.right()-x, height, _tile[1][1]);
       p.end();
-      break;
+      return qPix;
    }
    case Tiled:
    {
+      QPixmap qPix(rect.size());
       Drawable x11d = qPix.handle();
       Display *dpy = QX11Info::display();
       GC gc = XCreateGC( dpy, x11d, 0, 0 );
@@ -525,19 +551,20 @@ QPixmap DynamicBrush::shadow(const QRect &rect)
                      0, y );
       }
       XFreeGC ( dpy , gc );
-      break;
+      return qPix;
    }
    case OpenGL:
-      if (!_glShadow || _lastShadowRect != rect )
+      if (_glShadow.isNull() || _lastShadowRect != rect )
       {
          _lastShadowRect = rect;
-         qPix = glPixmap(rect, 10);
-         _glShadow = new QPixmap(qPix);
+         _glShadow = glPixmap(rect, 10);
       }
-      return *_glShadow;
+      return _glShadow;
+   case QtGradient:
    case XRender:
-      if (!_glShadow || _lastShadowRect != rect )
+      if (_glShadow.isNull() || _lastShadowRect != rect )
       {
+         _glShadow = QPixmap(rect.size());
          _lastShadowRect = rect;
          QColor c = QApplication::palette().color(QPalette::Window).dark(110);
          QLinearGradient lg1(QPoint(0,-rect.y()), QPoint(0, _size.height()-rect.y()));
@@ -548,10 +575,10 @@ QPixmap DynamicBrush::shadow(const QRect &rect)
          lg2.setColorAt(0, ct);
          ct.setAlpha(140);
          lg2.setColorAt(1, ct);
-         QPainter p(&qPix);
+         QPainter p(&_glShadow);
          p.setPen(Qt::NoPen);
          p.setBrush(lg1);
-         p.drawRect( 0, 0, qPix.width(), qPix.height());
+         p.drawRect( 0, 0, _glShadow.width(), _glShadow.height());
          QPoint points[3] =
          {
             QPoint(rect.right(), 0),
@@ -561,11 +588,10 @@ QPixmap DynamicBrush::shadow(const QRect &rect)
          p.setBrush(lg2);
          p.drawPolygon(points, 3);
          p.end();
-         _glShadow = new QPixmap(qPix);
       }
-      return *_glShadow;
+      return _glShadow;
    }
-   return qPix;
+   return QPixmap();
 }
 
 #if 0 // this is some stored code - yet not used, but maybe later on

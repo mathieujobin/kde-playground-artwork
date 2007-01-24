@@ -23,12 +23,12 @@
 
 class QTimer;
 class QImage;
-class QPixmap;
 class QRect;
 
 #include <QObject>
 #include <QSize>
 #include <QRect>
+#include <QPixmap>
 #include <X11/Xlib.h>
 #include <fixx11h.h>
 
@@ -36,7 +36,7 @@ class DynamicBrush : public QObject
 {
    Q_OBJECT
 public:
-   enum Mode {Tiled = 0, XRender, OpenGL, Tiled2};
+   enum Mode {Tiled = 0, QtGradient, XRender, OpenGL, Tiled2};
    DynamicBrush(Mode mode, QObject *parent = 0);
    DynamicBrush(Pixmap pixmap = -1, Pixmap shadow = -1, int bgYoffset = 0, QObject *parent = 0);
    DynamicBrush(const QImage &leftCenter, const QImage &leftTile, QObject *parent = 0);
@@ -49,15 +49,16 @@ private:
    void updateBrushGL();
    void updateBrushRender();
    void updateBrushEdMetal();
+   void updateBrushQt();
    QPixmap glPixmap(const QRect &rect, int darkness = 0);
    QSize _size;
    Pixmap _pixmap, _shadow;
    int _bgYoffset;
    Mode _mode;
    QTimer *_timer;
-   QPixmap *_center[2][2];
-   QPixmap *_tile[2][2];
-   QPixmap *_glShadow;
+   QPixmap _center[2][2];
+   QPixmap _tile[2][2];
+   QPixmap _glShadow;
    QRect _lastShadowRect;
 private slots:
    void wipeBackground();

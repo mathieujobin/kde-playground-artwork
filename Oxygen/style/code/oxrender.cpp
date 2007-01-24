@@ -21,7 +21,16 @@
 #include <QX11Info>
 #include <X11/Xlib.h>
 #include <fixx11h.h>
+#include <cmath>
 #include "oxrender.h"
+
+#ifndef MIN
+#define MIN(x,y) ((x) < (y) ? (x) : (y))
+#endif
+
+#ifndef MAX
+#define MAX(x,y) ((x) > (y) ? (x) : (y))
+#endif
 
 static Window root = RootWindow (QX11Info::display(), DefaultScreen (QX11Info::display()));
 
@@ -89,4 +98,36 @@ void OXRender::setGradient(XLinearGradient &lg, XFixed x1, XFixed y1, XFixed x2,
 {
    lg.p1.x = x1; lg.p1.y = y1;
    lg.p2.x = x2; lg.p2.y = y2;
+}
+
+Picture OXRender::gradient(const QPoint start, const QPoint stop, const ColorArray &colors, const PointArray &stops)
+{
+   Display *dpy = QX11Info::display();
+   XLinearGradient lg1 = {
+      { start.x() << 16, start.y() << 16 },
+      { stop.x() << 16, stop.y() << 16} };
+   XRenderColor cs[colors.size()];
+   for (int i = 0; i < colors.size(); ++i)
+      setColor(cs[i], colors.at(i));
+   XFixed *stps;
+   if (stops.size() < 2)
+   {
+      stps = new XFixed[2];
+      stps[0] = 0; stps[1] = (1<<16);
+   }
+   else
+   {
+      int d = ((int)(sqrt(pow(stop.x()-start.x(),2)+pow(stop.y()-start.y(),2)))) << 16;
+      stps = new XFixed[stops.size()];
+      for (int i = 0; i < stops.size(); ++i)
+      {
+         if (stops.at(i) < 0) continue;
+         if (stops.at(i) > 1) break;
+         stps[i] = stops.at(i)*d;
+      }
+   }
+   XFlush (dpy);
+   Picture lgp = XRenderCreateLinearGradient(dpy, &lg1, stps, cs, MIN(MAX(stops.size(),2),colors.size()));
+   delete stps;
+   return lgp;
 }

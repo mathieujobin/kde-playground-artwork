@@ -22,7 +22,11 @@
 #define OXRENDER_H
 
 #include <QPixmap>
+#include <QVector>
 #include <X11/extensions/Xrender.h>
+
+typedef QVector<double> PointArray;
+typedef QVector<QColor> ColorArray;
 
 class OXRender
 {
@@ -35,10 +39,9 @@ public:
    static QPixmap applyAlpha(QPixmap &toThisPix, QPixmap &fromThisPix);
    static void setGradient(XLinearGradient &lg, QPoint p1, QPoint p2);
    static void setGradient(XLinearGradient &lg, XFixed x1, XFixed y1, XFixed x2, XFixed y2);
+   static Picture gradient(const QPoint start, const QPoint stop, const ColorArray &colors, const PointArray &stops = PointArray());
 };
 
 #define Q2XRenderColor(_XRC_, _QC_) XRenderColor _XRC_; OXRender::setColor(_XRC_, _QC_)
-#define OXLinearGradient(_XLG_, _X1_, _Y1_, _X2_, _Y2_) \
-XLinearGradient _XLG_ = { {_X1_, _Y1_}, {_X2_, _Y2_} }
 
 #endif //OXRENDER_H
