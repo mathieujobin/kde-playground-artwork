@@ -1,8 +1,0 @@
-HOWTO generate a tar.gz oxygen style, to test in your KDE3.X
-
-Beware: Oxygen has not licence yet, this is only for developping purpose, to help us for KDE4, you cannot distribute any picture or style. 
-
-1) Open a shell
-2)go in the /Oxygen/theme/svg  directory
-3) launch :  sh ../../utils/generate_oxy_theme.sh
-4) You have your installable file for developpement purpose.
