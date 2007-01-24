@@ -26,6 +26,7 @@ void Config::loadSettings()
    ui.bgMode->setCurrentIndex(settings.value("BackgroundMode", 3).toInt());
    ui.acceleration->setCurrentIndex(settings.value("Acceleration", 0).toInt());
    ui.tabDirection->setCurrentIndex(settings.value("TabWidget3D", 1).toInt());
+   ui.tabTransition->setCurrentIndex(settings.value("TabTransition", 2).toInt());
    
    ui.inverseButtons->setChecked(settings.value("InverseButtons",false).toBool());
    ui.roundButtons->setChecked(settings.value("RoundButtons", false).toBool());
@@ -44,6 +45,7 @@ void Config::save()
    settings.setValue("BackgroundMode", ui.bgMode->currentIndex());
    settings.setValue("Acceleration", ui.acceleration->currentIndex());
    settings.setValue("TabWidget3D", ui.tabDirection->currentIndex());
+   settings.setValue("TabTransition", ui.tabTransition->currentIndex());
    settings.setValue("InverseButtons", ui.inverseButtons->isChecked());
    settings.setValue("RoundButtons", ui.roundButtons->isChecked());
    settings.setValue("RaisedButtons", ui.raisedButtons->isChecked());

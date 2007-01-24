@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>448</width>
-    <height>317</height>
+    <width>429</width>
+    <height>365</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -19,7 +19,83 @@
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item row="3" column="1" >
+   <item row="5" column="0" colspan="3" >
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1" colspan="2" >
+    <widget class="QComboBox" name="tabTransition" >
+     <item>
+      <property name="text" >
+       <string>None</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>Crossfade</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>Scanline blend</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>Slide in</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>Slide out</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>Roll in</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>Roll out</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>Open vertically</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>Close vertically</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>Open horizontally</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>Close horizontally</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="3" column="1" colspan="2" >
+    <widget class="QLabel" name="label_7" >
+     <property name="text" >
+      <string>Tabbar transition</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" >
     <widget class="QComboBox" name="tabDirection" >
      <item>
       <property name="text" >
@@ -38,47 +114,66 @@
      </item>
     </widget>
    </item>
-   <item row="3" column="0" >
-    <widget class="QLabel" name="label_6" >
+   <item row="0" column="0" >
+    <widget class="QLabel" name="label" >
      <property name="text" >
-      <string>Tabbar 3D appereance</string>
+      <string>Background Mode</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="2" >
-    <widget class="QGroupBox" name="groupBox_2" >
-     <property name="title" >
-      <string>Pushbuttons</string>
+   <item row="1" column="0" >
+    <widget class="QComboBox" name="bgMode" >
+     <item>
+      <property name="text" >
+       <string>Plain</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>Scanlines</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>Gradient</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>Complex</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="0" column="1" colspan="2" >
+    <widget class="QLabel" name="label_2" >
+     <property name="text" >
+      <string>Hardware Acceleration</string>
      </property>
-     <layout class="QGridLayout" >
-      <property name="margin" >
-       <number>9</number>
+    </widget>
+   </item>
+   <item row="1" column="1" colspan="2" >
+    <widget class="QComboBox" name="acceleration" >
+     <item>
+      <property name="text" >
+       <string>None (Tiling system)</string>
       </property>
-      <property name="spacing" >
-       <number>6</number>
+     </item>
+     <item>
+      <property name="text" >
+       <string>Qt (QGradient)</string>
       </property>
-      <item row="2" column="0" >
-       <widget class="QCheckBox" name="inverseButtons" >
-        <property name="text" >
-         <string>Inverse</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" >
-       <widget class="QCheckBox" name="raisedButtons" >
-        <property name="text" >
-         <string>Raised</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0" >
-       <widget class="QCheckBox" name="roundButtons" >
-        <property name="text" >
-         <string>Round</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+     </item>
+     <item>
+      <property name="text" >
+       <string>XRender</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>OpenGL</string>
+      </property>
+     </item>
     </widget>
    </item>
    <item row="2" column="0" colspan="2" >
@@ -126,75 +221,46 @@
      </layout>
     </widget>
    </item>
-   <item row="1" column="1" colspan="2" >
-    <widget class="QComboBox" name="acceleration" >
-     <item>
-      <property name="text" >
-       <string>None (Tiling system)</string>
+   <item row="2" column="2" >
+    <widget class="QGroupBox" name="groupBox_2" >
+     <property name="title" >
+      <string>Pushbuttons</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>9</number>
       </property>
-     </item>
-     <item>
-      <property name="text" >
-       <string>Qt (QGradient)</string>
+      <property name="spacing" >
+       <number>6</number>
       </property>
-     </item>
-     <item>
-      <property name="text" >
-       <string>XRender</string>
-      </property>
-     </item>
-     <item>
-      <property name="text" >
-       <string>OpenGL</string>
-      </property>
-     </item>
+      <item row="2" column="0" >
+       <widget class="QCheckBox" name="inverseButtons" >
+        <property name="text" >
+         <string>Inverse</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QCheckBox" name="raisedButtons" >
+        <property name="text" >
+         <string>Raised</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" >
+       <widget class="QCheckBox" name="roundButtons" >
+        <property name="text" >
+         <string>Round</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
-   <item row="0" column="1" colspan="2" >
-    <widget class="QLabel" name="label_2" >
+   <item row="3" column="0" >
+    <widget class="QLabel" name="label_6" >
      <property name="text" >
-      <string>Hardware Acceleration</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0" >
-    <widget class="QComboBox" name="bgMode" >
-     <item>
-      <property name="text" >
-       <string>Plain</string>
-      </property>
-     </item>
-     <item>
-      <property name="text" >
-       <string>Scanlines</string>
-      </property>
-     </item>
-     <item>
-      <property name="text" >
-       <string>Gradient</string>
-      </property>
-     </item>
-     <item>
-      <property name="text" >
-       <string>Complex</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="0" column="0" >
-    <widget class="QLabel" name="label" >
-     <property name="text" >
-      <string>Background Mode</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0" colspan="3" >
-    <widget class="QDialogButtonBox" name="buttonBox" >
-     <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons" >
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+      <string>Tabbar 3D appereance</string>
      </property>
     </widget>
    </item>
