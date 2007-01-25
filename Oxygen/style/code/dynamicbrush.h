@@ -24,6 +24,7 @@
 class QTimer;
 class QImage;
 class QRect;
+class QGLPixelBuffer;
 
 #include <QObject>
 #include <QSize>
@@ -55,13 +56,16 @@ private:
    Pixmap _pixmap, _shadow;
    int _bgYoffset;
    Mode _mode;
-   QTimer *_timer;
+   QTimer *_timerBgWipe;
    QPixmap _center[2][2];
    QPixmap _tile[2][2];
    QPixmap _glShadow;
    QRect _lastShadowRect;
+   QGLPixelBuffer *_pbuffer;
+   QTimer *_timerPbWipe;
 private slots:
    void wipeBackground();
+   void wipePBuffer();
 };
 
 #endif //DYNAMICBRUSH_H

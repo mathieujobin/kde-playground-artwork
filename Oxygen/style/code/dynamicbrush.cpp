@@ -63,24 +63,29 @@ static Atom oxygen_isQtWindow = XInternAtom(QX11Info::display(), "OXYGEN_IS_QT_W
 
 void (DynamicBrush::*updateBrush)();
 
-DynamicBrush::DynamicBrush(Mode mode, QObject *parent) : QObject(parent), _mode(mode)
+DynamicBrush::DynamicBrush(Mode mode, QObject *parent) : QObject(parent), _mode(mode), _timerPbWipe(0)
 {
-   _timer = new QTimer(this);
-   connect (_timer, SIGNAL(timeout()), this, SLOT(wipeBackground()));
+   _timerBgWipe = new QTimer(this);
+   connect (_timerBgWipe, SIGNAL(timeout()), this, SLOT(wipeBackground()));
    switch (_mode)
    {
    case Tiled: updateBrush = &DynamicBrush::updateBrushTiled; break;
    case XRender: updateBrush = &DynamicBrush::updateBrushRender; break;
    case QtGradient: updateBrush = &DynamicBrush::updateBrushQt; break;
-   case OpenGL: updateBrush = &DynamicBrush::updateBrushGL; break;
+   case OpenGL:
+      updateBrush = &DynamicBrush::updateBrushGL;
+      _timerPbWipe = new QTimer(this);
+      connect (_timerPbWipe, SIGNAL(timeout()), this, SLOT(wipePBuffer()));
+      _pbuffer = 0;
+      break;
    case Tiled2: updateBrush = &DynamicBrush::updateBrushEdMetal; break;
    }
 }
 
-DynamicBrush::DynamicBrush(Pixmap pixmap, Pixmap shadow, int bgYoffset, QObject *parent) : QObject(parent), _pixmap(pixmap), _shadow(shadow), _bgYoffset(bgYoffset), _mode(Tiled) 
+DynamicBrush::DynamicBrush(Pixmap pixmap, Pixmap shadow, int bgYoffset, QObject *parent) : QObject(parent), _pixmap(pixmap), _shadow(shadow), _bgYoffset(bgYoffset), _mode(Tiled), _timerPbWipe(0)
 {
-   _timer = new QTimer(this);
-   connect (_timer, SIGNAL(timeout()), this, SLOT(wipeBackground()));
+   _timerBgWipe = new QTimer(this);
+   connect (_timerBgWipe, SIGNAL(timeout()), this, SLOT(wipeBackground()));
    updateBrush = &DynamicBrush::updateBrushTiled;
 }
 
@@ -138,10 +143,10 @@ static QPixmap tint(const QImage &img, const QColor& c)
    return pix;
 }
 
-DynamicBrush::DynamicBrush(const QImage &leftCenter, const QImage &leftTile, QObject *parent) : QObject(parent), _mode(Tiled2)
+DynamicBrush::DynamicBrush(const QImage &leftCenter, const QImage &leftTile, QObject *parent) : QObject(parent), _mode(Tiled2),_timerPbWipe(0)
 {
-   _timer = new QTimer(this);
-   connect (_timer, SIGNAL(timeout()), this, SLOT(wipeBackground()));
+   _timerBgWipe = new QTimer(this);
+   connect (_timerBgWipe, SIGNAL(timeout()), this, SLOT(wipeBackground()));
    updateBrush = &DynamicBrush::updateBrushEdMetal;
    QColor c = QApplication::palette().color(QPalette::Active, QPalette::Window);
    QMatrix mirror;
@@ -166,7 +171,17 @@ void DynamicBrush::setMode(Mode mode)
    case Tiled: updateBrush = &DynamicBrush::updateBrushTiled; break;
    case XRender: updateBrush = &DynamicBrush::updateBrushRender; break;
    case QtGradient: updateBrush = &DynamicBrush::updateBrushQt; break;
-   case OpenGL: updateBrush = &DynamicBrush::updateBrushGL; break;
+   case OpenGL:
+      updateBrush = &DynamicBrush::updateBrushGL;
+      if (!_timerPbWipe)
+      {
+         _timerPbWipe = new QTimer(this);
+         connect (_timerPbWipe, SIGNAL(timeout()), this, SLOT(wipePBuffer()));
+      }
+      if (_pbuffer)
+         delete _pbuffer;
+      _pbuffer = 0;
+      break;
    case Tiled2: updateBrush = &DynamicBrush::updateBrushEdMetal; break;
    }
 }
@@ -212,7 +227,7 @@ bool DynamicBrush::eventFilter ( QObject * object, QEvent * ev )
    }
    else return false;
    
-   _timer->start(25000); // the timer will wipe the background, if it's not updated since 25 secs (maybe the window is completely covered)
+   _timerBgWipe->start(7777); // the timer will wipe the background, if it's not updated since 7.777 secs (maybe the window is completely covered)
 
    /* we don't need a bg pix for the moment, let's save some RAM */
    if (size.isNull())
@@ -233,9 +248,20 @@ bool DynamicBrush::eventFilter ( QObject * object, QEvent * ev )
 
 void DynamicBrush::wipeBackground()
 {
+   _timerBgWipe->stop();
    _size = QSize();
    QPixmap qPix;
       SETBACKGROUND(qPix);
+}
+
+void DynamicBrush::wipePBuffer()
+{
+   _timerPbWipe->stop();
+   if (_pbuffer)
+   {
+      delete _pbuffer;
+      _pbuffer = 0L;
+   }
 }
 
 void DynamicBrush::updateBrushTiled()
@@ -324,6 +350,11 @@ void DynamicBrush::updateBrushEdMetal()
    SETBACKGROUND(qPix);
 }
 
+#include <QTime>
+#define _PROFILESTART_ QTime timer; int time; timer.start();
+#define _PROFILERESTART_ timer.restart();
+#define _PROFILESTOP_(_STRING_) time = timer.elapsed(); qDebug("%s: %d",_STRING_,time);
+
 QPixmap DynamicBrush::glPixmap(const QRect &rect, int darkness)
 {
    // so we'll use false colors here, avoiding image swap orgies
@@ -338,8 +369,17 @@ QPixmap DynamicBrush::glPixmap(const QRect &rect, int darkness)
       QApplication::palette().color(QPalette::Window).dark(100+darkness).getRgbF(_COLORS_);
    else
       QApplication::palette().color(QPalette::Window).getRgbF(_COLORS_);
-   QGLPixelBuffer pbuffer(_size);
-   pbuffer.makeCurrent();
+   QSize sizeDemand = QApplication::desktop()->size();
+   if (rect.right() > sizeDemand.width()) sizeDemand.setWidth(rect.right());
+   if (rect.bottom() > sizeDemand.height()) sizeDemand.setHeight(rect.bottom());
+   if (!_pbuffer ||
+       _pbuffer->size().width() < sizeDemand.width() ||
+       _pbuffer->size().height() < sizeDemand.height())
+   {
+      delete _pbuffer;
+      _pbuffer = new QGLPixelBuffer(sizeDemand);
+   }
+   _pbuffer->makeCurrent();
    glViewport(0, 0, (GLsizei) _size.width(), (GLsizei) _size.height());
    glMatrixMode (GL_PROJECTION);
    glLoadIdentity ();
@@ -383,12 +423,15 @@ QPixmap DynamicBrush::glPixmap(const QRect &rect, int darkness)
       glVertex2f (4.0, 3.0);
       glVertex2f (0.0, 0.0);
    glEnd();
+   glFlush();
 //    QImage::Format format = QImage::Format_RGB32;
 //    if (pbuffer.format().alpha())
 //         format = QImage::Format_ARGB32_Premultiplied;
    QImage img(_size, QImage::Format_RGB32/*format*/);
    glReadPixels(0, 0, _size.width(), _size.height(), GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
-   return QPixmap::fromImage(img);
+   QPixmap pix = QPixmap::fromImage(img, Qt::ColorOnly|Qt::OrderedDither);
+   _timerPbWipe->start(777);
+   return pix;
 }
 
 void DynamicBrush::updateBrushGL()
