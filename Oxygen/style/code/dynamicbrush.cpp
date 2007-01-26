@@ -143,6 +143,29 @@ static QPixmap tint(const QImage &img, const QColor& c)
    return pix;
 }
 
+static QPixmap mirror(const QPixmap &pix, Qt::Orientation o)
+{
+   Display *dpy = QX11Info::display();
+   QPixmap mirror(pix.size());
+   GC gc = XCreateGC( dpy, mirror.handle(), 0, 0 );
+   if (o == Qt::Horizontal)
+   {
+      int x = pix.width() - 1;
+      for (int i = 0; i < pix.width(); ++i)
+         XCopyArea( dpy, pix.handle(), mirror.handle(), gc,
+                    x-i, 0, 1, pix.height(), i, 0 );
+   }
+   else
+   {
+      int y = pix.height() - 1;
+      for (int i = 0; i < pix.height(); ++i)
+         XCopyArea( dpy, pix.handle(), mirror.handle(), gc,
+                     0, y-i, pix.width(), 1, 0, i );
+   }
+   XFreeGC ( dpy , gc );
+   return mirror;
+}
+
 DynamicBrush::DynamicBrush(const QImage &leftCenter, const QImage &leftTile, QObject *parent) : QObject(parent), _mode(Tiled2),_timerPbWipe(0)
 {
    _timerBgWipe = new QTimer(this);
@@ -200,14 +223,14 @@ bool DynamicBrush::eventFilter ( QObject * object, QEvent * ev )
       
    /* Test for the currently demanded bg size */
    QSize size;
-   bool triggerUpdate = false;
+//    bool triggerUpdate = false;
    if (ev->type() == QEvent::UpdateRequest)
       size = ((QWidget*)object)->topLevelWidget()->size();
    else if (((QWidget*)object)->isWindow())
    {
       if (ev->type() == QEvent::Resize)
       {
-         triggerUpdate = true;
+//          triggerUpdate = true;
          size = ((QResizeEvent*)ev)->size();
       }
       else if ( ev->type() == QEvent::WindowActivate ||
@@ -219,7 +242,7 @@ bool DynamicBrush::eventFilter ( QObject * object, QEvent * ev )
          /* we might get a new deco, so tell it that this it a oxygen styled qt window */
          int one = 1;
          XChangeProperty(QX11Info::display(), ((QWidget*)object)->winId(), oxygen_isQtWindow, XA_CARDINAL, 32, PropModeReplace, (unsigned char *) &(one), 1L);
-         triggerUpdate = true;
+//          triggerUpdate = true;
       }
       else if (ev->type() == QEvent::Hide)
          size = QSize();
@@ -241,7 +264,7 @@ bool DynamicBrush::eventFilter ( QObject * object, QEvent * ev )
        (this->*updateBrush)();
    }
    /* Maybe we better force an update */
-   if (triggerUpdate) ((QWidget*)object)->update();
+//    if (triggerUpdate) ((QWidget*)object)->update();
    
    return false;
 }
@@ -385,7 +408,7 @@ QPixmap DynamicBrush::glPixmap(const QRect &rect, int darkness)
    glLoadIdentity ();
 //    gluOrtho2D (0.0, 30.0, 30.0, 0.0); //lrbt
    GLfloat fw = 30.0/_size.width(), fh = 30.0/_size.height();
-   // the statement is vertically mirrored, as is the buffer to a qimage
+   // the statement is vertically mirrored, as is the pbuffer to a qimage
    // we simply avoid a software mirror and paint "mirrored" in gl (no one will see ;)
    gluOrtho2D (rect.x()*fw, rect.right()*fw, rect.y()*fh, rect.bottom()*fh);
    glMatrixMode(GL_MODELVIEW);
@@ -406,12 +429,14 @@ QPixmap DynamicBrush::glPixmap(const QRect &rect, int darkness)
       glColor4f (r, g, b, 0.6);
       glVertex2f (30.0, 30.0);
       glColor4f (r, g, b, 0.0);
-      glVertex2f (0.0, 30.0);
-      glVertex2f (30.0, 0.0);
+      glVertex2f (15.0, 30.0);
+//       glVertex2f (0.0, 30.0);
+      glVertex2f (30.0, 5.0);
+//       glVertex2f (30.0, 0.0);
    glEnd();
    glBegin (GL_TRIANGLE_FAN);
       r *= 1.1; g *= 1.1; b *=1.1;
-      glColor4f (r, g, b, 1.0);
+      glColor4f (r, g, b, .8);
       glVertex2f (15.0, 00.0);
       glColor4f (r, g, b, 0.0);
       glVertex2f (30.0, 0.0);
@@ -427,9 +452,77 @@ QPixmap DynamicBrush::glPixmap(const QRect &rect, int darkness)
 //    QImage::Format format = QImage::Format_RGB32;
 //    if (pbuffer.format().alpha())
 //         format = QImage::Format_ARGB32_Premultiplied;
-   QImage img(_size, QImage::Format_RGB32/*format*/);
-   glReadPixels(0, 0, _size.width(), _size.height(), GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
-   QPixmap pix = QPixmap::fromImage(img, Qt::ColorOnly|Qt::OrderedDither);
+   
+   /* ================================================================
+      Hi complex...
+
+      the qimage -> qpixmap conversion is slow,
+      so we try to avoid it by using knowledge of the special
+      structure of the image
+
+      #1. the upper 5/30 mirror horizontal, mirroring a pixmap is faster than
+      double conversion (at least for big images, small are not so important)
+
+      #2. the lower left tiles horizontally, so we convert only 32xheight pixles
+      and tile them together as pixmaps
+
+      #3. only the lower right is unique - so we need to convert it completely
+
+      the thing gets worse as we need to be able to extract parts for
+      eg. the groupbox shadows... i hate my life ;P
+   
+      IF ANYONE EVER TOUCHES THIS CODE AND THERE IS "glExtPixmapFromTexture" OR SIMILAR:
+      THIS WOULD BE BY FAR BETTER!!!
+   ================================================================ */
+
+   QPixmap pix(rect.size());
+   int w_2 = (_size.width()+1)/2;
+   int yOff = 5*_size.height()/30;
+   int rlw = w_2 - rect.x();
+   int rYOff = yOff-rect.y();
+   int w,h;
+   QPixmap tmp;
+   QPainter p(&pix);
+   
+   // top --------------------
+   if (rect.y() < yOff)
+   {
+      w = MAX(w_2-rect.x(), rect.right()-w_2+1);
+      h = yOff-rect.y();
+      QImage *top = new QImage(w, h, QImage::Format_RGB32);
+      glReadPixels(w_2-w, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, top->bits());
+      tmp = QPixmap::fromImage(*top, Qt::ColorOnly|Qt::OrderedDither);
+      p.drawPixmap(rect.x(),0, tmp, rect.x(),0,w_2-rect.x(),-1);
+      tmp = mirror(tmp, Qt::Horizontal);
+      p.drawPixmap(w_2,0, tmp,0,0,rect.right()-w_2+1,-1);
+      delete top;
+   }
+   // bottom left --------------------
+   if (rlw > 0)
+   {
+      h = rect.bottom() - yOff + 1;
+      QImage *btmLeft = new QImage(32,h, QImage::Format_RGB32);
+      glReadPixels(0, yOff, 32, h, GL_RGBA, GL_UNSIGNED_BYTE, btmLeft->bits());
+      tmp = QPixmap::fromImage(*btmLeft, Qt::ColorOnly|Qt::OrderedDither);
+      p.drawTiledPixmap(0,rYOff,rlw,h, tmp);
+      delete btmLeft;
+   }
+   // bottom right --------------------
+   w_2 = (_size.width()-1)/2;
+   w = rect.right() - w_2;
+   if (w > 0)
+   {
+      h = rect.bottom() - yOff + 1;
+      QImage *btmRight = new QImage(w,h, QImage::Format_RGB32);
+      glReadPixels(w_2, yOff, w, h, GL_RGBA, GL_UNSIGNED_BYTE, btmRight->bits());
+      tmp = QPixmap::fromImage(*btmRight, Qt::ColorOnly|Qt::OrderedDither);
+      delete btmRight;
+      p.drawPixmap(rlw,rYOff, tmp);
+   }
+   p.end();
+//    QImage img(_size, QImage::Format_RGB32/*format*/);
+//    glReadPixels(0, 0, _size.width(), _size.height(), GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
+//    QPixmap pix = QPixmap::fromImage(img, Qt::ColorOnly|Qt::OrderedDither);
    _timerPbWipe->start(777);
    return pix;
 }

@@ -50,6 +50,8 @@ private:
    void updateBrushGL();
    void updateBrushRender();
    void updateBrushEdMetal();
+   void updateBrushVerticalGradient();
+   void updateBrushHorizontalGradient();
    void updateBrushQt();
    QPixmap glPixmap(const QRect &rect, int darkness = 0);
    QSize _size;
