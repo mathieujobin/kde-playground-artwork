@@ -93,6 +93,7 @@
 #include "../imagebase/round-ll.xbm"
 #include "../imagebase/round-lr.xbm"
 #include "oxygen.h"
+#include "oxygen.moc"
 #include "dynamicbrush.h"
 /**=========================================================*/
 

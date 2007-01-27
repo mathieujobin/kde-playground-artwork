@@ -1,4 +1,6 @@
+
 #include "config.h"
+#include "config.moc"
 #include <QApplication>
 #include <QSettings>
 

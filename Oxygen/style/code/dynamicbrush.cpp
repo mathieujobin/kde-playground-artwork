@@ -37,6 +37,7 @@
 #include "oxrender.h"
 
 #include "dynamicbrush.h"
+#include "dynamicbrush.moc"
 
 // #include "endian.h"
 
