@@ -74,7 +74,7 @@ static Cursor createSvgCursor(Display *dpy, const QString &fileName, int size)
     painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
 
     QSvgRenderer renderer(fileName);
-    renderer.render(&painter, image.rect());
+    renderer.render(&painter);
     painter.end();
 
     return createImageCursor(dpy, image);
