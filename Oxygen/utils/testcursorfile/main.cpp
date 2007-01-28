@@ -64,7 +64,12 @@ static Cursor createImageCursor(Display *dpy, const QString &fileName)
 
 static Cursor createSvgCursor(Display *dpy, const QString &fileName, int size)
 {
-    QImage image(size, size, QImage::Format_ARGB32_Premultiplied);
+    QSvgRenderer renderer(fileName);
+
+    QSize imageSize = (size == -1 ?
+        renderer.defaultSize() : QSize(size, size));
+
+    QImage image(imageSize, QImage::Format_ARGB32_Premultiplied);
 
     QPainter painter;
     painter.begin(&image);
@@ -72,8 +77,6 @@ static Cursor createSvgCursor(Display *dpy, const QString &fileName, int size)
     painter.setCompositionMode(QPainter::CompositionMode_Source);
     painter.fillRect(image.rect(), Qt::transparent);
     painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
-
-    QSvgRenderer renderer(fileName);
     renderer.render(&painter);
     painter.end();
 
@@ -83,6 +86,9 @@ static Cursor createSvgCursor(Display *dpy, const QString &fileName, int size)
 
 static Cursor createX11Cursor(Display *dpy, const QString &fileName, int size)
 {
+    if (size == -1)
+        size = XcursorGetDefaultSize(dpy);
+
     XcursorImages *images = XcursorFilenameLoadImages(QFile::encodeName(fileName), size);
     Cursor cursor = XcursorImagesLoadCursor(dpy, images);
     XcursorImagesDestroy(images);
@@ -132,9 +138,6 @@ int main(int argc, char **argv)
 
     Display *dpy = XOpenDisplay(NULL);
     Cursor cursor;
-
-    if (size == -1)
-        size = XcursorGetDefaultSize(dpy);
 
     QString extension = fileName.right(4).toLower();
 
