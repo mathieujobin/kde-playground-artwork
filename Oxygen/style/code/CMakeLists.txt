@@ -5,7 +5,6 @@ include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_SOURCE_DIR}/kdef
 ########### next target ###############
 
 set( oxygen_SRCS
-     qrc_oxygen.cpp
      oxygen.cpp
      tileset.cpp
      stylehint.cpp
@@ -19,6 +18,8 @@ set( oxygen_SRCS
      dynamicbrush.cpp
      oxrender.cpp
    )
+
+qt4_add_resources(oxygen.qrc oxygen.qrc)
 
 kde4_automoc( ${oxygen_SRCS} )
 kde4_add_plugin(kstyle-oxygen ${oxygen_SRCS} )
