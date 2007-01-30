@@ -1,0 +1,81 @@
+kate: tab-width 3; indent-mode normal;
+
+This is a list of icons that are needed by KDevelop that are applicable to at
+least IDE's in general (some have even wider application than that, e.g. the
+sync-to-current-folder icon which is also used by at least Kate).
+
+I don't know how many are 'on the list' already, but I didn't see the compile
+group, so I'm guessing most of these are 'new'.
+
+NOTE: items with '?' are lower priority (things that don't currently have icons
+and may not need them). IMO 'sync to folder' and 'find in files' should have
+highest priority since these are most likely to have wider use (also the sync
+icon in KDE 3.5 is terrible :-)).
+
+In fact, don't start on any of the '?' items yet, they may or may not go away
+for KDevelop 4.
+
+- build icons
+	- 'build'
+		builds the project (like 'make')
+		ideas: window with fat down arrow at the lower center or lower right
+	- 'build active'
+		builds the 'active target' ('$ make <target>')
+	? 'compile'
+		compiles a single file
+		ideas: like 'build' but with a file instead of a window
+	- 'clean'
+		deletes built files ('$ make clean')
+		ideas: broom, broom over window/files
+	? 'distclean'
+		deletes maintainer-generated files, like 'configure' ('$ make distclean')
+		ideas: broom over a gear/wrench
+	? 'configure'
+		ideas: like 'build' but with a gear/wrench also
+	? 'run autotools'
+		ideas: like 'configure'?
+	? 'install'
+	? 'install as root'
+	? 'make messages'
+		builds files for i18n
+		ideas: like 'build' but also with pen/feather/stylus
+- debug icons
+	- 'run', 'break', 'stop'
+		...listed for completion (will use VCR 'play', 'pause', 'stop' resp.)
+	? 'restart'
+		ideas: use VCR-style restart; play after a bar? what is VCR restart?
+	? 'resume'
+		opposite of 'pause' (i.e. 'not restart')
+		ideas: pause with circle+slash
+	- 'run to cursor'
+		continues execution until execution reaches the line where the cursor is
+		ideas: VCR-style forward (play pointing to bar)?
+	- 'step'
+		executes one line of code, then stops
+	- 'step instruction'
+		executes exactly one machine instruction, then stops
+	- 'step out'
+		completes execution of the current function, stopping when the function
+		returns
+	- 'step over'
+	- 'set next'
+		changes the instruction-pointer to the line of code under the cursor
+	- 'breakpoint'
+		indicates a line where the debugger will halt execution (action is to
+		toggle)
+		ideas: stop sign, red circle with 'X'
+	- 'clear breakpoints'
+		ideas: 'go' sign? Like 'breakpoint' but green instead of red?
+
+- misc icons
+  - 'sync to folder'
+		used in places where the user selects a path to set the path to the
+		'working directory' (usually the location of the active document)
+		ideas: folder with an arrow pointing into it, e.g.
+		       http://lists.kde.org/?l=kde-artists&m=116889123829485&q=p3
+	- 'find in files'
+		ideas: folder with magnifying glass, folder with binnoculars
+	- 'new project'
+		ideas: window with 'new' sparkle
+	- 'open project'
+		ideas: window with small folder overlayed
