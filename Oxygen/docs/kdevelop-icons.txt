@@ -22,52 +22,85 @@ Legend:
 
 Icons are listed as '<icon name>' [("<action name, if different>")]
 
+project
+-------
+	+ 'project'
+		Ideas: a simple window
+
+	- 'new project'
+		Ideas: 'project' with 'new' sparkle
+
+	- 'open project'
+		Ideas: 'project' with small folder overlayed
+
+	i 'subproject'
+		WILL-USE: folder icon
+
+	+ 'target'
+		A target is a collection of files (or actions) that can be "built"
+		independently. Usually the standard target 'all' consists of all
+		constructive targets except 'install' (and possible others, like 'doc',
+		'messages', etc). Note that e.g. 'clean' are tecnically targets according
+		to the 'make' syntax, although most users will think of a "target" as
+		a specific portion of an application to build (for example, 'Kexi' would
+		be a target in KOffice).
+		Ideas: a target i.e. a bulls-eye
+
 build
 -----
+	+ 'build_overlay'
+		Used as an overlay for actions that involve building something.
+		Ideas: Fat down arrow placed on the lower edge of another icon (usually
+				 lower left, maybe lower center as works best aesthetically)
+
 	- 'build' ("build project")
 		Builds the project (like 'make')
-		IDEAS: window with fat down arrow at the lower center or lower right
+		IDEAS: 'project' + 'build_overlay'
+
+	- 'build subproject'
+		Builds the current subproject (like 'cd subproject/ ; make')
+		IDEAS: 'subproject' + 'build_overlay'
 
 	- 'build active' ("build active target")
 		Builds the 'active target' (like 'make target')
+		IDEAS: 'target' + 'build_overlay'
 
 	- 'compile'
 		Compiles a single file
-		IDEAS: like 'build' but with a file instead of a window
+		IDEAS: generic/text/C document icon + 'build_overlay'
 
 	- 'clean'
 		Deletes built files ('$ make clean')
-		IDEAS: broom, broom over window/files
+		IDEAS: broom
 
 	? 'distclean'
-		Deletes maintainer-generated files, like 'configure' ('$ make distclean')
-		IDEAS: broom over a gear/wrench
+		Deletes maintainer-generated files, such as "configure", "Makefile", etc.
+		('$ make distclean')
+		IDEAS: broom over 'configure' icon
 
 	? 'configure'
+		Generates makefiles out of the high-level build information, so that the
+		project can be built by a low-level build tool like 'make'
 		IDEAS: like 'build' but with a gear/wrench also
 
 	? 'run autotools'
 		IDEAS: like 'configure'?
 
 	? 'install'
+		Copies files to their final location (i.e. "installs" the package)
+
 	? 'install as root'
+		IDEAS: 'install' plus whatever is used to represent root privileges
+		(a key in KDE3)
 
 debug
 -----
-	i 'run', 'break', 'stop'
+	i 'run', 'break', 'stop', 'restart', 'run to cursor'
 		WILL-USE: media-playback-*
-
-	? 'restart'
-		IDEAS: use media-playback-restart? 'play' after a bar?
-		What is media-playback-restart?
 
 	? 'resume'
 		opposite of 'pause' (i.e. 'not restart')
 		IDEAS: pause with circle+slash (should become 'media-playback-resume')
-
-	- 'run to cursor'
-		Continues execution until execution reaches the line where the cursor is
-		IDEAS: use media-playback-next?
 
 	- 'step'
 		Executes one line of code, then stops
@@ -87,10 +120,13 @@ debug
 	- 'breakpoint'
 		indicates a line where the debugger will halt execution (action is to
 		toggle)
-		IDEAS: stop sign, red circle with 'X'
+		WILL-USE: process-stop
+		NOTE: not marked 'i' because we might want to consider making a copy of
+		process-stop with a different name due to 'clear breakpoints' icon
+		(unless we support defining the latter as process-stop plus some overlay)
 
 	- 'clear breakpoints'
-		IDEAS: 'go' sign? Like 'breakpoint' but green instead of red?
+		IDEAS: 'breakpoint' with a broom over it
 
 misc
 ----
@@ -102,9 +138,3 @@ misc
 
 	- 'find in files'
 		IDEAS: folder with magnifying glass, folder with binnoculars
-
-	- 'new project'
-		Ideas: 'project' with 'new' sparkle
-
-	- 'open project'
-		Ideas: 'project' with small folder overlayed
