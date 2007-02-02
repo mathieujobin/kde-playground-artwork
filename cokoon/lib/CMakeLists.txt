@@ -24,7 +24,7 @@ INCLUDE(${QT_USE_FILE})
 
 target_link_libraries(cokoon  ${KDE4_KDECORE_LIBS} ${QT_LIBRARIES})
 
-#set_target_properties(cokoon PROPERTIES VERSION 4.2.0 SOVERSION 4 )
+set_target_properties(cokoon PROPERTIES VERSION 4.2.0 SOVERSION 4 )
 install(TARGETS cokoon DESTINATION ${LIB_INSTALL_DIR} )
 
 

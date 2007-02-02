@@ -14,7 +14,7 @@ kde4_add_plugin(cokoonstyle ${cokoon_PART_SRCS})
 target_link_libraries(cokoonstyle ${QT_LIBRARIES} ${KDE4_KDEFX_LIBS}  cokoon ) # ${KDE4_KDECORE_LIBS}
 
 
-install_targets(${PLUGIN_INSTALL_DIR}/plugins/styles/ cokoonstyle )
+install(TARGETS cokoonstyle DESTINATION ${PLUGIN_INSTALL_DIR}/plugins/styles/ )
 
 
 ########### install files ###############

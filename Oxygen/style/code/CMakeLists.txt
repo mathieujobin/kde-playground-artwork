@@ -25,7 +25,19 @@ kde4_automoc( ${oxygen_SRCS} )
 kde4_add_plugin(kstyle-oxygen ${oxygen_SRCS} )
 
 # TODO: check if too much definitions.
-target_link_libraries( kstyle-oxygen ${KDE4_KDECORE_LIBS} Xtst kdefx Xrender Xfixes Xcursor Xext X11 Xrandr Xfixes Xcursor Xinerama freetype fontconfig Qt3Support QtOpenGL png GLU GL)
+target_link_libraries( kstyle-oxygen 
+	${KDE4_KDECORE_LIBS} 
+	${QT_QT3SUPPORT_LIBRARY} 
+	${KDE4_KDEFX_LIBS} 
+	${X11_X11_LIB}
+	${X11_Xfixes_LIB}
+	${X11_Xcursor_LIB}
+	${X11_Xinerama_LIB}
+	${X11_Xrender_LIB}
+	${X11_Xrandr_LIB}
+	${X11_XTest_LIB}
+	${X11_LIBRARIES}
+	freetype fontconfig QtOpenGL png GLU GL)
 
 install( TARGETS kstyle-oxygen DESTINATION ${PLUGIN_INSTALL_DIR}/plugins/styles/ )
 
