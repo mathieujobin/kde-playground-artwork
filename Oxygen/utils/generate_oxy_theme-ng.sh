@@ -1,100 +1,62 @@
 #!/bin/bash
 
-sizes="128x128 64x64 48x48 32x32 22x22 16x16"
-sizes2="32x32 22x22 16x16"
+sizes="128 64 48 32 22 16"
+min_actions=48
+min_small=22
 folders="apps devices filesystems mimetypes"
-folders2="actions apps devices filesystems mimetypes"
-smallexport="yes"
-smallsizes="16 22"
 date=`date '+%F-%H-%M'`
 curdir=`pwd`
 
 #create every size dir and within the size dir create all the icon folders
 for size in $sizes; do
-  prefix="../oxygen/$size"
-  for folder in $folders; do
-    mkdir -p $prefix/$folder
-#    echo "$prefix/$folder created"
-  done
+   prefix="../oxygen/${size}x${size}"
+   folders2=$folders
+   if [ $size -le $min_actions ]; then
+      folders2="actions "$folders
+   fi
+   for folder in $folders2; do
+      if [ ! -d $prefix/$folder ]; then
+         mkdir -p $prefix/$folder
+      fi
+   done
 done
-
-for size in $sizes2; do
-  prefix="../oxygen/$size";
-  mkdir -p $prefix/actions
-#    echo "$prefix/$folder created"
-  done
-
 
 echo "WARNING: This version of the script requires much more resources but gives much better results"
 echo "-----------------------------"
-echo "Exporting to 128..." # and smaller (if available)"
 
-#resize the 128x128 png's to all needed sizes defined in sizes
-for folder in $folders; do
-  for icon in $(ls $folder/*.svg); do
-    inkscape --without-gui --export-png="../oxygen/128x128/"$( echo $icon | cut -d . -f -1 ).png --export-dpi=72 --export-background-opacity=0 --export-width=128 --export-height=128 $icon > /dev/null
-  done
+for size in $sizes; do
+   folders2=$folders
+   
+   # ===== whether we want action icons for this size
+   if [ $size -le $min_actions ]; then
+      folders2="actions "$folders
+   fi
+   # ====== folder list now complete
+      
+   prefix="../oxygen/${size}x${size}/"
+   echo "Exporting to ${size}..." # and smaller (if available)"
+   for folder in $folders2; do
+      for icon in $(ls $folder/*.svg); do
+         
+         # create a png icon name
+         pngicn="${prefix}${icon%.svg}.png"
+         
+         # ====== shall we use a small icon if available?
+         if [ $size -le $min_small ]; then
+            smallicon="$folder/small/${size}x${size}${icon#${folder}}"
+            if [ -e "$smallicon" ]; then icon="$smallicon"; fi
+         fi
+         # ===== small icon decision taken
+               
+         # only update new items!
+         if ( [ ! -e "$pngicn" ] || [ $(stat -c%Y "$icon") -gt $(stat -c%Y "$pngicn") ] ); then
+            # the inkscape call
+            inkscape --without-gui --export-png="$pngicn" --export-dpi=72 --export-background-opacity=0 --export-width=$size --export-height=$size "$icon" > /dev/null
+         fi
+            
+      done
+   done
 done
-echo "Exporting to 64..."
-for folder in $folders; do
-  for icon in $(ls $folder/*.svg); do
-    inkscape --without-gui --export-png="../oxygen/64x64/"$( echo $icon | cut -d . -f -1 ).png --export-dpi=72 --export-background-opacity=0 --export-width=64 --export-height=64 $icon > /dev/null
-  done
-done
-echo "Exporting to 48..."
-for folder in $folders; do
-  for icon in $(ls $folder/*.svg); do
-    inkscape --without-gui --export-png="../oxygen/48x48/"$( echo $icon | cut -d . -f -1 ).png --export-dpi=72 --export-background-opacity=0 --export-width=48 --export-height=48 $icon > /dev/null
-  done
-done
-echo "Exporting to 32..."
-for folder in $folders2; do
-  for icon in $(ls $folder/*.svg); do
-    inkscape --without-gui --export-png="../oxygen/32x32/"$( echo $icon | cut -d . -f -1 ).png --export-dpi=72 --export-background-opacity=0 --export-width=32 --export-height=32 $icon > /dev/null
-  done
-done
-echo "Exporting to 22..."
-for folder in $folders2; do
-  for icon in $(ls $folder/*.svg); do
-    inkscape --without-gui --export-png="../oxygen/22x22/"$( echo $icon | cut -d . -f -1 ).png --export-dpi=72 --export-background-opacity=0 --export-width=22 --export-height=22 $icon > /dev/null
-  done
-done
-echo "Exporting to 16..."
-for folder in $folders2; do
-  for icon in $(ls $folder/*.svg); do
-    inkscape --without-gui --export-png="../oxygen/16x16/"$( echo $icon | cut -d . -f -1 ).png --export-dpi=72 --export-background-opacity=0 --export-width=16 --export-height=16 $icon > /dev/null
-  done
-done
-
-# cd ../oxygen/128x128
-
-# echo "-----------------------------"
-# echo "Scaling PNGs, be patient DUDE"
-# 
-# for i in $(ls */*.png); do 
-#   convert -filter Sinc -resize 64x64 $i "../64x64/"$i 
-#   convert -filter Sinc -resize 48x48 $i "../48x48/"$i
-#   convert -filter Sinc -resize 32x32 $i "../32x32/"$i 
-#   convert -filter Sinc -resize 22x22 $i "../22x22/"$i
-#   convert -filter Sinc -resize 16x16 $i "../16x16/"$i
-# done
-
-cd $curdir
-
-#export small versions if available
-if [ "$smallexport" == "yes" ]; then
-echo "-----------------------------"
-echo "Exporting special small versions"
-  for smallsize in $smallsizes; do
-  for folder in $folders; do
-    cd $folder/small/${smallsize}x${smallsize}
-    for icon in $(ls *.svg); do
-      inkscape --without-gui --export-png="${curdir}/../oxygen/${smallsize}x${smallsize}/${folder}/"$( echo $icon | cut -d . -f -1 ).png --export-dpi=72 --export-background-opacity=0 --export-width=${smallsize} --export-height=${smallsize} $icon > /dev/null
-    done
-    cd $curdir
-  done
-  done
-fi
 
 echo "-----------------------------"
 echo "Creating index.theme"
@@ -250,7 +212,7 @@ echo "Creating Oxygen_$date.tar.gz"
 cd ../
 tar -cf oxygen_$date.tar oxygen
 gzip oxygen_$date.tar
-rm -rf oxygen
+# rm -rf oxygen
 echo "---------------------------"
 echo "Done"
 
