@@ -7,14 +7,16 @@ print "starting"
 
 file = open("ICONSLIST", 'r')
 
-category_map = {"actions": "action",
-                "apps": "app",
-                "category": "category",
-                "device": "device",
+category_map = {"actions": "actions",
+                "apps": "apps",
+                "category": "categories",
+                "device": "devices",
                 "filesystems": "places",
-                "mime": "mime",
-                "mimetypes": "mime",
+                "mime": "mimetypes",
+                "mimetypes": "mimetypes",
                 "place": "places"}
+
+log = open("icons/CONTENTS", 'w')
 
 for line in file:
   line = line.replace("\n", "")
@@ -31,9 +33,21 @@ for line in file:
   if small is not None and output == "":
     output = small
 
+  real_category = category_map[category]
+  newname = "oxsc-" + real_category + "-" + new
   if output != "":
-    real_category = category_map[category]
-    newname = "oxsc-" + real_category + "-" + new
     os.system("cp "+ output +" icons/" + newname)
     os.system("gzip -f icons/"+newname)
     os.system("mv icons/"+newname+".gz icons/"+newname+".svgz")
+    log.write(new +"\t" + old + "\t" + output + "\toxygen\n")
+    for size in ["16", "22", "32", "64", "128"]:
+      os.system("cp ../Oxygen/theme/oxygen/"+size+"x"+size+"/*/"+old+".png "+ " icons/" + "ox"+size+"-" + real_category + "-" + new +".png")
+
+  elif output == "":
+    find = subprocess.Popen(["find", "../kdeaccessibility/IconThemes/mono/scalable/", "-name", old+".svgz"], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    output = find.stdout.readline().rstrip("\n")
+    if output != "":
+      os.system("cp "+ output +" icons/" + newname)
+      log.write(new +"\t" + old + "\t" + output + "\tmono\n")
+    else:
+      log.write(new +"\t" + old + "\tNONE\n")
