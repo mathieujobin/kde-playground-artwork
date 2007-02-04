@@ -1,0 +1,39 @@
+#!/usr/bin/python
+
+import subprocess
+import os
+
+print "starting"
+
+file = open("ICONSLIST", 'r')
+
+category_map = {"actions": "action",
+                "apps": "app",
+                "category": "category",
+                "device": "device",
+                "filesystems": "places",
+                "mime": "mime",
+                "mimetypes": "mime",
+                "place": "places"}
+
+for line in file:
+  line = line.replace("\n", "")
+  (category, new, old) = line.split("\t")
+  if new == "none":
+    new = old
+  
+  find = subprocess.Popen(["find", "../Oxygen/theme/", "-name", old+".svg"], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+  output = find.stdout.readline().rstrip("\n")
+  small = None
+  while "small" in output:
+    small = output
+    output = find.stdout.readline().rstrip("\n")
+  if small is not None and output == "":
+    output = small
+
+  if output != "":
+    real_category = category_map[category]
+    newname = "oxsc-" + real_category + "-" + new
+    os.system("cp "+ output +" icons/" + newname)
+    os.system("gzip -f icons/"+newname)
+    os.system("mv icons/"+newname+".gz icons/"+newname+".svgz")
