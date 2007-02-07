@@ -25,13 +25,13 @@ Icons are listed as '<icon name>' [("<action name, if different>")]
 project
 -------
 	+ 'project'
-		Ideas: a simple window
+		IDEAS: a simple window
 
 	- 'new project'
-		Ideas: 'project' with 'new' sparkle
+		IDEAS: 'project' with 'new' sparkle
 
 	- 'open project'
-		Ideas: 'project' with small folder overlayed
+		IDEAS: 'project' with small folder overlayed
 
 	i 'subproject'
 		WILL-USE: folder icon
@@ -44,13 +44,13 @@ project
 		to the 'make' syntax, although most users will think of a "target" as
 		a specific portion of an application to build (for example, 'Kexi' would
 		be a target in KOffice).
-		Ideas: a target i.e. a bulls-eye
+		IDEAS: a target i.e. a bulls-eye
 
 build
 -----
 	+ 'build_overlay'
 		Used as an overlay for actions that involve building something.
-		Ideas: Fat down arrow placed on the lower edge of another icon (usually
+		IDEAS: Fat down arrow placed on the lower edge of another icon (usually
 				 lower left, maybe lower center as works best aesthetically)
 
 	- 'build' ("build project")
