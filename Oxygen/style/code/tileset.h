@@ -22,49 +22,93 @@
 #define TILESET_H
 
 #include <QBitmap>
-#include <QRegion>
+#include <QRect>
+#include <QHash>
+#include <QX11Info>
+#include <X11/Xlib.h>
+#include <X11/extensions/Xrender.h>
+#include <fixx11h.h>
 
-class TileSet
+namespace Tile
+{
+
+   enum Section
+   {
+      TopLeft = 0, TopMid, TopRight,
+      BtmLeft, BtmMid, BtmRight,
+      MidLeft, MidMid, MidRight
+   };
+   enum Position
+   {
+      Top = 0x1, Left=0x2, Bottom=0x4, Right=0x8,
+      Ring=0xf, Center=0x10, Full=0x1f
+   };
+
+   typedef uint PosFlags;
+
+inline static bool matches(PosFlags This, PosFlags That){return (This & That) == This;}
+
+class Set
 {
 public:
-   enum Tile {TopLeft = 0, TopRight, BtmLeft, BtmRight, TopMid, MidLeft, MidRight, BtmMid, Center };
-   TileSet(const QPixmap &pix, int xOff, int yOff, int width, int height,
-           int top, int bottom, int left, int right, QRegion *topLeft = 0, QRegion *topRight = 0, QRegion *btmLeft = 0, QRegion *btmRight = 0);
-   TileSet(){for (int i=0; i < 4; i++) border[i] = 0L;}
-   ~TileSet()
-   {
-//       for (int i=0; i < 4; i++)
-//          if (border[i]) delete border[i];
-   }
-   inline const QPixmap &pixmap( Tile pos ) const
-   {
-      return ( pixmaps[ ( int ) pos ] );
-   }
-   inline const QBitmap &mask( Tile pos ) const
-   {
-      return ( masks[ ( int ) pos ] );
-   }
-   inline int width(Tile pos) const
-   {
-      return pixmaps[pos].width();
-   }
-   inline int height(Tile pos) const
-   {
-      return pixmaps[pos].height();
-   }
-   inline QRegion *corner(Tile Pos) const
-   {
-      if (Pos < TopMid)
-         return border[Pos];
-      else
-         return 0L;
-   }
-   const QRegion outerRegion(const QRect &r) const;
-   const QRegion innerRegion(const QRect &r) const;
+   Set(const QPixmap &pix, int xOff, int yOff, int width, int height, int rx = 0, int ry = 0);
+   Set(){}
+   void render(const QRect &rect, QPainter *p, PosFlags pf = Ring) const;
+   void outline(const QRect &rect, QPainter *p, QColor c, PosFlags pf = Ring) const;
+   Picture render(int width, int height, PosFlags pf = Ring) const;
+   Picture render(const QSize &size, PosFlags pf = Ring) const;
+   QRect rect(const QRect &rect, PosFlags pf) const;
+   inline int width(Section sect) const {return pixmap[sect].width();}
+   inline int height(Section sect) const {return pixmap[sect].height();}
+   inline bool isQBitmap() const {return _isBitmap;}
+protected:
+   QPixmap pixmap[9];
 private:
-   QPixmap pixmaps[ 9 ];
-   QBitmap masks[9];
-   QRegion *border[4];
-   int size[4];
+   int rxf, ryf;
+   bool _isBitmap;
 };
+
+class Mask : public Set
+{
+public:
+   Mask(const QPixmap &pix, int xOff, int yOff, int width, int height,
+               int dx1, int dy1, int dx2, int dy2, int rx = 0, int ry = 0);
+   Mask(){_dx[0] = _dx[1] = _dy[0] = _dy[1] = 0; _hasCorners = false;}
+   QRect bounds(const QRect &rect, PosFlags pf = Full) const;
+   const QPixmap &corner(PosFlags pf) const;
+   QRegion clipRegion(const QRect &rect, PosFlags pf = Ring) const;
+   inline bool hasCorners() const {return _hasCorners;}
+private:
+   int _dx[2], _dy[2];
+   bool _hasCorners;
+};
+
+class Line
+{
+public:
+   Line(const QPixmap &pix, Qt::Orientation o, int d1, int d2);
+   Line(){}
+   void render(const QRect &rect, QPainter *p, PosFlags pf = Full) const;
+private:
+   inline int width(int i) const {return pixmap[i].width();}
+   inline int height(int i) const {return pixmap[i].height();}
+   Qt::Orientation _o;
+   QPixmap pixmap[3];
+};
+
+class Nuno
+{
+public:
+   Nuno(int alpha = 255);
+   void render(const QRect &rect, QPainter *p, PosFlags pf = Ring) const;
+private:
+   inline int width(int i) const {return pixmap[i].width();}
+   inline int height(int i) const {return pixmap[i].height();}
+   QPixmap pixmap[8];
+   int _alpha;
+   QHash<int, QPixmap> _lines[2];
+};
+
+} // namespace Tile
+
 #endif //TILESET_H

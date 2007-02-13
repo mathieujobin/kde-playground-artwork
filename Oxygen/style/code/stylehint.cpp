@@ -39,7 +39,7 @@ int OxygenStyle::styleHint ( StyleHint hint, const QStyleOption * option, const 
    case SH_ScrollBar_ScrollWhenPointerLeavesControl: // A boolean value. If true, when clicking a scroll bar SubControl, holding the mouse button down and moving the pointer outside the SubControl, the scroll bar continues to scroll. If false, the scollbar stops scrolling when the pointer leaves the SubControl.
       return true;
    case SH_TabBar_Alignment: // The alignment for tabs in a QTabWidget. Possible values are Qt::AlignLeft, Qt::AlignCenter and Qt::AlignRight.
-      return Qt::AlignCenter;
+      return Qt::AlignLeft;
    case SH_Header_ArrowAlignment: // The placement of the sorting indicator may appear in list or table headers. Possible values are Qt::Left or Qt::Right.
       return Qt::AlignRight;
    case SH_Slider_SnapToValue: // Sliders snap to values while moving, as they do on Windows.
@@ -77,7 +77,7 @@ int OxygenStyle::styleHint ( StyleHint hint, const QStyleOption * option, const 
       return true;
 //    case SH_Widget_ShareActivation: // Turn on sharing activation with floating modeless dialogs.
    case SH_TabBar_SelectMouseType: // Which type of mouse event should cause a tab to be selected.
-      return QEvent::MouseButtonPress;
+      return QEvent::MouseButtonRelease;
 //    case SH_Q3ListViewExpand_SelectMouseType: // Which type of mouse event should cause a list view expansion to be selected.
    case SH_TabBar_PreferNoArrows: // Whether a tabbar should suggest a size to prevent scoll arrows.
       return false;

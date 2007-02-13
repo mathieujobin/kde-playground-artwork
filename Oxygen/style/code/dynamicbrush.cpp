@@ -28,8 +28,9 @@
 #include <QDebug>
 
 #define GL_GLEXT_PROTOTYPES
-#include <QGLPixelBuffer>
-#include <GL/glut.h>
+#include <QGLFramebufferObject>
+// #include <QGLPixelBuffer>
+// #include <GL/glut.h>
 
 #include <X11/Xatom.h>
 #include <cmath>
@@ -59,36 +60,6 @@
 #ifndef MAX
 #define MAX(x,y) ((x) > (y) ? (x) : (y))
 #endif
-
-static Atom oxygen_isQtWindow = XInternAtom(QX11Info::display(), "OXYGEN_IS_QT_WINDOW", False);
-
-void (DynamicBrush::*updateBrush)();
-
-DynamicBrush::DynamicBrush(Mode mode, QObject *parent) : QObject(parent), _mode(mode), _timerPbWipe(0)
-{
-   _timerBgWipe = new QTimer(this);
-   connect (_timerBgWipe, SIGNAL(timeout()), this, SLOT(wipeBackground()));
-   switch (_mode)
-   {
-   case Tiled: updateBrush = &DynamicBrush::updateBrushTiled; break;
-   case XRender: updateBrush = &DynamicBrush::updateBrushRender; break;
-   case QtGradient: updateBrush = &DynamicBrush::updateBrushQt; break;
-   case OpenGL:
-      updateBrush = &DynamicBrush::updateBrushGL;
-      _timerPbWipe = new QTimer(this);
-      connect (_timerPbWipe, SIGNAL(timeout()), this, SLOT(wipePBuffer()));
-      _pbuffer = 0;
-      break;
-   case Tiled2: updateBrush = &DynamicBrush::updateBrushEdMetal; break;
-   }
-}
-
-DynamicBrush::DynamicBrush(Pixmap pixmap, Pixmap shadow, int bgYoffset, QObject *parent) : QObject(parent), _pixmap(pixmap), _shadow(shadow), _bgYoffset(bgYoffset), _mode(Tiled), _timerPbWipe(0)
-{
-   _timerBgWipe = new QTimer(this);
-   connect (_timerBgWipe, SIGNAL(timeout()), this, SLOT(wipeBackground()));
-   updateBrush = &DynamicBrush::updateBrushTiled;
-}
 
 #define SATURATION_COLOR(R,G,B) \
    grey = (299 * R + 587 * G + 114 * B) / 1000; \
@@ -167,7 +138,40 @@ static QPixmap mirror(const QPixmap &pix, Qt::Orientation o)
    return mirror;
 }
 
-DynamicBrush::DynamicBrush(const QImage &leftCenter, const QImage &leftTile, QObject *parent) : QObject(parent), _mode(Tiled2),_timerPbWipe(0)
+static Atom oxygen_isQtWindow = XInternAtom(QX11Info::display(), "OXYGEN_IS_QT_WINDOW", False);
+
+static GLuint _background;
+
+void (DynamicBrush::*updateBrush)();
+
+DynamicBrush::DynamicBrush(Mode mode, QObject *parent) : QObject(parent), _mode(mode), _glContext(0)
+{
+   _timerBgWipe = new QTimer(this);
+   connect (_timerBgWipe, SIGNAL(timeout()), this, SLOT(wipeBackground()));
+   switch (_mode)
+   {
+   case Tiled: updateBrush = &DynamicBrush::updateBrushTiled; break;
+   case XRender: updateBrush = &DynamicBrush::updateBrushRender; break;
+   case QtGradient: updateBrush = &DynamicBrush::updateBrushQt; break;
+   case OpenGL:
+      updateBrush = &DynamicBrush::updateBrushGL;
+      _glContext = new QGLWidget( QGLFormat::defaultFormat(), 0 );
+      initGL();
+      break;
+   case Tiled2: updateBrush = &DynamicBrush::updateBrushEdMetal; break;
+   case VerticalGradient: updateBrush = &DynamicBrush::updateBrushVerticalGradient; break;
+   case HorizontalGradient: updateBrush = &DynamicBrush::updateBrushHorizontalGradient; break;
+   }
+}
+
+DynamicBrush::DynamicBrush(OXPixmap pixmap, OXPixmap shadow, int bgYoffset, QObject *parent) : QObject(parent), _pixmap(pixmap), _shadow(shadow), _bgYoffset(bgYoffset), _mode(Tiled), _glContext(0)
+{
+   _timerBgWipe = new QTimer(this);
+   connect (_timerBgWipe, SIGNAL(timeout()), this, SLOT(wipeBackground()));
+   updateBrush = &DynamicBrush::updateBrushTiled;
+}
+
+DynamicBrush::DynamicBrush(const QImage &leftCenter, const QImage &leftTile, QObject *parent) : QObject(parent), _mode(Tiled2),_glContext(0)
 {
    _timerBgWipe = new QTimer(this);
    connect (_timerBgWipe, SIGNAL(timeout()), this, SLOT(wipeBackground()));
@@ -186,9 +190,21 @@ DynamicBrush::DynamicBrush(const QImage &leftCenter, const QImage &leftTile, QOb
    _tile[1][1] = tint(leftTile.mirrored(true, false), c);
 }
 
+DynamicBrush::~DynamicBrush()
+{
+   glDeleteLists( _background, 1 );
+//    QObject::~QObject();
+}
+
 void DynamicBrush::setMode(Mode mode)
 {
    if (mode == _mode) return;
+   if (_mode == OpenGL)
+   {
+      glDeleteLists( _background, 1 );
+      delete _glContext;
+      _glContext = 0L;
+   }
    _mode = mode;
    switch (_mode)
    {
@@ -197,16 +213,15 @@ void DynamicBrush::setMode(Mode mode)
    case QtGradient: updateBrush = &DynamicBrush::updateBrushQt; break;
    case OpenGL:
       updateBrush = &DynamicBrush::updateBrushGL;
-      if (!_timerPbWipe)
+      if (!_glContext)
       {
-         _timerPbWipe = new QTimer(this);
-         connect (_timerPbWipe, SIGNAL(timeout()), this, SLOT(wipePBuffer()));
+         _glContext = new QGLWidget( QGLFormat::defaultFormat(), 0 );
+         initGL();
       }
-      if (_pbuffer)
-         delete _pbuffer;
-      _pbuffer = 0;
       break;
    case Tiled2: updateBrush = &DynamicBrush::updateBrushEdMetal; break;
+   case VerticalGradient: updateBrush = &DynamicBrush::updateBrushVerticalGradient; break;
+   case HorizontalGradient: updateBrush = &DynamicBrush::updateBrushHorizontalGradient; break;
    }
 }
 
@@ -224,14 +239,14 @@ bool DynamicBrush::eventFilter ( QObject * object, QEvent * ev )
       
    /* Test for the currently demanded bg size */
    QSize size;
-//    bool triggerUpdate = false;
+   bool triggerUpdate = false;
    if (ev->type() == QEvent::UpdateRequest)
       size = ((QWidget*)object)->topLevelWidget()->size();
    else if (((QWidget*)object)->isWindow())
    {
       if (ev->type() == QEvent::Resize)
       {
-//          triggerUpdate = true;
+         triggerUpdate = true;
          size = ((QResizeEvent*)ev)->size();
       }
       else if ( ev->type() == QEvent::WindowActivate ||
@@ -243,7 +258,7 @@ bool DynamicBrush::eventFilter ( QObject * object, QEvent * ev )
          /* we might get a new deco, so tell it that this it a oxygen styled qt window */
          int one = 1;
          XChangeProperty(QX11Info::display(), ((QWidget*)object)->winId(), oxygen_isQtWindow, XA_CARDINAL, 32, PropModeReplace, (unsigned char *) &(one), 1L);
-//          triggerUpdate = true;
+         triggerUpdate = true;
       }
       else if (ev->type() == QEvent::Hide)
          size = QSize();
@@ -265,7 +280,7 @@ bool DynamicBrush::eventFilter ( QObject * object, QEvent * ev )
        (this->*updateBrush)();
    }
    /* Maybe we better force an update */
-//    if (triggerUpdate) ((QWidget*)object)->update();
+   if (triggerUpdate) ((QWidget*)object)->update();
    
    return false;
 }
@@ -276,16 +291,6 @@ void DynamicBrush::wipeBackground()
    _size = QSize();
    QPixmap qPix;
       SETBACKGROUND(qPix);
-}
-
-void DynamicBrush::wipePBuffer()
-{
-   _timerPbWipe->stop();
-   if (_pbuffer)
-   {
-      delete _pbuffer;
-      _pbuffer = 0L;
-   }
 }
 
 void DynamicBrush::updateBrushTiled()
@@ -317,6 +322,39 @@ void DynamicBrush::updateBrushTiled()
    XFreeGC ( dpy , gc );
    
    /* update  the brush textures*/
+   SETBACKGROUND(qPix);
+}
+
+void DynamicBrush::updateBrushVerticalGradient()
+{
+   QPixmap qPix(32, _size.height());
+   QColor c(QApplication::palette().color(QPalette::Window));
+   qPix.fill(c);
+   int h_8 = qPix.height()/8;
+   QLinearGradient lg(QPoint(0,0), QPoint(0, h_8));
+   lg.setColorAt(0, c.dark(105)); lg.setColorAt(1, c);
+   QPainter p(&qPix);
+   p.fillRect(0,0,32,h_8,lg);
+   lg = QLinearGradient(QPoint(0,qPix.height()-h_8), QPoint(0, qPix.height()-1));
+   lg.setColorAt(0, c); lg.setColorAt(1, c.light(105));
+   p.fillRect(0,qPix.height()-h_8,32,h_8,lg);
+   SETBACKGROUND(qPix);
+}
+
+void DynamicBrush::updateBrushHorizontalGradient()
+{
+   QPixmap qPix(_size.width(), 32);
+   QColor c(QApplication::palette().color(QPalette::Window));
+   qPix.fill(c);
+   QColor cl = c.light(105);
+   int w_8 = qPix.width()/8;
+   QLinearGradient lg(QPoint(0,0), QPoint(w_8, 0));
+   lg.setColorAt(0, cl); lg.setColorAt(1, c);
+   QPainter p(&qPix);
+   p.fillRect(0,0,w_8,32,lg);
+   lg = QLinearGradient(QPoint(qPix.width()-w_8,0), QPoint(qPix.width()-1, 0));
+   lg.setColorAt(0, c); lg.setColorAt(1, cl);
+   p.fillRect(qPix.width()-w_8,0,w_8,32,lg);
    SETBACKGROUND(qPix);
 }
 
@@ -379,10 +417,24 @@ void DynamicBrush::updateBrushEdMetal()
 #define _PROFILERESTART_ timer.restart();
 #define _PROFILESTOP_(_STRING_) time = timer.elapsed(); qDebug("%s: %d",_STRING_,time);
 
+void DynamicBrush::initGL()
+{
+   _glContext->makeCurrent();
+   glClearColor (0.0, 0.0, 0.0, 0.0);
+   glShadeModel (GL_SMOOTH);
+   glEnable(GL_BLEND);
+   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+   glDisable(GL_DEPTH_TEST);
+   _glContext->doneCurrent();
+//    glNewList( _background, GL_COMPILE );
+// 
+//    glEndList();
+}
+
 QPixmap DynamicBrush::glPixmap(const QRect &rect, int darkness)
 {
    // so we'll use false colors here, avoiding image swap orgies
-# if __BYTE_ORDER == __BIG_ENDIAN // OpenGL talks RGBA; Qt wants ARGB
+# if __BYTE_ORDER == __BIG_ENDIAN // OpenGL talks RGBA; Qt wants ARGB, do sth. about read type, need ppc arch for testing
 #define _COLORS_ &a,&r,&g,&b
    double r,g,b,a;
 #else // OpenGL talks ABGR; Qt wants ARGB
@@ -393,17 +445,29 @@ QPixmap DynamicBrush::glPixmap(const QRect &rect, int darkness)
       QApplication::palette().color(QPalette::Window).dark(100+darkness).getRgbF(_COLORS_);
    else
       QApplication::palette().color(QPalette::Window).getRgbF(_COLORS_);
-   QSize sizeDemand = QApplication::desktop()->size();
-   if (rect.right() > sizeDemand.width()) sizeDemand.setWidth(rect.right());
-   if (rect.bottom() > sizeDemand.height()) sizeDemand.setHeight(rect.bottom());
-   if (!_pbuffer ||
-       _pbuffer->size().width() < sizeDemand.width() ||
-       _pbuffer->size().height() < sizeDemand.height())
+   _glContext->makeCurrent();
+   int width = 128, height = 128; // texture_2d must be 2^n, we start with 2^7 to save some time here ;)
+   while (width < _size.width()) width = (width<<1);
+   while (height < _size.height()) height = (height<<1);
+
+//    if (!QGLFramebufferObject::hasOpenGLFramebufferObjects())
+//    {
+//       qWarning("ARRGHHH... system doesn't support framebuffers!?!");
+//       return QPixmap();
+//    }
+   
+   QGLFramebufferObject *buffer = new QGLFramebufferObject(width, height );
+   if (!buffer->isValid())
    {
-      delete _pbuffer;
-      _pbuffer = new QGLPixelBuffer(sizeDemand);
+      qWarning("ARRGHHH... failed to create a texture buffer!");
+      return QPixmap();
    }
-   _pbuffer->makeCurrent();
+   if (!buffer->bind())
+   {
+      qWarning("ARRGHHH... failed to bind gl rendering to texture buffer!");
+      return QPixmap();
+   }
+   
    glViewport(0, 0, (GLsizei) _size.width(), (GLsizei) _size.height());
    glMatrixMode (GL_PROJECTION);
    glLoadIdentity ();
@@ -411,14 +475,9 @@ QPixmap DynamicBrush::glPixmap(const QRect &rect, int darkness)
    GLfloat fw = 30.0/_size.width(), fh = 30.0/_size.height();
    // the statement is vertically mirrored, as is the pbuffer to a qimage
    // we simply avoid a software mirror and paint "mirrored" in gl (no one will see ;)
-   gluOrtho2D (rect.x()*fw, rect.right()*fw, rect.y()*fh, rect.bottom()*fh);
+   glOrtho( rect.x()*fw, rect.right()*fw, rect.y()*fh, rect.bottom()*fh, -1, 1 );
    glMatrixMode(GL_MODELVIEW);
-   glClearColor (0.0, 0.0, 0.0, 0.0);
-   glShadeModel (GL_SMOOTH);
-   glEnable(GL_BLEND);
-   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-   glDisable(GL_DEPTH_TEST);
-   glBegin (GL_QUADS);
+      glBegin (GL_QUADS);
       glColor4f (r*0.8, g*0.8, b*0.8, 1.0);
       glVertex2f (0.0, 30.0);
       glVertex2f (30.0, 30.0);
@@ -431,9 +490,7 @@ QPixmap DynamicBrush::glPixmap(const QRect &rect, int darkness)
       glVertex2f (30.0, 30.0);
       glColor4f (r, g, b, 0.0);
       glVertex2f (15.0, 30.0);
-//       glVertex2f (0.0, 30.0);
       glVertex2f (30.0, 5.0);
-//       glVertex2f (30.0, 0.0);
    glEnd();
    glBegin (GL_TRIANGLE_FAN);
       r *= 1.1; g *= 1.1; b *=1.1;
@@ -449,10 +506,8 @@ QPixmap DynamicBrush::glPixmap(const QRect &rect, int darkness)
       glVertex2f (4.0, 3.0);
       glVertex2f (0.0, 0.0);
    glEnd();
+//    glCallList(_background);
    glFlush();
-//    QImage::Format format = QImage::Format_RGB32;
-//    if (pbuffer.format().alpha())
-//         format = QImage::Format_ARGB32_Premultiplied;
    
    /* ================================================================
       Hi complex...
@@ -521,10 +576,7 @@ QPixmap DynamicBrush::glPixmap(const QRect &rect, int darkness)
       p.drawPixmap(rlw,rYOff, tmp);
    }
    p.end();
-//    QImage img(_size, QImage::Format_RGB32/*format*/);
-//    glReadPixels(0, 0, _size.width(), _size.height(), GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
-//    QPixmap pix = QPixmap::fromImage(img, Qt::ColorOnly|Qt::OrderedDither);
-   _timerPbWipe->start(777);
+   delete buffer;
    return pix;
 }
 
@@ -540,11 +592,11 @@ void DynamicBrush::updateBrushRender()
    QPixmap qPix(_size);
    Display *dpy = QX11Info::display();
    ColorArray ca = ColorArray() << c << c.dark(110);
-   Picture lgp = OXRender::gradient(QPoint(0,0), QPoint(0,qPix.height()), ca);
+   OXPicture lgp = OXRender::gradient(QPoint(0,0), QPoint(0,qPix.height()), ca);
    XRenderComposite (dpy, PictOpSrc, lgp, None, qPix.x11PictureHandle(),
                      0, 0, 0, 0, 0, 0, qPix.width(), qPix.height());
    XRenderFreePicture(dpy, lgp);
-   ca.replace(0, QColor(255,255,255,140)); ca.replace(1, QColor(255,255,255,0));
+   ca.replace(0, QColor(255,255,255,180)); ca.replace(1, QColor(255,255,255,0));
    float f[2] = {
          pow(0.5, (float)qPix.height()/qPix.width()),
          pow(0.5, (float)qPix.width()/qPix.height())};
@@ -553,11 +605,13 @@ void DynamicBrush::updateBrushRender()
    XRenderComposite (dpy, PictOpOver, lgp, None, qPix.x11PictureHandle(),
                      0, 0, 0, 0, 0, 0, qPix.width(), qPix.height());
    XRenderFreePicture(dpy, lgp);
-//    XRenderCreateRadialGradient (Display *dpy,
-//                                      const XRadialGradient *gradient,
-//                                      const XFixed *stops,
-//                                      const XRenderColor *colors,
-//                                      int nstops);
+   int h = qPix.height()/6;
+   int r = -(pow(qPix.width(),2)/4+pow(h,2))/(-2*h);
+   lgp = OXRender::gradient(QPoint(qPix.width()/2, 0), 0,
+                            QPoint(qPix.width()/2,h-r), r, ca);
+   XRenderComposite (dpy, PictOpOver, lgp, None, qPix.x11PictureHandle(),
+                     0, 0, 0, 0, 0, 0, qPix.width(), qPix.height());
+   XRenderFreePicture(dpy, lgp);
    SETBACKGROUND(qPix);
 }
 
@@ -703,28 +757,14 @@ QPixmap DynamicBrush::shadow(const QRect &rect)
       {
          _glShadow = QPixmap(rect.size());
          _lastShadowRect = rect;
-         QColor c = QApplication::palette().color(QPalette::Window).dark(110);
-         QLinearGradient lg1(QPoint(0,-rect.y()), QPoint(0, _size.height()-rect.y()));
-         lg1.setColorAt(0, c);
-         lg1.setColorAt(1, c.dark(110));
-         QLinearGradient lg2(QPoint(_size.width()/2-rect.x(), _size.height()/2-rect.y()), QPoint(_size.width()-rect.x(), _size.height()-rect.y()));
-         QColor ct = c; ct.setAlpha(0);
-         lg2.setColorAt(0, ct);
-         ct.setAlpha(140);
-         lg2.setColorAt(1, ct);
-         QPainter p(&_glShadow);
-         p.setPen(Qt::NoPen);
-         p.setBrush(lg1);
-         p.drawRect( 0, 0, _glShadow.width(), _glShadow.height());
-         QPoint points[3] =
-         {
-            QPoint(rect.right(), 0),
-            QPoint(rect.right(), rect.bottom()),
-            QPoint(rect.x(), rect.bottom())
-         };
-         p.setBrush(lg2);
-         p.drawPolygon(points, 3);
-         p.end();
+         QColor c = QApplication::palette().color(QPalette::Window).light(105);
+         ColorArray ca = ColorArray() << c << c.dark(110);
+         QPoint center(_glShadow.width()/2, _glShadow.height());
+         int r = sqrt(pow(_glShadow.width()/2,2)+pow(_glShadow.height(),2));
+         OXPicture rg = OXRender::gradient(center, 0, center, r, ca);
+         XRenderComposite (QX11Info::display(), PictOpSrc, rg, None, _glShadow.x11PictureHandle(),
+                           0, 0, 0, 0, 0, 0, _glShadow.width(), _glShadow.height());
+         XRenderFreePicture(QX11Info::display(), rg);
       }
       return _glShadow;
    }
@@ -739,7 +779,7 @@ static bool eraseWidget(const QWidget *widget, const QPaintDevice *device, bool 
    if (bgWidget->backgroundRole() == Qt::NoBackground || !widget->palette().brush( QPalette::Active, bgWidget->backgroundRole() ).texture().isNull())
       return false;
    
-   Pixmap _bgPx;
+   OXPixmap _bgPx;
    if (bgWidget->palette().color(QPalette::Active, bgWidget->backgroundRole()) == qApp->palette().color( QPalette::Active, QPalette::Background))
       _bgPx = bgPix;
    else if (bgWidget->palette().color(QPalette::Active, bgWidget->backgroundRole()) == groupShadowColor_)
@@ -839,10 +879,13 @@ static bool eraseWidget(const QWidget *widget, const QPaintDevice *device, bool 
 }
 #endif
 
-void DynamicBrush::setXPixmap(Pixmap pixmap, Pixmap shadow)
+void DynamicBrush::setXPixmap(OXPixmap pixmap, OXPixmap shadow)
 {
    if (pixmap != -1)
       _pixmap = pixmap;
    if (shadow != -1)
       _shadow = shadow;
 }
+// cause of cmake
+#include "dynamicbrush.moc"
+

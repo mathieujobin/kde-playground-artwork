@@ -48,7 +48,7 @@ int OxygenStyle::pixelMetric ( PixelMetric pm, const QStyleOption * option, cons
          return 4;
    case PM_SpinBoxFrameWidth: // Frame width of a spin box, defaults to PM_DefaultFrameWidth
    case PM_ComboBoxFrameWidth: // Frame width of a combo box, defaults to PM_DefaultFrameWidth.
-      return 4;
+      return 2;
 //    case PM_MDIFrameWidth: // Frame width of an MDI window
 //    case PM_MDIMinimizedWidth: // Width of a minimized MDI window
    case PM_MaximumDragDistance: // Some feels require the scroll bar or other sliders to jump back to the original position when the mouse pointer is too far away while dragging; a value of -1 disables this behavior
@@ -133,8 +133,9 @@ int OxygenStyle::pixelMetric ( PixelMetric pm, const QStyleOption * option, cons
    case PM_TabBarScrollButtonWidth: //  
       return 16;
    case PM_TabBarTabShiftHorizontal: // Horizontal pixel shift when a tab is selected
-   case PM_TabBarTabShiftVertical: // Vertical pixel shift when a tab is selected
       return 0;
+   case PM_TabBarTabShiftVertical: // Vertical pixel shift when a tab is selected
+      return 2;
 //    case PM_ProgressBarChunkWidth: // Width of a chunk in a progress bar indicator
    case PM_SplitterWidth: // Width of a splitter
       return 9;
@@ -142,7 +143,7 @@ int OxygenStyle::pixelMetric ( PixelMetric pm, const QStyleOption * option, cons
       return 18;
    case PM_IndicatorWidth: // Width of a check box indicator
    case PM_IndicatorHeight: // Height of a checkbox indicator
-      return 25;
+      return 20;
    case PM_ExclusiveIndicatorWidth: // Width of a radio button indicator
    case PM_ExclusiveIndicatorHeight: // Height of a radio button indicator
       return 17;

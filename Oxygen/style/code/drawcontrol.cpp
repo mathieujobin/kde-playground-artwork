@@ -30,19 +30,13 @@
 #include <QPainter>
 #include "oxygen.h"
 
+#include <QtDebug>
+
 #include "inlinehelp.cpp"
 
 using namespace Oxygen;
 
 extern Config config;
-
-/**gradients or glosses*/
-inline const QPixmap OxygenStyle::colorRun(const QColor &c, const int size, Qt::Orientation o, Orientation3D o3D, bool smooth) const
-{
-   if (smooth)
-      return gradient(c, size, o, o3D);
-   return gloss(c, size, o, o3D);
-}
 
 static const int windowsItemFrame	= 1; // menu item frame width
 static const int windowsItemHMargin	= 3; // menu item hor text margin
@@ -82,6 +76,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
    Q_ASSERT(painter);
 #define RECT option->rect
 #define PAL option->palette
+#define COLOR(_TYPE_) option->palette.color(QPalette::_TYPE_)
    
    bool sunken = option->state & State_Sunken;
    bool isEnabled = option->state & State_Enabled;
@@ -99,42 +94,30 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          {
             if (sunken || (option->state & QStyle::State_On))
             {
-               QRegion innerRegion = round_frames[Sunken].innerRegion(RECT);
-               painter->save();
-               painter->setClipRegion(innerRegion);
-               QRect ir = innerRegion.boundingRect();
                if (sunken) hover = false;
-               painter->drawTiledPixmap(ir, gradient(PAL.color(QPalette::Window),ir.height(),Qt::Vertical, hover ? Raised : Sunken));
-               painter->restore();
-               renderFrame( painter, RECT, Sunken, Full, widget, false, true );
+               fillWithMask(painter, RECT, gradient(PAL.color(QPalette::Window),RECT.height(),Qt::Vertical, hover ? GradSimple : GradSunken), &masks.round[Sunken]);
+               renderFrame( painter, RECT, Sunken, Tile::Ring, widget, false, true );
                if (hasFocus)
-                  renderFrame( painter, RECT, Relief, Full, widget, true, true );
+                  renderFrame( painter, RECT, Relief, Tile::Ring, widget, true, true );
             }
             else
             {
                if (hover)
-               {
-                  QRegion innerRegion = round_frames[Relief].innerRegion(RECT);
-                  painter->save();
-                  painter->setClipRegion(innerRegion);
-                  QRect ir = innerRegion.boundingRect();
-                  painter->drawTiledPixmap(ir, gradient(PAL.color(QPalette::Window),ir.height(),Qt::Vertical, Raised ));
-                  painter->restore();
-               }
-               renderFrame( painter, RECT, Relief, Full, widget, false, true );
+                  fillWithMask(painter, RECT, gradient(PAL.color(QPalette::Window),RECT.height(),Qt::Vertical), &masks.round[Relief]);
+               renderFrame( painter, RECT, Relief, Tile::Ring, widget, false, true );
                if (hasFocus)
-                  renderFrame( painter, RECT, Relief, Full, widget, true, true );
+                  renderFrame( painter, RECT, Relief, Tile::Ring, widget, true, true );
             }
          }
          else
          {
-            if (!config.roundButtons)
-               tmpBtn.rect = btn->rect.adjusted(2,2,-2,-2);
-            if (hasFocus)
-               renderFrame( painter, RECT, Sunken, Full, widget, true, config.roundButtons);
+//             tmpBtn.rect = btn->rect.adjusted(2,2,-2,-2);
+//             if (hasFocus)
+//                renderFrame( painter, RECT, Sunken, Tile::Ring, widget, true, false);
             drawControl(CE_PushButtonBevel, &tmpBtn, painter, widget);
          }
 //          tmpBtn.rect = subElementRect(SE_PushButtonContents, btn, widget);
+         tmpBtn.rect = btn->rect.adjusted(3,5,-3,-3);
          drawControl(CE_PushButtonLabel, &tmpBtn, painter, widget);
       }
       break;
@@ -205,7 +188,9 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          if (btn->features & QStyleOptionButton::Flat)
             fc = PAL.color(QPalette::WindowText);
          else
-         {
+            fc = COLOR(ButtonText);
+//                midColor(PAL.color(QPalette::ButtonText), PAL.color(QPalette::Button));
+/*         {
             QColor bc = btnBgColor(PAL, isEnabled, hasFocus, hover);
             fc = btnFgColor(PAL, isEnabled, hasFocus, hover);
 
@@ -216,7 +201,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
                drawItemText(painter, ir, tf, PAL, isEnabled, btn->text);
                ir.moveTop(ir.top()+1);
             }
-         }
+         }*/
          if (isDefault)
          {
             QFont tmpFnt = painter->font(); tmpFnt.setBold(true);
@@ -323,52 +308,71 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       if (const QStyleOptionTab *tab =
           qstyleoption_cast<const QStyleOptionTab *>(option))
       {
-         Qt::Orientation o = Qt::Vertical;
-         PosFlags pf = 0; int size = 0;
-         QWidget *tabbar = widget ? widget->parentWidget() : 0L;
-         bool restorePainter = false;
-
+         bool selected = option->state & State_Selected;
+         if (!(hover || selected || sunken))
+            break;
+         Tile::PosFlags pf = 0; int size = 0; Qt::Orientation o = Qt::Vertical;
+         QRect rect = RECT;
          switch (tab->shape)
          {
          case QTabBar::RoundedNorth:
          case QTabBar::TriangularNorth:
+            pf = Tile::Top | Tile::Left | Tile::Right;
+            size = RECT.height()-4;
+            rect.setTop(rect.top()+2);
+            break;
          case QTabBar::RoundedSouth:
          case QTabBar::TriangularSouth:
-            pf = (Left | Right); size = RECT.height();
-            if (tabbar && (widget->mapToParent(RECT.topLeft()).x() < 3 || widget->mapToParent(RECT.topRight()).x() > tabbar->width()-3))
-            {
-               painter->save();
-               QRect rect = tabbar->rect(); rect.setHeight(RECT.height());
-               painter->setClipRegion(round_frames[Raised].innerRegion(rect), Qt::IntersectClip);
-               restorePainter = true;
-            }
+            pf = Tile::Bottom | Tile::Left | Tile::Right;
+            size = RECT.height()-4;
+            rect.setBottom(rect.bottom()-2);
             break;
          case QTabBar::RoundedEast:
          case QTabBar::TriangularEast:
+            pf = Tile::Top | Tile::Bottom | Tile::Right;
+            size = RECT.width()-4;
+            o = Qt::Horizontal;
+            rect.setRight(rect.right()-2);
+            break;
          case QTabBar::RoundedWest:
          case QTabBar::TriangularWest:
-            o = Qt::Horizontal; pf = (Top | Bottom); size = RECT.width();
-            if (tabbar && (widget->mapToParent(RECT.topLeft()).y() < 3 || widget->mapToParent(RECT.bottomLeft()).y() > tabbar->height()-3))
-            {
-               painter->save();
-               QRect rect = tabbar->rect(); rect.setHeight(RECT.height());
-               painter->setClipRegion(round_frames[Raised].innerRegion(rect), Qt::IntersectClip);
-               restorePainter = true;
-            }
+            pf = Tile::Top | Tile::Bottom | Tile::Left;
+            size = RECT.width()-4;
+            o = Qt::Horizontal;
+            rect.setLeft(rect.left()+2);
+            break;
          }
-         
-         if (option->state & State_Selected) // active tab
+         if (selected)
          {
-            painter->drawTiledPixmap(RECT, gradient(PAL.color(QPalette::Window), size, o, Sunken));
-            renderFrame( painter, RECT, Sunken, pf); // side shadow
+            size = (o == Qt::Vertical) ? 2*rect.height() : 2*rect.width();
+            fillWithMask(painter, rect.adjusted(2,1,-2,0),
+                         gradient(COLOR(Window), size, o, GradSimple), &masks.tab, pf | Tile::Center);
+            shadows.tab.render(rect, painter, pf);
+            break;
          }
-         else // basic
+         else
          {
-            size -=4;
-            painter->drawTiledPixmap((o == Qt::Vertical) ? RECT.adjusted(0,2,0,-2) : RECT.adjusted(2,0,-2,0),
-                                     gloss(PAL.color(hover ? config.tabTextColor : config.tabColor), size, o, Raised));
+            QPalette::ColorRole role = (widget && widget->parentWidget() && widget->parentWidget()->hasFocus()) ?
+               QPalette::HighlightedText : QPalette::Window;
+            QRect rect = RECT.adjusted(2,4,-2,-4);
+//             if (sunken)
+//             {
+               fillWithMask(painter, rect, gradient(PAL.color(role), size, o, sunken?GradSunken:GradGloss), &masks.button);
+//                break;
+//             }
+            // hover
+//             painter->save();
+//             painter->setRenderHint( QPainter::Antialiasing );
+//             painter->setBrush(PAL.color(role));
+//             painter->setPen(Qt::NoPen);
+//             int rx = 35; int ry = 35;
+//             if (rect.width() > rect.height())
+//                rx = (rx*rect.height())/rect.width();
+//             else
+//                ry = (ry*rect.width())/rect.height();
+//             painter->drawRoundRect(rect, rx, ry);
+//             painter->restore();
          }
-         if (restorePainter) painter->restore();
       }
       break;
    case CE_TabBarTabLabel: // The label within a tab
@@ -377,21 +381,40 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       {
          painter->save();
          QStyleOptionTabV2 tabV2(*tab);
-         QRect tr = tabV2.rect;//.adjusted(0,2,0,0);
-         bool verticalTabs = tabV2.shape == QTabBar::RoundedEast
-            || tabV2.shape == QTabBar::RoundedWest
-            || tabV2.shape == QTabBar::TriangularEast
-            || tabV2.shape == QTabBar::TriangularWest;
+         QRect tr = tabV2.rect; bool verticalTabs = false;
+         bool east = false;
          bool selected = tabV2.state & State_Selected;
+         int alignment = Qt::AlignCenter | Qt::TextShowMnemonic;
+         
+         switch(tabV2.shape)
+         {
+         case QTabBar::RoundedNorth:
+         case QTabBar::TriangularNorth:
+            if (selected) tr.setTop(tr.top()+2);
+            break;
+         case QTabBar::RoundedSouth:
+         case QTabBar::TriangularSouth:
+            if (selected) tr.setBottom(tr.bottom()-2);
+            break;
+         case QTabBar::RoundedEast:
+         case QTabBar::TriangularEast:
+            if (selected) tr.setRight(tr.right()-2);
+            verticalTabs = true; east = true;
+            break;
+         case QTabBar::RoundedWest:
+         case QTabBar::TriangularWest:
+            if (selected) tr.setLeft(tr.left()+2);
+            verticalTabs = true;
+            break;
+         }
+         
          if (verticalTabs)
          {
             int newX, newY, newRot;
-            if (tabV2.shape == QTabBar::RoundedEast || tabV2.shape == QTabBar::TriangularEast)
-            {
+            if (east) {
                newX = tr.width(); newY = tr.y(); newRot = 90;
             }
-            else
-            {
+            else {
                newX = 0; newY = tr.y() + tr.height(); newRot = -90;
             }
             tr.setRect(0, 0, tr.height(), tr.width());
@@ -399,8 +422,6 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             m.translate(newX, newY); m.rotate(newRot);
             painter->setMatrix(m, true);
          }
-         
-         int alignment = Qt::AlignCenter | Qt::TextShowMnemonic;
          
          if (!tabV2.icon.isNull())
          {
@@ -418,23 +439,36 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          QColor cF; QPalette::ColorRole crB;
          if (selected)
          {
-            cF = PAL.color(QPalette::WindowText); crB = QPalette::Window;
+            QFont tmpFnt = painter->font();
+            tmpFnt.setBold(true);
+            painter->setFont(tmpFnt);
+            cF = COLOR(WindowText); crB = QPalette::Window;
          }
-         else if (hover)
+         else if (widget && widget->parentWidget() &&
+                  widget->parentWidget()->hasFocus())
          {
-            cF = PAL.color(config.tabColor); crB = config.tabTextColor;
+            if (hover) {
+               cF = COLOR(Highlight); crB = QPalette::HighlightedText;
+            }
+            else {
+               cF = COLOR(HighlightedText); crB = QPalette::Highlight;
+            }
          }
          else
          {
-            cF = midColor(PAL.color(config.tabColor), PAL.color(config.tabTextColor),1,3);
-            crB = config.tabColor;
+            if (hover) {
+               cF = COLOR(WindowText); crB = QPalette::Window;
+            }
+            else {
+               cF = COLOR(Window); crB = QPalette::WindowText;
+            }
          }
          if (verticalTabs)
          {
             QPixmap pixmap(tr.size());
             pixmap.fill(Qt::transparent);
             QPainter pixPainter(&pixmap);
-            if (qGray(PAL.color(crB).rgb()) < 128) // dark background, let's paint an emboss
+            if (qGray(PAL.color(crB).rgb()) < 148) // dark background, let's paint an emboss
             {
                pixPainter.setPen(PAL.color(crB).dark(120));
                drawItemText(&pixPainter, pixmap.rect().translated(0,-1), alignment, PAL, isEnabled, tab->text);
@@ -445,7 +479,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          }
          else
          {
-            if (qGray(PAL.color(crB).rgb()) < 128) // dark background, let's paint an emboss
+            if (qGray(PAL.color(crB).rgb()) < 148) // dark background, let's paint an emboss
             {
                painter->setPen(PAL.color(crB).dark(120));
                tr.moveTop(tr.top()-1);
@@ -482,91 +516,110 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          if (const QStyleOptionProgressBarV2 *progress =
              qstyleoption_cast<const QStyleOptionProgressBarV2*>(option))
          {
-            if (progress->orientation == Qt::Horizontal)
-               painter->drawTiledPixmap(RECT, gradient(PAL.color(config.progressTextColor), RECT.height(), Qt::Vertical, Sunken));
-            else
-               painter->drawTiledPixmap(RECT, gradient(PAL.color(config.progressTextColor), RECT.width(), Qt::Horizontal, Sunken));
-         renderFrame( painter, RECT, Sunken, Full /*???*/);
+#if 1
+            QRect rect = RECT.adjusted(2,1,-2,-2);
+#else
+            QRect rect = RECT;
+#endif
+            
+            Qt::Orientation o = Qt::Vertical; int s = rect.height();
+            if (progress->orientation == Qt::Vertical) {
+               o = Qt::Horizontal; s = rect.width();
+            }
+            
+#if 1
+            shadows.button.render(RECT, painter);
+            fillWithMask(painter, rect, gradient(isEnabled?COLOR(Button):COLOR(Window), s, o, GradGloss), &masks.button);
+#else
+            fillWithMask(painter, RECT, gradient(COLOR(WindowText), s, o, GradSunken), &masks.button);
+#endif
          }
          break;
       }
    case CE_ProgressBarContents: // The progress indicator of a QProgressBar
       if (const QStyleOptionProgressBarV2 *progress =
           qstyleoption_cast<const QStyleOptionProgressBarV2*>(option))
+      {
+         double val = progress->progress;
+         bool reverse = option->direction == Qt::RightToLeft;
+         if (progress->invertedAppearance) reverse = !reverse;
+         val = val / (progress->maximum - progress->minimum);
+         
+         if ( val > 0.0 )
          {
-            double val = progress->progress;
-            bool reverse = option->direction == Qt::RightToLeft;
-            if (progress->invertedAppearance) reverse = !reverse;
-            val = val / (progress->maximum - progress->minimum);
-            
-            if ( val > 0.0 )
+            int s;
+            QRect progressRect = RECT;
+            QRegion cr;
+#if 1
+            QColor c = hasFocus?COLOR(Highlight):
+                     (isEnabled?COLOR(ButtonText):midColor(COLOR(Window),COLOR(WindowText)));
+#else
+            QColor c = hasFocus?COLOR(Highlight):
+                     (isEnabled?COLOR(Window):midColor(COLOR(Window),COLOR(WindowText)));
+#endif
+            // vertical progressbar, shake it baby ;P
+            if (progress->orientation == Qt::Vertical)
             {
-               int s;
-               QRect progressRect = RECT;
-               QRegion cr;
-               // vertical progressbar, shake it baby ;P
-               if (progress->orientation == Qt::Vertical)
+               s = qMin( RECT.height(), ( int ) (val * RECT.height() ) );
+               if ( s > 1 )
                {
-                  s = qMin( RECT.height(), ( int ) (val * RECT.height() ) );
-                  if ( s > 1 )
-                  {
-                     progressRect.setTop(RECT.bottom()-s+1);
-                     progressRect.setHeight(s);
-                     QPixmap pix(progressRect.width(), progressRect.width()<<1);
-                     QPainter paint(&pix);
-                     paint.drawTiledPixmap(0,0,pix.width(),pix.height()>>1, gradient(PAL.color(config.progressColor), pix.width(), Qt::Horizontal, Raised));
-                     paint.drawTiledPixmap(0,pix.height()>>1,pix.width(),(pix.height()>>1)+1, gloss(PAL.color(config.progressColor), pix.width(), Qt::Horizontal, Raised));
-                     paint.end();
-                     painter->drawTiledPixmap(progressRect, pix, QPoint(0, progressShift));
-                  }
+                  progressRect.setTop(RECT.bottom()-s+1);
+                  progressRect.setHeight(s);
+                  QPixmap pix(progressRect.width(), progressRect.width()<<1);
+                  QPainter paint(&pix);
+                  paint.drawTiledPixmap(0,0,pix.width(),pix.height()>>1, gradient(c, pix.width(), Qt::Horizontal));
+                  paint.drawTiledPixmap(0,pix.height()>>1,pix.width(),(pix.height()>>1)+1, gradient(c, pix.width(), Qt::Horizontal, GradGloss));
+                  paint.end();
+                  fillWithMask(painter, progressRect, pix, &masks.button, Tile::Full, false, QPoint(0,progressShift));
                }
-               else
+            }
+            else
+            {
+               s = qMin( RECT.width(), ( int ) (val * RECT.width() ) );
+               if ( s > 1 )
                {
-                  s = qMin( RECT.width()+RECT.height(), ( int ) (val * (RECT.width()+RECT.height()) ) );
-                  if ( s > 1 )
+                  QRegion diag;
+                  int xOff;
+                  int shapeOff;
+                  if (reverse)
                   {
-//                      s += progressRect.height();
-                     QRegion diag;
-                     int xOff;
-                     int shapeOff;
-                     if (reverse)
-                     {
-                        progressRect.setLeft(RECT.right()-s+1);
-                        progressRect.setWidth(s);
-                        xOff = progressShift;
-                        shapeOff = progressRect.x()+progressRect.height();
-                        for (int i = 0; i < progressRect.height() ; i++)
-                           diag += QRect(i,i,progressRect.height(),1);
-                     }
-                     else
-                     {
-                        progressRect.setWidth(s);
-                        xOff = progressRect.x()-progressShift;
-                        shapeOff = progressRect.right()+/*1+*/progressRect.height();
-                        for (int i = 0; i < progressRect.height() ; i++)
-                           diag += QRect(progressRect.height()-i-1,i,progressRect.height(),1);
-                     }
-                     
-                     // render into pixmap first to avoid complex region shifts, unifications
-                     QPixmap pix((progressRect.height()<<1)-1,progressRect.height());
-                     QPainter paint(&pix);
-                     cr = diag;
-                     diag.translate(-pix.width(),0);
-                     cr += diag;
-                     paint.drawTiledPixmap(0,0,pix.width(),pix.height(), gradient(PAL.color(config.progressColor), pix.height(), Qt::Vertical, Raised));
-                     paint.setClipRegion(cr);
-                     paint.drawTiledPixmap(0,0,pix.width(),pix.height(), gloss(PAL.color(config.progressColor), pix.height(), Qt::Vertical, Raised));
-                     paint.end();
-                     // done
-                     diag.translate(shapeOff, progressRect.y());
-                     cr = progressRect;
-                     cr -= diag;
-                     painter->setClipRegion(cr);
-                     painter->drawTiledPixmap(RECT, pix, QPoint(xOff,0));
+                     progressRect.setLeft(RECT.right()-s+1);
+                     progressRect.setWidth(s);
+                     xOff = progressShift;
+                     shapeOff = progressRect.x()+progressRect.height();
+                     for (int i = 0; i < progressRect.height() ; i++)
+                        diag += QRect(i,i,progressRect.height(),1);
                   }
+                  else
+                  {
+                     progressRect.setWidth(s);
+                     xOff = progressRect.x()-progressShift;
+                     shapeOff = progressRect.right()+/*1+*/progressRect.height();
+                     for (int i = 0; i < progressRect.height() ; i++)
+                        diag += QRect(progressRect.height()-i-1,i,progressRect.height(),1);
+                  }
+                  
+                  // render into pixmap first to avoid complex region shifts, unifications
+                  QPixmap pix((progressRect.height()<<1)-1,progressRect.height());
+                  QPainter paint(&pix);
+                  cr = diag;
+                  diag.translate(-pix.width(),0);
+                  cr += diag;
+                  paint.drawTiledPixmap(pix.rect(), gradient(c, pix.height(), Qt::Vertical, GradButton));
+                  paint.setClipRegion(cr);
+                  paint.drawTiledPixmap(pix.rect(), gradient(c, pix.height(), Qt::Vertical, GradGloss));
+                  paint.end();
+                  // done
+                  fillWithMask(painter, progressRect, pix, &masks.button, Tile::Full, false, QPoint(xOff,0));
+//                      diag.translate(shapeOff, progressRect.y());
+//                      cr = progressRect;
+//                      cr -= diag;
+//                      painter->setClipRegion(cr);
+//                      painter->drawTiledPixmap(RECT, pix, QPoint(xOff,0));
                }
             }
          }
+      }
       break;
    case CE_ProgressBarLabel: // The text label of a QProgressBar
       if (const QStyleOptionProgressBarV2 *progress =
@@ -582,23 +635,21 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          bool reverse = option->direction == Qt::RightToLeft;
          if (progress->invertedAppearance) reverse = !reverse;
          val = val / (progress->maximum - progress->minimum);
-         QMatrix m;
+         QMatrix m; QPalette::ColorRole role;
          if (progress->orientation == Qt::Vertical)
          {
             rect.setRect(RECT.x(), RECT.y(), RECT.height(), RECT.width());
-            if (progress->bottomToTop)
-            {
+            if (progress->bottomToTop) {
                m.translate(0.0, RECT.height()); m.rotate(-90);
             }
-            else
-            {
+            else {
                m.translate(RECT.width(), 0.0); m.rotate(90);
             }
          }
          if ( val > 0.0 )
          {
             int s;
-            QRegion cr;
+            QRect cr;
             if (progress->orientation == Qt::Vertical)
             {
                s = qMin( RECT.height(), ( int ) (val * RECT.height() ) );
@@ -607,41 +658,52 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             }
             else
             {
-               s = qMin( RECT.width()+RECT.height(), ( int ) (val * (RECT.width()+RECT.height()) ) );
+               s = qMin( RECT.width(), ( int ) (val * RECT.width() ) );
                if ( s > 1 )
                {
-//                   s += RECT.height();
-                  QRect progressRect = RECT;
+//                   QRect progressRect = RECT;
+                  cr = RECT;
                   if (reverse)
                   {
-                     progressRect.setLeft(RECT.right()-s+1);
-                     progressRect.setWidth(s);
-                     int left = progressRect.x()-progressRect.height();
-                     for (int i = 0; i < progressRect.height(); i++)
-                        cr += QRect(left+i,progressRect.y()+i,progressRect.height(),1);
+                     cr.setLeft(RECT.right()-s+1);
+                     cr.setWidth(s);
+//                      int left = progressRect.x()-progressRect.height();
+//                      for (int i = 0; i < progressRect.height(); i++)
+//                         cr += QRect(left+i,progressRect.y()+i,progressRect.height(),1);
                   }
                   else
-                  {
-                     progressRect.setWidth(s);
-                     int right = progressRect.x()+progressRect.width();
+//                   {
+                     cr.setWidth(s);
+/*                     int right = progressRect.x()+progressRect.width();
                      for (int i = 0; i < progressRect.height(); i++)
                         cr += QRect(right-i-1, progressRect.y()+i, progressRect.height(),1);
                   }
-                  cr = QRegion(progressRect) - cr;
+                  cr = QRegion(progressRect) - cr;*/
                }
             }
-            painter->setClipRegion(cr);
+//             painter->setClipRegion(cr);
+            painter->setClipRect(cr);
             painter->setMatrix(m);
+#if 1
+            role = isEnabled ? (hasFocus?QPalette::HighlightedText:QPalette::Button):QPalette::Window;
+#else
+            role = hasFocus?QPalette::HighlightedText:QPalette::WindowText;
+#endif
             drawItemText(painter, rect, Qt::AlignCenter | Qt::TextSingleLine, PAL, isEnabled,
-                         progress->text, config.progressTextColor);
+                         progress->text, role);
             painter->resetMatrix();
             painter->setClipRegion(QRegion(RECT).subtract(cr));
          }
          if (anmiationUpdate)
             break;
          painter->setMatrix(m);
+#if 1
+         role = isEnabled ? (hasFocus?QPalette::Highlight:QPalette::ButtonText):QPalette::WindowText;
+#else
+         role = hasFocus?QPalette::Highlight:QPalette::Window;
+#endif
          drawItemText(painter, rect, Qt::AlignCenter | Qt::TextSingleLine, PAL, isEnabled,
-                      progress->text, config.progressColor);
+                      progress->text, role);
          painter->restore();
       }
       break;
@@ -759,7 +821,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          
          if (menuItem->menuItemType == QStyleOptionMenuItem::Separator)
          {
-            painter->drawTiledPixmap(RECT, gradient(PAL.color(QPalette::Active, bg), RECT.height(), Qt::Vertical, Raised));
+            painter->drawTiledPixmap(RECT, gradient(PAL.color(QPalette::Active, bg), RECT.height(), Qt::Vertical));
             if (!menuItem->text.isEmpty())
             {
                painter->setFont(menuItem->font);
@@ -892,13 +954,13 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       if (option->state & State_DownArrow)
       {
          painter->drawTiledPixmap(RECT, gradient(PAL.color(QPalette::Active, bg),
-            RECT.height()*2, Qt::Vertical, sunken ? Sunken : Raised), QPoint(0,RECT.height()));
+            RECT.height()*2, Qt::Vertical, sunken ? GradSunken : GradSimple), QPoint(0,RECT.height()));
          drawPrimitive(PE_IndicatorArrowDown, option, painter, widget);
       }
       else
       {
          painter->drawTiledPixmap(RECT, gradient(PAL.color(QPalette::Active, bg),
-            RECT.height()*2, Qt::Vertical, sunken ? Sunken : Raised));
+            RECT.height()*2, Qt::Vertical, sunken ? GradSunken : GradSimple));
          drawPrimitive(PE_IndicatorArrowUp, option, painter, widget);
       }
       break;
@@ -922,14 +984,14 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             if (option->state & State_Selected)
             {
                bgRole = QPalette::WindowText;
-               painter->drawTiledPixmap(RECT, gradient(PAL.color(bgRole), RECT.height(), Qt::Vertical, Raised));
+               painter->drawTiledPixmap(RECT, gradient(PAL.color(bgRole), RECT.height(), Qt::Vertical));
                role = QPalette::Window;
                QFont f(painter->font());
                f.setBold(true);
                painter->setFont(f);
             }
             else
-               painter->drawTiledPixmap(RECT, colorRun(PAL.color(bgRole), RECT.height(), Qt::Vertical, sunken ? Sunken : Raised, !hover));
+               painter->drawTiledPixmap(RECT, gradient(PAL.color(bgRole), RECT.height(), Qt::Vertical, sunken ? GradSunken : hover?GradGloss:GradSimple));
          }
             
          /**i WANT (read this TrottelTech: WANT!) this to be color swapped on select (and centered as sugar on top)
@@ -1009,20 +1071,19 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
 #define _COLOR_ PAL.color(QPalette::Text)
       const QHeaderView* header = qobject_cast<const QHeaderView*>(widget);
       const QStyleOptionHeader* hopt = qstyleoption_cast<const QStyleOptionHeader*>(option);
-      if (sunken)
-         painter->drawTiledPixmap(RECT, gloss(_COLOR_, RECT.height(), Qt::Vertical, Sunken));
-      else if (!hover && (header && header->isClickable () && hopt && header->sortIndicatorSection() == hopt->section))
-         painter->drawTiledPixmap(RECT, gradient(_COLOR_, RECT.height(), Qt::Vertical, Sunken));
+      if (sunken ||
+          (!hover && (header && header->isClickable () && hopt && header->sortIndicatorSection() == hopt->section)))
+         painter->drawTiledPixmap(RECT, gradient(_COLOR_, RECT.height(), Qt::Vertical, GradSunken));
       else
       {
          int x,y,w,h;
          RECT.getRect(&x,&y,&w,&h);
          w--;
          if (hover)
-            painter->drawTiledPixmap(x,y,w,h, gloss(_COLOR_, RECT.height(), Qt::Vertical, Raised));
+            painter->drawTiledPixmap(x,y,w,h, gradient(_COLOR_, RECT.height(), Qt::Vertical, GradGloss));
          else
-            painter->drawTiledPixmap(x,y,w,h, gradient(_COLOR_, RECT.height(), Qt::Vertical, Raised));
-         painter->drawTiledPixmap(x+w,y,1,h, gradient(_COLOR_, RECT.height(), Qt::Vertical, Sunken));
+            painter->drawTiledPixmap(x,y,w,h, gradient(_COLOR_, RECT.height(), Qt::Vertical));
+         painter->drawTiledPixmap(x+w,y,1,h, gradient(_COLOR_, RECT.height(), Qt::Vertical, GradSunken));
       }
       break;
 #undef _COLOR_
@@ -1064,9 +1125,9 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          if (!(opt->minimum < opt->maximum))
          {
             if (option->state & QStyle::State_Horizontal)
-               painter->drawTiledPixmap(RECT, gradient(PAL.color(config.scrollbarBg), RECT.height(), Qt::Vertical, Sunken));
+               painter->drawTiledPixmap(RECT, gradient(PAL.color(config.scrollbarBg), RECT.height(), Qt::Vertical, GradSunken));
             else
-               painter->drawTiledPixmap(RECT, gradient(PAL.color(config.scrollbarBg), RECT.width(), Qt::Horizontal, Sunken));
+               painter->drawTiledPixmap(RECT, gradient(PAL.color(config.scrollbarBg), RECT.width(), Qt::Horizontal, GradSunken));
             break;
          }
          Qt::Orientation direction; int size; PrimitiveElement arrow = (PrimitiveElement)0;
@@ -1090,11 +1151,11 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          }
          if (!arrow)
          {
-            painter->drawTiledPixmap(RECT, gloss(PAL.color(config.scrollbarBg), size, direction, Raised));
+            painter->drawTiledPixmap(RECT, gradient(PAL.color(config.scrollbarBg), size, direction, GradGloss));
             break;
          }
          else
-            painter->drawTiledPixmap(RECT, colorRun(PAL.color(config.scrollbarBg), size, direction, sunken ? Sunken : Raised, sunken));
+            painter->drawTiledPixmap(RECT, gradient(PAL.color(config.scrollbarBg), size, direction, sunken ? GradSunken : GradGloss));
          painter->save();
          if (hover)
             painter->setPen(PAL.color(config.scrollbarFg));
@@ -1127,7 +1188,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       // the groove (add or sub page or if min == max, i.e. no slide usefull)
       if (!(element == CE_ScrollBarSlider && opt->minimum < opt->maximum))
       {
-         painter->drawTiledPixmap(RECT, gradient(PAL.color(config.scrollbarBg), size, direction, Sunken));
+         painter->drawTiledPixmap(RECT, gradient(PAL.color(config.scrollbarBg), size, direction, GradSunken));
          if (element != CE_ScrollBarSlider)
          {
             int size2 = 2*size/5;
@@ -1145,19 +1206,19 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
                innerRect = RECT.adjusted(off1, size2+1, off2, -size2+1);
             else
                innerRect = RECT.adjusted(size2+1, off1, -size2+1, off2);
-            painter->drawTiledPixmap(innerRect, gradient(PAL.color(config.scrollbarBg), size2, direction, Raised));
+            painter->drawTiledPixmap(innerRect, gradient(PAL.color(config.scrollbarBg), size2, direction));
          }
          break;
       }
          
       // we need to paint a slider
       innerRect = RECT.adjusted(1, 1, -1, -1);
-      painter->drawTiledPixmap(RECT, gradient(PAL.color(config.scrollbarBg), size, direction, Sunken));
+      painter->drawTiledPixmap(RECT, gradient(PAL.color(config.scrollbarBg), size, direction, GradSunken));
       size -= 2;
       if (sunken)
-         painter->drawTiledPixmap(innerRect, gradient(PAL.color(config.scrollbarFg), size, direction, Sunken));
+         painter->drawTiledPixmap(innerRect, gradient(PAL.color(config.scrollbarFg), size, direction, GradSunken));
       else if (hover)
-         painter->drawTiledPixmap(innerRect, gloss(PAL.color(config.scrollbarFg), size, direction, Raised));
+         painter->drawTiledPixmap(innerRect, gradient(PAL.color(config.scrollbarFg), size, direction, GradGloss));
       else
       {
 //          bool scrollerActive = false;
@@ -1188,7 +1249,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             isActive = scrollArea.contains(QCursor::pos());
          }
          if (isActive)
-            painter->drawTiledPixmap(innerRect, gradient(PAL.color(config.scrollbarFg), size, direction, Sunken));
+            painter->drawTiledPixmap(innerRect, gradient(PAL.color(config.scrollbarFg), size, direction, GradSunken));
       }
    }
       break;
@@ -1232,7 +1293,8 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          }
          if (!cb->currentText.isEmpty() && !cb->editable)
          {
-            editRect.adjust(1, (cb->state & State_On ) ? 1 : 0, -1, 0);
+            editRect.adjust(3,0, -3, 0);
+            painter->setPen(COLOR(WindowText));
             drawItemText(painter, editRect, Qt::AlignLeft | Qt::AlignVCenter, PAL, isEnabled, cb->currentText);
          }
          painter->restore();
@@ -1245,4 +1307,5 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
    } // switch
 #undef RECT
 #undef PAL
+#undef COLOR
 }

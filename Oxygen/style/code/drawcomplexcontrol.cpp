@@ -20,6 +20,7 @@
 
 #include <QComboBox>
 #include <QPainter>
+#include <QTime>
 // #include <QPixmapCache>
 #include <QStyleOptionComplex>
 #include <cmath>
@@ -39,14 +40,6 @@ static int calcBigLineSize(int radius)
    if (bigLineSize > radius / 2)
       bigLineSize = radius / 2;
    return bigLineSize;
-}
-
-/**gradients or glosses*/
-inline const QPixmap OxygenStyle::colorRun(const QColor &c, const int size, Qt::Orientation o, Orientation3D o3D, bool smooth) const
-{
-   if (smooth)
-      return gradient(c, size, o, o3D);
-   return gloss(c, size, o, o3D);
 }
 
 static QPolygonF calcLines(const QStyleOptionSlider *dial, const QWidget *)
@@ -123,6 +116,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
 {
 #define PAL option->palette
 #define RECT option->rect
+#define COLOR(_TYPE_) option->palette.color(QPalette::_TYPE_)
    
    Q_ASSERT(option);
    Q_ASSERT(painter);
@@ -154,24 +148,29 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          }
          
          if (sb->frame && (sb->subControls & SC_SpinBoxFrame))
-            drawPrimitive ( PE_PanelLineEdit, &copy, painter, widget );
+            drawPrimitive ( PE_PanelLineEdit, sb, painter, widget );
+         
+         GradientType gt;
+         Tile::PosFlags pf;
          
          if (sb->subControls & SC_SpinBoxUp)
          {
             copy.rect = rect;
             
-            renderFrame( painter, copy.rect, Raised, Top | Left | Right);
+            pf = Tile::Top | Tile::Left | Tile::Right;
+            isEnabled = sb->stepEnabled & QAbstractSpinBox::StepUpEnabled;
+            hover = sb->activeSubControls == SC_SpinBoxUp;
             
+            shadows.button.render(copy.rect, painter, pf);
             copy.rect.adjust(2,2,-2,0);
-            painter->drawTiledPixmap(copy.rect, gradient(PAL.color(QPalette::Window), copy.rect.height()*2, Qt::Vertical, (sb->activeSubControls == SC_SpinBoxUp) && sunken ? Raised : Sunken)); // sic!
+            gt = (isEnabled && hover) ? (sunken ? GradSunken : GradGloss) : GradButton;
+            fillWithMask(painter, copy.rect, gradient(COLOR(Button), copy.rect.height()*2, Qt::Vertical, gt),
+                         &masks.button, pf | Tile::Center);
             
             copy.rect.adjust(copy.rect.width()/4,copy.rect.height()/4,-copy.rect.width()/4,-copy.rect.height()/4);
-            if (!(sb->stepEnabled & QAbstractSpinBox::StepUpEnabled))
-               painter->setPen(PAL.color(QPalette::Disabled, QPalette::Text));
-            else if (sb->activeSubControls == SC_SpinBoxUp)
-               painter->setPen(PAL.color(QPalette::WindowText));
-            else
-               painter->setPen(midColor(PAL.color(QPalette::Window),PAL.color(QPalette::WindowText),1,3));
+            
+            painter->setPen(isEnabled ? COLOR(ButtonText) :
+                            PAL.color(QPalette::Disabled, QPalette::ButtonText));
             drawPrimitive(PE_IndicatorSpinUp, &copy, painter, widget);
          }
          
@@ -180,18 +179,20 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             copy.subControls = SC_SpinBoxDown;
             copy.rect = subControlRect(CC_SpinBox, sb, SC_SpinBoxDown, widget);
             
-            renderFrame( painter, copy.rect, Raised, Bottom | Left | Right);
+            pf = Tile::Bottom | Tile::Left | Tile::Right;
+            isEnabled = sb->stepEnabled & QAbstractSpinBox::StepDownEnabled;
+            hover = sb->activeSubControls == SC_SpinBoxDown;
             
+            shadows.button.render(copy.rect, painter, pf);
             copy.rect.adjust(2,0,-2,-2);
-            painter->drawTiledPixmap(copy.rect, gradient(PAL.color(QPalette::Window), copy.rect.height()*2, Qt::Vertical, (sb->activeSubControls == SC_SpinBoxDown) && sunken ? Raised : Sunken), QPoint(0,-uh)); // sic!
+            gt = (isEnabled && hover) ? (sunken ? GradSunken : GradGloss) : GradButton;
+            fillWithMask(painter, copy.rect, gradient(COLOR(Button), copy.rect.height()*2, Qt::Vertical, gt), &masks.button,
+                         pf | Tile::Center, false, QPoint(0,-uh));
             
             copy.rect.adjust(copy.rect.width()/4,copy.rect.height()/4,-copy.rect.width()/4,-copy.rect.height()/4);
-            if (!(sb->stepEnabled & QAbstractSpinBox::StepDownEnabled))
-               painter->setPen(PAL.color(QPalette::Disabled, QPalette::Text));
-            else if (sb->activeSubControls == SC_SpinBoxDown)
-               painter->setPen(PAL.color(QPalette::WindowText));
-            else
-               painter->setPen(midColor(PAL.color(QPalette::Window),PAL.color(QPalette::WindowText),1,3));
+            
+            painter->setPen(isEnabled ? COLOR(ButtonText) :
+                            PAL.color(QPalette::Disabled, QPalette::ButtonText));
             drawPrimitive(PE_IndicatorSpinDown, &copy, painter, widget);
          }
       }
@@ -200,9 +201,6 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
       if (const QStyleOptionGroupBox *groupBox =
           qstyleoption_cast<const QStyleOptionGroupBox *>(option))
       {
-         // Draw frame
-         QRect textRect = subControlRect(CC_GroupBox, option, SC_GroupBoxLabel, widget);
-         QRect checkBoxRect = subControlRect(CC_GroupBox, option, SC_GroupBoxCheckBox, widget);
          if (groupBox->subControls & QStyle::SC_GroupBoxFrame)
          {
             QStyleOptionFrameV2 frame;
@@ -217,22 +215,19 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          // Draw title
          if ((groupBox->subControls & QStyle::SC_GroupBoxLabel) && !groupBox->text.isEmpty())
          {
-            if (!groupBox->text.isEmpty())
-            {
-               QColor textColor = groupBox->textColor;
-               if (textColor.isValid())
-                  painter->setPen(textColor);
-               QFont tmpfnt = painter->font(); tmpfnt.setBold(true);
-               painter->setFont ( tmpfnt );
-               int alignment = int(groupBox->textAlignment);
-               if (!styleHint(QStyle::SH_UnderlineShortcut, option, widget))
-                  alignment |= Qt::TextHideMnemonic;
-               
-               drawItemText(painter, textRect,  Qt::TextShowMnemonic | Qt::AlignHCenter | alignment,
-                            groupBox->palette, isEnabled, groupBox->text,
-                            textColor.isValid() ? QPalette::NoRole : QPalette::Foreground);
-
-            }
+            QRect textRect = subControlRect(CC_GroupBox, option, SC_GroupBoxLabel, widget);
+            QColor textColor = groupBox->textColor;
+            if (textColor.isValid())
+               painter->setPen(textColor);
+            QFont tmpfnt = painter->font(); tmpfnt.setBold(true);
+            painter->setFont ( tmpfnt );
+            int alignment = int(groupBox->textAlignment);
+            if (!styleHint(QStyle::SH_UnderlineShortcut, option, widget))
+               alignment |= Qt::TextHideMnemonic;
+            
+            drawItemText(painter, textRect,  Qt::TextShowMnemonic | Qt::AlignHCenter | alignment,
+                           groupBox->palette, isEnabled, groupBox->text,
+                           textColor.isValid() ? QPalette::NoRole : QPalette::Foreground);
          }
          
             // Draw checkbox
@@ -240,7 +235,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          {
             QStyleOptionButton box;
             box.QStyleOption::operator=(*groupBox);
-            box.rect = checkBoxRect;
+            box.rect = subControlRect(CC_GroupBox, option, SC_GroupBoxCheckBox, widget);
             drawPrimitive(PE_IndicatorCheckBox, &box, painter, widget);
          }
       }
@@ -252,24 +247,11 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          if ((cmb->subControls & SC_ComboBoxFrame) && cmb->frame)
          {
             if (cmb->editable)
-            {
                drawPrimitive(PE_PanelLineEdit, option, painter, widget);
-            }
             else
-            {
-               Orientation3D o3D = (cmb->state & State_On) ? Raised : Relief;
-               if (hover || cmb->state & State_On)
-               {
-                  QRegion ir = round_frames[o3D].innerRegion(RECT);
-                  painter->save();
-                  painter->setClipRegion(ir);
-                  painter->drawTiledPixmap(ir.boundingRect(), gradient(PAL.color(QPalette::Window), RECT.height(), Qt::Vertical, Sunken));
-                  painter->restore();
-               }
-               renderFrame( painter, RECT, o3D, Full, widget, false, true);
-            }
+               fillWithMask(painter, RECT,
+                            gradient(COLOR(Window).dark(110), RECT.height(), Qt::Vertical, GradSunken), &masks.tab);
          }
-         
          if ((cmb->subControls & SC_ComboBoxArrow) &&
              (!(widget && qobject_cast<const QComboBox*>(widget)) || ((const QComboBox*)widget)->count() > 0))
          {
@@ -279,23 +261,21 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             QRect ar = subControlRect(CC_ComboBox, cmb, SC_ComboBoxArrow, widget);
             if (!cmb->editable)
             {
-               if (hasFocus)
-                  renderFrame( painter, ar, Sunken, Full, widget, true);
-               ar.adjust(2,2,-2,-2);
-               renderFrame( painter, ar, Raised, Full, widget, false);
-               ar.adjust(2,2,-2,-2);
-               painter->drawTiledPixmap(ar, gloss(btnBgColor(PAL, isEnabled, hasFocus, hover), ar.height(), Qt::Vertical, sunken?Sunken:Raised));
-               painter->setPen(btnFgColor(PAL, isEnabled, hasFocus, hover));
-               tmpOpt.rect =  ar.adjusted(ar.width()/3,ar.height()/3,-ar.width()/3,-ar.height()/3);
+               tmpOpt.rect =  ar;
+               drawPrimitive(PE_PanelButtonBevel, &tmpOpt, painter, widget);
+               if (hover)
+                  painter->setPen( COLOR(WindowText) );
+               else 
+                  painter->setPen( midColor(COLOR(Window), COLOR(WindowText)));
             }
             else
             {
                if (hover && !sunken)
-                  painter->setPen( PAL.color(QPalette::Text));
+                  painter->setPen( COLOR(Text));
                else
-                  painter->setPen( midColor(PAL.color(QPalette::Text), PAL.color(QPalette::Base)) );
-               tmpOpt.rect =  ar.adjusted(ar.width()/3,ar.height()/3,-ar.width()/3,-ar.height()/3);
+                  painter->setPen( midColor(COLOR(Base), COLOR(Text)) );
             }
+            tmpOpt.rect =  ar.adjusted(ar.width()/3,ar.height()/3,-ar.width()/3,-ar.height()/3);
             painter->setRenderHint ( QPainter::Antialiasing, true );
             drawPrimitive(PE_IndicatorArrowDown, &tmpOpt, painter, widget);
             painter->restore();
@@ -309,51 +289,68 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
       {
          QRect groove = QCommonStyle::subControlRect(CC_Slider, slider, SC_SliderGroove, widget);
          QRect handle = QCommonStyle::subControlRect(CC_Slider, slider, SC_SliderHandle, widget);
+         // this is a workaround, qslider doesn't send the direction
+         bool inverse = (widget && widget->layoutDirection() == Qt::RightToLeft) xor slider->upsideDown;
+         // TODO: activate this one, remove the above
+//          bool inverse = option->direction == Qt::RightToLeft;
          hover = hover && (slider->activeSubControls & SC_SliderHandle);
          sunken = sunken && (slider->activeSubControls & SC_SliderHandle);
          
          if ((slider->subControls & SC_SliderGroove) && groove.isValid())
          {
-            QPalette::ColorRole lc = isEnabled ? QPalette::Highlight : QPalette::Window, rc = QPalette::Window;
-
+            QRect r; Tile::PosFlags pf = 0;
+            QColor c = hasFocus ? COLOR(Highlight) : COLOR(ButtonText);
             if ( slider->orientation == Qt::Horizontal )
             {
-               // this is a workaround, qslider doesn't send the direction
-               if (widget && widget->layoutDirection() == Qt::RightToLeft)
-               // TODO: activate this one, remove the above
-//                if (option->direction == Qt::RightToLeft)
+               groove.adjust(0,handle.height()/3,0,-handle.height()/3);
+               r = groove;
+               r.setRight(handle.left()+3);
+               pf = Tile::Top | Tile::Left | Tile::Bottom | Tile::Center;
+               if (inverse)
+                  fillWithMask(painter, r, gradient(COLOR(Window), r.height(), Qt::Vertical, GradSunken), &masks.button, pf);
+               else
                {
-                  lc = QPalette::Window; rc = isEnabled ? QPalette::Highlight : QPalette::Window;
+                  shadows.button.render(r, painter);
+                  r.adjust(2,1,-2,-2);
+                  fillWithMask(painter, r, gradient(c, r.height(), Qt::Vertical, GradGloss), &masks.button, pf);
                }
-               painter->setPen(PAL.color(lc).dark(120));
-               int y = groove.y()+(groove.height()>>1);
-               int left = groove.left()+3;
-               int right = groove.right()-3;
-               int swapPt = handle.left()+3;
-               painter->drawLine(left,y,swapPt,y);
-               painter->setPen(PAL.color(rc).dark(120));
-               painter->drawLine(swapPt,y,right,y);
-               y++;
-               painter->setPen(PAL.color(lc).light(130));
-               painter->drawLine(left,y,swapPt,y);
-               painter->setPen(PAL.color(rc).light(130));
-               painter->drawLine(swapPt,y,right,y);
+               r = groove;
+               r.setLeft(handle.right()-3);
+               pf = Tile::Top | Tile::Right | Tile::Bottom | Tile::Center;
+               if (inverse)
+               {
+                  shadows.button.render(r, painter);
+                  r.adjust(2,1,-2,-2);
+                  fillWithMask(painter, r, gradient(c, r.height(), Qt::Vertical, GradGloss), &masks.button, pf);
+               }
+               else
+                  fillWithMask(painter, r, gradient(COLOR(Window), r.height(), Qt::Vertical, GradSunken), &masks.button, pf);
             }
-            else
+            else // Vertical
             {
-               painter->setPen(PAL.color(lc).dark(120));
-               int x = groove.x()+(groove.width()>>1)-1;
-               int top = groove.top()+3;
-               int btm = groove.bottom()-3;
-               int swapPt = handle.bottom()-3;
-               painter->drawLine(x,swapPt,x,btm);
-               painter->setPen(PAL.color(rc).dark(120));
-               painter->drawLine(x,top,x,swapPt);
-               x++;
-               painter->setPen(PAL.color(lc).light(130));
-               painter->drawLine(x,swapPt,x,btm);
-               painter->setPen(PAL.color(rc).light(130));
-               painter->drawLine(x,top,x,swapPt);
+               groove.adjust(handle.width()/3,0,-handle.width()/3,0);
+               r = groove;
+               r.setBottom(handle.top()+3);
+               pf = Tile::Top | Tile::Left | Tile::Right | Tile::Center;
+               if (inverse)
+               {
+                  shadows.button.render(r, painter);
+                  r.adjust(2,1,-2,-2);
+                  fillWithMask(painter, r, gradient(c, r.width(), Qt::Horizontal, GradGloss), &masks.button, pf);
+               }
+               else
+                  fillWithMask(painter, r, gradient(COLOR(Window), r.width(), Qt::Horizontal, GradSunken), &masks.button, pf);
+               r = groove;
+               r.setTop(handle.bottom()-3);
+               pf = Tile::Left | Tile::Right | Tile::Bottom | Tile::Center;
+               if (inverse)
+                  fillWithMask(painter, r, gradient(COLOR(Window), r.width(), Qt::Horizontal, GradSunken), &masks.button, pf);
+               else
+               {
+                  shadows.button.render(r, painter);
+                  r.adjust(2,1,-2,-2);
+                  fillWithMask(painter, r, gradient(c, r.width(), Qt::Horizontal, GradGloss), &masks.button, pf);
+               }
             }
          }
          
@@ -367,71 +364,31 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          if (slider->subControls & SC_SliderHandle)
          {
             QPalette::ColorRole c1 = QPalette::Window, c2 = QPalette::WindowText;
-            QRect innerRect;
-            QRegion innerRegion;
-            painter->save();
             if (isEnabled)
             {
                c1 = QPalette::Button, c2 = QPalette::ButtonText;
-//                if (hasFocus)
-//                {
-//                   c1 = QPalette::Highlight, c2 = QPalette::HighlightedText;
-//                }
-//                else
-//                {
-//                   c1 = QPalette::Button, c2 = QPalette::ButtonText;
-//                }
-               innerRegion = round_frames[Raised].innerRegion(handle);
-               innerRect = innerRegion.boundingRect();
-               painter->setClipRegion(innerRegion);
-               painter->drawTiledPixmap(innerRect, gloss(PAL.color(c1), innerRect.height(),
+               fillWithMask(painter, handle, gradient(PAL.color(c1), handle.height(),
                   handle.height() > handle.width() ? Qt::Horizontal : Qt::Vertical,
-                  hover && !sunken ? Raised : Sunken));
+                  hover && !sunken ? GradGloss : GradSunken), &masks.round[Raised]);
                if (hasFocus)
                {
+                  painter->save();
                   painter->setBrush(PAL.color(QPalette::Highlight));
                   painter->setPen(Qt::NoPen);
                   painter->setRenderHint ( QPainter::Antialiasing, true );
-                  int w = innerRect.width()/3; int h = innerRect.height()/3;
-                  painter->drawEllipse ( innerRect.adjusted(w,h,-w,-h) );
+                  int w = handle.width()/3; int h = handle.height()/3;
+                  painter->drawEllipse ( handle.adjusted(w,h,-w,-h) );
+                  painter->restore();
                }
-               painter->setClipping(false);
-               renderFrame(painter, handle, Raised, Full, widget, false, true);
-//                if (slider->orientation == Qt::Horizontal)
-//                {
-//                   int x = innerRect.center().x()-1;
-//                   painter->setPen(midColor(PAL.color(c1),PAL.color(c2),3,1));
-//                   painter->drawLine(x,innerRect.y()+2,x,innerRect.bottom()-2);
-//                   x +=2;
-//                   painter->drawLine(x,innerRect.y()+2,x,innerRect.bottom()-2);
-//                   x -= 1;
-//                   painter->setPen(midColor(PAL.color(c1),PAL.color(c2)));
-//                   painter->drawLine(x,innerRect.y()+2,x,innerRect.bottom()-2);
-//                }
-//                else
-//                {
-//                   int y = innerRect.center().y()-1;
-//                   painter->setPen(midColor(PAL.color(c1),PAL.color(c2),3,1));
-//                   painter->drawLine(innerRect.x()+2,y,innerRect.right()-2,y);
-//                   y +=2;
-//                   painter->drawLine(innerRect.x()+2,y,innerRect.right()-2,y);
-//                   y -= 1;
-//                   painter->setPen(midColor(PAL.color(c1),PAL.color(c2)));
-//                   painter->drawLine(innerRect.x()+2,y,innerRect.right()-2,y);
-//                }
+               renderFrame(painter, handle, Raised, Tile::Ring, widget, false, true);
             }
             else
             {
                handle = handle.adjusted(1,2,-1,0);
-               innerRegion = round_frames[Relief].innerRegion(handle);
-               innerRect = innerRegion.boundingRect();
-               painter->setClipRegion(innerRegion);
-               painter->drawTiledPixmap(innerRect, gradient(PAL.color(QPalette::Background),innerRect.height(),
-                  handle.height() > handle.width() ? Qt::Horizontal : Qt::Vertical, Sunken));
-               painter->setClipping(false);
-               renderFrame(painter, handle, Relief, Full, widget, false, true );
+               fillWithMask(painter, handle, gradient(PAL.color(QPalette::Background),handle.height(),
+                  handle.height() > handle.width() ? Qt::Horizontal : Qt::Vertical, GradSunken), &masks.round[Relief]);
+               renderFrame(painter, handle, Relief, Tile::Ring, widget, false, true );
             }
-            painter->restore();
          }
       }
       break;
@@ -440,7 +397,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
       {
       // this is a qtabbar scrollbutton and needs to be erased...
          if (config.bgMode > Scanlines)
-            painter->drawPixmap(RECT, widget->palette().brush(QPalette::Window).texture(), RECT.translated(widget->mapTo ( widget->topLevelWidget(), QPoint(0,0))));
+            painter->drawPixmap(RECT.topLeft(), widget->palette().brush(QPalette::Window).texture(), RECT.translated(widget->mapTo ( widget->topLevelWidget(), QPoint(0,0))));
          else
             painter->fillRect(RECT, PAL.brush(QPalette::Window));
 //          painter->drawTiledPixmap(RECT.adjusted(0,2,0,-2), gradient(PAL.color(QPalette::Window), RECT.height()-4, Qt::Vertical, Raised));
@@ -584,7 +541,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             if (RECT.height() < 300)
             {
                painter->setClipRegion(QRegion(RECT, QRegion::Ellipse), Qt::IntersectClip);
-               painter->drawTiledPixmap(RECT, gloss(PAL.background().color(), RECT.height(), Qt::Vertical, Raised ));
+               painter->drawTiledPixmap(RECT, gradient(PAL.background().color(), RECT.height(), Qt::Vertical, GradGloss ));
                painter->setClipping(false);
             }
             else
@@ -653,4 +610,5 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
    } // switch
 #undef RECT
 #undef PAL
+#undef COLOR
 }

@@ -41,7 +41,7 @@ class QPaintEvent;
 
 namespace Oxygen {
 
-enum BGMode { Plain = 0, Scanlines, BrushedMetal, FullPix };
+enum BGMode { Plain = 0, Scanlines, BrushedMetal, FullPix, VerticalGradient, HorizontalGradient };
 enum Acceleration { None = 0, XRender, OpenGL };
 enum TabTransition {Jump = 0, CrossFade, ScanlineBlend, SlideIn, SlideOut, RollIn, RollOut, OpenVertically, CloseVertically, OpenHorizontally, CloseHorizontally };
 
@@ -82,6 +82,12 @@ public:
 };
 
 enum Orientation3D {Sunken = 0, Relief, Raised};
+// typedef Tile::PosFlags PosFlags;
+// enum Position
+// {
+//    Top = 0x1, Left=0x2, Bottom=0x4, Right=0x8,
+//    Ring=0xf, Center=0x10, Full=0x1f
+// };
 
 typedef struct Config
 {
@@ -103,15 +109,15 @@ typedef struct Config
    Oxygen::Orientation3D tabwidget3D;
    int gradientIntensity;
    int fullPixMode;
+   bool HAL9000;
 } Config;
 
 class OxygenStyle : public QCommonStyle
 {
    Q_OBJECT
 public:
-   enum Position {Top = 0x1, Left=0x2, Bottom=0x4, Right=0x8, Full=0xf, Center=0x10};
-   typedef uint PosFlags;
    enum WidgetState{Basic = 0, Hovered, Focused, Active};
+   enum GradientType{GradSimple,GradSunken,GradGloss,GradButton,GradButtonHover,GradButtonDisabled,NumGrads};
    
    OxygenStyle();
    virtual ~OxygenStyle();
@@ -175,28 +181,52 @@ private slots:
 private:
    OxygenStyle( const OxygenStyle & );
    OxygenStyle& operator=( const OxygenStyle & );
-   void renderFrame( QPainter *p, const QRect &r, Orientation3D o3D, PosFlags pf, const QWidget *widget = 0L, bool highlighted = false, bool round = false) const;
-   const QPixmap colorRun(const QColor &c, const int size, Qt::Orientation o, Orientation3D o3D, bool smooth = false) const;
-   const QPixmap gradient(const QColor &c, const int size, Qt::Orientation o, Orientation3D o3D) const;
-   const QPixmap gloss(const QColor &c, const int size, Qt::Orientation o, Orientation3D o3D) const;
+   void renderFrame( QPainter *p, const QRect &r, Orientation3D o3D, Tile::PosFlags pf, const QWidget *widget = 0L, bool highlighted = false, bool round = false) const;
+   const QPixmap &gradient(const QColor &c, int size, Qt::Orientation o, GradientType type = GradSimple) const;
+   const QPixmap &btnAmbient(int height) const;
+   void fillWithMask(QPainter *painter, const QRect &rect, const QBrush &brush, const Tile::Mask *mask, Tile::PosFlags pf = Tile::Full, bool justClip = false, QPoint offset = QPoint()) const;
+   void fillWithMask(QPainter *painter, const QPoint &xy, const QPixmap &pix, const QPixmap &mask, QPoint offset = QPoint()) const;
    QColor mapFadeColor(const QColor &color, int index) const;
    void fadeIn(QPushButton *button);
    void fadeOut(QPushButton *button);
    QPixmap *tint(const QImage &img, const QColor& c) const;
-   const TileSet &glow(const QColor & c, bool round = false) const;
+   const Tile::Set &glow(const QColor & c, bool round = false) const;
+   void readSettings();
+   void generatePixmaps();
+   void initMetrics();
    
 private:
-   // pixmaps
-   TileSet frames[3];
-   TileSet round_frames[3];
-   QPixmap *_scanlines[3];
-   
-   // cache
    typedef QHash<uint, QPixmap> PixmapCache;
-   PixmapCache gradientCache[2][2];
-   PixmapCache glossCache[2][2];
+   typedef QHash<uint, Tile::Set> TileCache;
+   struct
+   {
+      Tile::Mask rect[3];
+      Tile::Mask round[3];
+      Tile::Mask button;
+      Tile::Mask tab;
+      QPixmap radio, radioIndicator;
+   } masks;
+   struct
+   {
+      Tile::Set button, tab, sunken;
+      QPixmap radio[2];
+   } shadows;
+   struct
+   {
+      Tile::Set rect[3];
+      Tile::Set round[3];
+      Tile::Nuno button[2];
+   } frames;
+   struct
+   {
+      Tile::Line top;
+   } lights;
    
-   typedef QHash<uint, TileSet> TileCache;
+   // pixmaps
+   QPixmap *_scanlines[3];
+   // cache
+   PixmapCache gradients[2][NumGrads];
+   PixmapCache _btnAmbient;
    TileCache glowCache;
    TileCache roundGlowCache;
 
@@ -211,13 +241,8 @@ private:
    typedef QMap<QRgb, QRgb*> FadeColors;
    FadeColors fadeColorMap;
 
-   // indices of current itmes
-   // just benders - TODO: see if we can limit their number
    
-//    QPalette polishedPalette, tooltipPalette;
-//    uint qtrcModificationTime;
-//    uint oxygenrcModificationTime;
-//    bool initialPaletteLoaded, inExitPolish;
+//    QPalette tooltipPalette;
    
    // toolbar title functionality
    QPoint cursorPos_;

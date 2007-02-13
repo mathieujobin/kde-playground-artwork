@@ -40,7 +40,7 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
          int fw = spinbox->frame ? pixelMetric(PM_SpinBoxFrameWidth, spinbox, widget) : 0;
          bs.setHeight(qMax(8, spinbox->rect.height()/2));
             // 1.6 -approximate golden mean
-         bs.setWidth(qMax(18, qMin(bs.height() * 8 / 5, spinbox->rect.width() / 4)));
+         bs.setWidth(qMax(18, qMin(bs.height(), spinbox->rect.width() / 4)));
          bs = bs.expandedTo(QApplication::globalStrut());
          int x = spinbox->rect.width() - bs.width();
          switch (subControl)
@@ -65,11 +65,9 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
       if (const QStyleOptionComboBox *cb =
           qstyleoption_cast<const QStyleOptionComboBox *>(option))
       {
-         int x = cb->rect.x(),
-            y = cb->rect.y(),
-            wi = cb->rect.width(),
-            he = cb->rect.height();
-         int margin = cb->frame ? 4 : 0;
+         int x,y,wi,he;
+         cb->rect.getRect(&x,&y,&wi,&he);
+         int margin = (!cb->editable) ? 1 : (cb->frame ? 4 : 0);
 
          switch (subControl)
          {
@@ -79,16 +77,11 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
          case SC_ComboBoxArrow:
             x += wi; wi = (int)((he - 2*margin)*1.4);//1.618
             x -= margin + wi; // golden mean
-            if (cb->editable)
-               y += margin;
-            else if (cb->state & State_On)
-               y += margin-1;
-            else
-               y += margin-2;
+            y += margin;
             ret.setRect(x, y, wi, he - 2*margin);
             break;
          case SC_ComboBoxEditField:
-            wi -= (int)((he - 2*margin)*1.4) + 2*margin;
+            wi -= (int)((he - 2*margin)*1.4) + 3*margin;
             ret.setRect(x+margin, y+margin, wi, he - 2*margin);
             break;
          case SC_ComboBoxListBoxPopup:
@@ -98,16 +91,66 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
                ret.adjust(3,0,-3,0);
                ret.moveTop(ret.y()-3);
             }
-            else
-            {
-               ret.adjust(8,0,-8,0);
-               ret.moveTop(ret.y()+1);
-            }
+//             else
+//             {
+//                ret.adjust(8,0,-8,0);
+//                ret.moveTop(ret.y()+1);
+//             }
             break;
          default:
             break;
          }
          ret = visualRect(cb->direction, cb->rect, ret);
+      }
+      break;
+   case CC_GroupBox:
+      if (const QStyleOptionGroupBox *groupBox =
+          qstyleoption_cast<const QStyleOptionGroupBox *>(option))
+      {
+         switch (subControl)
+         {
+         case SC_GroupBoxFrame:
+            ret = groupBox->rect;
+            break;
+         case SC_GroupBoxContents:
+         {
+            int top = groupBox->text.isEmpty() ? 6 : qMax(6, groupBox->fontMetrics.height()+2);
+            ret = groupBox->rect.adjusted(3,top,-3,-7);
+            break;
+         }
+         case SC_GroupBoxCheckBox:
+         {
+            int cbsz = pixelMetric(PM_IndicatorWidth, groupBox, widget);
+            if (groupBox->direction == Qt::LeftToRight)
+            {
+               ret = groupBox->rect.adjusted(5,5,0,0);
+               ret.setWidth(cbsz);
+            }
+            else
+            {
+               ret = groupBox->rect.adjusted(0,5,-5,0);
+               ret.setLeft(ret.right()-cbsz);
+            }
+            ret.setHeight(cbsz);
+            break;
+         }
+         case SC_GroupBoxLabel:
+         {
+            QFontMetrics fontMetrics = groupBox->fontMetrics;
+            int h = fontMetrics.height();
+            int tw = fontMetrics.size(Qt::TextShowMnemonic, groupBox->text + QLatin1Char(' ')).width();
+            int marg = (groupBox->features & QStyleOptionFrameV2::Flat) ? 0 : 4;
+            ret = groupBox->rect.adjusted(marg, 2, -marg, 0);
+            ret.setHeight(h);
+
+            // Adjusted rect for label + indicatorWidth + indicatorSpace
+            ret = alignedRect(groupBox->direction, Qt::AlignTop|Qt::AlignHCenter/*groupBox->textAlignment*/,
+                                          QSize(tw, h), ret);
+            break;
+         }
+         default:
+            break;
+         }
       }
       break;
    case CC_ScrollBar: // A scroll bar, like QScrollBar
@@ -306,7 +349,7 @@ QRect OxygenStyle::subElementRect ( SubElement element, const QStyleOption * opt
       return option->rect;
    case SE_ProgressBarContents: // Area for the progress indicator
    case SE_ProgressBarLabel: // Area for the text label
-      return option->rect.adjusted(2,2,-2,-2);
+      return option->rect.adjusted(3,2,-3,-3);
 //    case SE_DialogButtonAccept: // Area for a dialog's accept button
 //    case SE_DialogButtonReject: // Area for a dialog's reject button
 //    case SE_DialogButtonApply: // Area for a dialog's apply button
@@ -332,7 +375,104 @@ QRect OxygenStyle::subElementRect ( SubElement element, const QStyleOption * opt
 //    case SE_HeaderLabel: //  
 //    case SE_TabWidgetLeftCorner: //  
 //    case SE_TabWidgetRightCorner: //  
-//    case SE_TabWidgetTabBar: //  
+   case SE_TabWidgetTabBar: //  
+      if (const QStyleOptionTabWidgetFrame *twf
+          = qstyleoption_cast<const QStyleOptionTabWidgetFrame *>(option))
+      {
+         QRect r(QPoint(0,0),twf->tabBarSize);
+         int off = 10;
+         switch (twf->shape)
+         {
+         case QTabBar::RoundedNorth:
+         case QTabBar::TriangularNorth:
+               // Constrain the size now, otherwise, center could get off the page
+               // This of course repeated for all the other directions
+               r.setWidth(qMin(r.width(), twf->rect.width() - 2*off
+                                          - twf->leftCornerWidgetSize.width()
+                                          - twf->rightCornerWidgetSize.width()));
+               switch (styleHint(SH_TabBar_Alignment, twf, widget))
+               {
+               default:
+               case Qt::AlignLeft:
+                  r.moveTopLeft(QPoint(twf->leftCornerWidgetSize.width()+off, 0));
+                  break;
+               case Qt::AlignCenter:
+                  r.moveTopLeft(QPoint(twf->rect.center().x() - r.width() / 2, 0));
+                  break;
+               case Qt::AlignRight:
+                  r.moveTopLeft(QPoint(twf->rect.width() - twf->tabBarSize.width() - off
+                                       - twf->rightCornerWidgetSize.width(), 0));
+                  break;
+               }
+               r = visualRect(twf->direction, twf->rect, r);
+               break;
+         case QTabBar::RoundedSouth:
+         case QTabBar::TriangularSouth:
+               r.setWidth(qMin(r.width(), twf->rect.width() - 2*off
+                                          - twf->leftCornerWidgetSize.width()
+                                          - twf->rightCornerWidgetSize.width()));
+               switch (styleHint(SH_TabBar_Alignment, twf, widget)) {
+               default:
+               case Qt::AlignLeft:
+                  r.moveTopLeft(QPoint(twf->leftCornerWidgetSize.width() + off,
+                                       twf->rect.height() - twf->tabBarSize.height()));
+                  break;
+               case Qt::AlignCenter:
+                  r.moveTopLeft(QPoint(twf->rect.center().x() - r.width() / 2,
+                                       twf->rect.height() - twf->tabBarSize.height()));
+                  break;
+               case Qt::AlignRight:
+                  r.moveTopLeft(QPoint(twf->rect.width() - twf->tabBarSize.width() - off
+                                       - twf->rightCornerWidgetSize.width(),
+                                       twf->rect.height() - twf->tabBarSize.height()));
+                  break;
+               }
+               r = visualRect(twf->direction, twf->rect, r);
+               break;
+         case QTabBar::RoundedEast:
+         case QTabBar::TriangularEast:
+               r.setHeight(qMin(r.height(), twf->rect.height() - 2*off
+                                          - twf->leftCornerWidgetSize.height()
+                                          - twf->rightCornerWidgetSize.height()));
+               switch (styleHint(SH_TabBar_Alignment, twf, widget)) {
+               default:
+               case Qt::AlignLeft:
+                  r.moveTopLeft(QPoint(twf->rect.width() - twf->tabBarSize.width(),
+                                       twf->leftCornerWidgetSize.height() + off));
+                  break;
+               case Qt::AlignCenter:
+                  r.moveTopLeft(QPoint(twf->rect.width() - twf->tabBarSize.width(),
+                                       twf->rect.center().y() - r.height() / 2));
+                  break;
+               case Qt::AlignRight:
+                  r.moveTopLeft(QPoint(twf->rect.width() - twf->tabBarSize.width(),
+                                       twf->rect.height() - twf->tabBarSize.height()
+                                       - twf->rightCornerWidgetSize.height() - off));
+                  break;
+               }
+               break;
+         case QTabBar::RoundedWest:
+         case QTabBar::TriangularWest:
+               r.setHeight(qMin(r.height(), twf->rect.height() - 2*off)
+                                          - twf->leftCornerWidgetSize.height()
+                                          - twf->rightCornerWidgetSize.height());
+               switch (styleHint(SH_TabBar_Alignment, twf, widget)) {
+               default:
+               case Qt::AlignLeft:
+                  r.moveTopLeft(QPoint(0, twf->leftCornerWidgetSize.height() + off));
+                  break;
+               case Qt::AlignCenter:
+                  r.moveTopLeft(QPoint(0, twf->rect.center().y() - r.height() / 2));
+                  break;
+               case Qt::AlignRight:
+                  r.moveTopLeft(QPoint(0, twf->rect.height() - twf->tabBarSize.height()
+                                       - twf->rightCornerWidgetSize.height() - off));
+                  break;
+               }
+               break;
+         }
+         return r;
+      }
    case SE_TabWidgetTabContents: //  
       if (const QStyleOptionTabWidgetFrame *twf =
           qstyleoption_cast<const QStyleOptionTabWidgetFrame *>(option))
@@ -362,7 +502,7 @@ QRect OxygenStyle::subElementRect ( SubElement element, const QStyleOption * opt
          return r;
       }
    case SE_TabWidgetTabPane: //  
-      return option->rect;
+      return option->rect;//.adjusted(-10,0,10,0);
    case SE_ToolBoxTabContents: // Area for a toolbox tab's icon and label
       return QRect(); //kill the rect, we paint the content ourself
 //    case SE_ViewItemCheckIndicator: // Area for a view item's check mark

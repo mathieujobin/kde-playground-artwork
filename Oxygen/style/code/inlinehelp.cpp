@@ -176,45 +176,6 @@ inline QColor light(const QColor &c, int value)
    return ret;
 }
 
-/**Internal, generates a 1bit alpha mask for a pixmap - useless on qt4?*/
-#if 0
-static inline QBitmap alphaMask(const QPixmap &pix)
-{
-   QImage src = pix.toImage();
-   QImage dst(pix.size(), QImage::Format_ARGB32);
-   
-   unsigned int *data, *data2;// = ( unsigned int * ) src.bits();
-   unsigned int *destData = ( unsigned int* ) dst.bits();
-//    int total = src.width() * src.height();
-   int col, row;
-   
-   
-   for (row = 0; row < src.height(); ++row)
-   {
-      data = ( unsigned int * )src.scanLine(row);
-      if (row == 0 || row == src.height()-1)
-         data2 = 0;
-      else if (row < (src.height()>>1))
-         data2 = ( unsigned int * )src.scanLine(row-1);
-      else
-         data2 = ( unsigned int * )src.scanLine(row+1);
-      for ( col = 0; col < src.width(); ++col )
-      {
-         if (qAlpha(data[ col ]) ||
-             (data2 && qAlpha(data2[col])) xor
-             ((col > 0 && col < (src.width()>>1) && qAlpha(data[ col-1 ])) ||
-              (col > (src.width()>>1) && col < src.width()-1 && qAlpha(data[ col+1 ]))))
-            destData[ row*src.width() + col ] = qRgba( 0, 0, 0, 255 );
-         else
-            destData[ row*src.width() + col ] = qRgba( 255, 255, 255, 255 );
-      }
-   }
-   QBitmap ret;
-   ret = dst;
-   return ret;
-}
-#endif
-
 #if 0
 /**Internal, checks if there's contrast between two colors*/
 static bool thereIsContrastBetween(const QColor &a, const QColor &b)

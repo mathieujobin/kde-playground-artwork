@@ -19,8 +19,9 @@
  ***************************************************************************/
 
 #include <QX11Info>
-#include <X11/Xlib.h>
-#include <fixx11h.h>
+#include <QPainter>
+#include <QRegion>
+#include <QWidget>
 #include <cmath>
 #include "oxrender.h"
 
@@ -32,16 +33,23 @@
 #define MAX(x,y) ((x) > (y) ? (x) : (y))
 #endif
 
-static Window root = RootWindow (QX11Info::display(), DefaultScreen (QX11Info::display()));
+static Display *dpy = QX11Info::display();
+static Window root = RootWindow (dpy, DefaultScreen (dpy));
 
-static Picture createFill(Display *dpy, const XRenderColor *c)
+/* "qt_getClipRects" is friend enough to qregion... ;)*/
+inline void *qt_getClipRects( const QRegion &r, int &num )
+{
+   return r.clipRectangles( num );
+}
+
+static OXPicture createFill(Display *dpy, const XRenderColor *c)
 {
    XRenderPictureAttributes pa;
-   Pixmap pixmap = XCreatePixmap (dpy, root, 1, 1, 32);
+   OXPixmap pixmap = XCreatePixmap (dpy, root, 1, 1, 32);
    if (!pixmap)
       return X::None;
    pa.repeat = True;
-   Picture fill = XRenderCreatePicture (dpy, pixmap, XRenderFindStandardFormat (dpy, PictStandardARGB32), CPRepeat, &pa);
+   OXPicture fill = XRenderCreatePicture (dpy, pixmap, XRenderFindStandardFormat (dpy, PictStandardARGB32), CPRepeat, &pa);
    if (!fill)
    {
       XFreePixmap (dpy, pixmap);
@@ -52,11 +60,29 @@ static Picture createFill(Display *dpy, const XRenderColor *c)
    return fill;
 }
 
-bool OXRender::blend(const QPixmap &upper, const QPixmap &lower, double opacity)
+void OXRender::composite(OXPicture src, OXPicture mask, OXPicture dst,
+                         int sx, int sy, int mx, int my, int dx, int dy,
+                         uint w, uint h, int op)
 {
-   Display *dpy = QX11Info::display();
+   XRenderComposite (dpy, op, src, mask, dst, sx, sy, mx, my, dx, dy, w, h);
+}
+void OXRender::composite(OXPicture src, OXPicture mask, const QPixmap &dst,
+                         int sx, int sy, int mx, int my, int dx, int dy,
+                         uint w, uint h, int op)
+{
+   XRenderComposite (dpy, op, src, mask, dst.x11PictureHandle(), sx, sy, mx, my, dx, dy, w, h);
+}
+void OXRender::composite(const QPixmap &src, OXPicture mask, const QPixmap &dst,
+                         int sx, int sy, int mx, int my, int dx, int dy,
+                         uint w, uint h, int op)
+{
+   XRenderComposite (dpy, op, src.x11PictureHandle(), mask, dst.x11PictureHandle(), sx, sy, mx, my, dx, dy, w, h);
+}
+
+bool OXRender::blend(const QPixmap &upper, QPixmap &lower, double opacity)
+{
    XRenderColor c = {0,0,0, (short uint)(opacity * 0xffff) };
-   Picture alpha = createFill (dpy, &c);
+   OXPicture alpha = createFill (dpy, &c);
    if (alpha == X::None)
       return false;
    XRenderComposite (dpy, PictOpOver, upper.x11PictureHandle(), alpha, lower.x11PictureHandle(), 0, 0, 0, 0, 0, 0, upper.width(), upper.height());
@@ -64,14 +90,52 @@ bool OXRender::blend(const QPixmap &upper, const QPixmap &lower, double opacity)
    return true;
 }
 
-QPixmap OXRender::applyAlpha(QPixmap &toThisPix, QPixmap &fromThisPix)
+QPixmap OXRender::applyAlpha(const QPixmap &toThisPix, const QPixmap &fromThisPix, const QRect &rect, const QRect &alphaRect)
 {
-   QPixmap pix(toThisPix.size());
+   return applyAlpha(toThisPix, fromThisPix.x11PictureHandle(), rect, alphaRect);
+}
+
+QPixmap OXRender::applyAlpha(const QPixmap &toThisPix, const OXPicture &fromThisPict, const QRect &rect, const QRect &alphaRect)
+{
+   int sx,sy,ax,ay,w,h;
+   if (rect.isNull())
+   {
+      sx = sy = 0; w = toThisPix.width(); h = toThisPix.height();
+   }
+   else
+      rect.getRect(&sx,&sy,&w,&h);
+   if (alphaRect.isNull())
+   {
+      ax = ay = 0;
+   }
+   else
+   {
+      ax = alphaRect.x(); ay = alphaRect.y();
+      w = MIN(alphaRect.width(),w); h = MIN(alphaRect.height(),h);
+   }
+
+   QPixmap pix(w,h);
    pix.fill(Qt::transparent);
-   XRenderComposite (QX11Info::display(), PictOpOver, pix.x11PictureHandle(),
-                     fromThisPix.x11PictureHandle(), toThisPix.x11PictureHandle(),
-                     0, 0, 0, 0, 0, 0, pix.width(), pix.height());
+   XRenderComposite (dpy, PictOpOver, toThisPix.x11PictureHandle(),
+                     fromThisPict, pix.x11PictureHandle(),
+                     sx, sy, ax, ay, 0, 0, w, h);
    return pix;
+}
+
+void OXRender::setAlpha(QPixmap &pix, const OXPicture &alpha)
+{
+   XRenderPictureAttributes pa;
+   pa.alpha_map = alpha;
+   pa.alpha_x_origin = pa.alpha_y_origin = 0;
+   XRenderChangePicture(dpy, pix.x11PictureHandle(), CPAlphaMap|CPAlphaXOrigin|CPAlphaYOrigin, &pa);
+}
+
+QPixmap OXRender::fade(const QPixmap &pix, double percent)
+{
+   QPixmap newPix(pix.size());
+   newPix.fill(Qt::transparent);
+   blend(pix, newPix, percent);
+   return newPix;
 }
 
 void OXRender::setColor(XRenderColor &xc, double r, double g, double b, double a)
@@ -100,10 +164,9 @@ void OXRender::setGradient(XLinearGradient &lg, XFixed x1, XFixed y1, XFixed x2,
    lg.p2.x = x2; lg.p2.y = y2;
 }
 
-Picture OXRender::gradient(const QPoint start, const QPoint stop, const ColorArray &colors, const PointArray &stops)
+OXPicture OXRender::gradient(const QPoint start, const QPoint stop, const ColorArray &colors, const PointArray &stops)
 {
-   Display *dpy = QX11Info::display();
-   XLinearGradient lg1 = {
+   XLinearGradient lg = {
       { start.x() << 16, start.y() << 16 },
       { stop.x() << 16, stop.y() << 16} };
    XRenderColor cs[colors.size()];
@@ -117,7 +180,7 @@ Picture OXRender::gradient(const QPoint start, const QPoint stop, const ColorArr
    }
    else
    {
-      int d = ((int)(sqrt(pow(stop.x()-start.x(),2)+pow(stop.y()-start.y(),2)))) << 16;
+      int d = (1<<16);
       stps = new XFixed[stops.size()];
       for (int i = 0; i < stops.size(); ++i)
       {
@@ -127,7 +190,43 @@ Picture OXRender::gradient(const QPoint start, const QPoint stop, const ColorArr
       }
    }
    XFlush (dpy);
-   Picture lgp = XRenderCreateLinearGradient(dpy, &lg1, stps, cs, MIN(MAX(stops.size(),2),colors.size()));
+   OXPicture lgp = XRenderCreateLinearGradient(dpy, &lg, stps, cs, MIN(MAX(stops.size(),2),colors.size()));
    delete stps;
    return lgp;
+}
+
+OXPicture OXRender::gradient(const QPoint c1, int r1, const QPoint c2, int r2, const ColorArray &colors, const PointArray &stops)
+{
+   XRadialGradient rg = {
+      { c1.x() << 16, c1.y() << 16, r1 << 16 },
+      { c2.x() << 16, c2.y() << 16, r2 << 16 } };
+   XRenderColor cs[colors.size()];
+   for (int i = 0; i < colors.size(); ++i)
+      setColor(cs[i], colors.at(i));
+   XFixed *stps;
+   if (stops.size() < 2)
+   {
+      stps = new XFixed[2];
+      stps[0] = 0; stps[1] = (1<<16);
+   }
+   else
+   {
+      int d = ((int)(sqrt(pow(c2.x()-c1.x(),2)+pow(c2.y()-c1.y(),2)))) << 16;
+      stps = new XFixed[stops.size()];
+      for (int i = 0; i < stops.size(); ++i)
+      {
+         if (stops.at(i) < 0) continue;
+         if (stops.at(i) > 1) break;
+         stps[i] = stops.at(i)*d;
+      }
+   }
+   XFlush (dpy);
+   OXPicture lgp = XRenderCreateRadialGradient(dpy, &rg, stps, cs, MIN(MAX(stops.size(),2),colors.size()));
+   delete stps;
+   return lgp;
+}
+
+void OXRender::freePicture(OXPicture pict)
+{
+   XRenderFreePicture (dpy, pict);
 }

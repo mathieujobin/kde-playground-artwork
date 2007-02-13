@@ -36,20 +36,13 @@ extern int bgYoffset_;
 extern Pixmap shadowPix;
 extern Config config;
 
-/**gradients or glosses*/
-inline const QPixmap OxygenStyle::colorRun(const QColor &c, const int size, Qt::Orientation o, Orientation3D o3D, bool smooth) const
-{
-   if (smooth)
-      return gradient(c, size, o, o3D);
-   return gloss(c, size, o, o3D);
-}
-
 void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * option, QPainter * painter, const QWidget * widget) const
 {
    Q_ASSERT(option);
    Q_ASSERT(painter);
 #define RECT option->rect
 #define PAL option->palette
+#define COLOR(_TYPE_) option->palette.color(QPalette::_TYPE_)
    
    bool sunken = option->state & State_Sunken;
    bool isEnabled = option->state & State_Enabled;
@@ -66,84 +59,54 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
    case PE_PanelButtonCommand: // Button used to initiate an action, for example, a QPushButton.
    case PE_PanelButtonBevel: // Generic panel with a button bevel.
    {
-#define HOVERCOLOR emphasize(PAL.color(cr))
       const QStyleOptionButton *opt = qstyleoption_cast<const QStyleOptionButton*>(option);
-      painter->save();
 //       bool isIconButton = opt && opt->text.isEmpty() && !opt->icon.isNull();
       bool isOn = option->state & State_On;
       bool isDefault = opt && (opt->features & QStyleOptionButton::DefaultButton);
+      GradientType gt = !isEnabled ? GradButtonDisabled : (sunken ? GradSunken : (hover ? GradGloss : GradButton));
       
-      QColor c = btnBgColor(PAL, isEnabled, hasFocus, hover);
-      
-      Orientation3D o3D = !isEnabled ? Sunken : Relief;
-      if (config.raisedButtons) o3D = (Orientation3D)((int)o3D + 1);
-      
-      QRegion innerRegion;
-      
-      if (config.roundButtons)
-         innerRegion = round_frames[o3D].innerRegion(RECT);
-      else
-         innerRegion = frames[o3D].innerRegion(RECT);
-      painter->setClipRegion(innerRegion);
-      QRect ir = innerRegion.boundingRect();
-      
-      if (sunken || isOn) // pressed
-      {
-      // might be faster to no clip the inner button away when painting the outer part
-      // TODO: profile and in case leave clipping
-         QRect sunkenRect(ir.x()+2,ir.y()+2,ir.width()-4,ir.height()-4);
-         painter->setClipRegion(innerRegion.subtract(sunkenRect));
-         painter->drawTiledPixmap(ir, gloss(c, ir.height(),Qt::Vertical, Raised));
-         painter->setClipRect(sunkenRect);
-         painter->drawTiledPixmap(ir, gradient(c, ir.height(), Qt::Vertical, Sunken));
-      }
-      else // basic, hovered
-         painter->drawTiledPixmap(ir, gloss(c, ir.height(), Qt::Vertical, (!config.inverseButtons || hover || isDefault) ? Raised : Sunken));
+      QColor c = !isEnabled ? COLOR(Window) :  COLOR(Button);
 
-      painter->setClipping(false);
-      renderFrame( painter, RECT, o3D, Full, widget, false, config.roundButtons );
-      painter->restore();
+      shadows.button.render(isEnabled ? RECT:RECT.adjusted(2,1,-2,-1), painter, Tile::Ring);
+      QRect ir = RECT.adjusted(2,2,-2,-2);
+      fillWithMask(painter, ir, gradient(c, RECT.height(), Qt::Vertical, gt), &masks.button);
+      if (hasFocus)
+         masks.button.outline(ir, painter, COLOR(Highlight));
+      frames.button[isEnabled].render(ir,painter,Tile::Ring);
+      painter->drawPixmap(ir.right()-16*ir.height()/9,ir.y(), btnAmbient(ir.height()));
+      int off = ir.width()/6;
+      lights.top.render(ir.adjusted(off,0,-off,0),painter,Tile::Left|Tile::Top|Tile::Right);
       break;
-#undef HOVERCOLOR
    }
    case PE_PanelButtonTool: // Panel for a Tool button, used with QToolButton.
    {
       if (sunken || (option->state & QStyle::State_On))
       {
-         QRegion innerRegion = round_frames[Sunken].innerRegion(RECT);
-         painter->save();
-         painter->setClipRegion(innerRegion);
-         QRect ir = innerRegion.boundingRect();
          if (sunken) hover = false;
-         painter->drawTiledPixmap(ir, gradient(PAL.color(QPalette::Window),ir.height(),Qt::Vertical, hover ? Raised : Sunken));
-         painter->restore();
-         renderFrame( painter, RECT, Sunken, Full, widget, hasFocus, true );
+         const QPixmap *fill = &gradient(COLOR(Window),RECT.height(),Qt::Vertical, hover ? GradSimple : GradSunken);
+         fillWithMask(painter, RECT, *fill, &masks.round[Sunken]);
+         renderFrame( painter, RECT, Sunken, Tile::Ring, widget, hasFocus, true );
       }
       else if (hover)
-         renderFrame( painter, RECT, Relief, Full, widget, hasFocus, true );
+         renderFrame( painter, RECT, Relief, Tile::Ring, widget, hasFocus, true );
       break;
    }
    case PE_PanelLineEdit: // Panel for a QLineEdit.
    {
       if (const QLineEdit* le = qobject_cast<const QLineEdit*>(widget))
-         if (!le->hasFrame())
-         {
-            painter->fillRect(RECT, PAL.color(QPalette::Base));
-            break;
-         }
-      QRect r2(RECT.x()+4, RECT.y()+4, RECT.width()-8, RECT.height()-8);
-//       if (option->state & State_On)
-//          painter->drawTiledPixmap(r2, gradient(PAL.color(QPalette::Base).dark(110), RECT.height()*2, Qt::Vertical, Raised));
-//       else
-         painter->fillRect(r2, PAL.color(QPalette::Base));
-      if (hasFocus)
-         renderFrame( painter, RECT, Sunken, Full, widget, true);
-//       else
       {
-         r2 = QRect(RECT.x()+2, RECT.y()+2, RECT.width()-4, RECT.height()-4);
-         renderFrame( painter, r2, Sunken, Full, widget, false);
+         // spinboxes allready have a lineedit as global frame
+         if (widget->parentWidget() && widget->parentWidget()->inherits("QSpinBox"))
+            break;
+         // no frame, so don't paint one
+         if (!le->hasFrame()) {
+            painter->fillRect(RECT, COLOR(Base)); break;
+         }
       }
-      break;
+      fillWithMask(painter, RECT, COLOR(Base), &masks.button);
+      shadows.sunken.render(RECT, painter);
+      if (hasFocus)
+         masks.button.outline(RECT.adjusted(1,1,-1,0), painter, COLOR(Highlight));
    }
    case PE_FrameFocusRect: // Generic focus indicator.
    {
@@ -174,7 +137,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       bool hadAntiAlias = painter->renderHints() & QPainter::Antialiasing;
       QBrush oldBrush = painter->brush();
       painter->setRenderHint(QPainter::Antialiasing);
-      painter->setBrush(painter->pen().color());
+      painter->setBrush(painter->pen().brush());
       
       // we want a golden mean cut arrow ;) 1:1.6180339887498948482
       int x[3], y[2];
@@ -240,122 +203,66 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       break;
    }
    case PE_IndicatorCheckBox: // On/off indicator, for example, a QCheckBox.
-      {
-         QRect rect = RECT; rect.adjust(2,2,-2,-2);
+   {
+      GradientType gt = !isEnabled ? GradButtonDisabled : (sunken ? GradSunken : (hover ? GradGloss : GradButton));
 
-         QColor bc = btnBgColor(PAL, isEnabled, hasFocus, hover);
-         QColor fc = btnFgColor(PAL, isEnabled, hasFocus, hover);
-         
-         Orientation3D o3d = (hover || !config.inverseButtons) ? Raised : Sunken;
-         
-         if (hasFocus)
-         {
-            renderFrame( painter, RECT, Sunken, Full, widget, true );
-         }
-         
-         QRegion innerRegion;
-         QRect ir;
-         if (sunken) //pressed
-         {
-            innerRegion = frames[Sunken].innerRegion(rect);
-            ir = innerRegion.boundingRect();
-            painter->save();
-            painter->setClipRegion(innerRegion);
-            painter->drawTiledPixmap(ir, gradient(bc, ir.height(),Qt::Vertical, Sunken));
-            painter->restore();
-            renderFrame( painter, rect, Sunken, Full );
-            break;
-         }
-         
-         if (option->state & State_Off)
-            innerRegion = frames[Raised].innerRegion(rect);
-         else// if (option->state & State_On)
-            innerRegion = frames[Sunken].innerRegion(rect);
-         
-         ir = innerRegion.boundingRect();
-         
-         painter->save();
-         painter->setClipRegion(innerRegion);
-         painter->drawTiledPixmap(ir, colorRun( bc, ir.height(), Qt::Vertical, o3d, !isEnabled));
-         
+      shadows.button.render(isEnabled?RECT:RECT.adjusted(2,1,-2,-1),painter,Tile::Ring);
+      
+      QColor c = isEnabled ? COLOR(Button) : COLOR(Window);
+      
+      QRect ir = RECT.adjusted(2,2,-2,-2);
+      fillWithMask(painter, ir, gradient(c, RECT.height(), Qt::Vertical, gt), &masks.button);
+      if (hasFocus)
+         masks.button.outline(ir, painter, COLOR(Highlight));
+      frames.button[isEnabled].render(ir,painter,Tile::Ring);
+      
+      if (!(sunken || (option->state & State_Off)))
+      {
+         c = isEnabled ? COLOR(ButtonText) : midColor(COLOR(Window), COLOR(WindowText));
+         QPen oldPen = painter->pen();
+         bool hadAntiAlias = painter->renderHints() & QPainter::Antialiasing;
+         painter->setRenderHint(QPainter::Antialiasing);
+         QPen pen(gradient(c, ir.height(), Qt::Vertical, gt), ir.width()/6, Qt::SolidLine, Qt::RoundCap, Qt::BevelJoin);
+         painter->setPen(pen);
+         QRect r = ir.adjusted(3,3,-3,-3);
+         painter->drawLine(r.x(),r.bottom(),r.right(),r.y());
          if (option->state & State_On)
-         {
-            int w2 = (ir.width()>>1);
-            int xoff = ((ir.width()-w2)>>1);
-            if (xoff*2+w2 != ir.width())
-               w2++;
-            int h2 = (ir.height()>>1);
-            int yoff = ((ir.height()-h2)>>1);
-            if (yoff*2+h2 != ir.height())
-               h2++;
-            painter->setClipRegion( QRect(ir.x()+xoff, ir.y()+yoff-1, w2, h2));
-            painter->drawTiledPixmap(ir, colorRun(fc, ir.height(), Qt::Vertical, o3d, !isEnabled));
-            painter->restore();
-            renderFrame( painter, rect, Sunken, Full );
-         }
-         else if ( option->state & State_Off )
-         {
-            painter->restore();
-            renderFrame( painter, rect, Raised, Full );
-         }
-         else // TRISTATE
-         {
-            int h3 = ir.height()/3;
-            if (!(h3 % 2)) h3++;
-            painter->setClipRegion(innerRegion.intersect(QRect(RECT.x(),ir.y()+((ir.height()-h3)>>1),rect.width(),h3)));
-            painter->drawTiledPixmap(ir, colorRun(fc, ir.height(), Qt::Vertical, o3d, !isEnabled));
-            painter->restore();
-            renderFrame( painter, rect, Sunken, Full );
-         }
-         break;
+            painter->drawLine(r.x(),r.y(),r.right(),r.bottom());
+         painter->setPen(oldPen);
+         painter->setRenderHint(QPainter::Antialiasing, hadAntiAlias);
       }
+      painter->drawPixmap(ir.right()-16*ir.height()/9,ir.y(), btnAmbient(ir.height()));
+      break;
+   }
    case PE_IndicatorRadioButton: // Exclusive on/off indicator, for example, a QRadioButton.
    {
-      if (isEnabled)
+      bool isOn = option->state & State_On;
+      sunken = sunken || isOn;
+      hover = hover && !isOn;
+      GradientType gt = sunken ? GradSunken : (hover ? GradGloss : GradButton);
+      QPoint xy = RECT.topLeft();
+      painter->drawPixmap(xy, shadows.radio[isEnabled]);
+      xy += QPoint(2,2);
+      fillWithMask(painter, xy,
+                     gradient(isEnabled?COLOR(Button):COLOR(Window), RECT.height(), Qt::Vertical, gt),
+                     masks.radio);
+      if (hasFocus)
       {
          painter->save();
-         QRegion innerRegion = round_frames[Sunken].innerRegion(RECT);
-         QRect ir = innerRegion.boundingRect();
-         painter->setClipRegion(innerRegion);
-         if (option->state & State_On) // active 'n dead
-         {
-            painter->drawTiledPixmap(ir, gradient(PAL.color(QPalette::Window), ir.height(), Qt::Vertical, Sunken));
-            // drop
-            painter->setRenderHint ( QPainter::Antialiasing );
-            painter->setPen(PAL.color(QPalette::WindowText));
-            painter->setBrush(PAL.color(QPalette::WindowText));
-            painter->drawEllipse ( RECT.adjusted(2*RECT.width()/5, 2*RECT.width()/5, -2*RECT.width()/5, -2*RECT.height()/5));
-         }
-         else if (sunken)
-            painter->drawTiledPixmap(ir, gradient(PAL.color(QPalette::Window), ir.height(), Qt::Vertical, Sunken));
-         else
-            painter->drawTiledPixmap(ir, gloss(btnBgColor(PAL, isEnabled, hasFocus, hover), ir.height(), Qt::Vertical, Raised));
-         painter->setClipping(false);
-         renderFrame(painter, RECT, Sunken, Full, widget, false, true);
-         if (hasFocus)
-         {
-            painter->setRenderHint ( QPainter::Antialiasing );
-            painter->setBrush(Qt::NoBrush);
-            QPen pen = painter->pen();
-//             pen.setWidth(2);
-            QColor c = PAL.color(QPalette::Highlight);
-            pen.setColor(c); painter->setPen(pen);
-            painter->drawEllipse ( RECT.adjusted(1,1,-1,-1) );
-            c.setAlpha(128); pen.setColor(c); painter->setPen(pen);
-            painter->drawEllipse ( RECT );
-         }
+         painter->setRenderHint(QPainter::Antialiasing);
+         painter->setPen(COLOR(Highlight));
+         painter->setBrush(Qt::NoBrush);
+         painter->drawEllipse(RECT.adjusted(2,2,-2,-2));
          painter->restore();
       }
-      else
+      if (isOn)
       {
-         bool hadAntiAlias = painter->renderHints() & QPainter::Antialiasing;
-         painter->setRenderHint ( QPainter::Antialiasing );
-         painter->setPen(PAL.color(QPalette::WindowText));
-         painter->drawEllipse ( RECT.adjusted(2,2,-2,-2) );
-         painter->setRenderHint ( QPainter::Antialiasing, hadAntiAlias );
+         QColor c = isEnabled ? COLOR(ButtonText) : midColor(COLOR(Window),COLOR(WindowText));
+         xy += QPoint(2,2);
+         fillWithMask(painter, xy, gradient(c, RECT.height(), Qt::Vertical, GradGloss), masks.radioIndicator);
       }
-   }
       break;
+   }
    case PE_Q3DockWindowSeparator: // Item separator for Qt 3 compatible dock window and toolbar contents.
       break;
    case PE_Frame: // Generic frame; see also QFrame.
@@ -380,13 +287,13 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          break;
       }
       if (hasFocus)
-         renderFrame( painter, RECT, Sunken, Full, widget, true);
+         renderFrame( painter, RECT, Sunken, Tile::Ring, widget, true);
 //       else
       {
          QRect rect = RECT.adjusted(2,2,-2,-2); // this is ok, as we set the frame to 4px anyway ;)
          renderFrame( painter, rect, sunken ? Sunken :
                    (option->state & QStyle::State_Raised) ?
-                   Raised : Relief, Full);
+                   Raised : Relief, Tile::Ring);
       }
       break;
    case PE_FrameMenu: // Frame for popup windows/menus; see also QMenu.
@@ -406,72 +313,59 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
    case PE_FrameDockWidget: // Panel frame for dock windows and toolbars.
       break;
    case PE_FrameTabWidget: // Frame for tab widgets.
-//       renderFrame( painter, RECT, config.tabwidget3D, Full, widget, false, true );
-//       painter->setClipRegion(round_frames[config.tabwidget3D].innerRegion(RECT), Qt::IntersectClip);
       if (const QStyleOptionTabWidgetFrame *twf =
           qstyleoption_cast<const QStyleOptionTabWidgetFrame *>(option))
       {
          QRect rect(RECT);
-         int baseHeight = pixelMetric( PM_TabBarBaseHeight, option, widget );
+         int baseHeight = pixelMetric( PM_TabBarBaseHeight, option, widget )-1;
+         int offset = 8;
          Qt::Orientation o = Qt::Vertical;
+         Tile::PosFlags pf = 0;
          switch (twf->shape)
          {
          case QTabBar::RoundedNorth:
          case QTabBar::TriangularNorth:
+            rect.adjust(offset,0,-offset,0);
             rect.setHeight(baseHeight);
-//             renderFrame( painter, rect.adjusted(2,0,-2,0), Sunken, Bottom);
+            pf = Tile::Left | Tile::Right | Tile::Top;
             break;
          case QTabBar::RoundedSouth:
          case QTabBar::TriangularSouth:
+            rect.adjust(offset,0,-offset,0);
             rect.setTop(rect.bottom()-baseHeight);
-//             renderFrame( painter, rect.adjusted(2,0,-2,0), Sunken, Top);
+            pf = Tile::Left | Tile::Right | Tile::Bottom;
             break;
          case QTabBar::RoundedEast:
          case QTabBar::TriangularEast:
+            rect.adjust(0,offset,0,-offset);
             rect.setLeft(rect.right()-baseHeight);
+            pf = Tile::Top | Tile::Right | Tile::Bottom;
             o = Qt::Horizontal;
-//             renderFrame( painter, rect.adjusted(0,2,0,-2), Sunken, Left);
             break;
          case QTabBar::RoundedWest:
          case QTabBar::TriangularWest:
+            rect.adjust(0,offset,0,-offset);
             rect.setWidth(baseHeight);
+            pf = Tile::Top | Tile::Left | Tile::Bottom;
             o = Qt::Horizontal;
-//             renderFrame( painter, rect.adjusted(0,2,0,-2), Sunken, Right);
             break;
          }
-//          QRect r2 = rect.adjusted(2,2,-2,-2);
-         renderFrame( painter, rect, config.tabwidget3D, Full, widget, false, true );
-         painter->setClipRegion(round_frames[config.tabwidget3D].innerRegion(rect), Qt::IntersectClip);
-         painter->drawTiledPixmap(rect.adjusted(2,2,-2,-2), gloss(PAL.color(config.tabColor), baseHeight-4, o, Raised));
+         shadows.tab.render(rect, painter, pf);
+         fillWithMask(painter, rect.adjusted(2,1,-2,0), gradient(hasFocus?COLOR(Highlight):COLOR(WindowText),
+            baseHeight, o, GradGloss), &masks.tab, pf | Tile::Center);
+         rect = RECT.adjusted(0,baseHeight-1,0,0);
+         shadows.tab.render(rect, painter, Tile::Ring);
       }
       break;
    case PE_FrameLineEdit: // Panel frame for line edits.
-      if (!hasFocus)
-      {
-         QRect rect(RECT); rect.adjust(2,2,-2,-2);
-         renderFrame( painter, rect, Sunken, Full);
-      }
-      else
-         renderFrame( painter, RECT, Sunken, Full, widget, true);
-      break;
+      shadows.sunken.render(RECT,painter);
+      if (hasFocus)
+         masks.button.outline(RECT.adjusted(1,1,-1,0), painter, COLOR(Highlight));
    case PE_FrameGroupBox: // Panel frame around group boxes.
    {
-      QRegion innerRegion = round_frames[Sunken].innerRegion(RECT);
-      painter->save();
-      painter->setClipRegion(innerRegion);
-#if 1
-#define GRECT RECT.translated(widget->mapTo ( widget->topLevelWidget(), QPoint(0,0) ))
-      if (_bgBrush && widget)
-         painter->drawPixmap(RECT, _bgBrush->shadow(GRECT));
-#undef GRECT
-      else 
-#endif
-      if (config.bgMode == Scanlines)
-         painter->drawTiledPixmap(RECT, *_scanlines[2]);
-      else
-         painter->drawTiledPixmap(RECT, gradient(PAL.color(QPalette::Window), RECT.height()*3/2, Qt::Vertical, Sunken));
-      painter->restore();
-      renderFrame( painter, RECT, Sunken, Full, widget, hasFocus, true);
+      QRect rect = RECT.adjusted(2,1,-2,-4);
+      fillWithMask(painter, rect, gradient(COLOR(Window), rect.height(), Qt::Vertical, GradSunken), &masks.tab);
+      shadows.tab.render(RECT, painter);
       break;
    }
 //    case PE_FrameButtonBevel: // Panel frame for a button bevel
@@ -622,16 +516,36 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       break;
 //    case PE_PanelTipLabel: // The panel for a tip label.
    case PE_FrameTabBarBase: // The frame that is drawn for a tabbar, ususally drawn for a tabbar that isn't part of a tab widget
-   {
-      QRegion innerRegion = frames[Relief].innerRegion(RECT);
-      painter->save();
-      painter->setClipRegion(innerRegion);
-      QRect ir = innerRegion.boundingRect();
-      painter->drawTiledPixmap(ir, gradient(PAL.color(QPalette::Background), ir.height(), Qt::Vertical, Raised));
-      painter->restore();
-      renderFrame( painter, RECT, Relief, Full);
+      if (const QStyleOptionTabBarBase *tbb
+            = qstyleoption_cast<const QStyleOptionTabBarBase *>(option))
+      {
+         QRegion region(tbb->rect);
+         region -= tbb->selectedTabRect;
+         painter->save();
+         painter->setClipRegion(region);
+         int size; Qt::Orientation o;
+         switch (tbb->shape)
+         {
+         case QTabBar::RoundedNorth:
+         case QTabBar::TriangularNorth:
+         case QTabBar::RoundedSouth:
+         case QTabBar::TriangularSouth:
+            o = Qt::Vertical;
+            size = RECT.height();
+            break;
+         case QTabBar::RoundedWest:
+         case QTabBar::TriangularWest:
+         case QTabBar::RoundedEast:
+         case QTabBar::TriangularEast:
+            o = Qt::Horizontal;
+            size = RECT.height();
+            break;
+         }
+         fillWithMask(painter, RECT, gradient(COLOR(WindowText), size, o, GradGloss), &masks.tab);
+         shadows.tab.render(RECT, painter);
+         painter->restore();
+      }
       break;
-   }
    case PE_IndicatorTabTear: // An indicator that a tab is partially scrolled out of the visible tab bar when there are many tabs.
       break;
    default:
@@ -639,4 +553,5 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
    } // switch
 #undef RECT
 #undef PAL
+#undef COLOR
 }

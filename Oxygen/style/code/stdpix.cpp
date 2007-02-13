@@ -87,18 +87,15 @@ QPixmap OxygenStyle::standardPixmap ( StandardPixmap standardPixmap, const QStyl
             ;
          }
       }
-      QRegion innerRegion = frames[Sunken].innerRegion(rect);
-      painter.setClipRegion(innerRegion);
-      ir = innerRegion.boundingRect();
+      ir = masks.rect[Sunken].clipRegion(rect).boundingRect();
       
       if (opt && opt->state & State_Sunken) // pressed
-         painter.drawTiledPixmap(ir, gradient(bc, ir.height(), Qt::Vertical, Sunken ));
+         painter.drawTiledPixmap(ir, gradient(bc, ir.height(), Qt::Vertical, GradSunken ));
       else if (opt && opt->state & State_MouseOver) // hovered
-         painter.drawTiledPixmap(ir, gradient(bc, ir.height(), Qt::Vertical, Raised ));
+         painter.drawTiledPixmap(ir, gradient(bc, ir.height(), Qt::Vertical));
       else // basic
-         painter.drawTiledPixmap(ir, gradient(pal.color(QPalette::WindowText), ir.height(), Qt::Vertical, Raised ));
-      painter.setClipping(false);
-      renderFrame( &painter, rect, Sunken, Full );
+         painter.drawTiledPixmap(ir, gradient(pal.color(QPalette::WindowText), ir.height(), Qt::Vertical));
+      renderFrame( &painter, rect, Sunken, Tile::Ring );
       QPen pen = painter.pen();
       pen.setWidth(ir.height()/4);
       pen.setColor(fc);
