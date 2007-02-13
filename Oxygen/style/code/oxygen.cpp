@@ -89,7 +89,6 @@
 
 /**============= Oxygen includes ==========================*/
 #include "oxygen.h"
-#include "oxygen.moc"
 #include "dynamicbrush.h"
 /**=========================================================*/
 
