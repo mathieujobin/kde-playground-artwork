@@ -133,19 +133,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
           qstyleoption_cast<const QStyleOptionSpinBox *>(option))
       {
          QStyleOptionSpinBox copy = *sb;
-         QRect rect;
          int uh = 0;
-         
-         if (sb->subControls & SC_SpinBoxUp)
-         {
-            copy.subControls = SC_SpinBoxUp;
-            rect = subControlRect(CC_SpinBox, sb, SC_SpinBoxUp, widget);
-            uh = rect.height();
-            if (option->direction == Qt::RightToLeft)
-               copy.rect.setLeft(RECT.left()+2*rect.width()/3);
-            else
-               copy.rect.setRight(rect.left()+rect.width()/3);
-         }
          
          if (sb->frame && (sb->subControls & SC_SpinBoxFrame))
             drawPrimitive ( PE_PanelLineEdit, sb, painter, widget );
@@ -155,7 +143,9 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          
          if (sb->subControls & SC_SpinBoxUp)
          {
-            copy.rect = rect;
+            copy.subControls = SC_SpinBoxUp;
+            copy.rect = subControlRect(CC_SpinBox, sb, SC_SpinBoxUp, widget);
+            uh = copy.rect.height();
             
             pf = Tile::Top | Tile::Left | Tile::Right;
             isEnabled = sb->stepEnabled & QAbstractSpinBox::StepUpEnabled;
@@ -167,9 +157,10 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             fillWithMask(painter, copy.rect, gradient(COLOR(Button), copy.rect.height()*2, Qt::Vertical, gt),
                          &masks.button, pf | Tile::Center);
             
-            copy.rect.adjust(copy.rect.width()/4,copy.rect.height()/4,-copy.rect.width()/4,-copy.rect.height()/4);
+            int dx = copy.rect.width()/5, dy = copy.rect.height()/5;
+            copy.rect.adjust(dx, dy,-dx,-dy);
             
-            painter->setPen(isEnabled ? COLOR(ButtonText) :
+            painter->setPen(isEnabled ? (hover ? COLOR(Highlight) : COLOR(ButtonText)) :
                             PAL.color(QPalette::Disabled, QPalette::ButtonText));
             drawPrimitive(PE_IndicatorSpinUp, &copy, painter, widget);
          }
@@ -189,9 +180,10 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             fillWithMask(painter, copy.rect, gradient(COLOR(Button), copy.rect.height()*2, Qt::Vertical, gt), &masks.button,
                          pf | Tile::Center, false, QPoint(0,-uh));
             
-            copy.rect.adjust(copy.rect.width()/4,copy.rect.height()/4,-copy.rect.width()/4,-copy.rect.height()/4);
+            int dx = copy.rect.width()/5, dy = copy.rect.height()/5;
+            copy.rect.adjust(dx, dy,-dx,-dy);
             
-            painter->setPen(isEnabled ? COLOR(ButtonText) :
+            painter->setPen(isEnabled ? (hover ? COLOR(Highlight) : COLOR(ButtonText)) :
                             PAL.color(QPalette::Disabled, QPalette::ButtonText));
             drawPrimitive(PE_IndicatorSpinDown, &copy, painter, widget);
          }
@@ -363,31 +355,25 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          
          if (slider->subControls & SC_SliderHandle)
          {
-            QPalette::ColorRole c1 = QPalette::Window, c2 = QPalette::WindowText;
-            if (isEnabled)
+            // shadow
+            QPoint xy = handle.topLeft();
+            painter->drawPixmap(xy, shadows.radio[isEnabled]);
+            // gradient
+            xy += QPoint(2,2);
+            GradientType gt = (hover && !sunken) ? GradGloss : GradSunken;
+            fillWithMask(painter, xy,
+                     gradient(isEnabled?COLOR(Button):COLOR(Window), RECT.height(), Qt::Vertical, gt),
+                     masks.radio);
+            // focus indicator
+            if (hasFocus)
             {
-               c1 = QPalette::Button, c2 = QPalette::ButtonText;
-               fillWithMask(painter, handle, gradient(PAL.color(c1), handle.height(),
-                  handle.height() > handle.width() ? Qt::Horizontal : Qt::Vertical,
-                  hover && !sunken ? GradGloss : GradSunken), &masks.round[Raised]);
-               if (hasFocus)
-               {
-                  painter->save();
-                  painter->setBrush(PAL.color(QPalette::Highlight));
-                  painter->setPen(Qt::NoPen);
-                  painter->setRenderHint ( QPainter::Antialiasing, true );
-                  int w = handle.width()/3; int h = handle.height()/3;
-                  painter->drawEllipse ( handle.adjusted(w,h,-w,-h) );
-                  painter->restore();
-               }
-               renderFrame(painter, handle, Raised, Tile::Ring, widget, false, true);
-            }
-            else
-            {
-               handle = handle.adjusted(1,2,-1,0);
-               fillWithMask(painter, handle, gradient(PAL.color(QPalette::Background),handle.height(),
-                  handle.height() > handle.width() ? Qt::Horizontal : Qt::Vertical, GradSunken), &masks.round[Relief]);
-               renderFrame(painter, handle, Relief, Tile::Ring, widget, false, true );
+               painter->save();
+               painter->setBrush(COLOR(Highlight));
+               painter->setPen(Qt::NoPen);
+               painter->setRenderHint ( QPainter::Antialiasing, true );
+               int w = handle.width()/3; int h = handle.height()/3;
+               painter->drawEllipse ( handle.adjusted(w,h,-w,-h) );
+               painter->restore();
             }
          }
       }

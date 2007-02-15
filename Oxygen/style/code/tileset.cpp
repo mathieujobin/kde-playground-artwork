@@ -338,7 +338,7 @@ void Line::render(const QRect &rect, QPainter *p, PosFlags pf) const
 #define FILL_PIX(_NUM_)\
    pixmap[_NUM_].fill(Qt::transparent);\
    p.begin(&pixmap[_NUM_]);\
-   p.fillRect(0,0,pixmap[_NUM_].width(),pixmap[_NUM_].height(),lg);\
+   p.fillRect(pixmap[_NUM_].rect(), lg);\
    p.end()
 
 #define MAKE_ARC(_NUM_,_CLR_,_X_,_Y_,_ANG_)\
@@ -352,8 +352,10 @@ void Line::render(const QRect &rect, QPainter *p, PosFlags pf) const
       p.end()
 
 #define SET_GRAD(_C1_,_C2_)\
-   lg.setColorAt ( 0, QColor(_C1_,_C1_,_C1_,_alpha) );\
-   lg.setColorAt ( 1, QColor(_C2_,_C2_,_C2_,_alpha) )
+   stops.clear();\
+   stops << QGradientStop(0, QColor(_C1_,_C1_,_C1_,_alpha))\
+         << QGradientStop(1, QColor(_C2_,_C2_,_C2_,_alpha));\
+   lg.setStops(stops)
 
 #ifndef CLAMP
 #define CLAMP(x,l,u) (x) < (l) ? (l) :\
@@ -363,8 +365,8 @@ void Line::render(const QRect &rect, QPainter *p, PosFlags pf) const
 
 Nuno::Nuno(int alpha)
 {
-
-   _alpha = CLAMP(alpha*1.6,0,255);
+   QGradientStops stops;
+   _alpha = alpha;
    QPainter p; QPen pen = p.pen();
    MAKE_ARC(0,QColor(255,255,255,_alpha),0,0,90); //tl
    QLinearGradient lg( 0, 0, 4, 4 );
@@ -379,8 +381,7 @@ Nuno::Nuno(int alpha)
 
    _alpha = alpha;
    
-   p.setPen(Qt::NoPen);
-   lg.setStart(0,1); lg.setFinalStop(37,1);
+   lg.setStart(0,0); lg.setFinalStop(37,0);
    
    //bottom 1
    SET_GRAD(175,138);
@@ -414,95 +415,100 @@ void Nuno::render(const QRect &r, QPainter *p, PosFlags pf) const
    if (matches(Top|Left, pf))
    {
       p->drawPixmap(r.x(),r.y(),pixmap[0]);
-      xOff = width(0); yOff = height(0);
+      xOff = r.x()+width(0); yOff = r.y()+height(0);
    }
    
    if (matches(Top|Right, pf))
    {
       p->drawPixmap(r.right()-width(1)+1,r.y(),pixmap[1]);
-      rOff = width(1); yOff = height(1);
+      rOff = r.right()-width(1)+1; yOff = r.y()+height(1);
    }
    
    if (matches(Bottom|Left, pf))
    {
       p->drawPixmap(r.x(),r.bottom()-height(3)+1,pixmap[3]);
-      xOff = width(3); bOff = height(3);
+      xOff = r.x()+width(3); bOff = r.bottom()-height(3)+1;
    }
    
    if (matches(Bottom|Right, pf))
    {
       p->drawPixmap(r.right()-width(2)+1,r.bottom()-height(2)+1,pixmap[2]);
-      rOff = width(2); bOff = height(2);
+      rOff = r.right()-width(2)+1; bOff = r.bottom()-height(2)+1;
    }
-   
    p->save();
-   if (pf & Top)
+   if (xOff < rOff)
    {
-      p->setPen(QColor(255,255,255,_alpha));
-      p->drawLine(r.x()+xOff, r.y(), r.right()-rOff, r.y());
-   }
-   if (pf & Left)
-   {
-      p->setPen(QColor(255,255,255,_alpha));
-      p->drawLine(r.x(), r.y()+yOff, r.x(), r.bottom()-bOff);
-   }
-   if (pf & Bottom)
-   {
-      int w = r.width()-xOff-rOff;
-      if (w < width(4)+width(5))
+      if (pf & Top)
       {
-         QHash<int, QPixmap> *cache = &(const_cast<Nuno*>( this )->_lines[0]);
-         QHash<int, QPixmap>::const_iterator it;
-         it = cache->find(w);
-         if (it == cache->end())
-         {
-            QPixmap pix(w,1); pix.fill(Qt::transparent);
-            QLinearGradient lg( 0, 1, w, 1 );
-            lg.setColorAt ( 0, QColor(175,175,175,_alpha) );
-            lg.setColorAt ( 1, QColor(100,100,100,_alpha) );
-            QPainter p(&pix); p.fillRect(0,0,w,1,lg); p.end();
-            it = cache->insert(w, pix);
-         }
-         p->drawPixmap(r.x()+xOff,r.bottom(),it.value());
+         p->setPen(QColor(255,255,255,_alpha));
+         p->drawLine(xOff, r.y(), rOff, r.y());
       }
-      else
+      if (pf & Bottom)
       {
-         p->drawPixmap(r.x()+xOff,r.bottom(),pixmap[4]);
-         p->drawPixmap(r.right()-rOff-width(5),r.bottom(),pixmap[5]);
-         if (r.width() > xOff+width(4)+width(5)+rOff)
+         int w = rOff-xOff;
+         if (w < width(4)+width(5))
          {
-            p->setPen(QColor(137,137,137,_alpha));
-            p->drawLine(r.x()+xOff+width(4),r.bottom(),r.right()-rOff-width(5),r.bottom());
+            QHash<int, QPixmap> *cache = &(const_cast<Nuno*>( this )->_lines[0]);
+            QHash<int, QPixmap>::const_iterator it;
+            it = cache->find(w);
+            if (it == cache->end())
+            {
+               QPixmap pix(w,1); pix.fill(Qt::transparent);
+               QLinearGradient lg( 0, 1, w, 1 );
+               lg.setColorAt ( 0, QColor(175,175,175,_alpha) );
+               lg.setColorAt ( 1, QColor(100,100,100,_alpha) );
+               QPainter p(&pix); p.fillRect(0,0,w,1,lg); p.end();
+               it = cache->insert(w, pix);
+            }
+            p->drawPixmap(xOff,r.bottom(),it.value());
+         }
+         else
+         {
+            p->drawPixmap(xOff,r.bottom(),pixmap[4]);
+            p->drawPixmap(rOff-width(5),r.bottom(),pixmap[5]);
+            if (w > width(4)+width(5))
+            {
+               p->setPen(QColor(137,137,137,_alpha));
+               p->drawLine(xOff+width(4),r.bottom(),rOff-width(5)-1,r.bottom());
+            }
          }
       }
    }
-   if (pf & Right)
+   if (yOff < bOff)
    {
-      int h = r.height()-yOff-bOff;
-      if (h < height(6)+height(7))
+      if (pf & Left)
       {
-         QHash<int, QPixmap> *cache = &(const_cast<Nuno*>( this )->_lines[1]);
-         QHash<int, QPixmap>::const_iterator it;
-         it = cache->find(h);
-         if (it == cache->end())
-         {
-            QPixmap pix(1,h);
-            QLinearGradient lg( 1, 0, 1, h ); pix.fill(Qt::transparent);
-            lg.setColorAt ( 0, QColor(170,170,170,_alpha) );
-            lg.setColorAt ( 1, QColor(107,107,107,_alpha) );
-            QPainter p(&pix); p.fillRect(0,0,1,h,lg); p.end();
-            it = cache->insert(h, pix);
-         }
-         p->drawPixmap(r.right(),r.y()+yOff,it.value());
+         p->setPen(QColor(255,255,255,_alpha));
+         p->drawLine(r.x(), yOff, r.x(), bOff);
       }
-      else
+      if (pf & Right)
       {
-         p->drawPixmap(r.right(),r.y()+yOff,pixmap[6]);
-         p->drawPixmap(r.right(),r.bottom()-bOff-height(7),pixmap[7]);
-         if (r.height() > yOff+height(6)+height(7)+bOff)
+         int h = bOff-yOff;
+         if (h < height(6)+height(7))
          {
-            p->setPen(QColor(138,138,138,_alpha));
-            p->drawLine(r.right(),r.y()+yOff+height(6),r.right(),r.bottom()-bOff-height(7));
+            QHash<int, QPixmap> *cache = &(const_cast<Nuno*>( this )->_lines[1]);
+            QHash<int, QPixmap>::const_iterator it;
+            it = cache->find(h);
+            if (it == cache->end())
+            {
+               QPixmap pix(1,h);
+               QLinearGradient lg( 1, 0, 1, h ); pix.fill(Qt::transparent);
+               lg.setColorAt ( 0, QColor(170,170,170,_alpha) );
+               lg.setColorAt ( 1, QColor(107,107,107,_alpha) );
+               QPainter p(&pix); p.fillRect(0,0,1,h,lg); p.end();
+               it = cache->insert(h, pix);
+            }
+            p->drawPixmap(r.right(),yOff,it.value());
+         }
+         else
+         {
+            p->drawPixmap(r.right(),yOff,pixmap[6]);
+            p->drawPixmap(r.right(),bOff-height(7),pixmap[7]);
+            if (h > height(6)+height(7))
+            {
+               p->setPen(QColor(138,138,138,_alpha));
+               p->drawLine(r.right(),yOff+height(6),r.right(),bOff-height(7)-1);
+            }
          }
       }
    }

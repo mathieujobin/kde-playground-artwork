@@ -38,6 +38,7 @@ using namespace Oxygen;
 extern int bgYoffset_;
 extern Pixmap shadowPix;
 extern Config config;
+extern Dpi dpi;
 
 void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * option, QPainter * painter, const QWidget * widget) const
 {
@@ -69,9 +70,10 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       GradientType gt = !isEnabled ? GradButtonDisabled : (sunken ? GradSunken : (hover ? GradGloss : GradButton));
       
       QColor c = !isEnabled ? COLOR(Window) :  COLOR(Button);
+      int $2 = dpi.$2;
 
-      shadows.button.render(isEnabled ? RECT:RECT.adjusted(2,1,-2,-1), painter, Tile::Ring);
-      QRect ir = RECT.adjusted(2,2,-2,-2);
+      shadows.button.render(isEnabled ? RECT:RECT.adjusted($2,dpi.$1,-$2,-dpi.$1), painter, Tile::Ring);
+      QRect ir = RECT.adjusted($2,$2,-$2,-$2);
       fillWithMask(painter, ir, gradient(c, RECT.height(), Qt::Vertical, gt), &masks.button);
       if (hasFocus)
          masks.button.outline(ir, painter, COLOR(Highlight));
@@ -209,11 +211,12 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
    {
       GradientType gt = !isEnabled ? GradButtonDisabled : (sunken ? GradSunken : (hover ? GradGloss : GradButton));
 
-      shadows.button.render(isEnabled?RECT:RECT.adjusted(2,1,-2,-1),painter,Tile::Ring);
+      int $2 = dpi.$2;
+      shadows.button.render(isEnabled?RECT:RECT.adjusted($2,dpi.$1,-$2,-dpi.$1),painter,Tile::Ring);
       
       QColor c = isEnabled ? COLOR(Button) : COLOR(Window);
       
-      QRect ir = RECT.adjusted(2,2,-2,-2);
+      QRect ir = RECT.adjusted($2,$2,-$2,-$2);
       fillWithMask(painter, ir, gradient(c, RECT.height(), Qt::Vertical, gt), &masks.button);
       if (hasFocus)
          masks.button.outline(ir, painter, COLOR(Highlight));
@@ -227,7 +230,8 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          painter->setRenderHint(QPainter::Antialiasing);
          QPen pen(gradient(c, ir.height(), Qt::Vertical, gt), ir.width()/6, Qt::SolidLine, Qt::RoundCap, Qt::BevelJoin);
          painter->setPen(pen);
-         QRect r = ir.adjusted(3,3,-3,-3);
+         int $3 = dpi.$3;
+         QRect r = ir.adjusted($3,$3,-$3,-$3);
          painter->drawLine(r.x(),r.bottom(),r.right(),r.y());
          if (option->state & State_On)
             painter->drawLine(r.x(),r.y(),r.right(),r.bottom());
@@ -245,7 +249,8 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       GradientType gt = sunken ? GradSunken : (hover ? GradGloss : GradButton);
       QPoint xy = RECT.topLeft();
       painter->drawPixmap(xy, shadows.radio[isEnabled]);
-      xy += QPoint(2,2);
+      int $2 = dpi.$2;
+      xy += QPoint($2,$2);
       fillWithMask(painter, xy,
                      gradient(isEnabled?COLOR(Button):COLOR(Window), RECT.height(), Qt::Vertical, gt),
                      masks.radio);
@@ -255,13 +260,13 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          painter->setRenderHint(QPainter::Antialiasing);
          painter->setPen(COLOR(Highlight));
          painter->setBrush(Qt::NoBrush);
-         painter->drawEllipse(RECT.adjusted(2,2,-2,-2));
+         painter->drawEllipse(RECT.adjusted($2,$2,-$2,-$2));
          painter->restore();
       }
       if (isOn)
       {
          QColor c = isEnabled ? COLOR(ButtonText) : midColor(COLOR(Window),COLOR(WindowText));
-         xy += QPoint(2,2);
+         xy += QPoint($2,$2);
          fillWithMask(painter, xy, gradient(c, RECT.height(), Qt::Vertical, GradGloss), masks.radioIndicator);
       }
       break;
@@ -366,7 +371,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          masks.button.outline(RECT.adjusted(1,1,-1,0), painter, COLOR(Highlight));
    case PE_FrameGroupBox: // Panel frame around group boxes.
    {
-      int darkness;
+      int darkness = 5; // compromise ;) - shouldn't happen anyway
       if (widget)
       {
          // find proper color value for the bottom (because of out general gradient)
@@ -375,13 +380,17 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          QWidget *tlw = widget->topLevelWidget();
          QPoint zero(0,0); zero = widget->mapTo(tlw, zero);
          darkness = (10*(zero.y()+widget->height()))/tlw->height();
+//          if (zero.x()+widget->width()-tlw->width()/2 > tlw->width()/2-zero.x())
+//          darkness = (darkness*(tlw->width()-zero.x()))/(zero.x()+widget->width());
+//          qWarning("%d", darkness);
       }
-      else // compromise ;) - shouldn't happen anyway
-         darkness = 5;
       
-      QRect rect = RECT.adjusted(2,1,-2,0);
-      fillWithMask(painter, rect, gradient(COLOR(Window).dark(100+darkness), rect.height(), Qt::Vertical, GradGroup),
-                   &masks.tab);
+      QRect rect = RECT.adjusted(2,1,-2,-32);
+      QColor c = COLOR(Window).dark(100+darkness);
+      fillWithMask(painter, rect, gradient(c, rect.height(), Qt::Vertical, GradGroup), &masks.tab,
+                   Tile::Left|Tile::Top|Tile::Right);
+      rect = RECT.adjusted(2,1,-2,0); rect.setTop(rect.bottom()-31);
+      painter->drawTiledPixmap(rect, gradient(c, rect.height(), Qt::Horizontal, GradGroup));
       rect = RECT; rect.setBottom(rect.bottom()-rect.height()/6);
       shadows.tab.render(rect, painter, Tile::Top|Tile::Left|Tile::Right);
       break;

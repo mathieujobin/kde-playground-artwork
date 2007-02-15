@@ -36,12 +36,11 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
       if (const QStyleOptionSpinBox *spinbox =
           qstyleoption_cast<const QStyleOptionSpinBox *>(option))
       {
-         QSize bs;
-         int fw = spinbox->frame ? pixelMetric(PM_SpinBoxFrameWidth, spinbox, widget) : 0;
-         bs.setHeight(qMax(8, spinbox->rect.height()/2));
+         QSize bs = spinbox->rect.size();
+         bs.setHeight(bs.height()/2);
             // 1.6 -approximate golden mean
-         bs.setWidth(qMax(18, qMin(bs.height(), spinbox->rect.width() / 4)));
-         bs = bs.expandedTo(QApplication::globalStrut());
+         bs.setWidth(qMax(18, qMin(bs.height(), bs.width() / 4)));
+//          bs = bs.expandedTo(QApplication::globalStrut());
          int x = spinbox->rect.width() - bs.width();
          switch (subControl)
          {
@@ -49,11 +48,14 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
             ret = QRect(x, 0, bs.width(), bs.height());
             break;
          case SC_SpinBoxDown:
-            ret = QRect(x, bs.height(), bs.width(), bs.height());
+            ret = QRect(x, spinbox->rect.height()-bs.height(), bs.width(), bs.height());
             break;
          case SC_SpinBoxEditField:
+         {
+            int fw = spinbox->frame ? pixelMetric(PM_SpinBoxFrameWidth, spinbox, widget) : 0;
             ret = QRect(fw, fw, x - fw, spinbox->rect.height() - 2*fw);
             break;
+         }
          case SC_SpinBoxFrame:
             ret = spinbox->rect;
          default:

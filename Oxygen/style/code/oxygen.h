@@ -89,6 +89,29 @@ enum Orientation3D {Sunken = 0, Relief, Raised};
 //    Ring=0xf, Center=0x10, Full=0x1f
 // };
 
+typedef struct
+{
+   int $1, $2, $3, $4;
+   int MenuButtonIndicator;
+   int ScrollBarExtent;
+   int ScrollBarSliderMin;
+   int SliderThickness;
+   int SliderControl;
+   int DockWidgetHandleExtent;
+   int MenuBarItemSpacing;
+   int MenuBarHMargin;
+   int ToolBarHandleExtent;
+   int ToolBarExtensionExtent;
+   int TabBarTabHSpace;
+   int TabBarTabVSpace;
+   int TabBarBase;
+   int TabBarScrollButtonWidth;
+   int SplitterWidth;
+   int TitleBarHeight;
+   int Indicator;
+   int ExclusiveIndicator;
+} Dpi;
+
 typedef struct Config
 {
    bool raisedButtons; // whether to use soft gradients instead of glosses
@@ -110,6 +133,7 @@ typedef struct Config
    int gradientIntensity;
    int fullPixMode;
    bool HAL9000;
+   double scale;
 } Config;
 
 class OxygenStyle : public QCommonStyle

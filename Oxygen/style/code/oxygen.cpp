@@ -130,6 +130,7 @@ using namespace Oxygen;
 
 /** static config object */
 Config config;
+Dpi dpi;
 
 /** The event killer*/
 bool EventKiller::eventFilter( QObject *, QEvent *)
@@ -229,6 +230,8 @@ void OxygenStyle::readSettings()
    QSettings settings("Oxygen", "Style");
    settings.beginGroup("Style");
    
+   config.scale = settings.value("Scale", 1.0).toDouble();
+   
    config.acceleration = (Acceleration) settings.value("Acceleration", XRender).toInt();
    config.gradientIntensity = settings.value("GradientIntensity",70).toInt();
    
@@ -257,6 +260,8 @@ void OxygenStyle::readSettings()
    settings.endGroup();
 }
 
+#define SCALE(_N_) lround(_N_*config.scale)
+
 void OxygenStyle::generatePixmaps()
 {
    frames.rect[Sunken] = Tile::Set(QPixmap(":/frame-sunken"),5,5,1,1);
@@ -279,20 +284,23 @@ void OxygenStyle::generatePixmaps()
    
    // PUSHBUTTON =====================================
    // shadow
-   tmp = QPixmap(9,9);
+   int $2 = dpi.$2; int $2_2 = lround($2/2.0);
+   int $9 = SCALE(9); int $9_2 = ($9-1)/2;
+   int alpha = lround((2*18.0)/$2);
+   tmp = QPixmap($9,$9);
    tmp.fill(Qt::transparent);
    p.begin(&tmp);
    p.setPen(Qt::NoPen);
    p.setRenderHint(QPainter::Antialiasing);
    p.setBrush(QColor(0,0,0,18));
-   p.drawRoundRect(0,0,9,9,60,60);
-   p.setBrush(QColor(0,0,0,39));
-   p.drawRoundRect(1,1,7,7,75,75);
-   p.end();
-   shadows.button = Tile::Set(tmp,4,4,1,1);
+   int rnd = (60*9)/$9;
+   p.drawRoundRect(0,0,$9,$9,rnd,rnd);
+   rnd = (75*9)/$9;
+   p.drawRoundRect($2_2,$2_2,$9-$2,$9-$2,rnd,rnd);
+   shadows.button = Tile::Set(tmp,$9_2,$9_2,$9-2*$9_2,$9-2*$9_2);
    
    // -> sunken
-   QImage tmpImg(9,9, QImage::Format_ARGB32);
+   QImage tmpImg($9,$9, QImage::Format_ARGB32);
    tmpImg.fill(Qt::transparent);
 
    p.begin(&tmpImg);
@@ -306,7 +314,7 @@ void OxygenStyle::generatePixmaps()
    p.setBrush(QColor(0,0,0,180)); p.drawRoundRect(2,4,3,5,80,80);
    p.end();
 
-   shadows.sunken = Tile::Set(QPixmap::fromImage(tmpImg),4,4,1,1);
+   shadows.sunken = Tile::Set(QPixmap::fromImage(tmpImg),$9_2,$9_2,$9-2*$9_2,$9-2*$9_2);
    
    
    // outlines
@@ -340,8 +348,8 @@ void OxygenStyle::generatePixmaps()
    // ================================================================
    
    // RADIOUTTON =====================================
-   int rw = pixelMetric(PM_ExclusiveIndicatorWidth);
-   int rh = pixelMetric(PM_ExclusiveIndicatorHeight);
+   int rw = dpi.ExclusiveIndicator;
+   int rh = dpi.ExclusiveIndicator;
    // shadow
    for (int i = 0; i < 2; ++i)
    {
@@ -353,12 +361,12 @@ void OxygenStyle::generatePixmaps()
       p.setBrush(QColor(0,0,0,(i+1)*9));
       p.drawEllipse(0,0,rw,rh);
       p.setBrush(QColor(0,0,0,(i+1)*20));
-      p.drawEllipse(1,1,rw-1,rh-1);
+      p.drawEllipse($2_2,$2_2,rw-$2,rh-$2);
       p.end();
    }
    
    // mask
-   rw -= 4; rh -= 4;
+   rw -= dpi.$4; rh -= dpi.$4;
    masks.radio = QPixmap(rw, rh);
    masks.radio.fill(Qt::transparent);
    p.begin(&masks.radio);
@@ -369,7 +377,7 @@ void OxygenStyle::generatePixmaps()
    p.end();
    
    // mask fill
-   rw -= 4; rh -= 4;
+   rw -= dpi.$4; rh -= dpi.$4;
    masks.radioIndicator = QPixmap(rw, rh);
    masks.radioIndicator.fill(Qt::transparent);
    p.begin(&masks.radioIndicator);
@@ -417,15 +425,37 @@ void OxygenStyle::generatePixmaps()
 
 void OxygenStyle::initMetrics()
 {
+   dpi.$1 = SCALE(1); dpi.$2 = SCALE(2);
+   dpi.$3 = SCALE(3); dpi.$4 = SCALE(4);
+   dpi.MenuButtonIndicator = SCALE(7);
+   dpi.ScrollBarExtent = SCALE(19);
+   dpi.ScrollBarSliderMin = SCALE(40);
+   dpi.SliderThickness = SCALE(24);
+   dpi.SliderControl = SCALE(17);
+   dpi.DockWidgetHandleExtent = SCALE(6);
+   dpi.MenuBarItemSpacing = SCALE(10);
+   dpi.MenuBarHMargin = SCALE(10);
+   dpi.ToolBarHandleExtent = SCALE(6);
+   dpi.ToolBarExtensionExtent = SCALE(16);
+   dpi.TabBarTabHSpace = SCALE(18);
+   dpi.TabBarTabVSpace = SCALE(10);
+   dpi.TabBarBase = SCALE(16);
+   dpi.TabBarScrollButtonWidth = SCALE(16);
+   dpi.SplitterWidth = SCALE(9);
+   dpi.TitleBarHeight = SCALE(18);
+   dpi.Indicator = SCALE(20);
+   dpi.ExclusiveIndicator = SCALE(17);
 }
+
+#undef SCALE
 
 /**THE STYLE ITSELF*/
 OxygenStyle::OxygenStyle() : QCommonStyle(), progressShift(0), anmiationUpdate(false), mouseButtonPressed_(false), internalEvent_(false), _bgBrush(0L), popupPix(0L), timer(0L)
 {
    _scanlines[0] = _scanlines[1] = _scanlines[2] = 0L;
    readSettings();
-   generatePixmaps();
    initMetrics();
+   generatePixmaps();
    //====== TOOLTIP ======================
 //    tooltipPalette = qApp->palette();
 //    tooltipPalette.setBrush( QPalette::Background, QColor( 255, 255, 220 ) );

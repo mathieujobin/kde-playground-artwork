@@ -168,7 +168,17 @@ const QPixmap &OxygenStyle::gradient(const QColor &c, int size, Qt::Orientation 
       colors << iC.dark(100+config.gradientIntensity*20/100) << iC.light(100+config.gradientIntensity*60/100);
       break;
    case GradGroup:
-      colors << c.light(108) << c;
+      if (o == Qt::Horizontal)
+      {
+         qPix = QPixmap(32, size + (size % sizeSloppyness));
+         qPix.fill(Qt::transparent);
+         start = QPoint(32, 0); stop = QPoint(32, qPix.height());
+         iC = c; iC.setAlpha(0);
+         colors << c << iC;
+         break;
+      }
+      colors << c.light(112) << c;
+      break;
    case GradSimple:
    default:
       colors << iC.light(100+config.gradientIntensity*60/100) << iC.dark(100+config.gradientIntensity*20/100);
