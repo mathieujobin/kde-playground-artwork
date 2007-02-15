@@ -74,7 +74,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
 
       shadows.button.render(isEnabled ? RECT:RECT.adjusted($2,dpi.$1,-$2,-dpi.$1), painter, Tile::Ring);
       QRect ir = RECT.adjusted($2,$2,-$2,-$2);
-      fillWithMask(painter, ir, gradient(c, RECT.height(), Qt::Vertical, gt), &masks.button);
+      fillWithMask(painter, ir, gradient(c, ir.height(), Qt::Vertical, gt), &masks.button);
       if (hasFocus)
          masks.button.outline(ir, painter, COLOR(Highlight));
       frames.button[isEnabled].render(ir,painter,Tile::Ring);
@@ -217,7 +217,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       QColor c = isEnabled ? COLOR(Button) : COLOR(Window);
       
       QRect ir = RECT.adjusted($2,$2,-$2,-$2);
-      fillWithMask(painter, ir, gradient(c, RECT.height(), Qt::Vertical, gt), &masks.button);
+      fillWithMask(painter, ir, gradient(c, ir.height(), Qt::Vertical, gt), &masks.button);
       if (hasFocus)
          masks.button.outline(ir, painter, COLOR(Highlight));
       frames.button[isEnabled].render(ir,painter,Tile::Ring);
@@ -232,9 +232,28 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          painter->setPen(pen);
          int $3 = dpi.$3;
          QRect r = ir.adjusted($3,$3,-$3,-$3);
-         painter->drawLine(r.x(),r.bottom(),r.right(),r.y());
-         if (option->state & State_On)
-            painter->drawLine(r.x(),r.y(),r.right(),r.bottom());
+         switch (config.checkType)
+         {
+         default:
+         case 0:
+            painter->drawLine(r.x(),r.bottom(),r.right(),r.y());
+            if (option->state & State_On)
+               painter->drawLine(r.x(),r.y(),r.right(),r.bottom());
+            break;
+         case 1:
+         {
+            const QPoint points[4] = {
+            QPoint(r.right(), r.top()),
+            QPoint(r.x()+r.width()/3, r.bottom()),
+            QPoint(r.x(), r.bottom()-r.height()/3),
+            QPoint(r.x()+r.width()/3, r.bottom()-r.height()/5)
+            };
+            painter->drawPolygon(points, 4);
+            break;
+         }
+         case 2:
+            fillWithMask(painter, r, pen.brush(), &masks.button);
+         }
          painter->setPen(oldPen);
          painter->setRenderHint(QPainter::Antialiasing, hadAntiAlias);
       }
@@ -391,7 +410,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
                    Tile::Left|Tile::Top|Tile::Right);
       rect = RECT.adjusted(2,1,-2,0); rect.setTop(rect.bottom()-31);
       painter->drawTiledPixmap(rect, gradient(c, rect.height(), Qt::Horizontal, GradGroup));
-      rect = RECT; rect.setBottom(rect.bottom()-rect.height()/6);
+      rect = RECT; rect.setBottom(rect.bottom()-rect.height()/8);
       shadows.tab.render(rect, painter, Tile::Top|Tile::Left|Tile::Right);
       break;
    }
@@ -425,7 +444,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          bool hadAntiAlias = painter->renderHints() & QPainter::Antialiasing;
          QBrush oldBrush = painter->brush();
          painter->setRenderHint(QPainter::Antialiasing);
-         painter->setBrush(painter->pen().color());
+         painter->setBrush(painter->pen().brush());
          const QPoint points[4] = 
          {
             QPoint(rect.right(), rect.top()),

@@ -159,8 +159,8 @@ const QPixmap &OxygenStyle::gradient(const QColor &c, int size, Qt::Orientation 
       cs = s*13/7; if (cs > 255) cs = 255;
       dd.setHsv(h,cs,cv);
 
-      colors << d << bb << b << dd << d;
-      stops << 0 << 0.05 << 0.5 << 0.5 << 1;
+      colors << bb << b << dd << d;
+      stops << 0 <<  0.5 << 0.5 << 1;
       
       break;
    }

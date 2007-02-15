@@ -217,7 +217,11 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             if (!styleHint(QStyle::SH_UnderlineShortcut, option, widget))
                alignment |= Qt::TextHideMnemonic;
             
-            drawItemText(painter, textRect,  Qt::TextShowMnemonic | Qt::AlignHCenter | alignment,
+            fillWithMask(painter, textRect, gradient(COLOR(Window), textRect.height(), Qt::Vertical, GradSunken),
+                         &masks.button);
+            shadows.sunken.render(textRect, painter, Tile::Left|Tile::Top|Tile::Right);
+            
+            drawItemText(painter, textRect,  Qt::TextShowMnemonic | Qt::AlignCenter /*| alignment*/,
                            groupBox->palette, isEnabled, groupBox->text,
                            textColor.isValid() ? QPalette::NoRole : QPalette::Foreground);
          }

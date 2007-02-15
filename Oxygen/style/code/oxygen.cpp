@@ -231,6 +231,7 @@ void OxygenStyle::readSettings()
    settings.beginGroup("Style");
    
    config.scale = settings.value("Scale", 1.0).toDouble();
+   config.checkType = settings.value("CheckType", 0).toInt();
    
    config.acceleration = (Acceleration) settings.value("Acceleration", XRender).toInt();
    config.gradientIntensity = settings.value("GradientIntensity",70).toInt();
@@ -247,9 +248,6 @@ void OxygenStyle::readSettings()
    invColorRole(config.tabColor, config.tabTextColor, QPalette::Window, QPalette::WindowText);
    config.scrollbarFg = (QPalette::ColorRole)settings.value("ScrollbarColor", QPalette::Window).toInt();
    invColorRole(config.scrollbarFg, config.scrollbarBg, QPalette::Window, QPalette::WindowText);
-   
-   config.roundButtons = settings.value("RoundButtons", false).toBool();
-   config.raisedButtons = settings.value("RaisedButtons", true).toBool();
    
    config.tabwidget3D = (Orientation3D)(settings.value("TabWidget3D", 1).toInt());
    
@@ -285,8 +283,7 @@ void OxygenStyle::generatePixmaps()
    // PUSHBUTTON =====================================
    // shadow
    int $2 = dpi.$2; int $2_2 = lround($2/2.0);
-   int $9 = SCALE(9); int $9_2 = ($9-1)/2;
-   int alpha = lround((2*18.0)/$2);
+   int $9 = dpi.$9; int $9_2 = ($9-1)/2;
    tmp = QPixmap($9,$9);
    tmp.fill(Qt::transparent);
    p.begin(&tmp);
@@ -297,7 +294,9 @@ void OxygenStyle::generatePixmaps()
    p.drawRoundRect(0,0,$9,$9,rnd,rnd);
    rnd = (75*9)/$9;
    p.drawRoundRect($2_2,$2_2,$9-$2,$9-$2,rnd,rnd);
+   p.end();
    shadows.button = Tile::Set(tmp,$9_2,$9_2,$9-2*$9_2,$9-2*$9_2);
+   
    
    // -> sunken
    QImage tmpImg($9,$9, QImage::Format_ARGB32);
@@ -306,12 +305,17 @@ void OxygenStyle::generatePixmaps()
    p.begin(&tmpImg);
    p.setPen(Qt::NoPen);
    p.setRenderHint(QPainter::Antialiasing);
-   p.setBrush(QColor(0,0,0,70)); p.drawRoundRect(0,0,9,9,60,60);
+   rnd = (80*9)/$9;
+   p.setBrush(QColor(0,0,0,85)); p.drawRoundRect(0,0,$9,$9,rnd,rnd);
    p.setCompositionMode( QPainter::CompositionMode_DestinationOut );
-   p.setBrush(QColor(0,0,0,120)); p.drawRoundRect(0,1,9,8,65,65);
-   p.setBrush(QColor(0,0,0,140)); p.drawRoundRect(0,2,9,7,70,70);
-   p.setBrush(QColor(0,0,0,160)); p.drawRoundRect(1,3,7,6,75,75);
-   p.setBrush(QColor(0,0,0,180)); p.drawRoundRect(2,4,3,5,80,80);
+   rnd = (75*9)/$9;
+   p.setBrush(QColor(0,0,0,120)); p.drawRoundRect(0,dpi.$1,$9,dpi.$8,rnd,rnd);
+   rnd = (80*9)/$9;
+   p.setBrush(QColor(0,0,0,140)); p.drawRoundRect(0,$2,$9,dpi.$7,rnd,rnd);
+   rnd = (85*9)/$9;
+   p.setBrush(QColor(0,0,0,160)); p.drawRoundRect(dpi.$1,dpi.$3,dpi.$7,dpi.$6,rnd,rnd);
+   rnd = (90*9)/$9;
+   p.setBrush(QColor(0,0,0,180)); p.drawRoundRect($2,dpi.$4,dpi.$3,dpi.$5,rnd,rnd);
    p.end();
 
    shadows.sunken = Tile::Set(QPixmap::fromImage(tmpImg),$9_2,$9_2,$9-2*$9_2,$9-2*$9_2);
@@ -403,22 +407,28 @@ void OxygenStyle::generatePixmaps()
    masks.tab = Tile::Mask(tmp,8,8,1,1,0,0,0,0,60,60);
    
    // shadow
-   tmpImg = QImage(17,17, QImage::Format_ARGB32/*_Premultiplied*/);
+   int $17 = SCALE(17);
+   tmpImg = QImage($17,$17, QImage::Format_ARGB32);
    tmpImg.fill(Qt::transparent);
    p.begin(&tmpImg);
    p.setPen(Qt::NoPen);
    p.setRenderHint(QPainter::Antialiasing);
-   p.setBrush(QColor(0,0,0,11)); p.drawRoundRect(0,0,17,17,90,90);
-   p.setBrush(QColor(0,0,0,13)); p.drawRoundRect(1,1,15,15,93,93);
-   p.setBrush(QColor(0,0,0,15)); p.drawRoundRect(2,2,13,13,96,96);
-   p.setBrush(QColor(0,0,0,18)); p.drawRoundRect(3,3,11,11,99,99);
+   rnd = (90*9)/$9;
+   p.setBrush(QColor(0,0,0,11)); p.drawRoundRect(0,0,$17,$17,rnd,rnd);
+   rnd = (93*9)/$9;
+   p.setBrush(QColor(0,0,0,13)); p.drawRoundRect(dpi.$1,dpi.$1,$17-$2,$17-$2,rnd,rnd);
+   rnd = (96*9)/$9;
+   p.setBrush(QColor(0,0,0,15)); p.drawRoundRect($2,$2,$17-dpi.$4,$17-dpi.$4,rnd,rnd);
+   rnd = (99*9)/$9;
+   p.setBrush(QColor(0,0,0,18)); p.drawRoundRect(dpi.$3,dpi.$3,$17-dpi.$6,$17-dpi.$6,rnd,rnd);
    p.setCompositionMode( QPainter::CompositionMode_DestinationOut );
-   p.setBrush(QColor(0,0,0,255)); p.drawRoundRect(2,1,13,12,99,99);
+   p.setBrush(QColor(0,0,0,255)); p.drawRoundRect($2,dpi.$1,$17-dpi.$4,$17-dpi.$5,rnd,rnd);
    p.setCompositionMode( QPainter::CompositionMode_SourceOver );
    p.setPen(QColor(255,255,255,170)); p.setBrush(Qt::NoBrush);
-   p.drawRoundRect(2,1,13,12,99,99);
+   p.drawRoundRect(2,1,13,12,rnd,rnd);
    p.end();
-   shadows.tab = Tile::Set(QPixmap::fromImage(tmpImg),8,8,1,1);
+   int $17_2 = ($17-1)/2;
+   shadows.tab = Tile::Set(QPixmap::fromImage(tmpImg),$17_2,$17_2,$17-2*$17_2,$17-2*$17_2);
    
    // ================================================================
 }
@@ -427,22 +437,17 @@ void OxygenStyle::initMetrics()
 {
    dpi.$1 = SCALE(1); dpi.$2 = SCALE(2);
    dpi.$3 = SCALE(3); dpi.$4 = SCALE(4);
-   dpi.MenuButtonIndicator = SCALE(7);
+   dpi.$5 = SCALE(5); dpi.$6 = SCALE(6);
+   dpi.$7 = SCALE(7); dpi.$8 = SCALE(8);
+   dpi.$9 = SCALE(9); dpi.$10 =SCALE(10);
+   
+   dpi.$12 = SCALE(12); dpi.$16 = SCALE(16);
+   dpi.$18 = SCALE(18); dpi.$80 = SCALE(80);
+   
    dpi.ScrollBarExtent = SCALE(19);
    dpi.ScrollBarSliderMin = SCALE(40);
    dpi.SliderThickness = SCALE(24);
    dpi.SliderControl = SCALE(17);
-   dpi.DockWidgetHandleExtent = SCALE(6);
-   dpi.MenuBarItemSpacing = SCALE(10);
-   dpi.MenuBarHMargin = SCALE(10);
-   dpi.ToolBarHandleExtent = SCALE(6);
-   dpi.ToolBarExtensionExtent = SCALE(16);
-   dpi.TabBarTabHSpace = SCALE(18);
-   dpi.TabBarTabVSpace = SCALE(10);
-   dpi.TabBarBase = SCALE(16);
-   dpi.TabBarScrollButtonWidth = SCALE(16);
-   dpi.SplitterWidth = SCALE(9);
-   dpi.TitleBarHeight = SCALE(18);
    dpi.Indicator = SCALE(20);
    dpi.ExclusiveIndicator = SCALE(17);
 }
@@ -649,7 +654,7 @@ void OxygenStyle::fillWithMask(QPainter *painter, const QPoint &xy, const QPixma
 {
    QPixmap qPix(mask.size());
    QPainter p(&qPix);
-   p.drawTiledPixmap(0,0,pix.width(),pix.height(),pix);
+   p.drawTiledPixmap(0,0,mask.width(),mask.height(),pix);
    p.end();
    qPix = OXRender::applyAlpha(qPix, mask);
    painter->drawPixmap(xy, qPix);

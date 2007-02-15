@@ -23,6 +23,7 @@
 #include "oxygen.h"
 
 using namespace Oxygen;
+extern Dpi dpi;
 
 extern Config config;
 static const int windowsArrowHMargin = 6; // arrow horizontal margin
@@ -36,9 +37,9 @@ QSize OxygenStyle::sizeFromContents ( ContentsType ct, const QStyleOption * opti
       if (const QStyleOptionComboBox *cb =
           qstyleoption_cast<const QStyleOptionComboBox *>(option))
       {
-         int margin = cb->frame ? 2 : 0;
+         int margin = cb->frame ? dpi.$2 : 0;
          int hgt = contentsSize.height() + 2*margin;
-         margin = cb->editable ? 10 : 8;
+         margin = cb->editable ? dpi.$10 : dpi.$8;
          return QSize(contentsSize.width()+margin+(int)(hgt*1.4), hgt);
       }
 //    case CT_DialogButtons: //
@@ -46,7 +47,7 @@ QSize OxygenStyle::sizeFromContents ( ContentsType ct, const QStyleOption * opti
 //    case CT_Q3DockWindow: //  
 //    case CT_HeaderSection: // A header section, like QHeader
    case CT_LineEdit: // A line edit, like QLineEdit
-      return contentsSize + QSize(4,2);
+      return contentsSize + QSize(dpi.$4,dpi.$5);
 //    case CT_Menu: // A menu, like QMenu
 //    case CT_Q3Header: // A Qt 3 header section, like Q3Header
 //    case CT_MenuBar: // A menu bar, like QMenuBar
@@ -101,9 +102,10 @@ QSize OxygenStyle::sizeFromContents ( ContentsType ct, const QStyleOption * opti
       {
          if (btn->text.isEmpty())
 //             3px for shadow & outline + 1px padding -> 4px per side
-            return ( QSize( contentsSize.width() + 8, contentsSize.height() + 8 ) );
+            return ( QSize( contentsSize.width() + dpi.$8, contentsSize.height() + dpi.$8 ) );
          else
-            return QSize((contentsSize.width()+12 < 80) ? 80 : contentsSize.width()+12, contentsSize.height()+4);
+            return QSize((contentsSize.width()+dpi.$12 < dpi.$80) ? dpi.$80 : contentsSize.width()+dpi.$12,
+                         contentsSize.height()+dpi.$4);
       }
 //    case CT_RadioButton: // A radio button, like QRadioButton
 //    case CT_SizeGrip: // A size grip, like QSizeGrip
@@ -113,9 +115,9 @@ QSize OxygenStyle::sizeFromContents ( ContentsType ct, const QStyleOption * opti
       return contentsSize;
 //    case CT_Splitter: // A splitter, like QSplitter
    case CT_TabBarTab: // A tab on a tab bar, like QTabBar
-      return contentsSize + QSize(4,0);
+      return contentsSize + QSize(dpi.$4,0);
    case CT_TabWidget: // A tab widget, like QTabWidget
-      return contentsSize + QSize(8,10);
+      return contentsSize + QSize(dpi.$8,dpi.$10);
    case CT_ToolButton: // A tool button, like QToolButton
       // get ~goldem mean ratio
       return QSize(qMax(contentsSize.width()+6, (contentsSize.height()+5)*8/5), contentsSize.height()+5);

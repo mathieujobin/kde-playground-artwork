@@ -41,7 +41,7 @@ int OxygenStyle::pixelMetric ( PixelMetric pm, const QStyleOption * option, cons
    case PM_ButtonDefaultIndicator: // Width of the default-button indicator frame
       return dpi.$2;
    case PM_MenuButtonIndicator: // Width of the menu button indicator proportional to the widget height
-      return dpi.MenuButtonIndicator;
+      return dpi.$7;
    case PM_ButtonShiftHorizontal: // Horizontal contents shift of a button when the button is down
    case PM_ButtonShiftVertical: // Vertical contents shift of a button when the button is down
       return 0;
@@ -80,21 +80,21 @@ int OxygenStyle::pixelMetric ( PixelMetric pm, const QStyleOption * option, cons
    case PM_DockWidgetSeparatorExtent: // Width of a separator in a horizontal dock window and the height of a separator in a vertical dock window
       return dpi.$2;
    case PM_DockWidgetHandleExtent: // Width of the handle in a horizontal dock window and the height of the handle in a vertical dock window
-      return dpi.DockWidgetHandleExtent;
+      return dpi.$6;
    case PM_DockWidgetFrameWidth: // Frame width of a dock window
       return dpi.$1;
    case PM_MenuBarPanelWidth: // Frame width of a menubar, defaults to PM_DefaultFrameWidth
       return dpi.$1;
    case PM_MenuBarItemSpacing: // Spacing between menubar items
-      return dpi.MenuBarItemSpacing;
+      return dpi.$10;
    case PM_MenuBarHMargin: // Spacing between menubar items and left/right of bar
-      return dpi.MenuBarHMargin;
+      return dpi.$10;
    case PM_MenuBarVMargin: // Spacing between menubar items and top/bottom of bar
       return dpi.$2;
    case PM_ToolBarFrameWidth: // Width of the frame around toolbars
       return dpi.$4;
    case PM_ToolBarHandleExtent: // Width of a toolbar handle in a horizontal toolbar and the height of the handle in a vertical toolbar
-      return dpi.ToolBarHandleExtent;
+      return dpi.$6;
    case PM_ToolBarItemMargin: // Spacing between the toolbar frame and the items
       return dpi.$4;
    case PM_ToolBarItemSpacing: // Spacing between toolbar items
@@ -102,13 +102,13 @@ int OxygenStyle::pixelMetric ( PixelMetric pm, const QStyleOption * option, cons
    case PM_ToolBarSeparatorExtent: // Width of a toolbar separator in a horizontal toolbar and the height of a separator in a vertical toolbar
       return dpi.$2;
    case PM_ToolBarExtensionExtent: // Width of a toolbar extension button in a horizontal toolbar and the height of the button in a vertical toolbar
-      return dpi.ToolBarExtensionExtent;
+      return dpi.$16;
    case PM_TabBarTabOverlap: // Number of pixels the tabs should overlap
       return 0;
    case PM_TabBarTabHSpace: // Extra space added to the tab width
-      return dpi.TabBarTabHSpace;
+      return dpi.$18;
    case PM_TabBarTabVSpace: // Extra space added to the tab height
-      return dpi.TabBarTabVSpace;
+      return dpi.$10;
    case PM_TabBarBaseHeight: // Height of the area between the tab bar and the tab pages
    case PM_TabBarBaseOverlap: // Number of pixels the tab bar overlaps the tab bar base
       if (qobject_cast<const QTabWidget*>(widget) && !widget->children().isEmpty())
@@ -135,18 +135,18 @@ int OxygenStyle::pixelMetric ( PixelMetric pm, const QStyleOption * option, cons
          }
          return tabBar->height();
       }
-      return dpi.TabBarBase;
+      return dpi.$16;
    case PM_TabBarScrollButtonWidth: //  
-      return dpi.TabBarScrollButtonWidth;
+      return dpi.$16;
    case PM_TabBarTabShiftHorizontal: // Horizontal pixel shift when a tab is selected
       return 0;
    case PM_TabBarTabShiftVertical: // Vertical pixel shift when a tab is selected
       return dpi.$2;
 //    case PM_ProgressBarChunkWidth: // Width of a chunk in a progress bar indicator
    case PM_SplitterWidth: // Width of a splitter
-      return dpi.SplitterWidth;
+      return dpi.$9;
    case PM_TitleBarHeight: // Height of the title bar
-      return dpi.TitleBarHeight;
+      return dpi.$18;
    case PM_IndicatorWidth: // Width of a check box indicator
    case PM_IndicatorHeight: // Height of a checkbox indicator
       return dpi.Indicator;

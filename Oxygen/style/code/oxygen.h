@@ -91,31 +91,18 @@ enum Orientation3D {Sunken = 0, Relief, Raised};
 
 typedef struct
 {
-   int $1, $2, $3, $4;
-   int MenuButtonIndicator;
+   int $1, $2, $3, $4, $5, $6, $7, $8, $9, $10;
+   int $12, $16, $18, $80;
    int ScrollBarExtent;
    int ScrollBarSliderMin;
    int SliderThickness;
    int SliderControl;
-   int DockWidgetHandleExtent;
-   int MenuBarItemSpacing;
-   int MenuBarHMargin;
-   int ToolBarHandleExtent;
-   int ToolBarExtensionExtent;
-   int TabBarTabHSpace;
-   int TabBarTabVSpace;
-   int TabBarBase;
-   int TabBarScrollButtonWidth;
-   int SplitterWidth;
-   int TitleBarHeight;
    int Indicator;
    int ExclusiveIndicator;
 } Dpi;
 
 typedef struct Config
 {
-   bool raisedButtons; // whether to use soft gradients instead of glosses
-   bool roundButtons; // whether pushbuttons have round edges like toolbarbuttons
    bool menuHighlightBevel; //whether the higlight indicator is a gloss/gradient or plain
    bool inversePopups; // whether the popups are foreground or background colored
    bool inverseButtons;
@@ -134,6 +121,7 @@ typedef struct Config
    int fullPixMode;
    bool HAL9000;
    double scale;
+   int checkType;
 } Config;
 
 class OxygenStyle : public QCommonStyle
