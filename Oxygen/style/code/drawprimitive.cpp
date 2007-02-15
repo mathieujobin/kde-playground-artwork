@@ -26,7 +26,10 @@
 #include <QPainterPath>
 #include <QX11Info>
 #include "oxygen.h"
+#include "oxrender.h"
 #include "dynamicbrush.h"
+
+#include <QtDebug>
 
 #include "inlinehelp.cpp"
 
@@ -363,9 +366,24 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          masks.button.outline(RECT.adjusted(1,1,-1,0), painter, COLOR(Highlight));
    case PE_FrameGroupBox: // Panel frame around group boxes.
    {
-      QRect rect = RECT.adjusted(2,1,-2,-4);
-      fillWithMask(painter, rect, gradient(COLOR(Window), rect.height(), Qt::Vertical, GradSunken), &masks.tab);
-      shadows.tab.render(RECT, painter);
+      int darkness;
+      if (widget)
+      {
+         // find proper color value for the bottom (because of out general gradient)
+         // 0% -> darkness = 0, 100% -> darkness = 10
+         // we could also simply create a gradient into translucent - but that can get slow... :(
+         QWidget *tlw = widget->topLevelWidget();
+         QPoint zero(0,0); zero = widget->mapTo(tlw, zero);
+         darkness = (10*(zero.y()+widget->height()))/tlw->height();
+      }
+      else // compromise ;) - shouldn't happen anyway
+         darkness = 5;
+      
+      QRect rect = RECT.adjusted(2,1,-2,0);
+      fillWithMask(painter, rect, gradient(COLOR(Window).dark(100+darkness), rect.height(), Qt::Vertical, GradGroup),
+                   &masks.tab);
+      rect = RECT; rect.setBottom(rect.bottom()-rect.height()/6);
+      shadows.tab.render(rect, painter, Tile::Top|Tile::Left|Tile::Right);
       break;
    }
 //    case PE_FrameButtonBevel: // Panel frame for a button bevel

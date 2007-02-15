@@ -346,7 +346,7 @@ void Line::render(const QRect &rect, QPainter *p, PosFlags pf) const
       pixmap[_NUM_].fill(Qt::transparent);\
       p.begin(&pixmap[_NUM_]);\
       p.setRenderHint(QPainter::Antialiasing);\
-      p.setPen(QColor(_CLR_,_CLR_,_CLR_,_alpha));\
+      p.setPen(_CLR_);\
       p.drawArc(_X_,_Y_,8,8,_ANG_<<4,90<<4);\
       p.setRenderHint(QPainter::Antialiasing, false);\
       p.end()
@@ -355,18 +355,32 @@ void Line::render(const QRect &rect, QPainter *p, PosFlags pf) const
    lg.setColorAt ( 0, QColor(_C1_,_C1_,_C1_,_alpha) );\
    lg.setColorAt ( 1, QColor(_C2_,_C2_,_C2_,_alpha) )
 
+#ifndef CLAMP
+#define CLAMP(x,l,u) (x) < (l) ? (l) :\
+(x) > (u) ? (u) :\
+(x)
+#endif
+
 Nuno::Nuno(int alpha)
 {
 
-   _alpha = alpha;
-   QPainter p;
-   MAKE_ARC(0,255,0,0,90); //tl
-   MAKE_ARC(1,212,-4,0,0); //tr
-   MAKE_ARC(2,100,-4,-4,270); //br
-   MAKE_ARC(3,215,0,-4,180); //bl
+   _alpha = CLAMP(alpha*1.6,0,255);
+   QPainter p; QPen pen = p.pen();
+   MAKE_ARC(0,QColor(255,255,255,_alpha),0,0,90); //tl
+   QLinearGradient lg( 0, 0, 4, 4 );
+   SET_GRAD(255,170); pen.setBrush(lg);
+   MAKE_ARC(1,pen,-4,0,0); //tr
+   lg.setStart(4,0); lg.setFinalStop(0,4);
+   SET_GRAD(107,100); pen.setBrush(lg);
+   MAKE_ARC(2,pen,-4,-4,270); //br
+   lg.setStart(0,0); lg.setFinalStop(4,4);
+   SET_GRAD(255,175); pen.setBrush(lg);
+   MAKE_ARC(3,pen,0,-4,180); //bl
 
+   _alpha = alpha;
+   
    p.setPen(Qt::NoPen);
-   QLinearGradient lg( 0, 1, 37, 1 );
+   lg.setStart(0,1); lg.setFinalStop(37,1);
    
    //bottom 1
    SET_GRAD(175,138);
@@ -455,11 +469,11 @@ void Nuno::render(const QRect &r, QPainter *p, PosFlags pf) const
       {
          p->drawPixmap(r.x()+xOff,r.bottom(),pixmap[4]);
          p->drawPixmap(r.right()-rOff-width(5),r.bottom(),pixmap[5]);
-      }
-      if (r.width() > xOff+width(4)+width(5)+rOff)
-      {
-         p->setPen(QColor(137,137,137,_alpha));
-         p->drawLine(r.x()+xOff+width(4),r.bottom(),r.right()-rOff-width(5),r.bottom());
+         if (r.width() > xOff+width(4)+width(5)+rOff)
+         {
+            p->setPen(QColor(137,137,137,_alpha));
+            p->drawLine(r.x()+xOff+width(4),r.bottom(),r.right()-rOff-width(5),r.bottom());
+         }
       }
    }
    if (pf & Right)
@@ -485,11 +499,11 @@ void Nuno::render(const QRect &r, QPainter *p, PosFlags pf) const
       {
          p->drawPixmap(r.right(),r.y()+yOff,pixmap[6]);
          p->drawPixmap(r.right(),r.bottom()-bOff-height(7),pixmap[7]);
-      }
-      if (r.height() > yOff+height(6)+height(7)+bOff)
-      {
-         p->setPen(QColor(138,138,138,_alpha));
-         p->drawLine(r.right(),r.y()+yOff+height(6),r.right(),r.bottom()-bOff-height(7));
+         if (r.height() > yOff+height(6)+height(7)+bOff)
+         {
+            p->setPen(QColor(138,138,138,_alpha));
+            p->drawLine(r.right(),r.y()+yOff+height(6),r.right(),r.bottom()-bOff-height(7));
+         }
       }
    }
    p->restore();

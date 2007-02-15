@@ -1295,7 +1295,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          {
             editRect.adjust(3,0, -3, 0);
             painter->setPen(COLOR(WindowText));
-            drawItemText(painter, editRect, Qt::AlignLeft | Qt::AlignVCenter, PAL, isEnabled, cb->currentText);
+            drawItemText(painter, editRect, Qt::AlignCenter, PAL, isEnabled, cb->currentText);
          }
          painter->restore();
       }

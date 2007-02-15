@@ -229,7 +229,7 @@ void OxygenStyle::readSettings()
    QSettings settings("Oxygen", "Style");
    settings.beginGroup("Style");
    
-   config.acceleration = (Acceleration) settings.value("Acceleration", None).toInt();
+   config.acceleration = (Acceleration) settings.value("Acceleration", XRender).toInt();
    config.gradientIntensity = settings.value("GradientIntensity",70).toInt();
    
    config.inversePopups = settings.value("InversePopups",false).toBool();

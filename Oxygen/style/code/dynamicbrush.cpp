@@ -23,9 +23,10 @@
 #include <QResizeEvent>
 #include <QTimer>
 #include <QImage>
+#include <QMap>
 #include <QPainter>
 #include <QX11Info>
-#include <QDebug>
+#include <QtDebug>
 
 #define GL_GLEXT_PROTOTYPES
 #include <QGLFramebufferObject>
@@ -38,6 +39,8 @@
 #include "oxrender.h"
 
 #include "dynamicbrush.h"
+
+static BgPixCache tlwbacks;
 
 // #include "endian.h"
 
@@ -233,16 +236,22 @@ bool DynamicBrush::eventFilter ( QObject * object, QEvent * ev )
       return false;
    }
    
+   QWidget *widget = (QWidget*)object;
+   
    /* we're not interested in hidden elements */
-   if (!((QWidget*)object)->isVisible()) return false;
+   if (!widget->isVisible()) return false;
       
    /* Test for the currently demanded bg size */
    QSize size;
    bool triggerUpdate = false;
    if (ev->type() == QEvent::UpdateRequest)
-      size = ((QWidget*)object)->topLevelWidget()->size();
-   else if (((QWidget*)object)->isWindow())
    {
+      _topLevelWidget = widget->topLevelWidget();
+      size = _topLevelWidget->size();
+   }
+   else if (widget->isWindow())
+   {
+      _topLevelWidget = widget;
       if (ev->type() == QEvent::Resize)
       {
          triggerUpdate = true;
@@ -256,7 +265,8 @@ bool DynamicBrush::eventFilter ( QObject * object, QEvent * ev )
          size = ((QWidget*)object)->size();
          /* we might get a new deco, so tell it that this it a oxygen styled qt window */
          int one = 1;
-         XChangeProperty(QX11Info::display(), ((QWidget*)object)->winId(), oxygen_isQtWindow, XA_CARDINAL, 32, PropModeReplace, (unsigned char *) &(one), 1L);
+         XChangeProperty(QX11Info::display(), widget->winId(), oxygen_isQtWindow,
+                         XA_CARDINAL, 32, PropModeReplace, (unsigned char *) &(one), 1L);
          triggerUpdate = true;
       }
       else if (ev->type() == QEvent::Hide)
@@ -269,7 +279,11 @@ bool DynamicBrush::eventFilter ( QObject * object, QEvent * ev )
 
    /* we don't need a bg pix for the moment, let's save some RAM */
    if (size.isNull())
+   {
       wipeBackground();
+      tlwbacks.remove(_topLevelWidget);
+      return false;
+   }
 
    /* In case the demanded size differs from the one we have: make an update ;)*/
    if (_size.width() != size.width() ||
@@ -279,7 +293,7 @@ bool DynamicBrush::eventFilter ( QObject * object, QEvent * ev )
        (this->*updateBrush)();
    }
    /* Maybe we better force an update */
-   if (triggerUpdate) ((QWidget*)object)->update();
+   if (triggerUpdate) widget->update();
    
    return false;
 }
@@ -289,7 +303,39 @@ void DynamicBrush::wipeBackground()
    _timerBgWipe->stop();
    _size = QSize();
    QPixmap qPix;
-      SETBACKGROUND(qPix);
+   SETBACKGROUND(qPix);
+   tlwbacks.clear();
+}
+
+BgPixCache::iterator DynamicBrush::checkCache(bool &found)
+{
+   found = false;
+   BgPixCache::iterator i, tlw = tlwbacks.end(), sm = tlwbacks.end();
+   for (i = tlwbacks.begin(); i != tlwbacks.end(); ++i)
+   {
+      if (i.value().size() == _size) {
+         sm = i;
+         if (tlw != tlwbacks.end()) break;
+      }
+      if (i.key() == _topLevelWidget) {
+         tlw = i;
+         if (sm != tlwbacks.end()) break;
+      }
+   }
+   if (sm != tlwbacks.end()) // we found a match
+   {
+      if (sm != tlw) // from another window with the same size: share!
+      {
+         if (tlw == tlwbacks.end()) // new top level widget -> insert
+            tlw = tlwbacks.insert(_topLevelWidget, sm.value());
+         else // just share
+            tlw.value() = sm.value();
+      }
+      // anyway, we have a pixmap, set it and get outahere
+      SETBACKGROUND(tlw.value());
+      found = true;
+   }
+   return tlw;
 }
 
 void DynamicBrush::updateBrushTiled()
@@ -587,31 +633,38 @@ void DynamicBrush::updateBrushGL()
 
 void DynamicBrush::updateBrushRender()
 {
+   bool found;
+   BgPixCache::iterator tlw = checkCache(found);
+   if (found) return;
+   // we have no sufficient pixmap, create one and set it
    QColor c = QApplication::palette().color(QPalette::Window);
    QPixmap qPix(_size);
-   Display *dpy = QX11Info::display();
    ColorArray ca = ColorArray() << c << c.dark(110);
    OXPicture lgp = OXRender::gradient(QPoint(0,0), QPoint(0,qPix.height()), ca);
-   XRenderComposite (dpy, PictOpSrc, lgp, None, qPix.x11PictureHandle(),
-                     0, 0, 0, 0, 0, 0, qPix.width(), qPix.height());
-   XRenderFreePicture(dpy, lgp);
+   OXRender::composite (lgp, None, qPix, 0, 0, 0, 0, 0, 0,
+                        qPix.width(), qPix.height());
+   OXRender::freePicture(lgp);
    ca.replace(0, QColor(255,255,255,180)); ca.replace(1, QColor(255,255,255,0));
    float f[2] = {
          pow(0.5, (float)qPix.height()/qPix.width()),
          pow(0.5, (float)qPix.width()/qPix.height())};
    lgp = OXRender::gradient(QPoint(qPix.width(), qPix.height()),
                             QPoint(qPix.width()*f[0], qPix.height()*f[1]), ca);
-   XRenderComposite (dpy, PictOpOver, lgp, None, qPix.x11PictureHandle(),
-                     0, 0, 0, 0, 0, 0, qPix.width(), qPix.height());
-   XRenderFreePicture(dpy, lgp);
+   OXRender::composite (lgp, None, qPix, 0, 0, 0, 0, 0, 0,
+                        qPix.width(), qPix.height(), PictOpOver);
+   OXRender::freePicture(lgp);
    int h = qPix.height()/6;
    int r = -(pow(qPix.width(),2)/4+pow(h,2))/(-2*h);
    lgp = OXRender::gradient(QPoint(qPix.width()/2, 0), 0,
                             QPoint(qPix.width()/2,h-r), r, ca);
-   XRenderComposite (dpy, PictOpOver, lgp, None, qPix.x11PictureHandle(),
-                     0, 0, 0, 0, 0, 0, qPix.width(), qPix.height());
-   XRenderFreePicture(dpy, lgp);
-   SETBACKGROUND(qPix);
+   OXRender::composite (lgp, None, qPix, 0, 0, 0, 0, 0, 0,
+                        qPix.width(), qPix.height(), PictOpOver);
+   OXRender::freePicture(lgp);
+   if (tlw == tlwbacks.end())
+      tlw = tlwbacks.insert(_topLevelWidget, qPix);
+   else
+      tlw.value() = qPix;
+   SETBACKGROUND(tlw.value());
 }
 
 void DynamicBrush::updateBrushQt()

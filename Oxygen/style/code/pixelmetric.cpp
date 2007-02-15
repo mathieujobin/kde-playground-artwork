@@ -25,6 +25,8 @@
 #include <QTabWidget>
 #include "oxygen.h"
 
+#include <QtDebug>
+
 using namespace Oxygen;
 
 int OxygenStyle::pixelMetric ( PixelMetric pm, const QStyleOption * option, const QWidget * widget ) const
@@ -47,6 +49,7 @@ int OxygenStyle::pixelMetric ( PixelMetric pm, const QStyleOption * option, cons
       else
          return 4;
    case PM_SpinBoxFrameWidth: // Frame width of a spin box, defaults to PM_DefaultFrameWidth
+      return 1;
    case PM_ComboBoxFrameWidth: // Frame width of a combo box, defaults to PM_DefaultFrameWidth.
       return 2;
 //    case PM_MDIFrameWidth: // Frame width of an MDI window

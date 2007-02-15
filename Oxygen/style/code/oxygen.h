@@ -117,7 +117,7 @@ class OxygenStyle : public QCommonStyle
    Q_OBJECT
 public:
    enum WidgetState{Basic = 0, Hovered, Focused, Active};
-   enum GradientType{GradSimple,GradSunken,GradGloss,GradButton,GradButtonHover,GradButtonDisabled,NumGrads};
+   enum GradientType{GradSimple,GradSunken,GradGloss,GradButton,GradButtonHover,GradButtonDisabled,GradGroup,NumGrads};
    
    OxygenStyle();
    virtual ~OxygenStyle();

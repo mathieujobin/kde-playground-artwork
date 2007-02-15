@@ -26,12 +26,15 @@ class QImage;
 class QRect;
 class QGLWidget;
 
+#include <QMap>
 #include <QObject>
 #include <QSize>
 #include <QRect>
 #include <QPixmap>
 #include <X11/Xlib.h>
 #include <fixx11h.h>
+
+typedef QMap<QWidget*, QPixmap> BgPixCache;
 
 class DynamicBrush : public QObject
 {
@@ -47,6 +50,7 @@ public:
    void setXPixmap(Pixmap pixmap = -1, Pixmap shadow = -1);
    virtual bool eventFilter ( QObject * watched, QEvent * event );
 private:
+   BgPixCache::iterator checkCache(bool &found);
    void updateBrushTiled();
    void updateBrushGL();
    void updateBrushRender();
@@ -57,6 +61,7 @@ private:
    void initGL();
    QPixmap glPixmap(const QRect &rect, int darkness = 0);
    QSize _size;
+   QWidget *_topLevelWidget;
    Pixmap _pixmap, _shadow;
    int _bgYoffset;
    Mode _mode;
