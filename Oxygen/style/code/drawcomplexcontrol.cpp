@@ -143,7 +143,10 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             
             drawItemText(painter, textRect,  alignment, groupBox->palette, isEnabled, groupBox->text,
                            textColor.isValid() ? QPalette::NoRole : QPalette::Foreground);
-            
+            int x = textRect.bottom(); textRect = RECT; textRect.setTop(x);
+            x = textRect.width()/4; textRect.adjust(x,0,-x,0);
+            shadows.line.render(textRect, painter);
+#if 0
             textRect.setTop(textRect.top()+(textRect.height()-shadows.line.thickness())/2);
             int x = textRect.right()+dpi.$4;
             textRect.setRight(textRect.left()-dpi.$4);
@@ -152,6 +155,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             textRect.setLeft(x);
             textRect.setRight(qMax(RECT.right()-RECT.width()/4,x+(RECT.right()-x)/2));
             shadows.line.render(textRect, painter, Tile::Right|Tile::Center);
+#endif
          }
          
             // Draw checkbox

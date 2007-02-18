@@ -404,11 +404,11 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
 //          darkness = (darkness*(tlw->width()-zero.x()))/(zero.x()+widget->width());
 //          qWarning("%d", darkness);
       }
-      QRect rect = RECT.adjusted(dpi.$2,dpi.$1,-dpi.$2,-dpi.$32);
+      QRect rect = RECT.adjusted(dpi.$4,dpi.$2,-dpi.$4,-dpi.$32);
       QColor c = COLOR(Window).dark(100+darkness);
-      fillWithMask(painter, rect, gradient(c, rect.height(), Qt::Vertical, GradGroup), &masks.group,
+      fillWithMask(painter, rect, gradient(c, rect.height(), Qt::Vertical, GradGroup), &masks.button,
                    Tile::Left|Tile::Top|Tile::Right);
-      rect = RECT.adjusted(dpi.$2,dpi.$1,-dpi.$2,0); rect.setTop(rect.bottom()-dpi.$32+dpi.$1);
+      rect = RECT.adjusted(dpi.$4,0,-dpi.$4,0); rect.setTop(rect.bottom()-dpi.$32+dpi.$1);
       painter->drawTiledPixmap(rect, gradient(c, rect.height(), Qt::Horizontal, GradGroup));
 // //       rect = RECT; rect.setBottom(rect.bottom()-rect.height()/6);
       shadows.group.render(RECT, painter, Tile::Ring);

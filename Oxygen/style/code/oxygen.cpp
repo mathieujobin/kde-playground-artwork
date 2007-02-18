@@ -443,36 +443,39 @@ void OxygenStyle::generatePixmaps()
    p.begin(&tmpImg);
    p.setPen(Qt::NoPen);
    p.setRenderHint(QPainter::Antialiasing);
-   p.setBrush(QColor(0,0,0,11)); p.drawRoundRect(0,0,$49,2*$49,45,22);
-   p.setBrush(QColor(0,0,0,13)); p.drawRoundRect($1,$1,$49-$2,2*$49,46,23);
-   p.setBrush(QColor(0,0,0,15)); p.drawRoundRect($2,$2,$49-dpi.$4,2*$49,47,23);
-//    p.setBrush(QColor(0,0,0,18)); p.drawRoundRect(dpi.$3,dpi.$3,$49-dpi.$6,2*$49,48,24);
-   p.setCompositionMode( QPainter::CompositionMode_DestinationOut );
-   p.setBrush(QColor(0,0,0,255)); p.drawRoundRect(dpi.$3,dpi.$2,$49-dpi.$6,2*$49,48,24);
+   p.setBrush(QColor(0,0,0,5)); p.drawRoundRect(0,0,$49,2*$49,14,7);
+   p.setBrush(QColor(0,0,0,9)); p.drawRoundRect($1,$1,$49-$2,2*$49,13,7);
+   p.setBrush(QColor(0,0,0,11)); p.drawRoundRect($2,$2,$49-dpi.$4,2*$49,12,6);
+   p.setBrush(QColor(0,0,0,13)); p.drawRoundRect(dpi.$3,dpi.$3,$49-dpi.$6,2*$49,48,24);
+   p.setCompositionMode( QPainter::CompositionMode_DestinationIn );
+   p.setBrush(QColor(0,0,0,0)); p.drawRoundRect(dpi.$4,dpi.$2,$49-dpi.$8,2*$49,11,6);
    p.setCompositionMode( QPainter::CompositionMode_SourceOver );
-   p.setPen(QColor(255,255,255,170)); p.setBrush(Qt::NoBrush);
-   p.drawRoundRect(dpi.$3,dpi.$3,$49-dpi.$6,2*$49,48,24);
-   p.setCompositionMode( QPainter::CompositionMode_DestinationOut );
-   p.setBrush(QColor(0,0,0,6));
-   int $32 = dpi.$32;
-   for (int i = 1; i < $32; ++i)
-      p.drawRect(0,$49-i,$49,i);
+   p.setPen(QColor(255,255,255,160)); p.setBrush(Qt::NoBrush);
+   p.drawRoundRect(dpi.$4,dpi.$2,$49-dpi.$8,2*$49,11,6);
+   p.setRenderHint(QPainter::Antialiasing, false);
+   p.setCompositionMode( QPainter::CompositionMode_DestinationIn );
+   int $33 = SCALE(33);
+   for (int i = 1; i < $33; ++i)
+   {
+      p.setPen(QColor(0,0,0,i*lround(255.0/dpi.$32)));
+      p.drawLine(0, $49-i, $49, $49-i);
+   }
    p.end();
    int $12 = dpi.$12;
    shadows.group = Tile::Set(QPixmap::fromImage(tmpImg),$12,$12,$49-2*$12,$1);
    
-   // mask
-   int $25 = SCALE(25);
-   tmp = QPixmap($25,$25);
-   tmp.fill(Qt::transparent);
-   p.begin(&tmp);
-   p.setPen(Qt::NoPen);
-   p.setRenderHint(QPainter::Antialiasing);
-   p.setBrush(QColor(0,0,0,255));
-   p.drawRoundRect(0,0,$25,$25,88,88);
-   p.end();
-   $12 = ($25-1)/2;
-   masks.group = Tile::Mask(tmp,$12,$12,$25-2*$12,$25-2*$12,0,0,0,0,88,88);
+   // mask --> uses buttons
+//    int $25 = SCALE(25);
+//    tmp = QPixmap($25,$25);
+//    tmp.fill(Qt::transparent);
+//    p.begin(&tmp);
+//    p.setPen(Qt::NoPen);
+//    p.setRenderHint(QPainter::Antialiasing);
+//    p.setBrush(QColor(0,0,0,255));
+//    p.drawRoundRect(0,0,$25,$25,22,22);
+//    p.end();
+//    $12 = ($25-1)/2;
+//    masks.group = Tile::Mask(tmp,$12,$12,$25-2*$12,$25-2*$12,0,0,0,0,22,22);
    
    // shadow line
    tmp = QPixmap($49,$2);
@@ -481,14 +484,14 @@ void OxygenStyle::generatePixmaps()
    QLinearGradient lg(0,0,$49,0);
    QGradientStops stops;
    stops << QGradientStop( 0, QColor(255,255,255,0) )
-      << QGradientStop( 0.5, QColor(255,255,255,80) )
+      << QGradientStop( 0.5, QColor(255,255,255,71) )
       << QGradientStop( 1, QColor(255,255,255,0) );
    lg.setStops(stops);
    p.fillRect(0,0,$49,$1,lg);
    stops.clear();
-   stops << QGradientStop( 0, QColor(0,0,0,0) )
-      << QGradientStop( 0.5, QColor(0,0,0,80) )
-      << QGradientStop( 1, QColor(0,0,0,0) );
+   stops << QGradientStop( 0, QColor(111,111,111,0) )
+      << QGradientStop( 0.5, QColor(111,111,111,74) )
+      << QGradientStop( 1, QColor(111,111,111,0) );
    lg.setStops(stops);
    p.fillRect(0,$1,$49,$2-$1,lg);
    p.end();
