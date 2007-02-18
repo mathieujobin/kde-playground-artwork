@@ -146,18 +146,14 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
          {
             QFontMetrics fontMetrics = groupBox->fontMetrics;
             int h = fontMetrics.height()+dpi.$2;
-            int tw = fontMetrics.size(Qt::TextShowMnemonic, groupBox->text + QLatin1Char(' ')).width() + dpi.$16;
+            int tw = fontMetrics.size(Qt::TextShowMnemonic, groupBox->text + QLatin1Char(' ')).width();
             int marg = (groupBox->features & QStyleOptionFrameV2::Flat) ? 0 : dpi.$4;
-#if 1
-            ret = groupBox->rect.adjusted(marg, 0/*dpi.$2*/, -marg, 0);
+
+            ret = groupBox->rect.adjusted(marg, dpi.$2, -marg, 0);
             ret.setHeight(h);
-#else
-            ret = groupBox->rect.adjusted(marg, 0, -marg, -dpi.$2);
-            ret.setTop(ret.bottom()-h);
-#endif
 
             // Adjusted rect for label + indicatorWidth + indicatorSpace
-            ret = alignedRect(groupBox->direction, Qt::AlignCenter/*groupBox->textAlignment*/,
+            ret = alignedRect(groupBox->direction, Qt::AlignHCenter /*| groupBox->textAlignment*/,
                                           QSize(tw, h), ret);
             break;
          }

@@ -63,17 +63,18 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
    case PE_PanelButtonCommand: // Button used to initiate an action, for example, a QPushButton.
    case PE_PanelButtonBevel: // Generic panel with a button bevel.
    {
+      int $1 = dpi.$1, $2 = dpi.$2;
       const QStyleOptionButton *opt = qstyleoption_cast<const QStyleOptionButton*>(option);
 //       bool isIconButton = opt && opt->text.isEmpty() && !opt->icon.isNull();
       bool isOn = option->state & State_On;
       bool isDefault = opt && (opt->features & QStyleOptionButton::DefaultButton);
       GradientType gt = !isEnabled ? GradButtonDisabled : (sunken ? GradSunken : (hover ? GradGloss : GradButton));
+      QRect shadowRect = !isEnabled ? RECT.adjusted($2,$1,-$2,-$1) : RECT;
       
       QColor c = !isEnabled ? COLOR(Window) :  COLOR(Button);
-      int $2 = dpi.$2;
 
-      shadows.button.render(isEnabled ? RECT:RECT.adjusted($2,dpi.$1,-$2,-dpi.$1), painter, Tile::Ring);
-      QRect ir = RECT.adjusted($2,$2,-$2,-$2);
+      shadows.button[isEnabled].render(shadowRect, painter, Tile::Ring);
+      QRect ir = RECT.adjusted($2,$1,-$2,-$2);
       fillWithMask(painter, ir, gradient(c, ir.height(), Qt::Vertical, gt), &masks.button);
       if (hasFocus)
          masks.button.outline(ir, painter, COLOR(Highlight));
@@ -212,11 +213,11 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       GradientType gt = !isEnabled ? GradButtonDisabled : (sunken ? GradSunken : (hover ? GradGloss : GradButton));
 
       int $2 = dpi.$2;
-      shadows.button.render(isEnabled?RECT:RECT.adjusted($2,dpi.$1,-$2,-dpi.$1),painter,Tile::Ring);
+      shadows.button[isEnabled].render(isEnabled?RECT:RECT.adjusted($2,dpi.$1,-$2,-dpi.$1),painter,Tile::Ring);
       
       QColor c = isEnabled ? COLOR(Button) : COLOR(Window);
       
-      QRect ir = RECT.adjusted($2,$2,-$2,-$2);
+      QRect ir = RECT.adjusted($2,dpi.$1,-$2,-$2);
       fillWithMask(painter, ir, gradient(c, ir.height(), Qt::Vertical, gt), &masks.button);
       if (hasFocus)
          masks.button.outline(ir, painter, COLOR(Highlight));
@@ -269,24 +270,24 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       QPoint xy = RECT.topLeft();
       painter->drawPixmap(xy, shadows.radio[isEnabled]);
       int $2 = dpi.$2;
-      xy += QPoint($2,$2);
+      xy += QPoint($2,dpi.$1);
       fillWithMask(painter, xy,
                      gradient(isEnabled?COLOR(Button):COLOR(Window), RECT.height(), Qt::Vertical, gt),
-                     masks.radio);
+                     masks.radio, xy);
       if (hasFocus)
       {
          painter->save();
          painter->setRenderHint(QPainter::Antialiasing);
          painter->setPen(COLOR(Highlight));
          painter->setBrush(Qt::NoBrush);
-         painter->drawEllipse(RECT.adjusted($2,$2,-$2,-$2));
+         painter->drawEllipse(RECT.adjusted($2,dpi.$1,-$2,-dpi.$3));
          painter->restore();
       }
       if (isOn)
       {
          QColor c = isEnabled ? COLOR(ButtonText) : midColor(COLOR(Window),COLOR(WindowText));
          xy += QPoint($2,$2);
-         fillWithMask(painter, xy, gradient(c, RECT.height(), Qt::Vertical, GradGloss), masks.radioIndicator);
+         fillWithMask(painter, xy, gradient(c, RECT.height(), Qt::Vertical, GradGloss), masks.radioIndicator, xy);
       }
       break;
    }
@@ -403,15 +404,14 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
 //          darkness = (darkness*(tlw->width()-zero.x()))/(zero.x()+widget->width());
 //          qWarning("%d", darkness);
       }
-      
-      QRect rect = RECT.adjusted(2,1,-2,-32);
+      QRect rect = RECT.adjusted(dpi.$2,dpi.$1,-dpi.$2,-dpi.$32);
       QColor c = COLOR(Window).dark(100+darkness);
-      fillWithMask(painter, rect, gradient(c, rect.height(), Qt::Vertical, GradGroup), &masks.tab,
+      fillWithMask(painter, rect, gradient(c, rect.height(), Qt::Vertical, GradGroup), &masks.group,
                    Tile::Left|Tile::Top|Tile::Right);
-      rect = RECT.adjusted(2,1,-2,0); rect.setTop(rect.bottom()-31);
+      rect = RECT.adjusted(dpi.$2,dpi.$1,-dpi.$2,0); rect.setTop(rect.bottom()-dpi.$32+dpi.$1);
       painter->drawTiledPixmap(rect, gradient(c, rect.height(), Qt::Horizontal, GradGroup));
-      rect = RECT; rect.setBottom(rect.bottom()-rect.height()/8);
-      shadows.tab.render(rect, painter, Tile::Top|Tile::Left|Tile::Right);
+// //       rect = RECT; rect.setBottom(rect.bottom()-rect.height()/6);
+      shadows.group.render(RECT, painter, Tile::Ring);
       break;
    }
 //    case PE_FrameButtonBevel: // Panel frame for a button bevel

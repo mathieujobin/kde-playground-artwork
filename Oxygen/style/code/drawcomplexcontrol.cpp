@@ -29,88 +29,10 @@
 using namespace Oxygen;
 
 extern Config config;
+extern Dpi dpi;
 
 #include "inlinehelp.cpp"
 
-static int calcBigLineSize(int radius)
-{
-   int bigLineSize = radius / 6;
-   if (bigLineSize < 4)
-      bigLineSize = 4;
-   if (bigLineSize > radius / 2)
-      bigLineSize = radius / 2;
-   return bigLineSize;
-}
-
-static QPolygonF calcLines(const QStyleOptionSlider *dial, const QWidget *)
-{
-   QPolygonF poly;
-   int width = dial->rect.width();
-   int height = dial->rect.height();
-   qreal r = qMin(width, height) / 2.0;
-   int bigLineSize = calcBigLineSize(int(r));
-   
-   qreal xc = width / 2.0;
-   qreal yc = height / 2.0;
-   int ns = dial->tickInterval;
-   int notches = (dial->maximum + ns - 1 - dial->minimum) / ns;
-   if (notches <= 0)
-      return poly;
-   poly.resize(2 + 2 * notches);
-   int smallLineSize = bigLineSize / 2;
-   for (int i = 0; i <= notches; ++i)
-   {
-      qreal angle = dial->dialWrapping ? M_PI * 3 / 2 - i * 2 * M_PI / notches
-         : (M_PI * 8 - i * 10 * M_PI / notches) / 6;
-      qreal s = sin(angle);
-      qreal c = cos(angle);
-   if (i == 0 || (((ns * i) % (dial->pageStep ? dial->pageStep : 1)) == 0))
-   {
-      poly[2 * i] = QPointF(xc + (r - bigLineSize) * c,
-                            yc - (r - bigLineSize) * s);
-      poly[2 * i + 1] = QPointF(xc + r * c, yc - r * s);
-   }
-      else
-      {
-      poly[2 * i] = QPointF(xc + (r - 1 - smallLineSize) * c,
-                            yc - (r - 1 - smallLineSize) * s);
-      poly[2 * i + 1] = QPointF(xc + (r - 1) * c, yc -(r - 1) * s);
-      }
-   }
-   return poly;
-}
-
-static QPolygonF calcArrow(const QStyleOptionSlider *dial, qreal &a)
-{
-   int width = dial->rect.width();
-   int height = dial->rect.height();
-   int r = qMin(width, height) / 2;
-   if (dial->maximum == dial->minimum)
-      a = M_PI / 2;
-   else if (dial->dialWrapping)
-      a = M_PI * 3 / 2 - (dial->sliderValue - dial->minimum) * 2 * M_PI
-      / (dial->maximum - dial->minimum);
-   else
-      a = (M_PI * 8 - (dial->sliderValue - dial->minimum) * 10 * M_PI
-           / (dial->maximum - dial->minimum)) / 6;
-   
-   int xc = width / 2;
-   int yc = height / 2;
-   
-   int len = r - calcBigLineSize(r) - 5;
-   if (len < 5)
-      len = 5;
-   int back = len / 2;
-   
-   QPolygonF arrow(3);
-   arrow[0] = QPointF(0.5 + xc + len * cos(a),
-                      0.5 + yc - len * sin(a));
-   arrow[1] = QPointF(0.5 + xc + back * cos(a + M_PI * 5 / 6),
-                      0.5 + yc - back * sin(a + M_PI * 5 / 6));
-   arrow[2] = QPointF(0.5 + xc + back * cos(a - M_PI * 5 / 6),
-                      0.5 + yc - back * sin(a - M_PI * 5 / 6));
-   return arrow;
-}
 
 void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptionComplex * option, QPainter * painter, const QWidget * widget) const
 {
@@ -151,7 +73,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             isEnabled = sb->stepEnabled & QAbstractSpinBox::StepUpEnabled;
             hover = sb->activeSubControls == SC_SpinBoxUp;
             
-            shadows.button.render(copy.rect, painter, pf);
+            shadows.button[1].render(copy.rect, painter, pf);
             copy.rect.adjust(2,2,-2,0);
             gt = (isEnabled && hover) ? (sunken ? GradSunken : GradGloss) : GradButton;
             fillWithMask(painter, copy.rect, gradient(COLOR(Button), copy.rect.height()*2, Qt::Vertical, gt),
@@ -174,7 +96,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             isEnabled = sb->stepEnabled & QAbstractSpinBox::StepDownEnabled;
             hover = sb->activeSubControls == SC_SpinBoxDown;
             
-            shadows.button.render(copy.rect, painter, pf);
+            shadows.button[1].render(copy.rect, painter, pf);
             copy.rect.adjust(2,0,-2,-2);
             gt = (isEnabled && hover) ? (sunken ? GradSunken : GradGloss) : GradButton;
             fillWithMask(painter, copy.rect, gradient(COLOR(Button), copy.rect.height()*2, Qt::Vertical, gt), &masks.button,
@@ -213,17 +135,23 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                painter->setPen(textColor);
             QFont tmpfnt = painter->font(); tmpfnt.setBold(true);
             painter->setFont ( tmpfnt );
-            int alignment = int(groupBox->textAlignment);
+            int alignment = Qt::AlignCenter; //int(groupBox->textAlignment);
             if (!styleHint(QStyle::SH_UnderlineShortcut, option, widget))
                alignment |= Qt::TextHideMnemonic;
+            else
+               alignment |= Qt::TextShowMnemonic;
             
-            fillWithMask(painter, textRect, gradient(COLOR(Window), textRect.height(), Qt::Vertical, GradSunken),
-                         &masks.button);
-            shadows.sunken.render(textRect, painter, Tile::Left|Tile::Top|Tile::Right);
-            
-            drawItemText(painter, textRect,  Qt::TextShowMnemonic | Qt::AlignCenter /*| alignment*/,
-                           groupBox->palette, isEnabled, groupBox->text,
+            drawItemText(painter, textRect,  alignment, groupBox->palette, isEnabled, groupBox->text,
                            textColor.isValid() ? QPalette::NoRole : QPalette::Foreground);
+            
+            textRect.setTop(textRect.top()+(textRect.height()-shadows.line.thickness())/2);
+            int x = textRect.right()+dpi.$4;
+            textRect.setRight(textRect.left()-dpi.$4);
+            textRect.setLeft(qMin(RECT.x()+RECT.width()/4,textRect.x()-(textRect.x()-RECT.x())/2));
+            shadows.line.render(textRect, painter, Tile::Left|Tile::Center);
+            textRect.setLeft(x);
+            textRect.setRight(qMax(RECT.right()-RECT.width()/4,x+(RECT.right()-x)/2));
+            shadows.line.render(textRect, painter, Tile::Right|Tile::Center);
          }
          
             // Draw checkbox
@@ -306,7 +234,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                   fillWithMask(painter, r, gradient(COLOR(Window), r.height(), Qt::Vertical, GradSunken), &masks.button, pf);
                else
                {
-                  shadows.button.render(r, painter);
+                  shadows.button[1].render(r, painter);
                   r.adjust(2,1,-2,-2);
                   fillWithMask(painter, r, gradient(c, r.height(), Qt::Vertical, GradGloss), &masks.button, pf);
                }
@@ -315,7 +243,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                pf = Tile::Top | Tile::Right | Tile::Bottom | Tile::Center;
                if (inverse)
                {
-                  shadows.button.render(r, painter);
+                  shadows.button[1].render(r, painter);
                   r.adjust(2,1,-2,-2);
                   fillWithMask(painter, r, gradient(c, r.height(), Qt::Vertical, GradGloss), &masks.button, pf);
                }
@@ -330,7 +258,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                pf = Tile::Top | Tile::Left | Tile::Right | Tile::Center;
                if (inverse)
                {
-                  shadows.button.render(r, painter);
+                  shadows.button[1].render(r, painter);
                   r.adjust(2,1,-2,-2);
                   fillWithMask(painter, r, gradient(c, r.width(), Qt::Horizontal, GradGloss), &masks.button, pf);
                }
@@ -343,7 +271,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                   fillWithMask(painter, r, gradient(COLOR(Window), r.width(), Qt::Horizontal, GradSunken), &masks.button, pf);
                else
                {
-                  shadows.button.render(r, painter);
+                  shadows.button[1].render(r, painter);
                   r.adjust(2,1,-2,-2);
                   fillWithMask(painter, r, gradient(c, r.width(), Qt::Horizontal, GradGloss), &masks.button, pf);
                }
@@ -363,19 +291,20 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             QPoint xy = handle.topLeft();
             painter->drawPixmap(xy, shadows.radio[isEnabled]);
             // gradient
-            xy += QPoint(2,2);
-            GradientType gt = (hover && !sunken) ? GradGloss : GradSunken;
+            xy += QPoint(dpi.$2,dpi.$2);
+            GradientType gt = sunken ? GradSunken : (hover ?  GradGloss : GradButton);
             fillWithMask(painter, xy,
-                     gradient(isEnabled?COLOR(Button):COLOR(Window), RECT.height(), Qt::Vertical, gt),
+                     gradient(isEnabled?COLOR(Button):COLOR(Window), handle.height()-dpi.$4, Qt::Vertical, gt),
                      masks.radio);
             // focus indicator
             if (hasFocus)
             {
                painter->save();
-               painter->setBrush(COLOR(Highlight));
+               painter->setBrush(gradient(COLOR(Highlight), handle.height()-dpi.$4, Qt::Vertical, gt));
                painter->setPen(Qt::NoPen);
-               painter->setRenderHint ( QPainter::Antialiasing, true );
+               painter->setRenderHint ( QPainter::Antialiasing );
                int w = handle.width()/3; int h = handle.height()/3;
+               painter->setBrushOrigin(xy);
                painter->drawEllipse ( handle.adjusted(w,h,-w,-h) );
                painter->restore();
             }
@@ -525,73 +454,50 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
           qstyleoption_cast<const QStyleOptionSlider *>(option))
       {
          painter->save();
-
-         if (isEnabled)
-         {
-            if (RECT.height() < 300)
-            {
-               painter->setClipRegion(QRegion(RECT, QRegion::Ellipse), Qt::IntersectClip);
-               painter->drawTiledPixmap(RECT, gradient(PAL.background().color(), RECT.height(), Qt::Vertical, GradGloss ));
-               painter->setClipping(false);
-            }
-            else
-            {
-               /* for big dials the thing above became horriby slow
-                  because of the clipping (might be nvidia XServer issue?)
-                  - strange enough only for the vertical size...
-                  So instead we paint two chords
-                  (don't try to use the gloss or a QGradientBrush as brush and paint a full ellipse,
-                  i guess Qt uses clipping for this internal - it's however not
-                  about the pixmap itself, unclipped painting of the pixmap is fast as it can be
-                  - also it's not about the clipregion generation (tried to cache that)) */
-               painter->setPen(Qt::NoPen);
-               painter->setBrush(PAL.color(QPalette::Window).light(105));
-               painter->drawPie(RECT, 0, 180*16);
-               painter->setBrush(PAL.color(QPalette::Window).dark(110));
-               painter->drawPie(RECT, -180*16, 180*16);
-               painter->setBrush(Qt::NoBrush);
-            }
+         QRect rect = RECT;
+         if (rect.width() > rect.height()) {
+            rect.setLeft(rect.x()+(rect.width()-rect.height())/2); rect.setWidth(rect.height());
          }
-         painter->setRenderHint(QPainter::Antialiasing);
-         painter->setPen(/*hasFocus ? PAL.color(QPalette::Highlight) :*/
-                         midColor(PAL.color(QPalette::Window),PAL.color(QPalette::WindowText)));
-         painter->drawEllipse(RECT);
-
-         // draw notches
-         if (dial->subControls & QStyle::SC_DialTickmarks)
-            painter->drawLines(calcLines(dial, widget)); // ### calcLines could be cached...
+         else {
+            rect.setTop(rect.y()+(rect.height()-rect.width())/2); rect.setHeight(rect.width());
+         }
          
+         int d = rect.width()/6;
+         int r = rect.width()/2-2*d/3;
          qreal a;
-         QPolygonF arrow(calcArrow(dial, a));
-         painter->setPen(Qt::NoPen);
-         QColor c;
-         QPalette::ColorRole cr = hasFocus ? QPalette::Highlight : QPalette::WindowText;
-         if (RECT.height() < 300)
-         {
-            c = PAL.color(cr);
-            if (hover)
-               c.setAlpha(128);
-            else
-               c.setAlpha(64);
-            painter->setBrush(c);
-            painter->drawPolygon(arrow);
-         }
+         if (dial->maximum == dial->minimum)
+            a = M_PI / 2;
+         else if (dial->dialWrapping)
+            a = M_PI * 3 / 2 - (dial->sliderValue - dial->minimum) * 2 * M_PI
+            / (dial->maximum - dial->minimum);
          else
-         {
-            // true alpha channel can be slow for large objects, we're gonna trick for the moment (as we do on the bg anyway)
-            c = midColor(PAL.color(QPalette::Window), PAL.color(cr), 1, hover?2:1);
-            painter->setClipRect(RECT.x(),RECT.y(),RECT.width(),RECT.height()/2);
-            painter->setBrush(c.light(110));
-            painter->drawPolygon(arrow);
-            painter->setClipRect(RECT.x(),RECT.y()+RECT.height()/2,RECT.width(),RECT.height()/2);
-            painter->setBrush(c.dark(110));
-            painter->drawPolygon(arrow);
-            painter->setClipping(false);
-            painter->setBrush(c);
-         }
-         int r = qMin(RECT.width(),RECT.height())/30;
-         painter->drawEllipse(RECT.center().x()+1-r, RECT.center().y()+1-r, 2*r, 2*r);
-
+            a = (M_PI * 8 - (dial->sliderValue - dial->minimum) * 10 * M_PI
+                  / (dial->maximum - dial->minimum)) / 6;
+         
+         QPoint cp((int)(r * cos(a)), -(int)(r * sin(a)));
+         cp += rect.center();
+         
+         // the huge ring
+         painter->setBrushOrigin(rect.topLeft());
+         painter->setBrush(gradient(PAL.background().color(), rect.height(), Qt::Vertical, GradSunken));
+         painter->setPen(Qt::NoPen);
+         painter->drawEllipse(rect);
+         // the inner bevel
+         painter->setBrush(gradient(PAL.background().color(), rect.height(), Qt::Vertical, GradSimple));
+         rect.adjust(d,d,-d,-d);
+         painter->drawEllipse(rect);
+         // the value
+         QFont fnt = painter->font(); fnt.setPixelSize( 2*rect.height()/3 ); painter->setFont(fnt);
+         painter->setBrush(Qt::NoBrush); painter->setPen(PAL.foreground().color());
+         drawItemText(painter, rect,  Qt::AlignCenter, PAL, isEnabled, QString::number(dial->sliderValue));
+         // the drop
+         painter->setPen(Qt::NoPen);
+         painter->setRenderHint( QPainter::Antialiasing );
+         rect = QRect(0,0,2*d/3,2*d/3);
+         rect.moveCenter(cp);
+         painter->setBrushOrigin(rect.topLeft());
+         painter->setBrush(gradient(COLOR(Highlight), rect.height(), Qt::Vertical, GradButton));
+         painter->drawEllipse(rect);
          painter->restore();
       }
       break;

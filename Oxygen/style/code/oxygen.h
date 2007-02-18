@@ -92,7 +92,7 @@ enum Orientation3D {Sunken = 0, Relief, Raised};
 typedef struct
 {
    int $1, $2, $3, $4, $5, $6, $7, $8, $9, $10;
-   int $12, $16, $18, $80;
+   int $12, $16, $32, $18, $80;
    int ScrollBarExtent;
    int ScrollBarSliderMin;
    int SliderThickness;
@@ -212,22 +212,18 @@ private:
    typedef QHash<uint, Tile::Set> TileCache;
    struct
    {
-      Tile::Mask rect[3];
-      Tile::Mask round[3];
-      Tile::Mask button;
-      Tile::Mask tab;
+      Tile::Mask rect[3], round[3], button, tab, group;
       QPixmap radio, radioIndicator;
    } masks;
    struct
    {
-      Tile::Set button, tab, sunken;
+      Tile::Set button[2], tab, sunken, group;
       QPixmap radio[2];
+      Tile::Line line;
    } shadows;
    struct
    {
-      Tile::Set rect[3];
-      Tile::Set round[3];
-      Tile::Nuno button[2];
+      Tile::Set rect[3], round[3], button[2];
    } frames;
    struct
    {

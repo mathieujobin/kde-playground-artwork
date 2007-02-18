@@ -1,10 +1,3 @@
-   
-#ifndef BTM_OVERLAP
-#define BTM_OVERLAP blw = (blw*r.width())/(blw+brw); brw = r.width() - blw;
-#endif
-#ifndef RGT_OVERLAP
-#define RGT_OVERLAP trh = (trh*r.height())/(trh+brh); brh = r.height() - trh;
-#endif
 
    int rOff = 0, xOff, yOff, w, h;
    
@@ -27,15 +20,16 @@
    if (pf & Right)
    {
       w -= width(TopRight);
-      if (pf & (Top | Bottom) && trh + brh > r.height()) // vertical edge overlap
+      if (matches(Top | Bottom, pf) && trh + brh > r.height()) // vertical edge overlap
       {
-         RGT_OVERLAP
+         trh = (trh*r.height())/(trh+brh);
+         brh = r.height() - trh;
       }
    }
    
    if (pf & Top)
    {
-      if (pf & (Left | Right) && tlw + trw > r.width()) // horizontal edge overlap
+      if (matches(Left | Right, pf) && w < 0) // horizontal edge overlap
       {
          tlw = tlw*r.width()/(tlw+trw);
          trw = r.width() - tlw;
@@ -49,14 +43,15 @@
          DRAW_PIXMAP(rOff, r.y(), pixmap[TopRight], width(TopRight)-trw, 0, trw, trh);
       
       // upper line
-      if (w > 0)
-         DRAW_TILED_PIXMAP(xOff, r.y(), w, height(TopMid), pixmap[TopMid]);
+      if (w > 0 && !pixmap[TopMid].isNull())
+         DRAW_TILED_PIXMAP(xOff, r.y(), w, tlh/*height(TopMid)*/, pixmap[TopMid]);
    }
    if (pf & Bottom)
    {
-      if (pf & (Left | Right) && blw + brw > r.width()) // horizontal edge overlap
+      if (matches(Left | Right, pf) && w < 0) // horizontal edge overlap
       {
-         BTM_OVERLAP
+         blw = (blw*r.width())/(blw+brw);
+         brw = r.width() - blw;
       }
       rOff = r.right()-brw+1;
       int bOff = r.bottom()-blh+1;
@@ -67,7 +62,7 @@
          DRAW_PIXMAP(rOff, bOff, pixmap[BtmRight], width(BtmRight)-brw, height(BtmRight)-brh, brw, brh);
       
       // lower line
-      if (w > 0)
+      if (w > 0 && !pixmap[BtmMid].isNull())
          DRAW_TILED_PIXMAP(xOff, bOff, w, height(BtmMid), pixmap[BtmMid]);
    }
    
@@ -75,12 +70,9 @@
    {
       if ((pf & Center) && (w > 0)) // center part
          DRAW_TILED_PIXMAP(xOff, yOff, w, h, pixmap[MidMid]);
-      if (pf & Left) // left line
+      if (pf & Left && !pixmap[MidLeft].isNull()) // left line
          DRAW_TILED_PIXMAP(r.x(), yOff, width(MidLeft), h, pixmap[MidLeft]);
       rOff = r.right()-width(MidRight)+1;
-      if (pf & Right) // right line
+      if (pf & Right && !pixmap[MidRight].isNull()) // right line
          DRAW_TILED_PIXMAP(rOff, yOff, width(MidRight), h, pixmap[MidRight]);
    }
-
-#undef BTM_OVERLAP
-#undef RGT_OVERLAP

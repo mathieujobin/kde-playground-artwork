@@ -33,6 +33,18 @@ using namespace Tile;
 
 static QPixmap nullPix;
 
+static bool isEmpty(const QPixmap &pix)
+{
+   if (!pix.hasAlpha()) return false;
+   QImage img =  pix.toImage();
+   uint *data = ( uint * ) img.bits();
+   int total = img.width() * img.height();
+   for ( int current = 0 ; current < total ; ++current )
+      if (qAlpha(data[ current ]))
+         return false;
+   return true;
+}
+
 Set::Set(const QPixmap &pix, int xOff, int yOff, int width, int height, int rx, int ry)
 {
    if (pix.isNull())
@@ -55,53 +67,59 @@ Set::Set(const QPixmap &pix, int xOff, int yOff, int width, int height, int rx, 
 #define initPixmap(_SECTION_,_WIDTH_,_HEIGHT_)\
    pixmap[_SECTION_] = QPixmap(_WIDTH_, _HEIGHT_);\
    pixmap[_SECTION_].fill(Qt::transparent); p.begin(&pixmap[_SECTION_])
+      
+#define finishPixmap(_SECTION_)\
+   p.end();\
+   if (isEmpty(pixmap[_SECTION_]))\
+      pixmap[_SECTION_] = QPixmap()
    
    initPixmap(TopLeft, xOff, yOff);
    p.drawPixmap(0, 0, pix, 0, 0, xOff, yOff);
-   p.end();
+   finishPixmap(TopLeft);
    
    initPixmap(TopMid, amount*width, yOff);
    for (i = 0; i < amount; i++)
       p.drawPixmap(i*width, 0, pix, xOff, 0, width, yOff);
-   p.end();
+   finishPixmap(TopMid);
    
    initPixmap(TopRight, rOff, yOff);
    p.drawPixmap(0, 0, pix, xOff+width, 0, rOff, yOff);
-   p.end();
+   finishPixmap(TopRight);
    
    //----------------------------------
    initPixmap(MidLeft, xOff, amount2*height);
    for (i = 0; i < amount2; i++)
       p.drawPixmap(0, i*height, pix, 0, yOff, xOff, height);
-   p.end();
+   finishPixmap(MidLeft);
    
    initPixmap(MidMid, amount*width, amount2*height);
    for (i = 0; i < amount; i++)
       for (int j = 0; j < amount2; j++)
          p.drawPixmap(i*width, j*height, pix, xOff, yOff, width, height);
-   p.end();
+   finishPixmap(MidMid);
    
    initPixmap(MidRight, rOff, amount2*height);
    for (i = 0; i < amount2; i++)
       p.drawPixmap(0, i*height, pix, xOff+width, yOff, rOff, height);
-   p.end();
+   finishPixmap(MidRight);
    
    //----------------------------------
    
    initPixmap(BtmLeft, xOff, bOff);
    p.drawPixmap(0, 0, pix, 0, yOff+height, xOff, bOff);
-   p.end();
+   finishPixmap(BtmLeft);
    
    initPixmap(BtmMid, amount*width, bOff);
    for (i = 0; i < amount; i++)
       p.drawPixmap(i*width, 0, pix, xOff, yOff+height, width, bOff);
-   p.end();
+   finishPixmap(BtmMid);
    
    initPixmap(BtmRight, rOff, bOff);
    p.drawPixmap(0, 0, pix, xOff+width, yOff+height, rOff, bOff);
-   p.end();
+   finishPixmap(BtmRight);
    
 #undef initPixmap
+#undef finishPixmap
 }
 
 QRect Set::rect(const QRect &rect, PosFlags pf) const
@@ -252,6 +270,7 @@ Line::Line(const QPixmap &pix, Qt::Orientation o, int d1, int d2)
    QPainter p;
    if (o == Qt::Horizontal)
    {
+      _thickness = pix.height();
       pixmap[0] = QPixmap(d1,pix.height());
       pixmap[0].fill(Qt::transparent);
       p.begin(&pixmap[0]);
@@ -274,6 +293,7 @@ Line::Line(const QPixmap &pix, Qt::Orientation o, int d1, int d2)
    }
    else
    {
+      _thickness = pix.width();
       pixmap[0] = QPixmap(pix.width(),d1);
       pixmap[0].fill(Qt::transparent);
       p.begin(&pixmap[0]);
@@ -301,20 +321,19 @@ void Line::render(const QRect &rect, QPainter *p, PosFlags pf) const
    int d0,d2;
    if (_o == Qt::Horizontal)
    {
-      if (rect.width() >= width(0)+width(2))
+      d0 = (pf & Left) ? width(0) : 0;
+      d2 = (pf & Right) ? width(2) : 0;
+      if ((pf & Center) && rect.width() >= d0+d2)
+         p->drawTiledPixmap(rect.x()+d0, rect.y(), rect.width()-d0-d2, height(1), pixmap[1]);
+      else if (d0 || d2)
       {
-         p->drawTiledPixmap(rect.x()+width(0), rect.y(),
-                            rect.width()-width(0)-width(2), height(1),
-                            pixmap[1]);
-         d0 = width(0); d2 = width(2);
+         d0 = qMin(d0,d0*rect.width()/(d0+d2));
+         d2 = qMin(d2,rect.width()-d0);
       }
-      else
-      {
-         d0 = width(0)*rect.width()/(width(0)+width(2));
-         d2 = rect.width()-d0;
-      }
-      p->drawPixmap(rect.x(),rect.y(),pixmap[0],0,0,d0,height(0));
-      p->drawPixmap(rect.right()+1-d2,rect.y(),pixmap[2],width(2)-d2,0,d2,height(2));
+      if (pf & Left)
+         p->drawPixmap(rect.x(),rect.y(),pixmap[0],0,0,d0,height(0));
+      if (pf & Right)
+         p->drawPixmap(rect.right()+1-d2,rect.y(),pixmap[2],width(2)-d2,0,d2,height(2));
    }
    else
    {

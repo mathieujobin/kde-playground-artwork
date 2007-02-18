@@ -528,7 +528,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             }
             
 #if 1
-            shadows.button.render(RECT, painter);
+            shadows.button[1].render(RECT, painter);
             fillWithMask(painter, rect, gradient(isEnabled?COLOR(Button):COLOR(Window), s, o, GradGloss), &masks.button);
 #else
             fillWithMask(painter, RECT, gradient(COLOR(WindowText), s, o, GradSunken), &masks.button);
