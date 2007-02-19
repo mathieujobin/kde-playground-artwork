@@ -40,7 +40,7 @@ QSize OxygenStyle::sizeFromContents ( ContentsType ct, const QStyleOption * opti
          int margin = cb->frame ? dpi.$2 : 0;
          int hgt = contentsSize.height() + 2*margin;
          margin = cb->editable ? dpi.$10 : dpi.$8;
-         return QSize(contentsSize.width()+margin+(int)(hgt*1.4), hgt);
+         return QSize(contentsSize.width()+margin+(int)(hgt/1.1), hgt);
       }
 //    case CT_DialogButtons: //
 //       return QSize((contentsSize.width()+16 < 80) ? 80 : contentsSize.width()+16, contentsSize.height()+10);

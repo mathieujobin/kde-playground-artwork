@@ -49,7 +49,7 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
             ret = QRect(x, 0, bs.width(), bs.height());
             break;
          case SC_SpinBoxDown:
-            ret = QRect(x, spinbox->rect.height()-bs.height(), bs.width(), bs.height());
+            ret = QRect(x, bs.height(), bs.width(), spinbox->rect.height()-bs.height());
             break;
          case SC_SpinBoxEditField:
          {
@@ -70,7 +70,7 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
       {
          int x,y,wi,he;
          cb->rect.getRect(&x,&y,&wi,&he);
-         int margin = (!cb->editable) ? dpi.$1 : (cb->frame ? dpi.$4 : 0);
+         int margin = 1;//(!cb->editable) ? dpi.$1 : (cb->frame ? dpi.$4 : 0);
 
          switch (subControl)
          {
@@ -78,13 +78,13 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
             ret = cb->rect;
             break;
          case SC_ComboBoxArrow:
-            x += wi; wi = (int)((he - 2*margin)*1.4);//1.618
+            x += wi; wi = (int)((he - 2*margin)/1.1);//1.618
             x -= margin + wi; // golden mean
             y += margin;
             ret.setRect(x, y, wi, he - 2*margin);
             break;
          case SC_ComboBoxEditField:
-            wi -= (int)((he - 2*margin)*1.4) + 3*margin;
+            wi -= (int)((he - 2*margin)/1.1) + 3*margin;
             ret.setRect(x+margin, y+margin, wi, he - 2*margin);
             break;
          case SC_ComboBoxListBoxPopup:

@@ -225,34 +225,91 @@ static bool invColorRole(QPalette::ColorRole &from, QPalette::ColorRole &to,
    return true;
 }
 
+void OxygenStyle::makeStructure(int num, const QColor &c)
+{
+   if (!_scanlines[num])
+      _scanlines[num] = new QPixmap(64, 64);
+   QPainter p(_scanlines[num]);
+   switch (config.structure)
+   {
+   default:
+   case 0: // scanlines
+   {
+      _scanlines[num]->fill( c.light(110).rgb() );
+      p.setPen( (num == 1) ? c.light(106) : c );
+      int i;
+      for ( i = 1; i < 64; i += 4 )
+      {
+         p.drawLine( 0, i, 63, i );
+         p.drawLine( 0, i+2, 63, i+2 );
+      }
+      p.setPen( c.dark( 108 ) );
+      for ( i = 2; i < 63; i += 4 )
+         p.drawLine( 0, i, 63, i );
+      p.end();
+   }
+   case 1: //checkboard
+   {
+      p.setPen(Qt::NoPen);
+      p.setBrush(c.light(102));
+      if (num == 1)
+      {
+         p.drawRect(0,0,16,16); p.drawRect(32,0,16,16);
+         p.drawRect(16,16,16,16); p.drawRect(48,16,16,16);
+         p.drawRect(0,32,16,16); p.drawRect(32,32,16,16);
+         p.drawRect(16,48,16,16); p.drawRect(48,48,16,16);
+      }
+      else
+      {
+         p.drawRect(0,0,32,32);
+         p.drawRect(32,32,32,32);
+      }
+      p.setBrush(c.dark(102));
+      if (num == 1)
+      {
+         p.drawRect(16,0,16,16); p.drawRect(48,0,16,16);
+         p.drawRect(0,16,16,16); p.drawRect(32,16,16,16);
+         p.drawRect(16,32,16,16); p.drawRect(48,32,16,16);
+         p.drawRect(0,48,16,16); p.drawRect(32,48,16,16);
+      }
+      else
+      {
+         p.drawRect(32,0,32,32);
+         p.drawRect(0,32,32,32);
+      }
+      p.end();
+   }
+   case 2: // bricks - sucks...
+      p.setPen(c.dark(105));
+      p.setBrush(c.light(102));
+      p.drawRect(0,0,32,16); p.drawRect(32,0,32,16);
+      p.drawRect(0,16,16,16); p.drawRect(16,16,32,16); p.drawRect(48,16,16,16);
+      p.drawRect(0,32,32,16); p.drawRect(32,32,32,16);
+      p.drawRect(0,48,16,16); p.drawRect(16,48,32,16); p.drawRect(48,48,16,16);
+   }
+   p.end();
+}
+
 void OxygenStyle::readSettings()
 {
    QSettings settings("Oxygen", "Style");
    settings.beginGroup("Style");
    
+   config.bgMode = (BGMode) settings.value("BackgroundMode", FullPix).toInt();
+   config.acceleration = (Acceleration) settings.value("Acceleration", XRender).toInt();
+   config.structure = settings.value("Structure", 0).toInt();
+   
    config.scale = settings.value("Scale", 1.0).toDouble();
    config.checkType = settings.value("CheckType", 0).toInt();
    
-   config.acceleration = (Acceleration) settings.value("Acceleration", XRender).toInt();
+   
    config.gradientIntensity = settings.value("GradientIntensity",70).toInt();
    
    config.inversePopups = settings.value("InversePopups",false).toBool();
-   config.inverseButtons = settings.value("InverseButtons",false).toBool();
-   config.swapHoveredButtonColors = settings.value("InverseHoveredButtonColor",false).toBool();
-   config.menuHighlightBevel = settings.value("MenuHighlightBevel", true).toBool();
-   
-   
-   config.progressColor = (QPalette::ColorRole)settings.value("ProgressColor", QPalette::WindowText).toInt();
-   invColorRole(config.progressColor, config.progressTextColor);
-   config.tabColor = (QPalette::ColorRole)settings.value("TabColor", QPalette::Window).toInt();
-   invColorRole(config.tabColor, config.tabTextColor, QPalette::Window, QPalette::WindowText);
+
    config.scrollbarFg = (QPalette::ColorRole)settings.value("ScrollbarColor", QPalette::Window).toInt();
    invColorRole(config.scrollbarFg, config.scrollbarBg, QPalette::Window, QPalette::WindowText);
-   
-   config.tabwidget3D = (Orientation3D)(settings.value("TabWidget3D", 1).toInt());
-   
-   config.bgMode = (BGMode) settings.value("BackgroundMode", FullPix).toInt();
-   
+
    config.tabTransition = (TabTransition) settings.value("TabTransition", ScanlineBlend).toInt();
    config.HAL9000 = settings.value("HAL9000", false).toBool();
    settings.endGroup();
@@ -761,16 +818,17 @@ void OxygenStyle::fillWithMask(QPainter *painter, const QRect &rect, const QBrus
    painter->restore();
    if (!mask->hasCorners()) return;
    QPixmap corner, fill; QPainter p;
-#define MAKE_CORNER(_CORNER_,_OFF_)\
+#define MAKE_CORNER(_CORNER_,_SETOFF_)\
    corner = mask->corner(_CORNER_);\
    fill = QPixmap(corner.size());\
    w = rect.width()/2;\
    w = qMin(corner.width(), ((_CORNER_) & Tile::Top) ? w : rect.width()-w);\
    h = rect.height()/2;\
    h = qMin(corner.height(), ((_CORNER_) & Tile::Top) ? h : rect.height()-h);\
+   off._SETOFF_;\
    p.begin(&fill);\
    if (pixmode)\
-      p.drawTiledPixmap(fill.rect(),brush.texture(),_OFF_+offset);\
+      p.drawTiledPixmap(fill.rect(),brush.texture(),off+offset);\
    else\
       fill.fill(brush.color());\
    p.end();\
@@ -780,34 +838,32 @@ void OxygenStyle::fillWithMask(QPainter *painter, const QRect &rect, const QBrus
    // top/left
    if (Tile::matches(Tile::Top | Tile::Left, pf))
    {
-      MAKE_CORNER(Tile::Top | Tile::Left, off);
+      MAKE_CORNER(Tile::Top | Tile::Left, setX(0));
       painter->drawPixmap(rect.topLeft(), corner, QRect(0,0,w,h));
    }
    // top/right
-   off.setX(rect.width()-fill.width());
    if (Tile::matches(Tile::Top | Tile::Right, pf))
    {
-      MAKE_CORNER(Tile::Top | Tile::Right, off);
+      MAKE_CORNER(Tile::Top | Tile::Right, setX(rect.width()-w));
       painter->drawPixmap(rect.right()-w+1, rect.top(), corner,
                           corner.width()-w,0, w,h );
    }
    // bottom/right
-   off.setY(rect.height()-fill.height());
    if (Tile::matches(Tile::Bottom | Tile::Right, pf))
    {
-      MAKE_CORNER(Tile::Bottom | Tile::Right, off);
+      MAKE_CORNER(Tile::Bottom | Tile::Right, setY(rect.height()-h));
       painter->drawPixmap(rect.right()-w+1, rect.bottom()-h+1, corner,
                           corner.width()-w,corner.height()-h, w,h );
    }
    // bottom/left
-   off.setX(0);
    if (Tile::matches(Tile::Bottom | Tile::Left, pf))
    {
-      MAKE_CORNER(Tile::Bottom | Tile::Left, off);
+      MAKE_CORNER(Tile::Bottom | Tile::Left, setX(0));
       painter->drawPixmap(rect.x(), rect.bottom()-h+1, corner,
                           0,corner.height()-h, w,h);
    }
    return;
+
 #undef MAKE_CORNER
 }
 
@@ -887,57 +943,7 @@ void OxygenStyle::polish( QPalette &pal )
    case Scanlines:
    {
       QColor c = pal.color(QPalette::Active, QPalette::Background);
-      if (!_scanlines[0])
-      {
-#if 1 // bricks
-         _scanlines[0] = new QPixmap(64, 64);
-         QPainter p(_scanlines[0]);
-         p.setPen(Qt::NoPen);
-         QColor ch = c.light(102);
-         p.setBrush(ch);
-         p.drawRect(0,0,16,16);
-         p.drawRect(48,0,16,16);
-         p.drawRect(0,16,32,16);
-         p.drawRect(0,32,16,16);
-         p.drawRect(48,32,16,16);
-         p.drawRect(0,48,32,16);
-         ch = c.dark(102);
-         p.setBrush(ch);
-         p.drawRect(16,0,32,16);
-         p.drawRect(0,16,16,16);
-         p.drawRect(32,16,32,16);
-         p.drawRect(16,32,32,16);
-         p.drawRect(32,48,32,16);
-         p.end();
-#elif 0 //checkboard
-         _scanlines[0] = new QPixmap(64, 64);
-         QPainter p(_scanlines[0]);
-         p.setPen(Qt::NoPen);
-         QColor ch = c.light(102);
-         p.setBrush(ch);
-         p.drawRect(0,0,32,32);
-         p.drawRect(32,32,32,32);
-         ch = c.dark(102);
-         p.setBrush(ch);
-         p.drawRect(32,0,32,32);
-         p.drawRect(0,32,32,32);
-         p.end();
-#elif 0 //scanlines
-         _scanlines[0]->fill( c.light(110).rgb() );
-         QPainter p( _scanlines[0] );
-         p.setPen( c );
-         int i;
-         for ( i = 1; i < 64; i += 4 )
-         {
-            p.drawLine( 0, i, 63, i );
-            p.drawLine( 0, i+2, 63, i+2 );
-         }
-         p.setPen( c.dark( 108 ) );
-         for ( i = 2; i < 63; i += 4 )
-            p.drawLine( 0, i, 63, i );
-         p.end();
-#endif
-      }
+      makeStructure(0, c);
       QBrush brush( c, *_scanlines[0] );
       pal.setBrush( QPalette::Background, brush );
       break;
@@ -1050,21 +1056,9 @@ void OxygenStyle::polish( QWidget * widget)
          widget->setAutoFillBackground ( true );
          QPalette pal = widget->palette();
          QColor c = pal.color(QPalette::Active, QPalette::Window);
+         
          if (!_scanlines[1])
-         {
-            _scanlines[1] = new QPixmap(64, 64);
-            _scanlines[1]->fill( c.light(110).rgb() );
-            QPainter p(_scanlines[1]);
-            p.setPen( c.light( 106 ) );
-            for ( int i = 1; i < 64; i += 4 )
-            {
-               p.drawLine( 0, i, 63, i );
-               p.drawLine( 0, i+2, 63, i+2 );
-            }
-            p.setPen( c.dark( 108 ) );
-            for ( int i = 2; i < 63; i += 4 )
-               p.drawLine( 0, i, 63, i );
-         }
+            makeStructure(1, c);
          QBrush brush( c, *_scanlines[1] );
          pal.setBrush( QPalette::Window, brush );
          widget->setPalette(pal);
@@ -1076,19 +1070,7 @@ void OxygenStyle::polish( QWidget * widget)
       _scanlines[2] = new QPixmap(64, 64);
       QPalette pal = widget->palette();
       QColor c = pal.color(QPalette::Active, QPalette::Window).dark(105);
-      _scanlines[2]->fill( c.rgb() );
-      QPainter p(_scanlines[2]);
-      p.setPen( c.dark(103) );
-      int i;
-      for ( i = 1; i < 64; i += 4 )
-      {
-         p.drawLine( 0, i, 63, i );
-         p.drawLine( 0, i+2, 63, i+2 );
-      }
-      p.setPen( c.dark( 108 ) );
-      for ( i = 2; i < 63; i += 4 )
-         p.drawLine( 0, i, 63, i );
-      p.end();
+      makeStructure(2, c);
    }
    
    if (qobject_cast<QMenu *>(widget))

@@ -102,7 +102,9 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       if (const QLineEdit* le = qobject_cast<const QLineEdit*>(widget))
       {
          // spinboxes allready have a lineedit as global frame
-         if (widget->parentWidget() && widget->parentWidget()->inherits("QSpinBox"))
+         if (widget->parentWidget() && 
+             (widget->parentWidget()->inherits("QSpinBox") ||
+              widget->parentWidget()->inherits("QComboBox")))
             break;
          // no frame, so don't paint one
          if (!le->hasFrame()) {
@@ -147,15 +149,15 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       
       // we want a golden mean cut arrow ;) 1:1.6180339887498948482
       int x[3], y[2];
-      if (RECT.width() <  RECT.height())
+      if (RECT.width() <  8*RECT.height()/5)
       {
          x[0] = RECT.x(); x[1] = RECT.right(); x[2] = x[0] + RECT.width()/2;
-         int h = RECT.width();
+         int h = 5*RECT.width()/8;
          y[0] = RECT.y() + (RECT.height()-h)/2; y[1] = y[0] + h;
       }
       else
       {
-         int w = RECT.height();
+         int w = 8*RECT.height()/5;
          x[0] = RECT.x() + (RECT.width()-w)/2; x[1] = x[0] + w; x[2] = x[0] + w/2;
          y[0] = RECT.y(); y[1] = RECT.bottom();
       }
@@ -182,15 +184,15 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       painter->setRenderHint(QPainter::Antialiasing);
       painter->setBrush(painter->pen().color());
       int x[2], y[3];
-      if (RECT.height() <  RECT.width())
+      if (RECT.height() <  8*RECT.width()/5)
       {
          y[0] = RECT.y(); y[1] = RECT.bottom(); y[2] = y[0] + RECT.height()/2;
-         int w = RECT.height();
+         int w = 5*RECT.height()/8;
          x[0] = RECT.x() + (RECT.width()-w)/2; x[1] = x[0] + w;
       }
       else
       {
-         int h = RECT.width();
+         int h = 8*RECT.width()/5;
          y[0] = RECT.y() + (RECT.height()-h)/2; y[1] = y[0] + h; y[2] = y[0] + h/2;
          x[0] = RECT.x(); x[1] = RECT.right();
       }

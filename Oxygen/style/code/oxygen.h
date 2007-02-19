@@ -103,22 +103,14 @@ typedef struct
 
 typedef struct Config
 {
-   bool menuHighlightBevel; //whether the higlight indicator is a gloss/gradient or plain
    bool inversePopups; // whether the popups are foreground or background colored
-   bool inverseButtons;
-   bool swapHoveredButtonColors;
    QPalette::ColorRole scrollbarBg;
    QPalette::ColorRole scrollbarFg;
-   QPalette::ColorRole progressColor; // color mode of the progress
-   QPalette::ColorRole progressTextColor; // --""-- percentage (autocalculated)
-   QPalette::ColorRole tabColor;
-   QPalette::ColorRole tabTextColor;
    BGMode bgMode;
    Acceleration acceleration;
+   int structure;
    TabTransition tabTransition;
-   Oxygen::Orientation3D tabwidget3D;
    int gradientIntensity;
-   int fullPixMode;
    bool HAL9000;
    double scale;
    int checkType;
@@ -206,6 +198,7 @@ private:
    void readSettings();
    void generatePixmaps();
    void initMetrics();
+   void makeStructure(int num, const QColor &c);
    
 private:
    typedef QHash<uint, QPixmap> PixmapCache;

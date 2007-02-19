@@ -71,19 +71,26 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             
             pf = Tile::Top | Tile::Left | Tile::Right;
             isEnabled = sb->stepEnabled & QAbstractSpinBox::StepUpEnabled;
-            hover = sb->activeSubControls == SC_SpinBoxUp;
+            hover = isEnabled && (sb->activeSubControls == SC_SpinBoxUp);
             
             shadows.button[1].render(copy.rect, painter, pf);
             copy.rect.adjust(2,2,-2,0);
             gt = (isEnabled && hover) ? (sunken ? GradSunken : GradGloss) : GradButton;
-            fillWithMask(painter, copy.rect, gradient(COLOR(Button), copy.rect.height()*2, Qt::Vertical, gt),
+            fillWithMask(painter, copy.rect, gradient(COLOR(Button), RECT.height(), Qt::Vertical, gt),
                          &masks.button, pf | Tile::Center);
             
             int dx = copy.rect.width()/5, dy = copy.rect.height()/5;
             copy.rect.adjust(dx, dy,-dx,-dy);
             
-            painter->setPen(isEnabled ? (hover ? COLOR(Highlight) : COLOR(ButtonText)) :
-                            PAL.color(QPalette::Disabled, QPalette::ButtonText));
+            QColor c;
+            if (hover)
+               c = COLOR(Highlight);
+            else if (isEnabled)
+               c = midColor(COLOR(Button), COLOR(ButtonText));
+            else
+               c = midColor(COLOR(Button), PAL.color(QPalette::Disabled, QPalette::ButtonText));
+            
+            painter->setPen(c);
             drawPrimitive(PE_IndicatorSpinUp, &copy, painter, widget);
          }
          
@@ -94,19 +101,27 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             
             pf = Tile::Bottom | Tile::Left | Tile::Right;
             isEnabled = sb->stepEnabled & QAbstractSpinBox::StepDownEnabled;
-            hover = sb->activeSubControls == SC_SpinBoxDown;
+            hover = isEnabled && (sb->activeSubControls == SC_SpinBoxDown);
             
             shadows.button[1].render(copy.rect, painter, pf);
             copy.rect.adjust(2,0,-2,-2);
             gt = (isEnabled && hover) ? (sunken ? GradSunken : GradGloss) : GradButton;
-            fillWithMask(painter, copy.rect, gradient(COLOR(Button), copy.rect.height()*2, Qt::Vertical, gt), &masks.button,
+
+            fillWithMask(painter, copy.rect, gradient(COLOR(Button), RECT.height(), Qt::Vertical, gt), &masks.button,
                          pf | Tile::Center, false, QPoint(0,-uh));
             
             int dx = copy.rect.width()/5, dy = copy.rect.height()/5;
             copy.rect.adjust(dx, dy,-dx,-dy);
             
-            painter->setPen(isEnabled ? (hover ? COLOR(Highlight) : COLOR(ButtonText)) :
-                            PAL.color(QPalette::Disabled, QPalette::ButtonText));
+            QColor c;
+            if (hover)
+               c = COLOR(Highlight);
+            else if (isEnabled)
+               c = midColor(COLOR(Button), COLOR(ButtonText));
+            else
+               c = midColor(COLOR(Button), PAL.color(QPalette::Disabled, QPalette::ButtonText));
+            
+            painter->setPen(c);
             drawPrimitive(PE_IndicatorSpinDown, &copy, painter, widget);
          }
       }
@@ -186,24 +201,27 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             painter->save();
             QStyleOptionComboBox tmpOpt = *cmb;
             hover = hover && (cmb->activeSubControls == SC_ComboBoxArrow);
-            QRect ar = subControlRect(CC_ComboBox, cmb, SC_ComboBoxArrow, widget);
-            if (!cmb->editable)
+            QRect ar;
+            if (!config.HAL9000 || !cmb->editable)
             {
+               if (cmb->editable)
+                  tmpOpt.state &= (~State_HasFocus);
+               ar = subControlRect(CC_ComboBox, &tmpOpt, SC_ComboBoxArrow, widget);
                tmpOpt.rect =  ar;
+               if (!hover)
+                  tmpOpt.state &= (~State_MouseOver);
                drawPrimitive(PE_PanelButtonBevel, &tmpOpt, painter, widget);
-               if (hover)
-                  painter->setPen( COLOR(WindowText) );
-               else 
-                  painter->setPen( midColor(COLOR(Window), COLOR(WindowText)));
+               painter->setPen( midColor(COLOR(Window), COLOR(WindowText)));
             }
             else
             {
+               ar = subControlRect(CC_ComboBox, cmb, SC_ComboBoxArrow, widget);
                if (hover && !sunken)
                   painter->setPen( COLOR(Text));
                else
                   painter->setPen( midColor(COLOR(Base), COLOR(Text)) );
             }
-            tmpOpt.rect =  ar.adjusted(ar.width()/3,ar.height()/3,-ar.width()/3,-ar.height()/3);
+            tmpOpt.rect =  ar.adjusted((2*ar.width())/7,(2*ar.height())/7,-(2*ar.width())/7,-(2*ar.height())/7);
             painter->setRenderHint ( QPainter::Antialiasing, true );
             drawPrimitive(PE_IndicatorArrowDown, &tmpOpt, painter, widget);
             painter->restore();
