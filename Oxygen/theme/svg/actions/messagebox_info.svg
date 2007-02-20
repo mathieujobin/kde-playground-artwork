@@ -13,12 +13,14 @@
    height="128"
    id="svg6645"
    sodipodi:version="0.32"
-   inkscape:version="0.44"
+   inkscape:version="0.45"
    sodipodi:docbase="/home/pinheiro/artwork/Oxygen/theme/svg/actions"
    sodipodi:docname="messagebox_info.svg"
    version="1.0"
    inkscape:r_cx="true"
-   inkscape:r_cy="true">
+   inkscape:r_cy="true"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   sodipodi:modified="true">
   <defs
      id="defs6647">
     <linearGradient
@@ -105,7 +107,7 @@
          id="stop3703" />
       <stop
          id="stop3709"
-         offset="0.76106197"
+         offset="0.86936939"
          style="stop-color:black;stop-opacity:1;" />
       <stop
          style="stop-color:black;stop-opacity:0;"
@@ -5345,8 +5347,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.725729"
-     inkscape:cx="56.161506"
-     inkscape:cy="128.84645"
+     inkscape:cx="78.563732"
+     inkscape:cy="42.978101"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:grid-bbox="true"
@@ -5355,8 +5357,8 @@
      inkscape:guide-bbox="true"
      inkscape:window-width="942"
      inkscape:window-height="959"
-     inkscape:window-x="0"
-     inkscape:window-y="119"
+     inkscape:window-x="970"
+     inkscape:window-y="214"
      gridspacingx="4px"
      gridspacingy="4px"
      inkscape:grid-points="true">
@@ -5468,5 +5470,17 @@
        d="M 64.042188,19.962827 C 59.524988,19.962827 55.857338,23.630468 55.857338,28.14768 C 55.857338,32.664892 59.524988,36.33253 64.042188,36.33253 C 68.559398,36.33253 72.227038,32.664891 72.227038,28.14768 C 72.227038,23.630468 68.559408,19.962827 64.042188,19.962827 z M 72,41.863229 L 52,44 L 52,52 L 60,52 L 60,88 L 52,88 L 52,95.847147 L 80,95.702281 L 80,88 L 72.070048,88.072433 L 72,41.863229 z "
        style="font-size:132.5063324px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:url(#linearGradient3112);fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Serif"
        sodipodi:nodetypes="cssscccccccccccc" />
+    <path
+       transform="matrix(0.696769,0,0,0.696816,19.29047,14.36194)"
+       inkscape:r_cy="true"
+       inkscape:r_cx="true"
+       d="M 127.31551 65.540108 A 63.144386 63.144386 0 1 1  1.0267334,65.540108 A 63.144386 63.144386 0 1 1  127.31551 65.540108 z"
+       sodipodi:ry="63.144386"
+       sodipodi:rx="63.144386"
+       sodipodi:cy="65.540108"
+       sodipodi:cx="64.17112"
+       id="path3735"
+       style="opacity:0.39194139;fill:url(#radialGradient8319);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.69999999;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:4;stroke-opacity:0.9908257"
+       sodipodi:type="arc" />
   </g>
 </svg>
