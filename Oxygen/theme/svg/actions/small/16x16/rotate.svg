@@ -15,8 +15,8 @@
    sodipodi:version="0.32"
    inkscape:version="0.45"
    version="1.0"
-   sodipodi:docbase="/Users/david/Progetti/oxygen-svn/theme/svg/actions"
-   sodipodi:docname="rotate_ccw.svg"
+   sodipodi:docbase="/home/david/Progetti/sandbox"
+   sodipodi:docname="rotate_cw.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    sodipodi:modified="true">
   <defs
@@ -51,17 +51,15 @@
        y1="8.0806"
        x2="40.4805"
        y2="36.6406">
-	<stop
-   offset="0"
-   style="stop-color:#8E79B9"
-   id="stop15" />
-
-	<stop
-   offset="1"
-   style="stop-color:#462886"
-   id="stop17" />
-
-</linearGradient>
+      <stop
+         offset="0"
+         style="stop-color:#8E79B9"
+         id="stop15" />
+      <stop
+         offset="1"
+         style="stop-color:#462886"
+         id="stop17" />
+    </linearGradient>
     <linearGradient
        id="XMLID_3_"
        gradientUnits="userSpaceOnUse"
@@ -70,18 +68,15 @@
        x2="56.0005"
        y2="16.4443"
        gradientTransform="translate(292.57143,-474)">
-	<stop
-   offset="0.45559999"
-   style="stop-color:#604795;stop-opacity:0;"
-   id="stop6" />
-
-	<stop
-   offset="1"
-   style="stop-color:#614797;stop-opacity:1;"
-   id="stop8" />
-
-	
-</linearGradient>
+      <stop
+         offset="0.45559999"
+         style="stop-color:#604795;stop-opacity:0;"
+         id="stop6" />
+      <stop
+         offset="1"
+         style="stop-color:#614797;stop-opacity:1;"
+         id="stop8" />
+    </linearGradient>
     <linearGradient
        inkscape:collect="always"
        xlink:href="#XMLID_4_"
@@ -144,10 +139,10 @@
      gridspacingy="4px"
      gridempspacing="0"
      showgrid="true"
-     inkscape:window-width="697"
+     inkscape:window-width="792"
      inkscape:window-height="581"
-     inkscape:window-x="294"
-     inkscape:window-y="265" />
+     inkscape:window-x="225"
+     inkscape:window-y="112" />
   <metadata
      id="metadata2179">
     <rdf:RDF>
@@ -186,15 +181,5 @@
          id="polygon19"
          points="92,26 52,52 52,0 92,26 " />
     </g>
-    <path
-       sodipodi:type="arc"
-       style="opacity:1;fill:#644a9b;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:16;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="path7077"
-       sodipodi:cx="65.185188"
-       sodipodi:cy="69.079369"
-       sodipodi:rx="4.5714288"
-       sodipodi:ry="4.4021163"
-       d="M 69.756617 69.079369 A 4.5714288 4.4021163 0 1 1  60.61376,69.079369 A 4.5714288 4.4021163 0 1 1  69.756617 69.079369 z"
-       transform="matrix(1.7499999,0,0,1.8173077,-50.074075,-57.53847)" />
   </g>
 </svg>
