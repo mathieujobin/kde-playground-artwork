@@ -292,35 +292,23 @@
          id="stop16" />
       <stop
          offset="0.1124"
-         style="stop-color:#989898"
+         style="stop-color:#888888;stop-opacity:1;"
          id="stop18" />
       <stop
-         offset="0.1977"
-         style="stop-color:#B8B8B8"
-         id="stop20" />
-      <stop
-         offset="0.2663"
-         style="stop-color:#D4D4D4"
+         offset="0.26057142"
+         style="stop-color:#eeeeee;stop-opacity:1;"
          id="stop22" />
       <stop
-         offset="0.35346735"
-         style="stop-color:#D4D4D4"
-         id="stop24" />
-      <stop
-         offset="0.49110001"
-         style="stop-color:#a4a6ac;stop-opacity:1;"
+         offset="0.46632826"
+         style="stop-color:#bbbbbb;stop-opacity:1;"
          id="stop26" />
       <stop
          offset="0.58579999"
-         style="stop-color:#a1a3a8;stop-opacity:1;"
+         style="stop-color:#bbbbbb;stop-opacity:1;"
          id="stop28" />
       <stop
-         offset="0.63869381"
-         style="stop-color:#ABABAB"
-         id="stop30" />
-      <stop
          offset="0.74287856"
-         style="stop-color:#C4C4C4"
+         style="stop-color:#d5d5d5;stop-opacity:1;"
          id="stop32" />
       <stop
          offset="0.9408"
@@ -509,14 +497,6 @@
        y2="275.3428" />
     <filter
        inkscape:collect="always"
-       id="filter27613">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="2.8312864"
-         id="feGaussianBlur27615" />
-    </filter>
-    <filter
-       inkscape:collect="always"
        id="filter27631">
       <feGaussianBlur
          inkscape:collect="always"
@@ -545,12 +525,12 @@
        inkscape:collect="always"
        xlink:href="#linearGradient19073"
        id="radialGradient3374"
-       cx="341.57678"
-       cy="259.82202"
-       fx="341.57678"
-       fy="259.82202"
+       cx="341.46521"
+       cy="255.91499"
+       fx="341.46521"
+       fy="255.91499"
        r="65.192497"
-       gradientTransform="matrix(1.0149362,8.3801678e-2,-0.2663981,3.2263923,55.838928,-631.50093)"
+       gradientTransform="matrix(1.0602846,5.0477734e-3,-1.534493e-2,3.2232221,-20.821857,-603.18295)"
        gradientUnits="userSpaceOnUse" />
     <clipPath
        clipPathUnits="userSpaceOnUse"
@@ -717,13 +697,13 @@
          style="fill:url(#linearGradient14185);fill-opacity:1" />
     </g>
     <path
-       style="opacity:0.9;fill:url(#radialGradient3374);fill-opacity:1.0;filter:url(#AI_Sfocatura_7)"
+       style="opacity:0.6;fill:url(#radialGradient3374);fill-opacity:1.0;filter:url(#AI_Sfocatura_7)"
        id="path206"
        d="M 381.071,124.933 C 356.305,135.031 325.545,141.767 292.109,144.591 C 295.721,235.701 306.252,327.172 326.573,415.782 C 345.381,481.229 383.496,433.187 391.266,395.464 C 411.32,298.109 420.944,198.107 422.494,98.706 C 413.41,108.529 399.429,117.448 381.071,124.933 z " />
     <g
        transform="translate(74.983998,0)"
        id="g208"
-       style="fill:url(#radialGradient14203);fill-opacity:1;filter:url(#AI_Sfocatura_4)">
+       style="fill:url(#radialGradient14203);fill-opacity:1;filter:url(#AI_Sfocatura_4);opacity:0.8">
       <linearGradient
          id="XMLID_36_"
          gradientUnits="userSpaceOnUse"
@@ -775,7 +755,7 @@
        id="path7879"
        d="M 256,18 C 341.164,18 411.013,42.202 417.894,73 C 418.262,71.351 418.459,69.684 418.459,68 C 418.459,34.862 345.724,8 256,8 C 166.276,8 93.539998,34.862 93.539998,68 C 93.539998,69.684 93.736998,71.351 94.105998,73 C 100.987,42.202 170.836,18 256,18 z " />
     <path
-       style="fill:url(#linearGradient10222);fill-opacity:1.0;filter:url(#filter9249)"
+       style="fill:url(#linearGradient10222);fill-opacity:1;filter:url(#filter9249)"
        d="M 256,40 C 173.48958,40 106.53125,68.302082 106.53125,103.17428 C 106.53125,104.34524 106.60094,105.52416 106.75,106.67948 C 131.6594,134.18581 189.12928,153.45584 256,153.45584 C 322.87073,153.45584 380.3406,134.18581 405.25,106.67948 C 405.39906,105.52416 405.46875,104.34524 405.46875,103.17428 C 405.46875,68.302079 338.51044,39.999999 256,40 z "
        id="ellipse4345"
        clip-path="url(#clipPath8276)" />
