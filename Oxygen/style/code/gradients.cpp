@@ -86,51 +86,30 @@ const QPixmap &OxygenStyle::gradient(const QColor &c, int size, Qt::Orientation 
    
    // no cache entry found, so let's create one =)
    
+   size += (size % sizeSloppyness);
+   
    QPixmap qPix;
    QPoint start, stop;
-   if (o == Qt::Horizontal)
+   if (type == GradRadialGloss)
    {
-      qPix = QPixmap(size + (size % sizeSloppyness), 32);
-      start = QPoint(0,32); stop = QPoint(qPix.width(),32);
+      qPix = QPixmap(size, size);
    }
    else
    {
-      qPix = QPixmap(32, size + (size % sizeSloppyness));
-      start = QPoint(32, 0); stop = QPoint(32, qPix.height());
+      if (o == Qt::Horizontal)
+      {
+         qPix = QPixmap(size, 32);
+         start = QPoint(0,32); stop = QPoint(qPix.width(),32);
+      }
+      else
+      {
+         qPix = QPixmap(32, size);
+         start = QPoint(32, 0); stop = QPoint(32, qPix.height());
+      }
    }
    
-   ColorArray colors; PointArray stops;
-   switch (type)
-   {
-   case GradButton:
-   case GradButtonHover:
-   case GradButtonDisabled:
-   {
-      int h,s, inc, dec;
-      iC.getHsv(&h,&s,&v);
-      QColor tc;
-      if (type == GradButtonDisabled) {
-         inc = 5; dec = 2;
-         if (v+5 > 255) {
-            inc = 255-v; dec += (5-inc);
-         }
-      }
-      else {
-         inc = 15; dec = 6;
-         if (v+15 > 255) {
-            inc = 255-v; dec += (15-inc);
-         }
-      }
-      tc.setHsv(h,s,v+inc);
-      iC.setHsv(h,s,v-dec);
-      colors << tc << iC;
-      if (type == GradButtonHover)
-         stops << 0.30 << 0.75;
-      else
-         stops << 0 << 0.75;
-      break;
-   }
-   case GradGloss:
+   if (type == GradGloss || type == GradRadialGloss)
+   // many XRender implementations cannot do this... FUCK!
    {
       // calculate the determining colors
       QColor d,dd,b,bb;
@@ -158,35 +137,116 @@ const QPixmap &OxygenStyle::gradient(const QColor &c, int size, Qt::Orientation 
       cv = v - 14-add; if (cv < 0) cv = 0;
       cs = s*13/7; if (cs > 255) cs = 255;
       dd.setHsv(h,cs,cv);
-
-      colors << bb << b << dd << d;
-      stops << 0 <<  0.5 << 0.5 << 1;
       
-      break;
-   }
-   case GradSunken:
-      colors << iC.dark(100+config.gradientIntensity*20/100) << iC.light(100+config.gradientIntensity*60/100);
-      break;
-   case GradGroup:
-      if (o == Qt::Horizontal)
+      if (type == GradGloss)
       {
-         qPix = QPixmap(32, size + (size % sizeSloppyness));
-         qPix.fill(Qt::transparent);
-         start = QPoint(32, 0); stop = QPoint(32, qPix.height());
-         iC = c; iC.setAlpha(0);
-         colors << c << iC;
+         QLinearGradient lg(start, stop);
+         lg.setColorAt(0,bb); lg.setColorAt(0.5,b);
+         lg.setColorAt(0.5, dd); lg.setColorAt(1, d);
+         QPainter p(&qPix); p.fillRect(qPix.rect(), lg); p.end();
+      }
+      else
+      {
+         QRadialGradient rg(2*qPix.width()/3, qPix.height(), qPix.height());
+         rg.setColorAt(0,d); rg.setColorAt(0.8,dd);
+         rg.setColorAt(0.8, b); rg.setColorAt(1, bb);
+         QPainter p(&qPix); p.fillRect(qPix.rect(), rg); p.end();
+      }
+   }
+   else
+   {
+      ColorArray colors; PointArray stops;
+      switch (type)
+      {
+      case GradButton:
+      case GradButtonHover:
+      case GradButtonDisabled:
+      {
+         int h,s, inc, dec;
+         iC.getHsv(&h,&s,&v);
+         QColor tc;
+         if (type == GradButtonDisabled) {
+            inc = 5; dec = 2;
+            if (v+5 > 255) {
+               inc = 255-v; dec += (5-inc);
+            }
+         }
+         else {
+            inc = 15; dec = 6;
+            if (v+15 > 255) {
+               inc = 255-v; dec += (15-inc);
+            }
+         }
+         tc.setHsv(h,s,v+inc);
+         iC.setHsv(h,s,v-dec);
+         colors << tc << iC;
+         if (type == GradButtonHover)
+            stops << 0.30 << 0.75;
+         else
+            stops << 0 << 0.75;
          break;
       }
-      colors << c.light(112) << c;
-      break;
-   case GradSimple:
-   default:
-      colors << iC.light(100+config.gradientIntensity*60/100) << iC.dark(100+config.gradientIntensity*20/100);
-   }
+      case GradGloss:
+      case GradRadialGloss:
+      {
+         // calculate the determining colors
+         QColor d,dd,b,bb;
+         int h,s, ch,cs,cv, delta, add;
+         b = iC; d = b;
+         
+         iC.getHsv(&h,&s,&v);
+         
+         add = ((180-qGray(b.rgb()))>>1);
+         if (add < 0) add = -add/2;
    
-   OXPicture grad = OXRender::gradient(start, stop, colors, stops);
-   OXRender::composite (grad, None, qPix, 0, 0, 0, 0, 0, 0, qPix.width(), qPix.height());
-   OXRender::freePicture(grad);
+         cv = v+27+add;
+         if (cv > 255)
+         {
+            delta = cv-255; cv = 255;
+            cs = s - delta; if (cs < 0) cs = 0;
+            ch = h - delta/6; if (ch < 0) ch = 360+ch;
+         }
+         else
+         {
+            ch = h; cs = s;
+         }
+         bb.setHsv(ch,cs,cv);
+         
+         cv = v - 14-add; if (cv < 0) cv = 0;
+         cs = s*13/7; if (cs > 255) cs = 255;
+         dd.setHsv(h,cs,cv);
+   
+         colors << bb << b << dd << d;
+         stops << 0 <<  0.5 << 0.5 << 1;
+         
+         break;
+      }
+      case GradSunken:
+         colors << iC.dark(100+config.gradientIntensity*20/100)
+            << iC.light(100+config.gradientIntensity*60/100);
+         break;
+      case GradGroup:
+         if (o == Qt::Horizontal)
+         {
+            qPix = QPixmap(32, size);
+            qPix.fill(Qt::transparent);
+            start = QPoint(32, 0); stop = QPoint(32, qPix.height());
+            iC = c; iC.setAlpha(0);
+            colors << c << iC;
+            break;
+         }
+         colors << c.light(112) << c;
+         break;
+      case GradSimple:
+      default:
+         colors << iC.light(100+config.gradientIntensity*60/100)
+            << iC.dark(100+config.gradientIntensity*20/100);
+      }
+      
+      OXPicture grad = OXRender::gradient(start, stop, colors, stops);
+      OXRender::composite (grad, None, qPix, 0, 0, 0, 0, 0, 0, qPix.width(), qPix.height());
+      OXRender::freePicture(grad);
+   }
    
    // cache for later ;)
    if (cache->size() == cache->capacity())
@@ -223,163 +283,3 @@ const QPixmap &OxygenStyle::btnAmbient(int height) const
    it = cache->insert(height, qPix);
    return it.value();
 }
-
-
-#if 0
-const QPixmap &OxygenStyle::gloss(const QColor &oc, const int size, Qt::Orientation o, Orientation3D o3D) const
-{
-   // SEE gradient(.)
-   PixmapCache *cache = &(const_cast<OxygenStyle*>( this )->glossCache[o-1][o3D?1:0]);
-   int sizeSloppyness = 1;
-   uint magicNumber = 0;
-   PixmapCache::const_iterator it;
-   if (size < 105884) // this is where our dictionary reaches - should be enough for the moment ;)
-   {
-      int frameBase = 0;
-      int frameSize = 20;
-      while ((frameBase += frameSize) < size)
-      {
-         sizeSloppyness++;
-         frameSize += 20;
-      }
-      frameBase -=frameSize;
-      frameSize -= 20;
-      // The mapping is done by the "magicNumber"
-//       magicNumber =  (((frameSize + (size - frameBase)/sizeSloppyness) & 0xff) << 24) | (oc.rgb() & 0xffffff);
-      magicNumber =  (((frameSize + (size - frameBase)/sizeSloppyness) & 0xff) << 21) | 
-         (((oc.red() >> 1) & 0x7f) << 14) |
-         (((oc.green() >> 1) & 0x7f) << 7 ) |
-         ((oc.blue() >> 1) & 0x7f);
-      it = cache->find(magicNumber);
-      if (it != cache->end())
-         return it.value();
-   }
-   else
-   {
-      qWarning("gradient with more than 105883 steps requested, returning NULL pixmap");
-      return nullPix;
-   }
-   
-   QPixmap pix;
-   if (o == Qt::Horizontal)
-      pix = QPixmap(size + (size % sizeSloppyness), 32);
-   else
-      pix = QPixmap(32, size + (size % sizeSloppyness));
-   
-   if (pix.isNull())
-   {
-      qWarning("NULL Pixmap requested, size was %d",size);
-      return nullPix;
-   }
-   
-
-   // real painting action
-   QPainter p(&pix);
-   
-   int rDiff = b.red() - bb.red();
-   int gDiff = b.green() - bb.green();
-   int bDiff = b.blue() - bb.blue();
-   
-   register int rl = (bb.red() << 16);
-   register int gl = (bb.green() << 16);
-   register int bl = (bb.blue() << 16);
-   
-   int rcdelta; int gcdelta; int bcdelta;
-   
-   if (o == Qt::Vertical)
-   {
-      register int y;
-      h = (1<<17) / (pix.height()+1);
-      rcdelta = h * rDiff;
-      gcdelta = h * gDiff;
-      bcdelta = h * bDiff;
-      
-      for ( y = 0; y < (pix.height()>>1); y++ )
-      {
-         rl += rcdelta; gl += gcdelta; bl += bcdelta;
-         p.setPen(QColor(rl>>16, gl>>16, bl>>16));
-         p.drawLine(0, y, 31 , y);
-      }
-      
-      
-      rDiff = d.red() - dd.red();
-      gDiff = d.green() - dd.green();
-      bDiff = d.blue() - dd.blue();
-      
-      rl = (dd.red() << 16);
-      gl = (dd.green() << 16);
-      bl = (dd.blue() << 16);
-      
-      rcdelta = h * rDiff;
-      gcdelta = h * gDiff;
-      bcdelta = h * bDiff;
-      
-      for ( ; y < pix.height(); y++ )
-      {
-         rl += rcdelta; gl += gcdelta; bl += bcdelta;
-         p.setPen(QColor(rl>>16, gl>>16, bl>>16));
-         p.drawLine(0, y, 31 , y);
-      }
-   }
-   else
-   {
-      register int x;
-      if (o3D == Raised)
-      {
-         h = (1<<16) / ((pix.width()+1)*8/18);
-         s = (pix.width()*8/18);
-      }
-      else
-      {
-         h = (1<<17) / (pix.width()+1);
-         s = pix.width()>>1;
-      }
-      rcdelta = h * rDiff;
-      gcdelta = h * gDiff;
-      bcdelta = h * bDiff;
-      
-      for ( x = 0; x < s; x++ )
-      {
-         rl += rcdelta; gl += gcdelta; bl += bcdelta;
-         p.setPen(QColor(rl>>16, gl>>16, bl>>16));
-         p.drawLine(x, 0, x , 31);
-      }
-      
-      rDiff = d.red() - dd.red();
-      gDiff = d.green() - dd.green();
-      bDiff = d.blue() - dd.blue();
-      
-      rl = (dd.red() << 16);
-      gl = (dd.green() << 16);
-      bl = (dd.blue() << 16);
-      
-      if (o3D == Raised)
-         h = (1<<16) / ((pix.width()+1)*10/18);
-      rcdelta = h * rDiff;
-      gcdelta = h * gDiff;
-      bcdelta = h * bDiff;
-      
-      for ( ; x < pix.width(); x++ )
-      {
-         rl += rcdelta; gl += gcdelta; bl += bcdelta;
-         p.setPen(QColor(rl>>16, gl>>16, bl>>16));
-         p.drawLine(x, 0, x , 31);
-      }
-   }
-
-   // store the result
-   // 1768 is where our dictionary reaches - should be enough for the moment ;)
-//    if (size < 105883)
-   {
-
-      // cache for later ;)
-      if (cache->size() == cache->capacity())
-      // we're full, wipe for this time
-         cache->clear();
-      it = cache->insert(magicNumber, pix);
-
-      return it.value();
-   }
-//    return pix;
-}
-#endif

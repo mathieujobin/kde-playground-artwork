@@ -48,9 +48,6 @@ QSize OxygenStyle::sizeFromContents ( ContentsType ct, const QStyleOption * opti
 //    case CT_HeaderSection: // A header section, like QHeader
    case CT_LineEdit: // A line edit, like QLineEdit
       return contentsSize + QSize(dpi.$4,dpi.$5);
-//    case CT_Menu: // A menu, like QMenu
-//    case CT_Q3Header: // A Qt 3 header section, like Q3Header
-//    case CT_MenuBar: // A menu bar, like QMenuBar
    case CT_MenuBarItem: // A menu bar item, like the buttons in a QMenuBar
       return QSize(qMax(contentsSize.width()+12, (contentsSize.height()+2)*8/5), contentsSize.height()+2);
    case CT_MenuItem: // A menu item, like QMenuItem
@@ -62,7 +59,7 @@ QSize OxygenStyle::sizeFromContents ( ContentsType ct, const QStyleOption * opti
          int w = contentsSize.width(), h = contentsSize.height();
          QSize sz;
          if (menuItem->menuItemType == QStyleOptionMenuItem::Separator)
-            sz = QSize (10, menuItem->text.isEmpty() ? 2 : menuItem->fontMetrics.lineSpacing());
+            sz = QSize (10, menuItem->text.isEmpty() ? 6 : menuItem->fontMetrics.lineSpacing());
          else
          {
             h = qMax(h, menuItem->fontMetrics.lineSpacing());
@@ -95,7 +92,6 @@ QSize OxygenStyle::sizeFromContents ( ContentsType ct, const QStyleOption * opti
          return sz;
       }
       break;
-//    case CT_ProgressBar: // A progress bar, like QProgressBar
    case CT_PushButton: // A push button, like QPushButton
       if (const QStyleOptionButton *btn =
           qstyleoption_cast<const QStyleOptionButton *>(option))
@@ -109,10 +105,16 @@ QSize OxygenStyle::sizeFromContents ( ContentsType ct, const QStyleOption * opti
       }
 //    case CT_RadioButton: // A radio button, like QRadioButton
 //    case CT_SizeGrip: // A size grip, like QSizeGrip
-//    case CT_Slider: // A slider, like QSlider
-//    case CT_ScrollBar: // A scroll bar, like QScrollBar
+
+   case CT_Menu: // A menu, like QMenu
+   case CT_Q3Header: // A Qt 3 header section, like Q3Header
+   case CT_MenuBar: // A menu bar, like QMenuBar
+   case CT_ProgressBar: // A progress bar, like QProgressBar
+   case CT_Slider: // A slider, like QSlider
+   case CT_ScrollBar: // A scroll bar, like QScrollBar
    case CT_SpinBox: // A spin box, like QSpinBox
       return contentsSize;
+      
 //    case CT_Splitter: // A splitter, like QSplitter
    case CT_TabBarTab: // A tab on a tab bar, like QTabBar
       return contentsSize + QSize(dpi.$4,0);

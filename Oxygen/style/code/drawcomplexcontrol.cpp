@@ -192,8 +192,11 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             if (cmb->editable)
                drawPrimitive(PE_PanelLineEdit, option, painter, widget);
             else
+            {
                fillWithMask(painter, RECT,
                             gradient(COLOR(Window).dark(110), RECT.height(), Qt::Vertical, GradSunken), &masks.tab);
+               shadows.sunken.render(RECT, painter);
+            }
          }
          if ((cmb->subControls & SC_ComboBoxArrow) &&
              (!(widget && qobject_cast<const QComboBox*>(widget)) || ((const QComboBox*)widget)->count() > 0))
@@ -517,8 +520,11 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          painter->setRenderHint( QPainter::Antialiasing );
          rect = QRect(0,0,2*d/3,2*d/3);
          rect.moveCenter(cp);
+         painter->setBrush(QColor(0,0,0,50));
+         painter->drawEllipse(rect);
+         rect.adjust(dpi.$2,dpi.$1,-dpi.$2,-dpi.$2);
          painter->setBrushOrigin(rect.topLeft());
-         painter->setBrush(gradient(COLOR(Highlight), rect.height(), Qt::Vertical, GradButton));
+         painter->setBrush(gradient(hasFocus?COLOR(Highlight):PAL.foreground().color(), rect.height(), Qt::Vertical, GradRadialGloss));
          painter->drawEllipse(rect);
          painter->restore();
       }

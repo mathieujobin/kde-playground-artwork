@@ -39,6 +39,7 @@
 #include <QMenu>
 #include <QMenuBar>
 #include <QStyleOptionProgressBarV2>
+#include <QLayout>
 #include <QListWidget>
 #include <QAbstractButton>
 #include <QPushButton>
@@ -348,9 +349,10 @@ void OxygenStyle::generatePixmaps()
       p.begin(&tmp);
       p.setPen(Qt::NoPen);
       p.setRenderHint(QPainter::Antialiasing);
-      p.setBrush(QColor(0,0,0,(i+1)*16));
+      p.setBrush(QColor(0,0,0,(i+1)*9));
       p.drawRoundRect(0,0,$9,$9,60,60);
-      p.drawRoundRect($2_2,$2_2,$9-$2,$9-$2,75,75);
+      p.setBrush(QColor(0,0,0,(i+1)*20));
+      p.drawRoundRect($2_2,$2_2,$9-$2,$9-$2,80,80);
       p.end();
       shadows.button[i] = Tile::Set(tmp,$9_2,$9_2,$9-2*$9_2,$9-2*$9_2);
    }
@@ -440,6 +442,16 @@ void OxygenStyle::generatePixmaps()
    masks.radio = QPixmap(rw, rh);
    masks.radio.fill(Qt::transparent);
    p.begin(&masks.radio);
+   p.setPen(Qt::NoPen);
+   p.setRenderHint(QPainter::Antialiasing);
+   p.setBrush(QColor(0,0,0,255));
+   p.drawEllipse(0,0,rw,rh);
+   p.end();
+   
+   rw -= dpi.$4; rh -= dpi.$4;
+   masks.radioGroove = QPixmap(rw, rh);
+   masks.radioGroove.fill(Qt::transparent);
+   p.begin(&masks.radioGroove);
    p.setPen(Qt::NoPen);
    p.setRenderHint(QPainter::Antialiasing);
    p.setBrush(QColor(0,0,0,255));
@@ -574,7 +586,7 @@ void OxygenStyle::initMetrics()
    dpi.SliderThickness = SCALE(24);
    dpi.SliderControl = SCALE(17);
    dpi.Indicator = SCALE(20);
-   dpi.ExclusiveIndicator = SCALE(17);
+   dpi.ExclusiveIndicator = SCALE(19);
 }
 
 #undef SCALE
@@ -582,7 +594,7 @@ void OxygenStyle::initMetrics()
 /**THE STYLE ITSELF*/
 OxygenStyle::OxygenStyle() : QCommonStyle(), progressShift(0), anmiationUpdate(false), mouseButtonPressed_(false), internalEvent_(false), _bgBrush(0L), popupPix(0L), timer(0L)
 {
-   _scanlines[0] = _scanlines[1] = _scanlines[2] = 0L;
+   _scanlines[0] = _scanlines[1] = 0L;
    readSettings();
    initMetrics();
    generatePixmaps();
@@ -898,11 +910,15 @@ void OxygenStyle::polish( QPalette &pal )
       // create use a nice background
       QColor c = pal.color(QPalette::Active, QPalette::Background);
       c.getHsv(&h,&s,&v);
-      if (v < 70) // very dark colors won't make nice backgrounds ;)
-         c.setHsv(h,s,70);
       originalBgColor_ = c;
       if (config.acceleration == None)
+      {
+         if (v < 70) // very dark colors won't make nice backgrounds ;)
+            c.setHsv(h,s,70);
          _SHIFTCOLOR_(c);
+      }
+      else if (v < 30) // very dark colors won't make nice backgrounds ;)
+         c.setHsv(h,s,30);
       pal.setColor( QPalette::Window, c );
       
       if (!_bgBrush)
@@ -969,6 +985,8 @@ void OxygenStyle::polish( QPalette &pal )
    popupPix = config.inversePopups ? fgPix : bgPix;
 }
 
+#include <QtDebug>
+
 void OxygenStyle::polish( QWidget * widget)
 {
    // installs dynamic brush to all widgets, taking care of a correct bg pixmap size
@@ -1026,8 +1044,6 @@ void OxygenStyle::polish( QWidget * widget)
       connect(widget, SIGNAL(destroyed(QObject*)), this, SLOT(tabDestroyed(QObject*)));
    }
    
-//    if (widget->inherits("QStackedWidget") && _IsTabStack(widget))
-//       widget->installEventFilter(this);
    
    if (qobject_cast<QAbstractScrollArea*>(widget) || qobject_cast<Q3ScrollView*>(widget) ||
        widget->inherits("QWorkspaceTitleBar"))
@@ -1065,14 +1081,39 @@ void OxygenStyle::polish( QWidget * widget)
       }
    }
    
-   if (qobject_cast<QGroupBox *>(widget) && config.bgMode == Scanlines && !_scanlines[2])
+   // overwrite ugly lines
+   if (qobject_cast<QFrame *>(widget) &&
+       (static_cast<QFrame *>(widget)->frameShape() == QFrame::HLine ||
+        static_cast<QFrame *>(widget)->frameShape() == QFrame::VLine))
+      widget->installEventFilter(this);
+   
+   // toolbox handling - a shame they look that crap by default!
+   if (qobject_cast<QFrame *>(widget) && widget->inherits("QToolBox") && widget->layout())
    {
-      _scanlines[2] = new QPixmap(64, 64);
-      QPalette pal = widget->palette();
-      QColor c = pal.color(QPalette::Active, QPalette::Window).dark(105);
-      makeStructure(2, c);
+      widget->layout()->setMargin ( 0 );
+      widget->layout()->setSpacing ( 0 );
    }
    
+   if (widget->autoFillBackground() &&
+       // dad
+       widget->parentWidget() &&
+       !qstrcmp( widget->parentWidget()->name(), "qt_scrollarea_viewport" ) &&
+       //grampa
+       widget->parentWidget()->parentWidget() &&
+       qobject_cast<QAbstractScrollArea*>(widget->parentWidget()->parentWidget()) &&
+       // grangrampa
+       widget->parentWidget()->parentWidget()->parentWidget() &&
+       widget->parentWidget()->parentWidget()->parentWidget()->inherits("QToolBox")
+      )
+   {
+      widget->parentWidget()->setAutoFillBackground(false);
+      widget->setAutoFillBackground(false);
+   }
+   
+   //======================
+   
+   // swap qmenu colors
+      
    if (qobject_cast<QMenu *>(widget))
    {
       widget->setBackgroundRole ( QPalette::WindowText );
@@ -1081,25 +1122,33 @@ void OxygenStyle::polish( QWidget * widget)
       tmpFont.setBold(true);
       widget->setFont(tmpFont);
    }
+   
+   //========================
 }
 
 bool OxygenStyle::eventFilter( QObject *object, QEvent *ev )
 {
    switch (ev->type())
    {
-//    case QEvent::Paint:
-//       {
-//          QWidget *sw = qobject_cast<QWidget*>(object);
-//          if (!(sw && sw->inherits("QStackedWidget") && _IsTabStack(sw)))
-//             return false;
-//          QMap<QWidget*, TabAnimInfo>::const_iterator i = tabwidgets.find(sw->parentWidget());
-//          if (i == tabwidgets.end() || !i.value().animStep)
-//             return false;
-//          QPainter p (sw);
-//          p.drawPixmap(0,0, i.value().tabPix[2]);
-//          p.end();
-//          return true;
-//       }
+   case QEvent::Paint:
+   {
+      QFrame *frame = qobject_cast<QFrame*>(object);
+      if (frame)
+      {
+         if (frame->frameShape() == QFrame::HLine)
+         {
+            QPainter p(frame);
+            shadows.line.render(frame->rect(), &p);
+            p.end();
+            return true;
+         }
+         if (frame->frameShape() == QFrame::VLine)
+         {
+            return true;
+         }
+      }
+      return false;
+   }
    case QEvent::MouseButtonPress:
    {
       QMouseEvent *mev = (QMouseEvent*)ev;

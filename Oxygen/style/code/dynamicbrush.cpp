@@ -644,7 +644,9 @@ void DynamicBrush::updateBrushRender()
    OXRender::composite (lgp, None, qPix, 0, 0, 0, 0, 0, 0,
                         qPix.width(), qPix.height());
    OXRender::freePicture(lgp);
-   ca.replace(0, QColor(255,255,255,180)); ca.replace(1, QColor(255,255,255,0));
+   c = c.light(160);
+   c.setAlpha(180); ca.replace(0, c);
+   c.setAlpha(0); ca.replace(1, c);
    float f[2] = {
          pow(0.5, (float)qPix.height()/qPix.width()),
          pow(0.5, (float)qPix.width()/qPix.height())};

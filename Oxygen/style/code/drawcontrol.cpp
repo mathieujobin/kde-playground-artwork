@@ -819,9 +819,12 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             fg = widget->foregroundRole();
          }
          
+         painter->fillRect(RECT, PAL.color(QPalette::Active, bg));
+         
          if (menuItem->menuItemType == QStyleOptionMenuItem::Separator)
          {
-            painter->drawTiledPixmap(RECT, gradient(PAL.color(QPalette::Active, bg), RECT.height(), Qt::Vertical));
+            int dx = RECT.width()/6, dy = (RECT.height()-shadows.line.thickness())/2;
+            shadows.line.render(RECT.adjusted(dx,dy,-dx,-dy), painter);
             if (!menuItem->text.isEmpty())
             {
                painter->setFont(menuItem->font);
@@ -834,13 +837,11 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          bool checkable = menuItem->checkType != QStyleOptionMenuItem::NotCheckable;
          bool checked = menuItem->checked;
          
-         painter->fillRect(RECT, PAL.color(QPalette::Active, bg));
-         if (selected)
+         if (selected && isEnabled)
          {
             painter->setRenderHint ( QPainter::Antialiasing );
             painter->setPen ( PAL.color(fg) );
-            if (isEnabled)
-               painter->setBrush ( PAL.color(fg) );
+            painter->setBrush ( PAL.color(fg) );
             if (RECT.width() > RECT.height())
                painter->drawRoundRect(RECT, 35*RECT.height()/RECT.width(), 35);
             else
@@ -983,9 +984,13 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          {
             if (option->state & State_Selected)
             {
-               bgRole = QPalette::WindowText;
-               painter->drawTiledPixmap(RECT, gradient(PAL.color(bgRole), RECT.height(), Qt::Vertical));
-               role = QPalette::Window;
+               int dx = RECT.width()/6;
+               QRect lineRect = RECT.adjusted(dx,0,-dx,0);
+               lineRect.setTop(lineRect.bottom()-shadows.line.thickness());
+               shadows.line.render(lineRect, painter);
+//                bgRole = QPalette::WindowText;
+//                painter->drawTiledPixmap(RECT, gradient(PAL.color(bgRole), RECT.height(), Qt::Vertical));
+//                role = QPalette::Window;
                QFont f(painter->font());
                f.setBold(true);
                painter->setFont(f);
@@ -994,6 +999,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
                painter->drawTiledPixmap(RECT, gradient(PAL.color(bgRole), RECT.height(), Qt::Vertical, sunken ? GradSunken : hover?GradGloss:GradSimple));
          }
             
+         
          /**i WANT (read this TrottelTech: WANT!) this to be color swapped on select (and centered as sugar on top)
          now as the toolboxbutton is a private class and it's selected member is as well, i cannot overwrite the paint event
          so instead i repeat a null rect for selected tabs contents (from subElementRect query), what makes the widget abort the content painting
@@ -1029,7 +1035,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          
          if (ih)
             painter->drawPixmap(ir.left(), (RECT.height() - ih) / 2, pm);
-         
+
          if (qGray(PAL.color(bgRole).rgb()) < 128) // dark background, let's paint an emboss
          {
             painter->save();
@@ -1039,7 +1045,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             tr.moveTop(tr.top()+1);
             painter->restore();
          }
-         
+
          drawItemText(painter, tr, Qt::AlignCenter | Qt::TextShowMnemonic, PAL, isEnabled, txt, role);
       }
       break;

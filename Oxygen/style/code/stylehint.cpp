@@ -64,7 +64,7 @@ int OxygenStyle::styleHint ( StyleHint hint, const QStyleOption * option, const 
    case SH_Menu_SloppySubMenus: // Whether popupmenu's must support sloppy submenu; as implemented on Mac OS.
       return true;
    case SH_ScrollView_FrameOnlyAroundContents: // Whether scrollviews draw their frame only around contents (like Motif), or around contents, scroll bars and corner widgets (like Windows).
-      return false; //return true; // find solution for round corner end
+      return true; // find solution for round corner end
    case SH_MenuBar_AltKeyNavigation: // Menu bars items are navigable by pressing Alt, followed by using the arrow keys to select the desired item.
       return true;
    case SH_ComboBox_ListMouseTracking: // Mouse tracking in combobox drop-down lists.

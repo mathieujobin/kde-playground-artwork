@@ -121,7 +121,13 @@ class OxygenStyle : public QCommonStyle
    Q_OBJECT
 public:
    enum WidgetState{Basic = 0, Hovered, Focused, Active};
-   enum GradientType{GradSimple,GradSunken,GradGloss,GradButton,GradButtonHover,GradButtonDisabled,GradGroup,NumGrads};
+   enum GradientType {
+      GradSimple, GradSunken,
+      GradGloss, GradRadialGloss,
+      GradButton, GradButtonHover, GradButtonDisabled,
+      GradGroup,
+      NumGrads
+   };
    
    OxygenStyle();
    virtual ~OxygenStyle();
@@ -206,7 +212,7 @@ private:
    struct
    {
       Tile::Mask rect[3], round[3], button, tab, group;
-      QPixmap radio, radioIndicator;
+      QPixmap radio, radioIndicator, radioGroove;
    } masks;
    struct
    {
@@ -224,7 +230,7 @@ private:
    } lights;
    
    // pixmaps
-   QPixmap *_scanlines[3];
+   QPixmap *_scanlines[2];
    // cache
    PixmapCache gradients[2][NumGrads];
    PixmapCache _btnAmbient;

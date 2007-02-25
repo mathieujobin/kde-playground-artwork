@@ -89,34 +89,28 @@ inline QColor midColor(const QColor &oc1, const QColor &c2, int w1 = 1, int w2 =
    return QColor((w1*c1.red() + w2*c2.red())/sum,(w1*c1.green() + w2*c2.green())/sum,(w1*c1.blue() + w2*c2.blue())/sum);
 }
 
+#define COLOR(_ROLE_) pal.color(QPalette::_ROLE_)
+
 /**Internal, calcs button color depending on state*/
 
-inline QColor btnBgColor(const QPalette &pal, bool isEnabled, bool hasFocus, bool hover)
+inline QColor btnBgColor(const QPalette &pal, bool isEnabled, bool hasFocus)
 {
    if (!isEnabled)
-      return pal.color(QPalette::Window);
-   if (hover)
-   {
-      if (hasFocus)
-         return pal.color(QPalette::Highlight);
-      return pal.color(QPalette::ButtonText);
-   }
-   return pal.color(QPalette::Button);
+      return COLOR(Window);
+   if (hasFocus)
+      return midColor(COLOR(Button), COLOR(Highlight), 3, 1);
+   return COLOR(Button);
 }
 
 /**Internal, calcs buttonText color depending on state*/
-inline QColor btnFgColor(const QPalette &pal, bool isEnabled, bool hasFocus, bool hover)
+inline QColor btnFgColor(const QPalette &pal, bool isEnabled, bool hasFocus)
 {
    if (!isEnabled)
-      return midColor(pal.color(QPalette::Window), pal.color(QPalette::WindowText),1,3);
-   if (hover)
-   {
-      if (hasFocus)
-         return pal.color(QPalette::HighlightedText);
-      return pal.color(QPalette::Button);
-   }
-   return pal.color(QPalette::ButtonText);
+      return midColor(COLOR(Window), COLOR(WindowText), 1, 3);
+   return COLOR(ButtonText);
 }
+
+#undef COLOR
 
 /**Internal, calcs a contrasted color to a qcolor*/
 inline QColor emphasize(const QColor &c, int value = 10)
