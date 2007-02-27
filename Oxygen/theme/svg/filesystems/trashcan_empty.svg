@@ -15,7 +15,7 @@
    sodipodi:version="0.32"
    inkscape:version="0.45+devel"
    version="1.0"
-   sodipodi:docbase="/Users/david/Progetti/oxygen-svn/theme/svg/filesystems"
+   sodipodi:docbase="/home/david/Progetti/sandbox"
    sodipodi:docname="trashcan_empty.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
@@ -1308,7 +1308,7 @@
        gradientTransform="translate(956,135.125)">
       <stop
          offset="0"
-         style="stop-color:#B6B6B6"
+         style="stop-color:#666666;stop-opacity:1;"
          id="stop2418" />
       <stop
          id="stop7162"
@@ -1328,7 +1328,7 @@
          id="stop40" />
       <stop
          offset="1"
-         style="stop-color:#bbbbbb;stop-opacity:1;"
+         style="stop-color:#666666;stop-opacity:1;"
          id="stop42" />
     </linearGradient>
     <linearGradient
@@ -2163,14 +2163,6 @@
          d="M 20,17.71875 C 20,67.795858 29.0625,104.21875 29.0625,104.21875 C 29.0625,106.91234 30.551231,109.46924 33.1875,111.6875 C 32.546276,110.38903 32.21875,108.99526 32.21875,107.59375 C 32.21875,107.59375 24,69.754262 24,17.71875 L 20,17.71875 z M 104,17.71875 C 104,69.754263 95.781252,107.59375 95.78125,107.59375 C 95.78125,108.99526 95.453724,110.38903 94.8125,111.6875 C 97.448769,109.46924 98.9375,106.91234 98.9375,104.21875 C 98.9375,104.21875 108,67.795859 108,17.71875 L 104,17.71875 z"
          id="path7558" />
     </clipPath>
-    <filter
-       inkscape:collect="always"
-       id="filter7560">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="0.95533594"
-         id="feGaussianBlur7562" />
-    </filter>
     <radialGradient
        inkscape:collect="always"
        xlink:href="#linearGradient3207"
@@ -2241,6 +2233,18 @@
        fx="64.015259"
        fy="15.000401"
        r="40.640625" />
+    <filter
+       inkscape:collect="always"
+       x="-0.069853726"
+       width="1.1397075"
+       y="-0.15281692"
+       height="1.3056338"
+       id="filter3194">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="8.7809876"
+         id="feGaussianBlur3196" />
+    </filter>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -2262,7 +2266,7 @@
      inkscape:window-width="812"
      inkscape:window-height="624"
      inkscape:window-x="80"
-     inkscape:window-y="83"
+     inkscape:window-y="69"
      showguides="true"
      inkscape:guide-bbox="true"
      gridspacingy="4px"
@@ -2290,7 +2294,7 @@
     <g
        transform="matrix(0.2523019,0,0,0.2540082,18.329314,-0.8648311)"
        id="g11"
-       style="opacity:0.4;fill:#000000;fill-opacity:1;filter:url(#AI_Sfocatura_7)">
+       style="opacity:0.4;fill:#000000;fill-opacity:1;filter:url(#filter3194)">
       <path
          d="M 30.845,416.182 C 22.674,455.987 89.53,491.578 181.016,491.578 C 272.501,491.578 339.359,455.986 331.186,416.182 C 323.816,380.285 256.865,353.672 181.016,353.672 C 105.167,353.672 38.215,380.284 30.845,416.182 z"
          id="path13"
@@ -2305,11 +2309,6 @@
        id="path4081"
        d="M 107,20.000002 C 107,29.936002 87.735996,38 63.999998,38 C 40.263999,38 21,29.936002 21,20.000002 C 21,10.064002 40.249309,2 63.98531,2 C 87.721308,2 107,10.064002 107,20.000002 z"
        style="opacity:1;fill:url(#linearGradient4083);fill-opacity:1" />
-    <path
-       id="path7169"
-       d="M 20,17.718553 C 20,67.795662 29.05452,104.22411 29.05452,104.22411 C 29.05452,112.93709 44.70019,120 64,120 C 83.29981,120 98.94548,112.93709 98.94548,104.22411 C 98.94548,104.22411 108,67.795662 108,17.718553 L 20,17.718553 L 20,17.718553 z "
-       style="fill:none;stroke:#000000;stroke-opacity:1;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-linejoin:round;opacity:0.3;filter:url(#filter7560)"
-       clip-path="url(#clipPath7556)" />
     <path
        style="fill:url(#linearGradient3129);fill-opacity:1.0"
        d="M 108,18.000002 C 108,27.936002 88.287996,36 63.999998,36 C 39.711999,36 20,27.936002 20,18.000002 C 20,8.064002 39.696967,0 63.984968,0 C 88.272966,0 108,8.064002 108,18.000002 z "
