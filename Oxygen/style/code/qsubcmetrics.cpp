@@ -208,7 +208,8 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
             {
                int buttonWidth = qMin(scrollbar->rect.width()/2, sbextent);
                ret.setRect(scrollbar->rect.width() - buttonWidth, 0, buttonWidth, sbextent);
-            } else
+            }
+            else
             {
                int buttonHeight = qMin(scrollbar->rect.height()/2, sbextent);
                ret.setRect(0, scrollbar->rect.height() - buttonHeight, sbextent, buttonHeight);
@@ -216,15 +217,15 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
             break;
          case SC_ScrollBarSubPage:            // between top/left button and slider
             if (scrollbar->orientation == Qt::Horizontal)
-               ret.setRect(0, 0, sliderstart, sbextent);
+               ret.setRect(0, 0, sliderstart + dpi.$2, sbextent);
             else
-               ret.setRect(0, 0, sbextent, sliderstart);
+               ret.setRect(0, 0, sbextent, sliderstart + dpi.$2);
             break;
          case SC_ScrollBarAddPage:            // between bottom/right button and slider
             if (scrollbar->orientation == Qt::Horizontal)
-               ret.setRect(sliderstart + sliderlen, 0, maxlen - sliderstart - sliderlen, sbextent);
+               ret.setRect(sliderstart + sliderlen - dpi.$2, 0, maxlen - sliderstart - sliderlen + dpi.$2, sbextent);
             else
-               ret.setRect(0, sliderstart + sliderlen, sbextent, maxlen - sliderstart - sliderlen);
+               ret.setRect(0, sliderstart + sliderlen - dpi.$3, sbextent, maxlen - sliderstart - sliderlen + dpi.$3);
             break;
          case SC_ScrollBarGroove:
             if (scrollbar->orientation == Qt::Horizontal)

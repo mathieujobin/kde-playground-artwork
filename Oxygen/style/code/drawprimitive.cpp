@@ -112,7 +112,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          }
       }
       fillWithMask(painter, RECT, c, &masks.button);
-      shadows.sunken.render(RECT, painter);
+      shadows.lineEdit.render(RECT, painter);
 //       if (hasFocus)
 //          masks.button.outline(RECT.adjusted(1,1,-1,0), painter, COLOR(Highlight));
    }
@@ -311,10 +311,26 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       {
          mask = const_cast<Tile::Mask *>(&masks.button);
          if (viewport && viewport->autoFillBackground())
+         {
             fillWithMask(painter, RECT, viewport->palette().color(viewport->backgroundRole()), mask, Tile::Ring);
-         if (hasFocus)
-            mask->outline(RECT.adjusted(dpi.$1,dpi.$1,-dpi.$1,-dpi.$1), painter, COLOR(Highlight));
-         shadows.sunken.render(RECT,painter);
+            if (hasFocus)
+               mask->outline(RECT.adjusted(dpi.$1,dpi.$1,-dpi.$1,-dpi.$1), painter, COLOR(Highlight));
+            shadows.lineEdit.render(RECT,painter);
+         }
+         else
+         {
+            if (hasFocus)
+            {
+               painter->save();
+               QPen pen = painter->pen();
+               pen.setWidth(dpi.$2); pen.setColor(COLOR(Highlight));
+               painter->setPen(pen);
+               painter->setBrush(Qt::NoBrush);
+               painter->drawRect(RECT.adjusted(dpi.$3,dpi.$3,-dpi.$3,-dpi.$3));
+               painter->restore();
+            }
+            shadows.sunken.render(RECT,painter);
+         }
       }
       else if (option->state & QStyle::State_Raised)
       {
@@ -389,7 +405,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       }
       break;
    case PE_FrameLineEdit: // Panel frame for line edits.
-      shadows.sunken.render(RECT,painter);
+      shadows.lineEdit.render(RECT,painter);
 //       if (hasFocus)
 //          masks.button.outline(RECT.adjusted(1,1,-1,0), painter, COLOR(Highlight));
    case PE_FrameGroupBox: // Panel frame around group boxes.

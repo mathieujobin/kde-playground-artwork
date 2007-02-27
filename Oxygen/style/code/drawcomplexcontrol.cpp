@@ -195,7 +195,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             {
                fillWithMask(painter, RECT,
                             gradient(COLOR(Window).dark(110), RECT.height(), Qt::Vertical, GradSunken), &masks.tab);
-               shadows.sunken.render(RECT, painter);
+               shadows.lineEdit.render(RECT, painter);
             }
          }
          if ((cmb->subControls & SC_ComboBoxArrow) &&
@@ -231,17 +231,72 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          }
       }
       break;
-//    case CC_ScrollBar: // A scroll bar, like QScrollBar
+   case CC_ScrollBar: // A scroll bar, like QScrollBar
+      if (const QStyleOptionSlider *scrollbar =
+         qstyleoption_cast<const QStyleOptionSlider *>(option))
+      {
+         // Make a copy here and reset it for each primitive.
+         QStyleOptionSlider newScrollbar = *scrollbar;
+         State saveFlags = scrollbar->state;
+         if (scrollbar->minimum == scrollbar->maximum)
+               saveFlags &= ~State_Enabled;
+         
+         // erase
+         QPixmap bgPix = PAL.brush(QPalette::Window).texture();
+         if (bgPix.isNull())
+            painter->fillRect(RECT, COLOR(Window));
+         else
+         {
+            QRect srcRect = RECT;
+            if (widget)
+               srcRect.translate(widget->mapTo(widget->topLevelWidget(), QPoint(0,0)));
+            painter->drawPixmap( RECT.topLeft(), bgPix, srcRect);
+         }
+         
+#define PAINT_ELEMENT(_SC_, _CE_)\
+         if (scrollbar->subControls & _SC_)\
+         {\
+            newScrollbar.rect = scrollbar->rect;\
+            newScrollbar.state = saveFlags;\
+            newScrollbar.rect = subControlRect(control, &newScrollbar, _SC_, widget);\
+            if (newScrollbar.rect.isValid())\
+            {\
+               if (!(scrollbar->activeSubControls & _SC_))\
+                  newScrollbar.state &= ~(State_Sunken | State_MouseOver);\
+               drawControl(_CE_, &newScrollbar, painter, widget);\
+            }\
+         }//
+         
+         PAINT_ELEMENT(SC_ScrollBarSubLine, CE_ScrollBarSubLine);
+         PAINT_ELEMENT(SC_ScrollBarAddLine, CE_ScrollBarAddLine);
+         PAINT_ELEMENT(SC_ScrollBarSubPage, CE_ScrollBarSubPage);
+         PAINT_ELEMENT(SC_ScrollBarAddPage, CE_ScrollBarAddPage);
+         PAINT_ELEMENT(SC_ScrollBarFirst, CE_ScrollBarFirst);
+         PAINT_ELEMENT(SC_ScrollBarLast, CE_ScrollBarLast);
+         
+         if (scrollbar->subControls & SC_ScrollBarSlider)
+         {
+            newScrollbar.rect = scrollbar->rect;
+            newScrollbar.state = saveFlags;
+            newScrollbar.rect = subControlRect(control, &newScrollbar, SC_ScrollBarSlider, widget);
+            if (newScrollbar.rect.isValid())
+            {
+               if (!(scrollbar->activeSubControls & SC_ScrollBarSlider))
+                  newScrollbar.state &= ~(State_Sunken | State_MouseOver);
+               if (scrollbar->state & State_HasFocus)
+                  newScrollbar.state |= (State_Sunken | State_MouseOver);
+               drawControl(CE_ScrollBarSlider, &newScrollbar, painter, widget);
+            }
+         }
+      }
+      break;
    case CC_Slider: // A slider, like QSlider
       if (const QStyleOptionSlider *slider =
           qstyleoption_cast<const QStyleOptionSlider *>(option))
       {
          QRect groove = QCommonStyle::subControlRect(CC_Slider, slider, SC_SliderGroove, widget);
          QRect handle = QCommonStyle::subControlRect(CC_Slider, slider, SC_SliderHandle, widget);
-         // this is a workaround, qslider doesn't send the direction
-         bool inverse = (widget && widget->layoutDirection() == Qt::RightToLeft) xor slider->upsideDown;
-         // TODO: activate this one, remove the above
-//          bool inverse = option->direction == Qt::RightToLeft;
+
          hover = hover && (slider->activeSubControls & SC_SliderHandle);
          sunken = sunken && (slider->activeSubControls & SC_SliderHandle);
          
@@ -255,7 +310,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                r = groove;
                r.setRight(handle.left()+3);
                pf = Tile::Top | Tile::Left | Tile::Bottom | Tile::Center;
-               if (inverse)
+               if (slider->upsideDown)
                   fillWithMask(painter, r, gradient(COLOR(Window), r.height(), Qt::Vertical, GradSunken), &masks.button, pf);
                else
                {
@@ -266,7 +321,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                r = groove;
                r.setLeft(handle.right()-3);
                pf = Tile::Top | Tile::Right | Tile::Bottom | Tile::Center;
-               if (inverse)
+               if (slider->upsideDown)
                {
                   shadows.button[1].render(r, painter);
                   r.adjust(2,1,-2,-2);
@@ -281,25 +336,25 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                r = groove;
                r.setBottom(handle.top()+3);
                pf = Tile::Top | Tile::Left | Tile::Right | Tile::Center;
-               if (inverse)
+               if (slider->upsideDown)
+                  fillWithMask(painter, r, gradient(COLOR(Window), r.width(), Qt::Horizontal, GradSunken), &masks.button, pf);
+               else
                {
                   shadows.button[1].render(r, painter);
                   r.adjust(2,1,-2,-2);
                   fillWithMask(painter, r, gradient(c, r.width(), Qt::Horizontal, GradGloss), &masks.button, pf);
                }
-               else
-                  fillWithMask(painter, r, gradient(COLOR(Window), r.width(), Qt::Horizontal, GradSunken), &masks.button, pf);
                r = groove;
                r.setTop(handle.bottom()-3);
                pf = Tile::Left | Tile::Right | Tile::Bottom | Tile::Center;
-               if (inverse)
-                  fillWithMask(painter, r, gradient(COLOR(Window), r.width(), Qt::Horizontal, GradSunken), &masks.button, pf);
-               else
+               if (slider->upsideDown)
                {
                   shadows.button[1].render(r, painter);
                   r.adjust(2,1,-2,-2);
                   fillWithMask(painter, r, gradient(c, r.width(), Qt::Horizontal, GradGloss), &masks.button, pf);
                }
+               else
+                  fillWithMask(painter, r, gradient(COLOR(Window), r.width(), Qt::Horizontal, GradSunken), &masks.button, pf);
             }
          }
          

@@ -127,7 +127,8 @@ int OxygenStyle::styleHint ( StyleHint hint, const QStyleOption * option, const 
    case SH_SpinControls_DisableOnBounds: // Determines if the spin controls will shown as disabled when reaching the spin range boundary.
       return true;
 ///    case SH_Dial_BackgroundRole: // Defines the style's preferred background role (as QPalette::ColorRole) for a dial widget.
-//    case SH_ScrollBar_BackgroundMode: // The backgroundMode() for a scroll bar.
+   case SH_ScrollBar_BackgroundMode: // The backgroundMode() for a scroll bar.
+      return Qt::PaletteBackground;
 ///    case SH_ComboBox_LayoutDirection: // The layout direction for the combo box. By default it should be the same value as the QStyleOption's direction.
 ///    case SH_ItemView_EllipsisLocation: // The location where ellipses should be added for item text that is too long to fit in an view item.
 ///    case SH_ItemView_ShowDecorationSelected: // When an item in an item view is selected, also highlight the branch or other decoration.

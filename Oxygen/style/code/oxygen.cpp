@@ -372,7 +372,7 @@ void OxygenStyle::generatePixmaps()
    p.setBrush(QColor(0,0,0,180)); p.drawRoundRect($2,dpi.$4,dpi.$3,dpi.$5,90,90);
    p.end();
 
-   shadows.sunken = Tile::Set(QPixmap::fromImage(tmpImg),$9_2,$9_2,$9-2*$9_2,$9-2*$9_2);
+   shadows.lineEdit = Tile::Set(QPixmap::fromImage(tmpImg),$9_2,$9_2,$9-2*$9_2,$9-2*$9_2);
    
    
    // outlines
@@ -468,6 +468,40 @@ void OxygenStyle::generatePixmaps()
    p.setBrush(QColor(0,0,0,255));
    p.drawEllipse(0,0,rw,rh);
    p.end();
+   
+   // ================================================================
+   
+   // RECTABGULAR =====================================
+   
+   // raised
+   
+   // sunken
+   int $3 = dpi.$3, $4 = dpi.$4, $6 = dpi.$6;
+   tmp = QPixmap($9,$9);
+   tmp.fill(Qt::transparent);
+   p.begin(&tmp);
+   p.fillRect($1,0,$9-$2,$1, QColor(0,0,0,10));
+   p.fillRect($2,$1,$9-$4,$1, QColor(0,0,0,20));
+   p.fillRect($2,$2,$9-$4,$1, QColor(0,0,0,40));
+   p.fillRect($3,$3,$9-$6,$1, QColor(0,0,0,80));
+   
+   p.fillRect($1,$9-$1,$9-$2,$1, QColor(255,255,255,10));
+   p.fillRect($2,$9-$2,$9-$4,$1, QColor(255,255,255,20));
+   p.fillRect($2,$9-$3,$9-$4,$1, QColor(255,255,255,40));
+   p.fillRect($3,$9-$4,$9-$6,$1, QColor(255,255,255,80));
+   
+   p.fillRect(0,$1,$1,$9-$2, QColor(128,128,128,10));
+   p.fillRect($1,$2,$1,$9-$4, QColor(128,128,128,20));
+   p.fillRect($2,$2,$1,$9-$4, QColor(128,128,128,40));
+   p.fillRect($3,$3,$1,$9-$6, QColor(128,128,128,80));
+   
+   p.fillRect($9-$1,$1,$1,$9-$2, QColor(128,128,128,10));
+   p.fillRect($9-$2,$2,$1,$9-$4, QColor(128,128,128,20));
+   p.fillRect($9-$3,$2,$1,$9-$4, QColor(128,128,128,40));
+   p.fillRect($9-$4,$3,$1,$9-$6, QColor(128,128,128,80));
+   
+   p.end();
+   shadows.sunken = Tile::Set(tmp,$9_2,$9_2,$9-2*$9_2,$9-2*$9_2);
    
    // ================================================================
    
@@ -989,6 +1023,7 @@ void OxygenStyle::polish( QPalette &pal )
 
 void OxygenStyle::polish( QWidget * widget)
 {
+
    // installs dynamic brush to all widgets, taking care of a correct bg pixmap size
    //TODO maybe we can exclude some more widgets here... (currently only popup menus)
    if (_bgBrush && !(qobject_cast<QMenu*>(widget) ||

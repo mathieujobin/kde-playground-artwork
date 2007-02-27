@@ -216,7 +216,7 @@ private:
    } masks;
    struct
    {
-      Tile::Set button[2], tab, sunken, group;
+      Tile::Set button[2], tab, sunken, group, lineEdit, raised;
       QPixmap radio[2];
       Tile::Line line;
    } shadows;
