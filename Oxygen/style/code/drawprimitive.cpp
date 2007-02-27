@@ -21,6 +21,8 @@
 #include <QApplication>
 #include <QAbstractScrollArea>
 #include <QDesktopWidget>
+#include <QLabel>
+#include <QLayout>
 #include <QLineEdit>
 #include <QStyleOptionButton>
 #include <QPainter>
@@ -305,14 +307,29 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          break;
       }
       Tile::Mask *mask = 0; QWidget *viewport = 0;
-      if (widget && qobject_cast<const QAbstractScrollArea*>(widget))
-         viewport = static_cast<const QAbstractScrollArea*>(widget)->viewport();
+      
+      bool useLineEdit = false;
+      if (widget) // scan whether we want to use the lineEdit frame
+      {
+         if (qobject_cast<const QAbstractScrollArea*>(widget) &&
+             (widget->inherits("QAbstractItemView") || widget->inherits("QTextEdit")))
+         {
+            viewport = static_cast<const QAbstractScrollArea*>(widget)->viewport();
+            useLineEdit = true;
+         }
+         else if (widget->layout() && widget->layout()->margin() > 0)
+            useLineEdit = true;
+         else if (const QLabel* label = qobject_cast<const QLabel*>(widget))
+            useLineEdit = (label->text() != QString());
+      }
+      
       if (sunken)
       {
          mask = const_cast<Tile::Mask *>(&masks.button);
          if (viewport && viewport->autoFillBackground())
-         {
             fillWithMask(painter, RECT, viewport->palette().color(viewport->backgroundRole()), mask, Tile::Ring);
+         if (useLineEdit)
+         {
             if (hasFocus)
                mask->outline(RECT.adjusted(dpi.$1,dpi.$1,-dpi.$1,-dpi.$1), painter, COLOR(Highlight));
             shadows.lineEdit.render(RECT,painter);
@@ -321,11 +338,9 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          {
             if (hasFocus)
             {
-               painter->save();
-               QPen pen = painter->pen();
+               painter->save(); QPen pen = painter->pen();
                pen.setWidth(dpi.$2); pen.setColor(COLOR(Highlight));
-               painter->setPen(pen);
-               painter->setBrush(Qt::NoBrush);
+               painter->setPen(pen); painter->setBrush(Qt::NoBrush);
                painter->drawRect(RECT.adjusted(dpi.$3,dpi.$3,-dpi.$3,-dpi.$3));
                painter->restore();
             }

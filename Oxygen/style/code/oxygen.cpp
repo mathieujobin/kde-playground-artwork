@@ -95,18 +95,18 @@
 
 
 /**============= Convenience Defs ==========================*/
-#define _IsNotHtmlWidget(w) qstrcmp( w->name(), "__khtml" )
-#define _IsHtmlWidget(w) !qstrcmp( w->name(), "__khtml" )
+#define _IsNotHtmlWidget(w) qstrcmp( w->objectName(), "__khtml" )
+#define _IsHtmlWidget(w) !qstrcmp( w->objectName(), "__khtml" )
 #define _IsViewportChild(w) w->parent() &&\
-( !qstrcmp(w->parent()->name(), "qt_viewport") || \
-  !qstrcmp(w->parent()->name(), "qt_clipped_viewport") )
+( !qstrcmp(w->parent()->objectName(), "qt_viewport") || \
+  !qstrcmp(w->parent()->objectName(), "qt_clipped_viewport") )
 
 #define _HighContrastColor(c) (qGray(c.rgb()) < 128 ) ? Qt::white : Qt::black
 
 #define _BLOCKEVENTS_(obj) obj->installEventFilter(eventKiller)
 #define _UNBLOCKEVENTS_(obj) obj->removeEventFilter(eventKiller)
 
-#define _IsTabStack(w) !qstrcmp( w->name(), "qt_tabwidget_stackedwidget" )
+#define _IsTabStack(w) !qstrcmp( w->objectName(), "qt_tabwidget_stackedwidget" )
 /**=========================================================*/
 
 
@@ -1132,7 +1132,7 @@ void OxygenStyle::polish( QWidget * widget)
    if (widget->autoFillBackground() &&
        // dad
        widget->parentWidget() &&
-       !qstrcmp( widget->parentWidget()->name(), "qt_scrollarea_viewport" ) &&
+       !qstrcmp( widget->parentWidget()->objectName(), "qt_scrollarea_viewport" ) &&
        //grampa
        widget->parentWidget()->parentWidget() &&
        qobject_cast<QAbstractScrollArea*>(widget->parentWidget()->parentWidget()) &&

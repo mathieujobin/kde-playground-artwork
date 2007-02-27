@@ -195,7 +195,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             {
                fillWithMask(painter, RECT,
                             gradient(COLOR(Window).dark(110), RECT.height(), Qt::Vertical, GradSunken), &masks.tab);
-               shadows.lineEdit.render(RECT, painter);
+//                shadows.lineEdit.render(RECT, painter);
             }
          }
          if ((cmb->subControls & SC_ComboBoxArrow) &&
@@ -205,10 +205,8 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             QStyleOptionComboBox tmpOpt = *cmb;
             hover = hover && (cmb->activeSubControls == SC_ComboBoxArrow);
             QRect ar;
-            if (!config.HAL9000 || !cmb->editable)
+            if (!cmb->editable)
             {
-               if (cmb->editable)
-                  tmpOpt.state &= (~State_HasFocus);
                ar = subControlRect(CC_ComboBox, &tmpOpt, SC_ComboBoxArrow, widget);
                tmpOpt.rect =  ar;
                if (!hover)
