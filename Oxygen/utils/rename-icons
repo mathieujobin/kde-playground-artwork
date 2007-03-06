@@ -23,7 +23,7 @@ for line in file:
   (category, new, old) = line.split("\t")
   if new == "none":
     new = old
-  
+
   find = subprocess.Popen(["find", "../Oxygen/theme/", "-name", old+".svg"], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
   output = find.stdout.readline().rstrip("\n")
   small = None
