@@ -1,38 +1,6 @@
 [Icon Theme]
-Name=Oxygen_new
-Name[br]=Oxygen_nevez
-Name[da]=Oxygen_ny
-Name[de]=Oxygen_neu
-Name[es]=Oxygen_nuevo
-Name[gl]=Oxygen_novo
-Name[it]=Oxygen_Nuovo
-Name[nl]=Nieuw_Oxygen
-Name[pt]=Oxygen-novo
-Name[sv]=Ny Oxygen
-Name[tg]=Оксигени_нав
-Name[tr]=Oxygen_yeni
-Name[uk]=Oxygen_новий
-Name[vi]=Oxy_mới
+Name=Oxygen
 Comment=Oxygen Team - 2006
-Comment[ar]=طاقم Oxygen - 2006
-Comment[bg]=Екипът на Oxygen - 2006
-Comment[br]=Skipailh Oxygen - 2006
-Comment[da]=Oxygen-holdet, 2006
-Comment[el]=Η ομάδα Oxygen - 2006
-Comment[es]=Equipo de Oxygen - 2006
-Comment[et]=Oxygeni meeskond - 2006
-Comment[ga]=Foireann Oxygen - 2006
-Comment[gl]=A equipa de Oxygen - 2006
-Comment[it]=La squadra di Oxygen - 2006
-Comment[ka]=გუნდი Oxygen - 2006
-Comment[nl]=Oxygen-team - 2006
-Comment[pt]=Equipa do Oxygen - 2006
-Comment[sk]=Oxygen tím - 2006
-Comment[sv]=Oxygen-gruppen, 2006
-Comment[tg]=Командаи Оксиген - 2006
-Comment[tr]=Oxygen Takımı - 2006
-Comment[uk]=Команда Oxygen - 2006
-Comment[vi]=Nhóm Oxy - 2006
 DisplayDepth=32
 
 Inherits=hicolor
@@ -52,7 +20,7 @@ SmallDefault=16
 SmallSizes=16
 PanelDefault=32
 PanelSizes=16,22,32,48,64,128
-Directories=16x16/actions,16x16/apps,16x16/devices,16x16/filesystems,16x16/mimetypes,22x22/actions,22x22/apps,22x22/filesystems,22x22/mimetypes,32x32/actions,32x32/apps,32x32/devices,32x32/filesystems,32x32/mimetypes,48x48/actions,48x48/apps,48x48/devices,48x48/filesystems,48x48/mimetypes,64x64/actions,64x64/apps,64x64/devices,64x64/filesystems,64x64/mimetypes,128x128/actions,128x128/apps,128x128/devices,128x128/filesystems,128x128/mimetypes
+Directories=16x16/actions,16x16/apps,16x16/devices,16x16/placess,16x16/mimetypes,22x22/actions,22x22/apps,22x22/placess,22x22/mimetypes,32x32/actions,32x32/apps,32x32/devices,32x32/placess,32x32/mimetypes,48x48/actions,48x48/apps,48x48/devices,48x48/placess,48x48/mimetypes,64x64/actions,64x64/apps,64x64/devices,64x64/placess,64x64/mimetypes,128x128/actions,128x128/apps,128x128/devices,128x128/placess,128x128/mimetypes
 [16x16/actions]
 Size=16
 Context=Actions
@@ -65,9 +33,9 @@ Type=Threshold
 Size=16
 Context=Devices
 Type=Threshold
-[16x16/filesystems]
+[16x16/placess]
 Size=16
-Context=FileSystems
+Context=Places
 Type=Threshold
 [16x16/mimetypes]
 Size=16
@@ -81,9 +49,9 @@ Type=Threshold
 Size=22
 Context=Applications
 Type=Threshold
-[22x22/filesystems]
+[22x22/placess]
 Size=22
-Context=FileSystems
+Context=Places
 Type=Threshold
 [22x22/mimetypes]
 Size=22
@@ -101,9 +69,9 @@ Type=Threshold
 Size=32
 Context=Devices
 Type=Threshold
-[32x32/filesystems]
+[32x32/placess]
 Size=32
-Context=FileSystems
+Context=Places
 Type=Threshold
 [32x32/mimetypes]
 Size=32
@@ -121,9 +89,9 @@ Type=Threshold
 Size=48
 Context=Devices
 Type=Threshold
-[48x48/filesystems]
+[48x48/placess]
 Size=48
-Context=FileSystems
+Context=Places
 Type=Threshold
 [48x48/mimetypes]
 Size=48
@@ -141,9 +109,9 @@ Type=Threshold
 Size=64
 Context=Devices
 Type=Threshold
-[64x64/filesystems]
+[64x64/placess]
 Size=64
-Context=FileSystems
+Context=Places
 Type=Threshold
 [64x64/mimetypes]
 Size=64
@@ -161,9 +129,9 @@ Type=Threshold
 Size=128
 Context=Devices
 Type=Threshold
-[128x128/filesystems]
+[128x128/placess]
 Size=128
-Context=FileSystems
+Context=Places
 Type=Threshold
 [128x128/mimetypes]
 Size=128
