@@ -1126,75 +1126,35 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       if (const QStyleOptionSlider *opt =
             qstyleoption_cast<const QStyleOptionSlider *>(option))
       {
-         drawPrimitive(PE_PanelButtonBevel, option, painter, widget);
-         if (!isEnabled)
-            break;
-         PrimitiveElement arrow = (PrimitiveElement)0;
-         if (option->state & QStyle::State_Horizontal)
-         {
-            if (element == CE_ScrollBarAddLine && opt->sliderValue < opt->maximum)
-               arrow = (option->direction == Qt::RightToLeft) ? PE_IndicatorArrowLeft : PE_IndicatorArrowRight;
-            else if (element == CE_ScrollBarSubLine && opt->sliderValue > opt->minimum)
-               arrow = (option->direction == Qt::RightToLeft) ? PE_IndicatorArrowRight : PE_IndicatorArrowLeft;
-         }
-         else
-         {
-            if (element == CE_ScrollBarAddLine && opt->sliderValue < opt->maximum)
-               arrow = PE_IndicatorArrowDown;
-            else if (element == CE_ScrollBarSubLine && opt->sliderValue > opt->minimum)
-               arrow = PE_IndicatorArrowUp;
-         }
-         if (!arrow)
-            break;
-         painter->save();
-         if (hover)
-            painter->setPen(COLOR(ButtonText));
-         else
-            painter->setPen(midColor(COLOR(Button), COLOR(ButtonText), 1, 2));
-         QStyleOption tmpOpt = *option;
-         tmpOpt.rect.adjust(RECT.width()/3,RECT.height()/3,-RECT.width()/3,-RECT.height()/3);
-         drawPrimitive(arrow, &tmpOpt, painter, widget);
-         painter->restore();
+         QPoint xy = RECT.topLeft();
+         painter->drawPixmap(xy, shadows.radio[isEnabled]);
+         xy += QPoint(dpi.$2,dpi.$1);
+         int sz = dpi.ExclusiveIndicator - dpi.$4;
+         GradientType gt = GradSunken;
+         if (!sunken && isEnabled &&
+             ((element == CE_ScrollBarAddLine && opt->sliderValue < opt->maximum) ||
+              (element == CE_ScrollBarSubLine && opt->sliderValue > opt->minimum)))
+            gt = hover ? GradGloss : GradButton;
+         fillWithMask(painter, xy, gradient(COLOR(Button), sz, Qt::Vertical, gt), masks.radio);
          break;
       }
+   case CE_ScrollBarSubPage: // Scroll bar page decrease indicator (i.e., page up).
    case CE_ScrollBarAddPage: // Scolllbar page increase indicator (i.e., page down).
    {
-      Qt::Orientation direction; int size; QRect r; Tile::PosFlags pf = 0;
+      Qt::Orientation direction; int size, c; QRect r;
       if (option->state & QStyle::State_Horizontal)
       {
-         pf = Tile::Right | Tile::Top | Tile::Bottom;
          r = RECT.adjusted(0,RECT.height()/3,0,-RECT.height()/3);
          size = r.height(); direction = Qt::Vertical;
+         c = r.y()+r.height()/2;
       }
       else
       {
-         pf = Tile::Right | Tile::Right | Tile::Bottom;
-         r = RECT.adjusted(RECT.width()/3,0,-RECT.width()/3,0);
+         r = RECT.adjusted(RECT.width()/3+dpi.$1,0,-RECT.width()/3+dpi.$1,0);
          size = r.width(); direction = Qt::Horizontal;
+         c = r.x()+r.width()/2;
       }
       painter->drawTiledPixmap(r, gradient(COLOR(Window), size, direction, GradSunken));
-      break;
-   }
-   case CE_ScrollBarSubPage: // Scroll bar page decrease indicator (i.e., page up).
-   {
-      Qt::Orientation direction; int size; QRect r, ir; Tile::PosFlags pf = 0;
-      if (option->state & QStyle::State_Horizontal)
-      {
-         pf = Tile::Left | Tile::Top | Tile::Bottom;
-         r = RECT.adjusted(0,RECT.height()/3,0,-RECT.height()/3);
-         ir = r.adjusted(dpi.$2,dpi.$1,0,-dpi.$2);
-         size = r.height(); direction = Qt::Vertical;
-      }
-      else
-      {
-         pf = Tile::Left | Tile::Right | Tile::Top;
-         r = RECT.adjusted(RECT.width()/3,0,-RECT.width()/3,0);
-         ir = r.adjusted(dpi.$2,dpi.$1,-dpi.$2,0);
-         size = r.width(); direction = Qt::Horizontal;
-      }
-      shadows.button[isEnabled].render(r, painter, pf);
-      QColor c = (sunken || hover) ? COLOR(Highlight) : COLOR(ButtonText);
-      fillWithMask(painter, ir, gradient(c, size-dpi.$3, direction, GradGloss), &masks.button, pf);
       break;
    }
    case CE_ScrollBarSlider: // Scroll bar slider.
@@ -1229,24 +1189,23 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          else {
             size = r.width(); direction = Qt::Horizontal;
          }
-         QColor c = (sunken || hover || scrollAreaHovered(widget)) ? COLOR(ButtonText) : COLOR(Button);
-         fillWithMask(painter, r, gradient(c, size, direction, GradGloss), &masks.button);
-         if (hover || sunken)
+         fillWithMask(painter, r, gradient(COLOR(Button), size, direction, GradGloss), &masks.button);
+         if (hover || sunken || scrollAreaHovered(widget))
          {
             int dx, dy, off = sunken?dpi.$1:0;
             if (option->state & QStyle::State_Horizontal)
             {
                dx = r.width()/10+dpi.$1; dy = r.height()/3;
-               r.adjust(dx,dy-off,-dx,-dy-off);
+               r.adjust(dx,dy+off,-dx,-dy+off);
                size = r.height();
             }
             else
             {
                dx = r.width()/3; dy = r.height()/10+dpi.$1;
-               r.adjust(dx-off,dy,-dx-off,-dy);
+               r.adjust(dx+off,dy,-dx+off,-dy);
                size = r.width();
             }
-            painter->drawTiledPixmap(r, gradient(COLOR(Highlight), size, direction, sunken?GradSunken:GradGloss));
+            painter->drawTiledPixmap(r, gradient((hover||Sunken)?COLOR(Highlight):COLOR(ButtonText), size, direction, sunken?GradSunken:GradGloss));
          }
       }
       break;

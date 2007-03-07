@@ -387,7 +387,7 @@ void OxygenStyle::initMetrics()
    dpi.$18 = SCALE(18); dpi.$32 = SCALE(32);
    dpi.$80 = SCALE(80);
    
-   dpi.ScrollBarExtent = SCALE(19);
+   dpi.ScrollBarExtent = SCALE(20);
    dpi.ScrollBarSliderMin = SCALE(40);
    dpi.SliderThickness = SCALE(24);
    dpi.SliderControl = SCALE(17);
