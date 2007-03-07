@@ -29,12 +29,14 @@ class QScrollBar;
 class QTabBar;
 class DynamicBrush;
 class QPaintEvent;
+class QFrame;
 
 #include <QHash>
 #include <QMap>
 #include <QCommonStyle>
 #include <QBitmap>
 #include <QRegion>
+#include <QWidget>
 #include <X11/Xlib.h>
 #include <fixx11h.h>
 #include "tileset.h"
@@ -116,6 +118,30 @@ typedef struct Config
    int checkType;
 } Config;
 
+class VisualFrame : public QWidget
+{
+   Q_OBJECT
+public:
+   VisualFrame(QFrame *parent, int top = 0, int left = 0, int right = 0, int bottom = 0);
+   bool eventFilter ( QObject * o, QEvent * ev );
+   void paintEvent ( QPaintEvent * event );
+// protected:
+//    void dragEnterEvent ( QDragEnterEvent * event ) { passDownEvent(event); }
+//    void dragLeaveEvent ( QDragLeaveEvent * event ) { passDownEvent(event); }
+//    void dragMoveEvent ( QDragMoveEvent * event ) { passDownEvent(event); }
+//    void dropEvent ( QDropEvent * event ) { passDownEvent(event); }
+//    void enterEvent ( QEvent * event ) { passDownEvent(event); }
+//    void leaveEvent ( QEvent * event ) { passDownEvent(event); }
+//    void mouseDoubleClickEvent ( QMouseEvent * event ) { passDownEvent(event); }
+//    void mouseMoveEvent ( QMouseEvent * event ) { passDownEvent(event); }
+//    void mousePressEvent ( QMouseEvent * event ) { passDownEvent(event); }
+//    void mouseReleaseEvent ( QMouseEvent * event ) { passDownEvent(event); }
+//    void wheelEvent ( QWheelEvent * event ) { passDownEvent(event); }
+private:
+//    void passDownEvent(QEvent *ev);
+   int off[4];
+};
+
 class OxygenStyle : public QCommonStyle
 {
    Q_OBJECT
@@ -191,10 +217,10 @@ private slots:
 private:
    OxygenStyle( const OxygenStyle & );
    OxygenStyle& operator=( const OxygenStyle & );
-   void renderFrame( QPainter *p, const QRect &r, Orientation3D o3D, Tile::PosFlags pf, const QWidget *widget = 0L, bool highlighted = false, bool round = false) const;
    const QPixmap &gradient(const QColor &c, int size, Qt::Orientation o, GradientType type = GradSimple) const;
    const QPixmap &btnAmbient(int height) const;
-   void fillWithMask(QPainter *painter, const QRect &rect, const QBrush &brush, const Tile::Mask *mask, Tile::PosFlags pf = Tile::Full, bool justClip = false, QPoint offset = QPoint()) const;
+   const QPixmap &tabShadow(int height) const;
+   void fillWithMask(QPainter *painter, const QRect &rect, const QBrush &brush, const Tile::Mask *mask, Tile::PosFlags pf = Tile::Full, bool justClip = false, QPoint offset = QPoint(), bool inverse = false, const QRect *outerRect = 0L) const;
    void fillWithMask(QPainter *painter, const QPoint &xy, const QPixmap &pix, const QPixmap &mask, QPoint offset = QPoint()) const;
    QColor mapFadeColor(const QColor &color, int index) const;
    void fadeIn(QPushButton *button);
@@ -216,9 +242,9 @@ private:
    } masks;
    struct
    {
-      Tile::Set button[2], tab, sunken, group, lineEdit, raised;
+      Tile::Set button[2], tab, sunken, group, lineEdit[2], raised, relief;
       QPixmap radio[2];
-      Tile::Line line;
+      Tile::Line line[2][3];
    } shadows;
    struct
    {
@@ -233,7 +259,7 @@ private:
    QPixmap *_scanlines[2];
    // cache
    PixmapCache gradients[2][NumGrads];
-   PixmapCache _btnAmbient;
+   PixmapCache _btnAmbient, _tabShadow;
    TileCache glowCache;
    TileCache roundGlowCache;
 

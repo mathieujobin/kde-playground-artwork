@@ -68,64 +68,64 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
    {
       int $1 = dpi.$1, $2 = dpi.$2;
       const QStyleOptionButton *opt = qstyleoption_cast<const QStyleOptionButton*>(option);
-//       bool isIconButton = opt && opt->text.isEmpty() && !opt->icon.isNull();
       bool isOn = option->state & State_On;
       bool isDefault = opt && (opt->features & QStyleOptionButton::DefaultButton);
-      GradientType gt = !isEnabled ? GradButtonDisabled : (sunken ? GradSunken : (hover ? GradGloss : GradButton));
-//       QRect shadowRect = isEnabled ? RECT : RECT.adjusted($2,$1,-$2,-$1);
+      GradientType gt = GradButton;
+      if (!isEnabled) gt = GradButtonDisabled;
+      else if (sunken) gt = GradSunken;
+      else if (hover) gt = GradGloss;
+      else if (isDefault) gt = GradSimple;
       
-      QColor c = btnBgColor(PAL, isEnabled, hasFocus);
+      QColor c = btnBgColor(PAL, isEnabled, hasFocus, isDefault);
 
       shadows.button[isEnabled].render(RECT, painter, Tile::Ring);
       QRect ir = RECT.adjusted($2,$1,-$2,-dpi.$3);
       fillWithMask(painter, ir, gradient(c, ir.height(), Qt::Vertical, gt), &masks.button);
       frames.button[isEnabled].render(ir,painter,Tile::Ring);
-      painter->drawPixmap(ir.right()-16*ir.height()/9,ir.y(), btnAmbient(ir.height()));
+//       painter->drawPixmap(ir.right()-16*ir.height()/9,ir.y(), btnAmbient(ir.height()));
       int off = ir.width()/6;
       lights.top.render(ir.adjusted(off,0,-off,0),painter,Tile::Left|Tile::Center|Tile::Right);
       break;
    }
    case PE_PanelButtonTool: // Panel for a Tool button, used with QToolButton.
    {
-      if (sunken || (option->state & QStyle::State_On))
+      if (sunken || (option->state & State_On))
       {
          if (sunken) hover = false;
-         const QPixmap *fill = &gradient(COLOR(Window),RECT.height(),Qt::Vertical, hover ? GradSimple : GradSunken);
-         fillWithMask(painter, RECT, *fill, &masks.round[Sunken]);
-         renderFrame( painter, RECT, Sunken, Tile::Ring, widget, hasFocus, true );
+         fillWithMask(painter, RECT, gradient(COLOR(Window),RECT.height(),Qt::Vertical, hover ? GradButton : GradSunken), &masks.button);
+         shadows.lineEdit[1].render(RECT, painter);
       }
       else if (hover)
-         renderFrame( painter, RECT, Relief, Tile::Ring, widget, hasFocus, true );
+      {
+         fillWithMask(painter, RECT.adjusted(dpi.$2,dpi.$1,-dpi.$2,0), gradient(COLOR(Window), RECT.height(), Qt::Vertical, GradButton), &masks.button);
+         shadows.group.render(RECT, painter, Tile::Ring);
+      }
       break;
    }
    case PE_PanelLineEdit: // Panel for a QLineEdit.
    {
-      QColor c = hasFocus ? midColor(COLOR(Base), COLOR(Highlight), 6, 1) : COLOR(Base);
-      if (const QLineEdit* le = qobject_cast<const QLineEdit*>(widget))
+      // spinboxes and combos allready have a lineedit as global frame
+      if (widget && widget->parentWidget() &&
+          (widget->parentWidget()->inherits("QSpinBox") ||
+           widget->parentWidget()->inherits("QComboBox")))
+         break;
+      if (qstyleoption_cast<const QStyleOptionFrame *>(option) &&
+          static_cast<const QStyleOptionFrame *>(option)->lineWidth < 1)
       {
-         // spinboxes allready have a lineedit as global frame
-         if (widget->parentWidget() && 
-             (widget->parentWidget()->inherits("QSpinBox") ||
-              widget->parentWidget()->inherits("QComboBox")))
-            break;
-         // no frame, so don't paint one
-         if (!le->hasFrame()) {
-            painter->fillRect(RECT, c); break;
-         }
+         painter->fillRect(RECT, COLOR(Base)); break;
       }
-      fillWithMask(painter, RECT, c, &masks.button);
-      shadows.lineEdit.render(RECT, painter);
-//       if (hasFocus)
-//          masks.button.outline(RECT.adjusted(1,1,-1,0), painter, COLOR(Highlight));
+      QRect rect = RECT.adjusted(0,0,0,-dpi.$2);
+      fillWithMask(painter, rect, hasFocus?midColor(COLOR(Base),COLOR(Highlight),20,1):COLOR(Base), &masks.button);
+      shadows.lineEdit[isEnabled].render(rect, painter);
+      break;
    }
    case PE_FrameFocusRect: // Generic focus indicator.
    {
-      QPen pen = painter->pen();
-      QPen oldPen = pen;
-      pen.setStyle(Qt::DashDotLine);
-      pen.setColor(PAL.color(QPalette::Highlight));
-      painter->setPen(pen);
-      painter->setPen(oldPen);
+      painter->save();
+      painter->setBrush(Qt::NoBrush);
+      painter->setPen(COLOR(Highlight));
+      painter->drawRect(RECT.adjusted(0,0,-1,-1));
+      painter->restore();
       break;
    }
    case PE_IndicatorArrowUp: // Generic Up arrow.
@@ -214,7 +214,10 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
    }
    case PE_IndicatorCheckBox: // On/off indicator, for example, a QCheckBox.
    {
-      GradientType gt = !isEnabled ? GradButtonDisabled : (sunken ? GradSunken : (hover ? GradGloss : GradButton));
+      GradientType gt = GradButton;
+      if (!isEnabled) gt = GradButtonDisabled;
+      else if (sunken) gt = GradSunken;
+      else if (hover) gt = GradGloss;
 
       int $2 = dpi.$2; int $1 = dpi.$1;
 
@@ -224,6 +227,8 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       
       QRect ir = RECT.adjusted($2,dpi.$1,-$2,-dpi.$3);
       fillWithMask(painter, ir, gradient(c, ir.height(), Qt::Vertical, gt), &masks.button);
+//       if (hasFocus)
+//          masks.button.outline(ir, painter, COLOR(Highlight));
       frames.button[isEnabled].render(ir,painter,Tile::Ring);
       
       if (!(sunken || (option->state & State_Off)))
@@ -261,7 +266,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          painter->setPen(oldPen);
          painter->setRenderHint(QPainter::Antialiasing, hadAntiAlias);
       }
-      painter->drawPixmap(ir.right()-16*ir.height()/9,ir.y(), btnAmbient(ir.height()));
+//       painter->drawPixmap(ir.right()-16*ir.height()/9,ir.y(), btnAmbient(ir.height()));
       break;
    }
    case PE_IndicatorRadioButton: // Exclusive on/off indicator, for example, a QRadioButton.
@@ -277,15 +282,25 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       painter->drawPixmap(xy, shadows.radio[isEnabled]);
       
       xy += QPoint($2,dpi.$1);
-      fillWithMask(painter, xy, gradient(c, RECT.height()-dpi.$4, Qt::Vertical, gt), masks.radio);
+      int sz = dpi.ExclusiveIndicator - dpi.$4;
+      fillWithMask(painter, xy, gradient(c, sz, Qt::Vertical, gt), masks.radio);
+//       if (hasFocus)
+//       {
+//          painter->save();
+//          painter->setPen(COLOR(Highlight)); painter->setBrush(Qt::NoBrush);
+//          painter->setRenderHint(QPainter::Antialiasing);
+//          painter->drawEllipse(xy.x(), xy.y(), sz, sz);
+//          painter->restore();
+//       }
       xy += QPoint($2,$2);
+      sz -= dpi.$4;
       if (isEnabled)
-         fillWithMask(painter, xy, gradient(c, RECT.height()-dpi.$8, Qt::Vertical, GradSunken), masks.radioGroove);
+         fillWithMask(painter, xy, gradient(c, sz, Qt::Vertical, GradSunken), masks.radioGroove);
       if (isOn)
       {
          QColor c = btnFgColor(PAL, isEnabled, hasFocus);
          xy += QPoint($2,$2);
-         fillWithMask(painter, xy, gradient(c, RECT.height()-dpi.$8, Qt::Vertical, GradRadialGloss), masks.radioIndicator);
+         fillWithMask(painter, xy, gradient(c, sz, Qt::Vertical, GradRadialGloss), masks.radioIndicator);
       }
       break;
    }
@@ -306,55 +321,49 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          painter->setPen(oldPen);
          break;
       }
-      Tile::Mask *mask = 0; QWidget *viewport = 0;
-      
-      bool useLineEdit = false;
-      if (widget) // scan whether we want to use the lineEdit frame
+      bool paintFrame = false;
+      if (widget && qobject_cast<const QFrame*>(widget))
       {
-         if (qobject_cast<const QAbstractScrollArea*>(widget) &&
-             (widget->inherits("QAbstractItemView") || widget->inherits("QTextEdit")))
-         {
-            viewport = static_cast<const QAbstractScrollArea*>(widget)->viewport();
-            useLineEdit = true;
+         if (widget->inherits("QTextEdit")) {
+            fillWithMask(painter, RECT, COLOR(Base), &masks.button);
+            paintFrame = true;
          }
-         else if (widget->layout() && widget->layout()->margin() > 0)
-            useLineEdit = true;
-         else if (const QLabel* label = qobject_cast<const QLabel*>(widget))
-            useLineEdit = (label->text() != QString());
+         else {
+            if (const QLabel* label = qobject_cast<const QLabel*>(widget))
+               if (label->text() != QString() && label->margin() < dpi.$3)
+                  const_cast<QLabel*>(label)->setMargin(dpi.$3);
+            break; // painted on visual frame
+         }
       }
-      
-      if (sunken)
+      if (paintFrame || (widget && qobject_cast<const VisualFrame*>(widget)))
       {
-         mask = const_cast<Tile::Mask *>(&masks.button);
-         if (viewport && viewport->autoFillBackground())
-            fillWithMask(painter, RECT, viewport->palette().color(viewport->backgroundRole()), mask, Tile::Ring);
-         if (useLineEdit)
+         QPoint zero(0,0);
+         zero = widget->mapTo(widget->topLevelWidget(), QPoint(0,0));
+         const QBrush &brush = PAL.brush(widget->backgroundRole());
+         if (sunken)
          {
-            if (hasFocus)
-               mask->outline(RECT.adjusted(dpi.$1,dpi.$1,-dpi.$1,-dpi.$1), painter, COLOR(Highlight));
-            shadows.lineEdit.render(RECT,painter);
+            fillWithMask(painter, RECT, brush, &masks.button, Tile::Full, false, zero, true);
+            shadows.lineEdit[isEnabled].render(RECT,painter);
+         }
+         else if (option->state & State_Raised)
+         {
+            QRect ir = RECT.adjusted(dpi.$2,dpi.$1,-dpi.$2,-dpi.$4);
+            fillWithMask(painter, ir, brush, &masks.tab, Tile::Full, false, zero, true, &RECT);
+            shadows.tab.render(RECT,painter);
          }
          else
          {
-            if (hasFocus)
-            {
-               painter->save(); QPen pen = painter->pen();
-               pen.setWidth(dpi.$2); pen.setColor(COLOR(Highlight));
-               painter->setPen(pen); painter->setBrush(Qt::NoBrush);
-               painter->drawRect(RECT.adjusted(dpi.$3,dpi.$3,-dpi.$3,-dpi.$3));
-               painter->restore();
-            }
-            shadows.sunken.render(RECT,painter);
+            QRect ir = RECT.adjusted(dpi.$2,dpi.$2,-dpi.$2,-dpi.$2);
+            fillWithMask(painter, ir, brush, &masks.button, Tile::Full, false, zero, true, &RECT);
+            shadows.relief.render(RECT,painter);
          }
       }
-      else if (option->state & QStyle::State_Raised)
+      else
       {
-         mask = const_cast<Tile::Mask *>(&masks.tab);
-         if (viewport && viewport->autoFillBackground())
-            fillWithMask(painter, RECT.adjusted(dpi.$2,dpi.$1,-dpi.$2,-dpi.$4), viewport->palette().color(viewport->backgroundRole()), mask, Tile::Ring);
-         if (hasFocus)
-            mask->outline(RECT.adjusted(dpi.$1,dpi.$1,-dpi.$1,-dpi.$3), painter, COLOR(Highlight));
-         shadows.tab.render(RECT,painter);
+         if (sunken)
+            shadows.sunken.render(RECT,painter);
+//          else if (option->state & State_Raised)
+//             shadows.raised.render(RECT,painter);
       }
       break;
    }
@@ -378,7 +387,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       if (const QStyleOptionTabWidgetFrame *twf =
           qstyleoption_cast<const QStyleOptionTabWidgetFrame *>(option))
       {
-         QRect rect(RECT);
+         QRect rect(RECT), tabRect(RECT);
          int baseHeight = pixelMetric( PM_TabBarBaseHeight, option, widget )-1;
          int offset = 8;
          Qt::Orientation o = Qt::Vertical;
@@ -390,12 +399,14 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
             rect.adjust(offset,0,-offset,0);
             rect.setHeight(baseHeight);
             pf = Tile::Left | Tile::Right | Tile::Top;
+            tabRect.setTop(tabRect.top()+(baseHeight-dpi.$1));
             break;
          case QTabBar::RoundedSouth:
          case QTabBar::TriangularSouth:
             rect.adjust(offset,0,-offset,0);
             rect.setTop(rect.bottom()-baseHeight);
             pf = Tile::Left | Tile::Right | Tile::Bottom;
+            tabRect.setBottom(tabRect.bottom()-(baseHeight-dpi.$1));
             break;
          case QTabBar::RoundedEast:
          case QTabBar::TriangularEast:
@@ -403,6 +414,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
             rect.setLeft(rect.right()-baseHeight);
             pf = Tile::Top | Tile::Right | Tile::Bottom;
             o = Qt::Horizontal;
+            tabRect.setRight(tabRect.right()-(baseHeight-dpi.$1));
             break;
          case QTabBar::RoundedWest:
          case QTabBar::TriangularWest:
@@ -410,41 +422,36 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
             rect.setWidth(baseHeight);
             pf = Tile::Top | Tile::Left | Tile::Bottom;
             o = Qt::Horizontal;
+            tabRect.setLeft(tabRect.left()+(baseHeight-dpi.$1));
             break;
          }
          shadows.tab.render(rect, painter, pf);
-         fillWithMask(painter, rect.adjusted(2,1,-2,0), gradient(hasFocus?COLOR(Highlight):COLOR(WindowText),
-            baseHeight, o, GradGloss), &masks.tab, pf | Tile::Center);
-         rect = RECT.adjusted(0,baseHeight-1,0,0);
-         shadows.tab.render(rect, painter, Tile::Ring);
+         rect.adjust(dpi.$3,dpi.$2,-dpi.$3,0);
+         fillWithMask(painter, rect, gradient(COLOR(WindowText), baseHeight, o, GradGloss), &masks.tab, pf | Tile::Center);
+         masks.tab.outline(rect, painter, COLOR(WindowText).dark(110), pf);
+         shadows.tab.render(tabRect, painter, Tile::Ring);
       }
       break;
    case PE_FrameLineEdit: // Panel frame for line edits.
-      shadows.lineEdit.render(RECT,painter);
-//       if (hasFocus)
-//          masks.button.outline(RECT.adjusted(1,1,-1,0), painter, COLOR(Highlight));
+      shadows.lineEdit[isEnabled].render(RECT.adjusted(0,0,0,-dpi.$2),painter);
    case PE_FrameGroupBox: // Panel frame around group boxes.
    {
-      int darkness = 5; // compromise ;) - shouldn't happen anyway
-      if (widget)
-      {
-         // find proper color value for the bottom (because of out general gradient)
-         // 0% -> darkness = 0, 100% -> darkness = 10
-         // we could also simply create a gradient into translucent - but that can get slow... :(
-         QWidget *tlw = widget->topLevelWidget();
-         QPoint zero(0,0); zero = widget->mapTo(tlw, zero);
-         darkness = (10*(zero.y()+widget->height()))/tlw->height();
-//          if (zero.x()+widget->width()-tlw->width()/2 > tlw->width()/2-zero.x())
-//          darkness = (darkness*(tlw->width()-zero.x()))/(zero.x()+widget->width());
-//          qWarning("%d", darkness);
-      }
+//       int darkness = 5; // compromise ;) - shouldn't happen anyway
+//       if (widget)
+//       {
+//          // find proper color value for the bottom (because of out general gradient)
+//          // 0% -> darkness = 0, 100% -> darkness = 10
+//          // we could also simply create a gradient into translucent - but that can get slow... :(
+//          QWidget *tlw = widget->topLevelWidget();
+//          QPoint zero(0,0); zero = widget->mapTo(tlw, zero);
+//          darkness = (10*(zero.y()+widget->height()))/tlw->height();
+//       }
       QRect rect = RECT.adjusted(dpi.$4,dpi.$2,-dpi.$4,-dpi.$32);
-      QColor c = COLOR(Window).dark(100+darkness);
+      QColor c = COLOR(Window);
       fillWithMask(painter, rect, gradient(c, rect.height(), Qt::Vertical, GradGroup), &masks.button,
                    Tile::Left|Tile::Top|Tile::Right);
       rect = RECT.adjusted(dpi.$4,0,-dpi.$4,0); rect.setTop(rect.bottom()-dpi.$32+dpi.$1);
       painter->drawTiledPixmap(rect, gradient(c, rect.height(), Qt::Horizontal, GradGroup));
-// //       rect = RECT; rect.setBottom(rect.bottom()-rect.height()/6);
       shadows.group.render(RECT, painter, Tile::Ring);
       break;
    }

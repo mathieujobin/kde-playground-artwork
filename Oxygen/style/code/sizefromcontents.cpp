@@ -45,7 +45,21 @@ QSize OxygenStyle::sizeFromContents ( ContentsType ct, const QStyleOption * opti
 //    case CT_DialogButtons: //
 //       return QSize((contentsSize.width()+16 < 80) ? 80 : contentsSize.width()+16, contentsSize.height()+10);
 //    case CT_Q3DockWindow: //  
-//    case CT_HeaderSection: // A header section, like QHeader
+   case CT_HeaderSection: // A header section, like QHeader
+      if (const QStyleOptionHeader *hdr =
+          qstyleoption_cast<const QStyleOptionHeader *>(option))
+      {
+         QSize sz;
+         int margin = dpi.$2;
+         int iconSize = hdr->icon.isNull() ? 0 : pixelMetric(QStyle::PM_SmallIconSize, hdr, widget);
+         QSize txt = hdr->fontMetrics.size(0, hdr->text);
+         sz.setHeight(qMax(iconSize, txt.height()) + dpi.$4);
+         sz.setWidth((iconSize?margin+iconSize:0) +
+                     (hdr->text.isNull()?0:margin+txt.width()) +
+                     ((hdr->sortIndicator == QStyleOptionHeader::None)?0:margin+8*option->rect.height()/5) +
+                     margin);
+         return sz;
+      }
    case CT_LineEdit: // A line edit, like QLineEdit
       return contentsSize + QSize(dpi.$4,dpi.$5);
    case CT_MenuBarItem: // A menu bar item, like the buttons in a QMenuBar
@@ -114,15 +128,20 @@ QSize OxygenStyle::sizeFromContents ( ContentsType ct, const QStyleOption * opti
    case CT_ScrollBar: // A scroll bar, like QScrollBar
    case CT_SpinBox: // A spin box, like QSpinBox
       return contentsSize;
-      
 //    case CT_Splitter: // A splitter, like QSplitter
    case CT_TabBarTab: // A tab on a tab bar, like QTabBar
       return contentsSize + QSize(dpi.$4,0);
    case CT_TabWidget: // A tab widget, like QTabWidget
       return contentsSize + QSize(dpi.$8,dpi.$10);
    case CT_ToolButton: // A tool button, like QToolButton
+   {
       // get ~goldem mean ratio
-      return QSize(qMax(contentsSize.width()+6, (contentsSize.height()+5)*8/5), contentsSize.height()+5);
+      int w = qMax(contentsSize.width()+dpi.$6, (contentsSize.height()+dpi.$5)*7/5);
+      if (qstyleoption_cast<const QStyleOptionComplex *>(option) &&
+          (static_cast<const QStyleOptionComplex *>(option)->subControls & SC_ToolButtonMenu))
+         w += pixelMetric(PM_MenuButtonIndicator, option, widget) + dpi.$8;
+      return QSize(w, contentsSize.height()+dpi.$5);
+   }
    default: ;
    } // switch
    return QCommonStyle::sizeFromContents( ct, option, contentsSize, widget );

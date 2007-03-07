@@ -80,8 +80,8 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
          case SC_ComboBoxArrow:
             x += wi; wi = (int)((he - 2*margin)/1.1);//1.618
             x -= margin + wi; // golden mean
-            y += margin;
-            ret.setRect(x, y, wi, he - 2*margin);
+//             y += margin;
+            ret.setRect(x, y, wi, he/* - 2*margin*/);
             break;
          case SC_ComboBoxEditField:
             wi -= (int)((he - 2*margin)/1.1) + 3*margin;
@@ -246,7 +246,33 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
       }
       break;
 //    case CC_Slider: // A slider, like QSlider
-//    case CC_ToolButton: // A tool button, like QToolButton
+   case CC_ToolButton: // A tool button, like QToolButton
+      if (const QStyleOptionToolButton *tb =
+          qstyleoption_cast<const QStyleOptionToolButton *>(option))
+      {
+         int mbi = pixelMetric(PM_MenuButtonIndicator, tb, widget);
+         int fw = pixelMetric(PM_DefaultFrameWidth, tb, widget);
+         QRect ret = tb->rect.adjusted(fw,fw,-fw,-fw);
+         switch (subControl)
+         {
+         case SC_ToolButton:
+            if ((tb->features
+               & (QStyleOptionToolButton::Menu | QStyleOptionToolButton::PopupDelay))
+               == QStyleOptionToolButton::Menu)
+               ret.adjust(0, 0, -(mbi+fw), 0);
+            break;
+         case SC_ToolButtonMenu:
+            if ((tb->features
+               & (QStyleOptionToolButton::Menu | QStyleOptionToolButton::PopupDelay))
+               == QStyleOptionToolButton::Menu)
+               ret.adjust(ret.width() - mbi, 0, 0, 0);
+            break;
+         default:
+            break;
+         }
+         return visualRect(tb->direction, tb->rect, ret);
+        }
+        break;
    case CC_TitleBar: // A Title bar, like what is used in Q3Workspace
       if (const QStyleOptionTitleBar *tb =
           qstyleoption_cast<const QStyleOptionTitleBar *>(option))
@@ -490,25 +516,25 @@ QRect OxygenStyle::subElementRect ( SubElement element, const QStyleOption * opt
          QRect r = subElementRect ( SE_TabWidgetTabPane, option, widget);
          QStyleOptionTab tabopt;
          tabopt.shape = twf->shape;
-         const int $2 = dpi.$2;
+         const int margin = dpi.$4;
          int baseHeight = pixelMetric(PM_TabBarBaseHeight, &tabopt, widget);
          switch (twf->shape)
          {
          case QTabBar::RoundedNorth:
          case QTabBar::TriangularNorth:
-            r.adjust($2, $2+baseHeight, -$2, -$2);
+            r.adjust(margin, margin+baseHeight, -margin, -margin);
             break;
          case QTabBar::RoundedSouth:
          case QTabBar::TriangularSouth:
-            r.adjust($2, $2, -$2, -$2-baseHeight);
+            r.adjust(margin, margin, -margin, -margin-baseHeight);
             break;
          case QTabBar::RoundedEast:
          case QTabBar::TriangularEast:
-            r.adjust($2, $2, -$2-baseHeight, -$2);
+            r.adjust(margin, margin, -margin-baseHeight, -margin);
             break;
          case QTabBar::RoundedWest:
          case QTabBar::TriangularWest:
-            r.adjust($2+baseHeight, $2, -$2, -$2);
+            r.adjust(margin+baseHeight, margin, -margin, -margin);
          }
          return r;
       }

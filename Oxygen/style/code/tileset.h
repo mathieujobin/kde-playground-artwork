@@ -33,10 +33,10 @@ namespace Tile
 {
 
    enum Section
-   {
+   { // DON'T CHANGE THE ORDER FOR NO REASON, i misuse them on the masks...
       TopLeft = 0, TopMid, TopRight,
-      BtmLeft, BtmMid, BtmRight,
-      MidLeft, MidMid, MidRight
+      BtmMid, BtmLeft, MidLeft, BtmRight,
+      MidMid, MidRight
    };
    enum Position
    {
@@ -75,7 +75,7 @@ public:
                int dx1, int dy1, int dx2, int dy2, int rx = 0, int ry = 0);
    Mask(){_dx[0] = _dx[1] = _dy[0] = _dy[1] = 0; _hasCorners = false;}
    QRect bounds(const QRect &rect, PosFlags pf = Full) const;
-   const QPixmap &corner(PosFlags pf) const;
+   const QPixmap &corner(PosFlags pf, bool inverse = false) const;
    QRegion clipRegion(const QRect &rect, PosFlags pf = Ring) const;
    inline bool hasCorners() const {return _hasCorners;}
 private:

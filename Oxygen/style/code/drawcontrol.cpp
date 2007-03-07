@@ -125,32 +125,13 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          QStyleOptionButton tmpBtn = *btn;
          if (btn->features & QStyleOptionButton::Flat) // more like a toolbtn
          {
-            if (sunken || (option->state & QStyle::State_On))
-            {
-               if (sunken) hover = false;
-               fillWithMask(painter, RECT, gradient(PAL.color(QPalette::Window),RECT.height(),Qt::Vertical, hover ? GradSimple : GradSunken), &masks.round[Sunken]);
-               renderFrame( painter, RECT, Sunken, Tile::Ring, widget, false, true );
-               if (hasFocus)
-                  renderFrame( painter, RECT, Relief, Tile::Ring, widget, true, true );
-            }
-            else
-            {
-               if (hover)
-                  fillWithMask(painter, RECT, gradient(PAL.color(QPalette::Window),RECT.height(),Qt::Vertical), &masks.round[Relief]);
-               renderFrame( painter, RECT, Relief, Tile::Ring, widget, false, true );
-               if (hasFocus)
-                  renderFrame( painter, RECT, Relief, Tile::Ring, widget, true, true );
-            }
+            //TODO: handle focus indication here (or in the primitive...)!
+            drawPrimitive(PE_PanelButtonTool, option, painter, widget);
          }
          else
-         {
-//             tmpBtn.rect = btn->rect.adjusted(2,2,-2,-2);
-//             if (hasFocus)
-//                renderFrame( painter, RECT, Sunken, Tile::Ring, widget, true, false);
             drawControl(CE_PushButtonBevel, &tmpBtn, painter, widget);
-         }
 //          tmpBtn.rect = subElementRect(SE_PushButtonContents, btn, widget);
-         tmpBtn.rect = btn->rect.adjusted(3,5,-3,-3);
+         tmpBtn.rect = btn->rect.adjusted(dpi.$3,dpi.$5,-dpi.$3,-dpi.$3);
          drawControl(CE_PushButtonLabel, &tmpBtn, painter, widget);
       }
       break;
@@ -190,8 +171,8 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             QPixmap pixmap = btn->icon.pixmap(btn->iconSize, mode, state);
             int pixw = pixmap.width();
             int pixh = pixmap.height();
-                //Center the icon if there is no text
             
+            //Center the icon if there is no text
             QPoint point;
             if (btn->text.isEmpty())
                point = QPoint(ir.x() + ir.width() / 2 - pixw / 2, ir.y() + ir.height() / 2 - pixh / 2);
@@ -221,21 +202,15 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          if (btn->features & QStyleOptionButton::Flat)
             fc = PAL.color(QPalette::WindowText);
          else
-            fc = COLOR(ButtonText);
-//                midColor(PAL.color(QPalette::ButtonText), PAL.color(QPalette::Button));
-/*         {
-            QColor bc = btnBgColor(PAL, isEnabled, hasFocus, hover);
-            fc = btnFgColor(PAL, isEnabled, hasFocus, hover);
-
-            if (qGray(bc.rgb()) < 170) // dark background, let's paint an emboss
-            {
-               painter->setPen(bc.dark(120));
-               ir.moveTop(ir.top()-1);
-               drawItemText(painter, ir, tf, PAL, isEnabled, btn->text);
-               ir.moveTop(ir.top()+1);
-            }
-         }*/
-         if (isDefault)
+            fc = btnFgColor(PAL, isEnabled, hasFocus, isDefault);
+//          if (hasFocus) // dark background, let's paint an emboss
+//          {
+//             painter->setPen(COLOR(Highlight));
+//             ir.moveTop(ir.top()+3);
+//             drawItemText(painter, ir, tf, PAL, isEnabled, btn->text);
+//             ir.moveTop(ir.top()-3);
+//          }
+         if (isDefault || hasFocus)
          {
             QFont tmpFnt = painter->font(); tmpFnt.setBold(true);
             painter->setFont(tmpFnt);
@@ -336,12 +311,30 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       break;
 //    case CE_CheckBoxLabel: // The label (text or pixmap) of a QCheckBox
 //    case CE_RadioButtonLabel: // The label (text or pixmap) of a QRadioButton
-//    case CE_TabBarTab: // The tab and label within a QTabBar
+   case CE_TabBarTab: // The tab and label within a QTabBar
+      if (const QStyleOptionTab *tab =
+          qstyleoption_cast<const QStyleOptionTab *>(option))
+      {
+         bool needRestore = false;
+         if (widget && (RECT.right() > widget->width()))
+         {
+            needRestore = true;
+            painter->save();
+            QRect r = RECT; r.setRight(widget->width()-2*pixelMetric(PM_TabBarScrollButtonWidth,option,widget));
+            painter->setClipRect(r);
+         }
+         drawControl(CE_TabBarTabShape, tab, painter, widget);
+         drawControl(CE_TabBarTabLabel, tab, painter, widget);
+         if (needRestore)
+            painter->restore();
+      }
+      break;
    case CE_TabBarTabShape: // The tab shape within a tab bar
       if (const QStyleOptionTab *tab =
           qstyleoption_cast<const QStyleOptionTab *>(option))
       {
          bool selected = option->state & State_Selected;
+         int $2 = dpi.$2, $4 = dpi.$4, $8 = dpi.$8;
          if (!(hover || selected || sunken))
             break;
          Tile::PosFlags pf = 0; int size = 0; Qt::Orientation o = Qt::Vertical;
@@ -351,60 +344,44 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          case QTabBar::RoundedNorth:
          case QTabBar::TriangularNorth:
             pf = Tile::Top | Tile::Left | Tile::Right;
-            size = RECT.height()-4;
-            rect.setTop(rect.top()+2);
+            size = RECT.height()-$8;
+            rect.setTop(rect.top()+$2);
             break;
          case QTabBar::RoundedSouth:
          case QTabBar::TriangularSouth:
             pf = Tile::Bottom | Tile::Left | Tile::Right;
-            size = RECT.height()-4;
-            rect.setBottom(rect.bottom()-2);
+            size = RECT.height()-$8;
+            rect.setBottom(rect.bottom()-$2);
             break;
          case QTabBar::RoundedEast:
          case QTabBar::TriangularEast:
             pf = Tile::Top | Tile::Bottom | Tile::Right;
-            size = RECT.width()-4;
+            size = RECT.width()-$8;
             o = Qt::Horizontal;
-            rect.setRight(rect.right()-2);
+            rect.setRight(rect.right()-$2);
             break;
          case QTabBar::RoundedWest:
          case QTabBar::TriangularWest:
             pf = Tile::Top | Tile::Bottom | Tile::Left;
-            size = RECT.width()-4;
+            size = RECT.width()-$8;
             o = Qt::Horizontal;
-            rect.setLeft(rect.left()+2);
+            rect.setLeft(rect.left()+$2);
             break;
          }
          if (selected)
          {
             size = (o == Qt::Vertical) ? 2*rect.height() : 2*rect.width();
-            fillWithMask(painter, rect.adjusted(2,1,-2,0),
-                         gradient(COLOR(Window), size, o, GradSimple), &masks.tab, pf | Tile::Center);
+            QPoint zero = RECT.topLeft();
+            if (widget)
+               zero = widget->mapTo(widget->topLevelWidget(), zero);
+            fillWithMask(painter, rect.adjusted($2,dpi.$1,-$2,0), PAL.brush(QPalette::Window), &masks.tab, pf | Tile::Center, false, zero);
             shadows.tab.render(rect, painter, pf);
             break;
          }
          else
          {
-            QPalette::ColorRole role = (widget && widget->parentWidget() && widget->parentWidget()->hasFocus()) ?
-               QPalette::HighlightedText : QPalette::Window;
-            QRect rect = RECT.adjusted(2,4,-2,-4);
-//             if (sunken)
-//             {
-               fillWithMask(painter, rect, gradient(PAL.color(role), size, o, sunken?GradSunken:GradGloss), &masks.button);
-//                break;
-//             }
-            // hover
-//             painter->save();
-//             painter->setRenderHint( QPainter::Antialiasing );
-//             painter->setBrush(PAL.color(role));
-//             painter->setPen(Qt::NoPen);
-//             int rx = 35; int ry = 35;
-//             if (rect.width() > rect.height())
-//                rx = (rx*rect.height())/rect.width();
-//             else
-//                ry = (ry*rect.width())/rect.height();
-//             painter->drawRoundRect(rect, rx, ry);
-//             painter->restore();
+            QRect rect = RECT.adjusted($4,$4,-$4,-$4);
+            fillWithMask(painter, rect, gradient(COLOR(Window), size, o, sunken?GradSunken:GradGloss), &masks.button);
          }
       }
       break;
@@ -417,6 +394,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          QRect tr = tabV2.rect; bool verticalTabs = false;
          bool east = false;
          bool selected = tabV2.state & State_Selected;
+         if (selected) hover = false;
          int alignment = Qt::AlignCenter | Qt::TextShowMnemonic;
          
          switch(tabV2.shape)
@@ -469,58 +447,50 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             tr.setLeft(tr.left() + iconSize.width() + 4);
          }
          // color adjustment
-         QColor cF; QPalette::ColorRole crB;
+         QColor cF, cB;
+
          if (selected)
          {
             QFont tmpFnt = painter->font();
             tmpFnt.setBold(true);
             painter->setFont(tmpFnt);
-            cF = COLOR(WindowText); crB = QPalette::Window;
+            cF = COLOR(WindowText); cB = COLOR(Window);
          }
-         else if (widget && widget->parentWidget() &&
-                  widget->parentWidget()->hasFocus())
-         {
-            if (hover) {
-               cF = COLOR(Highlight); crB = QPalette::HighlightedText;
-            }
-            else {
-               cF = COLOR(HighlightedText); crB = QPalette::Highlight;
-            }
+         else if (hover) {
+            cF = COLOR(WindowText); cB = COLOR(Window);
          }
-         else
-         {
-            if (hover) {
-               cF = COLOR(WindowText); crB = QPalette::Window;
-            }
-            else {
-               cF = COLOR(Window); crB = QPalette::WindowText;
-            }
+         else {
+            cF = COLOR(Window); cB = COLOR(WindowText);
          }
          if (verticalTabs)
          {
             QPixmap pixmap(tr.size());
             pixmap.fill(Qt::transparent);
             QPainter pixPainter(&pixmap);
-            if (qGray(PAL.color(crB).rgb()) < 148) // dark background, let's paint an emboss
+            if (qGray(cB.rgb()) < 148) // dark background, let's paint an emboss
             {
-               pixPainter.setPen(PAL.color(crB).dark(120));
+               pixPainter.setPen(cB.dark(120));
                drawItemText(&pixPainter, pixmap.rect().translated(0,-1), alignment, PAL, isEnabled, tab->text);
             }
             pixPainter.setPen( cF);
             drawItemText(&pixPainter, pixmap.rect(), alignment, PAL, isEnabled, tab->text);
+            if (tab->selectedPosition == QStyleOptionTab::PreviousIsSelected)
+               painter->drawPixmap(-dpi.$2, 0, tabShadow(tr.height()-dpi.$2));
             drawItemPixmap(painter, tr, alignment, pixmap);
          }
          else
          {
-            if (qGray(PAL.color(crB).rgb()) < 148) // dark background, let's paint an emboss
+            if (qGray(cB.rgb()) < 148) // dark background, let's paint an emboss
             {
-               painter->setPen(PAL.color(crB).dark(120));
+               painter->setPen(cB.dark(120));
                tr.moveTop(tr.top()-1);
                drawItemText(painter, tr, alignment, PAL, isEnabled, tab->text);
                tr.moveTop(tr.top()+1);
             }
             painter->setPen(cF);
             drawItemText(painter, tr, alignment, PAL, isEnabled, tab->text);
+            if (tab->selectedPosition == QStyleOptionTab::PreviousIsSelected)
+               painter->drawPixmap(tr.x()-dpi.$2, tr.y(), tabShadow(tr.height()-dpi.$2));
          }
          painter->restore();
       }
@@ -801,7 +771,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             else
             {
                if (hasArrow)
-                  drawArrow(this, toolbutton, RECT, painter, widget);
+                  drawArrow(this, toolbutton, RECT.adjusted(dpi.$5,dpi.$5,-dpi.$5,-dpi.$5), painter, widget);
                else
                   drawItemPixmap(painter, RECT, Qt::AlignCenter, pm);
             }
@@ -856,8 +826,8 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          
          if (menuItem->menuItemType == QStyleOptionMenuItem::Separator)
          {
-            int dx = RECT.width()/6, dy = (RECT.height()-shadows.line.thickness())/2;
-            shadows.line.render(RECT.adjusted(dx,dy,-dx,-dy), painter);
+            int dx = RECT.width()/6, dy = (RECT.height()-shadows.line[0][Sunken].thickness())/2;
+            shadows.line[0][Sunken].render(RECT.adjusted(dx,dy,-dx,-dy), painter);
             if (!menuItem->text.isEmpty())
             {
                painter->setFont(menuItem->font);
@@ -1026,25 +996,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             }
             else
                painter->drawTiledPixmap(RECT, gradient(COLOR(Window), RECT.height(), Qt::Vertical, sunken ? GradSunken : hover?GradGloss:GradSimple));
-#if 0
-            if (option->state & State_Selected)
-            {
-               int dx = RECT.width()/6;
-               QRect lineRect = RECT.adjusted(dx,0,-dx,0);
-               lineRect.setTop(lineRect.bottom()-shadows.line.thickness());
-               shadows.line.render(lineRect, painter);
-//                bgRole = QPalette::WindowText;
-//                painter->drawTiledPixmap(RECT, gradient(PAL.color(bgRole), RECT.height(), Qt::Vertical));
-//                role = QPalette::Window;
-               QFont f(painter->font());
-               f.setBold(true);
-               painter->setFont(f);
-            }
-            else
-               painter->drawTiledPixmap(RECT, gradient(PAL.color(bgRole), RECT.height(), Qt::Vertical, sunken ? GradSunken : hover?GradGloss:GradSimple));
-#endif
          }
-            
          
          /**i WANT (read this TrottelTech: WANT!) this to be color swapped on select (and centered as sugar on top)
          now as the toolboxbutton is a private class and it's selected member is as well, i cannot overwrite the paint event
@@ -1110,7 +1062,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       {
          subopt.rect = subElementRect(SE_HeaderArrow, option, widget);
          QPen oldPen = painter->pen();
-         painter->setPen(PAL.color(QPalette::Base));
+         painter->setPen(hover?COLOR(Base):midColor(COLOR(Text),COLOR(Base),2,1));
          drawPrimitive(PE_IndicatorHeaderArrow, &subopt, painter, widget);
          painter->setPen(oldPen);
       }
@@ -1339,7 +1291,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          if (!cb->currentText.isEmpty() && !cb->editable)
          {
             editRect.adjust(3,0, -3, 0);
-            painter->setPen(COLOR(WindowText));
+            painter->setPen(midColor(COLOR(Window),COLOR(WindowText),1,3));
             drawItemText(painter, editRect, Qt::AlignCenter, PAL, isEnabled, cb->currentText);
          }
          painter->restore();

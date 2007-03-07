@@ -73,19 +73,13 @@ inline int colorValue(const QColor &c)
 inline QColor midColor(const QColor &oc1, const QColor &c2, int w1 = 1, int w2 = 1)
 {
    int sum = (w1+w2);
-   QColor c1 = oc1; //QColor c2 = oc2;
+   QColor c1 = oc1;
    int h,s, v = colorValue(c1);
    if (v < 70)
    {
       c1.getHsv(&h,&s,&v);
       c1.setHsv(h,s,70);
    }
-//    v = colorValue(c2);
-//    if (v < 70)
-//    {
-//       c2.getHsv(&h,&s,&v);
-//       c2.setHsv(h,s,70);
-//    }
    return QColor((w1*c1.red() + w2*c2.red())/sum,(w1*c1.green() + w2*c2.green())/sum,(w1*c1.blue() + w2*c2.blue())/sum);
 }
 
@@ -93,20 +87,26 @@ inline QColor midColor(const QColor &oc1, const QColor &c2, int w1 = 1, int w2 =
 
 /**Internal, calcs button color depending on state*/
 
-inline QColor btnBgColor(const QPalette &pal, bool isEnabled, bool hasFocus)
+inline QColor btnBgColor(const QPalette &pal, bool isEnabled, bool hasFocus, bool hover = false)
 {
    if (!isEnabled)
       return COLOR(Window);
    if (hasFocus)
-      return midColor(COLOR(Button), COLOR(Highlight), 3, 1);
+      return COLOR(Highlight);
+//    if (hover)
+//       return pal.color(config.btnHoverBg);
    return COLOR(Button);
 }
 
 /**Internal, calcs buttonText color depending on state*/
-inline QColor btnFgColor(const QPalette &pal, bool isEnabled, bool hasFocus)
+inline QColor btnFgColor(const QPalette &pal, bool isEnabled, bool hasFocus, bool hover = false)
 {
    if (!isEnabled)
       return midColor(COLOR(Window), COLOR(WindowText), 1, 3);
+   if (hasFocus)
+      return COLOR(HighlightedText);
+//    if (hover)
+//       return pal.color(config.btnHoverFg);
    return COLOR(ButtonText);
 }
 

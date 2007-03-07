@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <QFrame>
 #include <QWidget>
 #include <QSlider>
 #include <QStyleOptionTabWidgetFrame>
@@ -48,8 +49,11 @@ int OxygenStyle::pixelMetric ( PixelMetric pm, const QStyleOption * option, cons
    case PM_DefaultFrameWidth: // Default frame width (usually 2)
       if (widget && widget->inherits("QComboBoxPrivateContainer"))
          return 1;
-      else
-         return dpi.$4;
+      if (widget && qobject_cast<const QFrame*>(widget) &&
+          static_cast<const QFrame*>(widget)->frameShape() == QFrame::StyledPanel &&
+         !widget->inherits("QTextEdit"))
+         return 0;
+      return dpi.$4;
    case PM_SpinBoxFrameWidth: // Frame width of a spin box, defaults to PM_DefaultFrameWidth
       return dpi.$1;
    case PM_ComboBoxFrameWidth: // Frame width of a combo box, defaults to PM_DefaultFrameWidth.
@@ -183,8 +187,9 @@ int OxygenStyle::pixelMetric ( PixelMetric pm, const QStyleOption * option, cons
    case PM_LargeIconSize: // Default large icon size
       return 32;
    case PM_FocusFrameHMargin: // Horizontal margin that the focus frame will outset the widget by.
-   case PM_FocusFrameVMargin: // Vertical margin that the focus frame will outset the widget by.
       return dpi.$4;
+   case PM_FocusFrameVMargin: // Vertical margin that the focus frame will outset the widget by.
+      return dpi.$2;
 //    case PM_IconViewIconSize: //  
 //    case PM_ListViewIconSize: //  
 //    case PM_ToolTipLabelFrameWidth: //  

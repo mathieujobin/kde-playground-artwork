@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include <QPainter>
+#include <cmath>
 #include "tileset.h"
 
 #ifndef MIN
@@ -43,6 +44,20 @@ static bool isEmpty(const QPixmap &pix)
       if (qAlpha(data[ current ]))
          return false;
    return true;
+}
+
+static QPixmap invertAlpha(const QPixmap & pix)
+{
+   QImage img =  pix.toImage();
+   QImage *dst = new QImage(img);
+   uint *data = ( uint * ) img.bits();
+   uint *ddata = ( uint * ) dst->bits();
+   int total = img.width() * img.height();
+   for ( int c = 0 ; c < total ; ++c )
+      ddata[c] = qRgba( qRed(data[c]), qGreen(data[c]), qBlue(data[c]), 255-qAlpha(data[c]) );
+   QPixmap ret = QPixmap::fromImage(*dst, 0);
+   delete dst;
+   return ret;
 }
 
 Set::Set(const QPixmap &pix, int xOff, int yOff, int width, int height, int rx, int ry)
@@ -190,10 +205,20 @@ void Set::outline(const QRect &r, QPainter *p, QColor c, PosFlags pf) const
    p->save();
    p->setRenderHint(QPainter::Antialiasing);
    QPen pen = p->pen();
-   pen.setColor(c); pen.setWidth(0);
+   pen.setColor(c); pen.setWidth(1);
    p->setPen(pen);
    p->setBrush(Qt::NoBrush);
-   p->drawRoundRect(r/*.adjusted(1,1,-1,-1)*/, rxf/r.width(), ryf/r.height());
+   QRect rect = r;
+   if (! (pf & Top))
+      rect.setTop(rect.top()-100);
+   if (! (pf & Left))
+      rect.setLeft(rect.left()-100);
+   if (! (pf & Bottom))
+      rect.setBottom(rect.bottom()+100);
+   if (! (pf & Right))
+      rect.setRight(rect.right()+100);
+   p->setClipRect(r);
+   p->drawRoundRect(rect, ceil((float)rxf/rect.width()), ceil((float)ryf/rect.height()));
    p->restore();
 }
 
@@ -201,6 +226,10 @@ Tile::Mask::Mask(const QPixmap &pix, int xOff, int yOff, int width, int height,
           int dx1, int dy1, int dx2, int dy2, int rx, int ry): Set(pix, xOff, yOff, width, height, rx, ry)
 {
    _dx[0] = dx1; _dx[1] = dx2; _dy[0] = dy1; _dy[1] = dy2;
+   pixmap[TopLeft+1] = invertAlpha(pixmap[TopLeft]);
+   pixmap[TopRight+1] = invertAlpha(pixmap[TopRight]);
+   pixmap[BtmRight+1] = invertAlpha(pixmap[BtmRight]);
+   pixmap[BtmLeft+1] = invertAlpha(pixmap[BtmLeft]);
    _hasCorners = !pix.isNull();
 }
 
@@ -219,16 +248,16 @@ QRect Tile::Mask::bounds(const QRect &rect, PosFlags pf) const
 }
 
 
-const QPixmap &Tile::Mask::corner(PosFlags pf) const
+const QPixmap &Tile::Mask::corner(PosFlags pf, bool inverse) const
 {
    if (pf == (Top | Left))
-      return pixmap[TopLeft];
+      return pixmap[TopLeft+inverse];
    if (pf == (Top | Right))
-      return pixmap[TopRight];
+      return pixmap[TopRight+inverse];
    if (pf == (Bottom | Right))
-      return pixmap[BtmRight];
+      return pixmap[BtmRight+inverse];
    if (pf == (Bottom | Left))
-      return pixmap[BtmLeft];
+      return pixmap[BtmLeft+inverse];
    
    qWarning("requested impossible corner %d",pf);
    return nullPix;
@@ -337,20 +366,19 @@ void Line::render(const QRect &rect, QPainter *p, PosFlags pf) const
    }
    else
    {
-      if (rect.height() >= height(0)+height(2))
+      d0 = (pf & Top) ? height(0) : 0;
+      d2 = (pf & Bottom) ? height(2) : 0;
+      if ((pf & Center) && rect.height() >= d0+d2)
+         p->drawTiledPixmap(rect.x(), rect.y()+d0, width(1), rect.height()-d0-d2, pixmap[1]);
+      else if (d0 || d2)
       {
-         p->drawTiledPixmap(rect.x(), rect.y()+height(0),
-                            width(1), rect.height()-height(0)-height(2),
-                            pixmap[1]);
-         d0 = height(0); d2 = height(2);
+         d0 = qMin(d0,d0*rect.height()/(d0+d2));
+         d2 = qMin(d2,rect.height()-d0);
       }
-      else
-      {
-         d0 = height(0)*rect.height()/(height(0)+height(2));
-         d2 = rect.height()-d0;
-      }
-      p->drawPixmap(rect.x(),rect.y(),pixmap[0],0,0,width(0),d0);
-      p->drawPixmap(rect.x(),rect.bottom()+1-d2,pixmap[2],0,height(2)-d2,width(2),d2);
+      if (pf & Top)
+         p->drawPixmap(rect.x(),rect.y(),pixmap[0],0,0,width(0),d0);
+      if (pf & Bottom)
+         p->drawPixmap(rect.x(), rect.bottom()+1-d2,pixmap[2],0,height(2)-d2,width(2),d2);
    }
 }
 

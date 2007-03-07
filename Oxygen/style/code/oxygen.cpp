@@ -52,6 +52,7 @@
 #include <QSplitterHandle>
 #include <QToolBar>
 #include <QFrame>
+#include <QLabel>
 #include <QLineEdit>
 #include <QAbstractScrollArea>
 /**============= Qt3 support includes ======================*/
@@ -74,7 +75,7 @@
 /**============= DEBUG includes ==========================*/
 #undef DEBUG
 #ifdef DEBUG
-#define MOUSEDEBUG #
+#define MOUSEDEBUG 1
 #include <QtDebug>
 #include "debug.h"
 #define oDEBUG qDebug()
@@ -95,18 +96,18 @@
 
 
 /**============= Convenience Defs ==========================*/
-#define _IsNotHtmlWidget(w) qstrcmp( w->objectName(), "__khtml" )
-#define _IsHtmlWidget(w) !qstrcmp( w->objectName(), "__khtml" )
+#define _IsNotHtmlWidget(w) ( w->objectName() != "__khtml" )
+#define _IsHtmlWidget(w) ( w->objectName() == "__khtml" )
 #define _IsViewportChild(w) w->parent() &&\
-( !qstrcmp(w->parent()->objectName(), "qt_viewport") || \
-  !qstrcmp(w->parent()->objectName(), "qt_clipped_viewport") )
+( w->parent()->objectName() == "qt_viewport" || \
+  w->parent()->objectName() == "qt_clipped_viewport" )
 
 #define _HighContrastColor(c) (qGray(c.rgb()) < 128 ) ? Qt::white : Qt::black
 
 #define _BLOCKEVENTS_(obj) obj->installEventFilter(eventKiller)
 #define _UNBLOCKEVENTS_(obj) obj->removeEventFilter(eventKiller)
 
-#define _IsTabStack(w) !qstrcmp( w->objectName(), "qt_tabwidget_stackedwidget" )
+#define _IsTabStack(w) ( w->objectName() == "qt_tabwidget_stackedwidget" )
 /**=========================================================*/
 
 
@@ -139,6 +140,60 @@ bool EventKiller::eventFilter( QObject *, QEvent *)
    return true;
 }
 static EventKiller *eventKiller = new EventKiller();
+
+/** Let's try if we can supply round frames that shape their content */
+
+VisualFrame::VisualFrame(QFrame *parent, int st, int sl, int sr, int sb) : QWidget(parent)
+{
+   if (!(st+sl+sr+sb)) {deleteLater(); return;}
+   off[0] = st; off[1] = sl; off[2] = sr; off[3] = sb;
+   parent->installEventFilter(this);
+   this->installEventFilter(this);
+   show();
+}
+
+void VisualFrame::paintEvent ( QPaintEvent * event )
+{
+   QFrame *frame = static_cast<QFrame*>(parent());
+   QPainter p(this);
+   p.setClipRegion(event->region(), Qt::IntersectClip);
+   QStyleOption opt; opt.initFrom(this);
+   if (frame->frameShadow() == QFrame::Raised)
+      opt.state |= QStyle::State_Raised;
+   else
+      opt.state |= QStyle::State_Sunken;
+   opt.rect = rect();
+   style()->drawPrimitive(QStyle::PE_Frame, &opt, &p, this);
+   p.end();
+}
+
+// void VisualFrame::passDownEvent(QEvent *ev)
+// {
+//    // the raised frames don't look like you could click in, we'll see if this should be chnged...
+//    if (frame->frameShadow() == QFrame::Raised)
+//       return;
+//    QList<QWidget *> candidates = parentWidget().findChildren<QWidget *>();
+//    QList<QWidget *>::const_iterator i;
+//    for (i = list.constEnd(); i != list.constBegin(); --i)
+//      cout << *i << endl;
+// }
+
+bool VisualFrame::eventFilter ( QObject * o, QEvent * ev )
+{
+   if (ev->type() == QEvent::ZOrderChange && o == this)
+   {
+      this->raise();
+      return false;
+   }
+   if (ev->type() == QEvent::Resize && o == parent())
+   {
+      QRect rect = static_cast<QFrame*>(o)->frameRect();
+      move(rect.topLeft()); resize(rect.size());
+      setMask(QRegion(rect).subtracted(rect.adjusted(off[0],off[1],-off[2],-off[3])));
+      return false;
+   }
+   return false;
+}
 
 /** to be able to send nullpix refs */
 static QPixmap nullPix;
@@ -318,290 +373,7 @@ void OxygenStyle::readSettings()
 
 #define SCALE(_N_) lround(_N_*config.scale)
 
-void OxygenStyle::generatePixmaps()
-{
-   frames.rect[Sunken] = Tile::Set(QPixmap(":/frame-sunken"),5,5,1,1);
-   frames.rect[Relief] = Tile::Set(QPixmap(":/frame-relief"),4,5,1,1);
-   frames.rect[Raised] = Tile::Set(QPixmap(":/frame-raised"),4,6,1,1);
-   
-   masks.rect[Sunken] = Tile::Mask(nullPix,0,0,0,0, 2,2,-2,-2);
-   masks.rect[Relief] = Tile::Mask(nullPix,0,0,0,0, 2,2,-2,-2);
-   masks.rect[Raised] = Tile::Mask(nullPix,0,0,0,0, 2,2,-2,-2);
-
-   frames.round[Sunken] = Tile::Set(QPixmap(":/round-sunken"),8,8,11,8);
-   frames.round[Relief] = Tile::Set(QPixmap(":/round-relief"),8,10,11,6);
-   frames.round[Raised] = Tile::Set(QPixmap(":/round-raised"),8,8,11,8);
-   
-   masks.round[Sunken] = Tile::Mask(QPixmap(":/mask-round-sunken"),8,8,11,8,1,1,-2,-2);
-   masks.round[Relief] = Tile::Mask(QPixmap(":/mask-round-relief"),8,10,11,6,1,1,-1,-3);
-   masks.round[Raised] = Tile::Mask(QPixmap(":/mask-round-raised"),8,8,11,8,2,1,-2,-2);
-   
-   QPixmap tmp; QPainter p;
-   
-   // PUSHBUTTON =====================================
-   // shadow
-   int $1 = dpi.$1, $2 = dpi.$2, $2_2 = lround($2/2.0);
-   int $9 = dpi.$9, $9_2 = ($9-1)/2;
-   tmp = QPixmap($9,$9);
-   for (int i = 0; i < 2; ++i)
-   {
-      tmp.fill(Qt::transparent);
-      p.begin(&tmp);
-      p.setPen(Qt::NoPen);
-      p.setRenderHint(QPainter::Antialiasing);
-      p.setBrush(QColor(0,0,0,(i+1)*9));
-      p.drawRoundRect(0,0,$9,$9,60,60);
-      p.setBrush(QColor(0,0,0,(i+1)*20));
-      p.drawRoundRect($2_2,$2_2,$9-$2,$9-$2,80,80);
-      p.end();
-      shadows.button[i] = Tile::Set(tmp,$9_2,$9_2,$9-2*$9_2,$9-2*$9_2);
-   }
-   
-   // -> sunken
-   QImage tmpImg($9,$9, QImage::Format_ARGB32);
-   tmpImg.fill(Qt::transparent);
-
-   p.begin(&tmpImg);
-   p.setPen(Qt::NoPen);
-   p.setRenderHint(QPainter::Antialiasing);
-   p.setBrush(QColor(0,0,0,85)); p.drawRoundRect(0,0,$9,$9,80,80);
-   p.setCompositionMode( QPainter::CompositionMode_DestinationOut );
-   p.setBrush(QColor(0,0,0,120)); p.drawRoundRect(0,$1,$9,dpi.$8,75,75);
-   p.setBrush(QColor(0,0,0,140)); p.drawRoundRect(0,$2,$9,dpi.$7,80,80);
-   p.setBrush(QColor(0,0,0,160)); p.drawRoundRect($1,dpi.$3,dpi.$7,dpi.$6,85,85);
-   p.setBrush(QColor(0,0,0,180)); p.drawRoundRect($2,dpi.$4,dpi.$3,dpi.$5,90,90);
-   p.end();
-
-   shadows.lineEdit = Tile::Set(QPixmap::fromImage(tmpImg),$9_2,$9_2,$9-2*$9_2,$9-2*$9_2);
-   
-   
-   // outlines
-   tmp = QPixmap($9,$9);
-   for (int i = 0; i < 2; ++i)
-   {
-      tmp.fill(Qt::transparent);
-      p.begin(&tmp);
-      p.setRenderHint(QPainter::Antialiasing);
-      p.setPen(QColor(255,255,255,100+i*60));
-      p.setBrush(Qt::NoBrush);
-      p.drawRoundRect(0,0,$9,2*$9,75,38);
-      p.end();
-      frames.button[i] = Tile::Set(tmp,$9_2,$9_2,$9-2*$9_2,$9-2*$9_2);
-   }
-//    frames.button[0] = Tile::Nuno(100);
-//    frames.button[1] = Tile::Nuno(160);
-   
-   // mask
-   tmp = QPixmap($9,$9);
-   tmp.fill(Qt::transparent);
-   p.begin(&tmp);
-   p.setPen(Qt::NoPen);
-   p.setRenderHint(QPainter::Antialiasing);
-   p.setBrush(QColor(0,0,0,255));
-   p.drawRoundRect(0,0,$9,$9,60,60);
-   p.end();
-   masks.button = Tile::Mask(tmp,$9_2,$9_2,$9-2*$9_2,$9-2*$9_2,0,0,0,0,60,60);
-   
-   // toplight
-   int $49 = SCALE(49);
-   int $49_2 = ($49-1)/2;
-   tmp = QPixmap($49,$49);
-   tmp.fill(Qt::transparent);
-   QRadialGradient rg( tmp.rect().center(), $49_2 );
-   rg.setColorAt ( 0, QColor(255,255,255,160) );
-   rg.setColorAt ( 1, QColor(255,255,255,0) );
-   p.begin(&tmp);
-   p.fillRect(0,0,$49,$49,rg);
-   p.end();
-   tmp = tmp.scaled( $49, dpi.$5, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
-   tmp = tmp.copy(0,$2,$49,dpi.$3);
-   lights.top = Tile::Line(tmp,Qt::Horizontal,$49_2,-$49_2);
-   
-   // ================================================================
-   
-   // RADIOUTTON =====================================
-   int rw = dpi.ExclusiveIndicator;
-   int rh = dpi.ExclusiveIndicator;
-   // shadow
-   for (int i = 0; i < 2; ++i)
-   {
-      shadows.radio[i] = QPixmap(rw, rh);
-      shadows.radio[i].fill(Qt::transparent);
-      p.begin(&shadows.radio[i]);
-      p.setPen(Qt::NoPen);
-      p.setRenderHint(QPainter::Antialiasing);
-      p.setBrush(QColor(0,0,0,(i+1)*9));
-      p.drawEllipse(0,0,rw,rh);
-      p.setBrush(QColor(0,0,0,(i+1)*20));
-      p.drawEllipse($2_2,$2_2,rw-$2,rh-$2);
-      p.end();
-   }
-   
-   // mask
-   rw -= dpi.$4; rh -= dpi.$4;
-   masks.radio = QPixmap(rw, rh);
-   masks.radio.fill(Qt::transparent);
-   p.begin(&masks.radio);
-   p.setPen(Qt::NoPen);
-   p.setRenderHint(QPainter::Antialiasing);
-   p.setBrush(QColor(0,0,0,255));
-   p.drawEllipse(0,0,rw,rh);
-   p.end();
-   
-   rw -= dpi.$4; rh -= dpi.$4;
-   masks.radioGroove = QPixmap(rw, rh);
-   masks.radioGroove.fill(Qt::transparent);
-   p.begin(&masks.radioGroove);
-   p.setPen(Qt::NoPen);
-   p.setRenderHint(QPainter::Antialiasing);
-   p.setBrush(QColor(0,0,0,255));
-   p.drawEllipse(0,0,rw,rh);
-   p.end();
-   
-   // mask fill
-   rw -= dpi.$4; rh -= dpi.$4;
-   masks.radioIndicator = QPixmap(rw, rh);
-   masks.radioIndicator.fill(Qt::transparent);
-   p.begin(&masks.radioIndicator);
-   p.setPen(Qt::NoPen);
-   p.setRenderHint(QPainter::Antialiasing);
-   p.setBrush(QColor(0,0,0,255));
-   p.drawEllipse(0,0,rw,rh);
-   p.end();
-   
-   // ================================================================
-   
-   // RECTABGULAR =====================================
-   
-   // raised
-   
-   // sunken
-   int $3 = dpi.$3, $4 = dpi.$4, $6 = dpi.$6;
-   tmp = QPixmap($9,$9);
-   tmp.fill(Qt::transparent);
-   p.begin(&tmp);
-   p.fillRect($1,0,$9-$2,$1, QColor(0,0,0,10));
-   p.fillRect($2,$1,$9-$4,$1, QColor(0,0,0,20));
-   p.fillRect($2,$2,$9-$4,$1, QColor(0,0,0,40));
-   p.fillRect($3,$3,$9-$6,$1, QColor(0,0,0,80));
-   
-   p.fillRect($1,$9-$1,$9-$2,$1, QColor(255,255,255,10));
-   p.fillRect($2,$9-$2,$9-$4,$1, QColor(255,255,255,20));
-   p.fillRect($2,$9-$3,$9-$4,$1, QColor(255,255,255,40));
-   p.fillRect($3,$9-$4,$9-$6,$1, QColor(255,255,255,80));
-   
-   p.fillRect(0,$1,$1,$9-$2, QColor(128,128,128,10));
-   p.fillRect($1,$2,$1,$9-$4, QColor(128,128,128,20));
-   p.fillRect($2,$2,$1,$9-$4, QColor(128,128,128,40));
-   p.fillRect($3,$3,$1,$9-$6, QColor(128,128,128,80));
-   
-   p.fillRect($9-$1,$1,$1,$9-$2, QColor(128,128,128,10));
-   p.fillRect($9-$2,$2,$1,$9-$4, QColor(128,128,128,20));
-   p.fillRect($9-$3,$2,$1,$9-$4, QColor(128,128,128,40));
-   p.fillRect($9-$4,$3,$1,$9-$6, QColor(128,128,128,80));
-   
-   p.end();
-   shadows.sunken = Tile::Set(tmp,$9_2,$9_2,$9-2*$9_2,$9-2*$9_2);
-   
-   // ================================================================
-   
-   // TABBAR =====================================
-   
-   // mask
-   int $17 = SCALE(17);
-   tmp = QPixmap($17,$17);
-   tmp.fill(Qt::transparent);
-   p.begin(&tmp);
-   p.setPen(Qt::NoPen);
-   p.setRenderHint(QPainter::Antialiasing);
-   p.setBrush(QColor(0,0,0,255));
-   p.drawRoundRect(0,0,$17,$17,60,60);
-   p.end();
-   int $17_2 = ($17-1)/2;
-   masks.tab = Tile::Mask(tmp,$17_2,$17_2,$17-2*$17_2,$17-2*$17_2,0,0,0,0,60,60);
-   
-   // shadow
-   tmpImg = QImage($17,$17, QImage::Format_ARGB32);
-   tmpImg.fill(Qt::transparent);
-   p.begin(&tmpImg);
-   p.setPen(Qt::NoPen);
-   p.setRenderHint(QPainter::Antialiasing);
-   p.setBrush(QColor(0,0,0,11)); p.drawRoundRect(0,0,$17,$17,90,90);
-   p.setBrush(QColor(0,0,0,13)); p.drawRoundRect($1,$1,$17-$2,$17-$2,93,93);
-   p.setBrush(QColor(0,0,0,15)); p.drawRoundRect($2,$2,$17-dpi.$4,$17-dpi.$4,96,96);
-   p.setBrush(QColor(0,0,0,18)); p.drawRoundRect(dpi.$3,dpi.$3,$17-dpi.$6,$17-dpi.$6,99,99);
-   p.setCompositionMode( QPainter::CompositionMode_DestinationOut );
-   p.setBrush(QColor(0,0,0,255)); p.drawRoundRect($2,$1,$17-dpi.$4,$17-dpi.$5,99,99);
-   p.setCompositionMode( QPainter::CompositionMode_SourceOver );
-   p.setPen(QColor(255,255,255,170)); p.setBrush(Qt::NoBrush);
-   p.drawRoundRect($2,$1,$17-dpi.$4,$17-dpi.$5,99,99);
-   p.end();
-   shadows.tab = Tile::Set(QPixmap::fromImage(tmpImg),$17_2,$17_2,$17-2*$17_2,$17-2*$17_2);
-   
-   // GROUPBOX =====================================
-   
-   // shadow
-   tmpImg = QImage($49,$49, QImage::Format_ARGB32);
-   tmpImg.fill(Qt::transparent);
-   p.begin(&tmpImg);
-   p.setPen(Qt::NoPen);
-   p.setRenderHint(QPainter::Antialiasing);
-   p.setBrush(QColor(0,0,0,5)); p.drawRoundRect(0,0,$49,2*$49,14,7);
-   p.setBrush(QColor(0,0,0,9)); p.drawRoundRect($1,$1,$49-$2,2*$49,13,7);
-   p.setBrush(QColor(0,0,0,11)); p.drawRoundRect($2,$2,$49-dpi.$4,2*$49,12,6);
-   p.setBrush(QColor(0,0,0,13)); p.drawRoundRect(dpi.$3,dpi.$3,$49-dpi.$6,2*$49,48,24);
-   p.setCompositionMode( QPainter::CompositionMode_DestinationIn );
-   p.setBrush(QColor(0,0,0,0)); p.drawRoundRect(dpi.$4,dpi.$2,$49-dpi.$8,2*$49,11,6);
-   p.setCompositionMode( QPainter::CompositionMode_SourceOver );
-   p.setPen(QColor(255,255,255,160)); p.setBrush(Qt::NoBrush);
-   p.drawRoundRect(dpi.$4,dpi.$2,$49-dpi.$8,2*$49,11,6);
-   p.setRenderHint(QPainter::Antialiasing, false);
-   p.setCompositionMode( QPainter::CompositionMode_DestinationIn );
-   int $33 = SCALE(33);
-   for (int i = 1; i < $33; ++i)
-   {
-      p.setPen(QColor(0,0,0,i*lround(255.0/dpi.$32)));
-      p.drawLine(0, $49-i, $49, $49-i);
-   }
-   p.end();
-   int $12 = dpi.$12;
-   shadows.group = Tile::Set(QPixmap::fromImage(tmpImg),$12,$12,$49-2*$12,$1);
-   
-   // mask --> uses buttons
-//    int $25 = SCALE(25);
-//    tmp = QPixmap($25,$25);
-//    tmp.fill(Qt::transparent);
-//    p.begin(&tmp);
-//    p.setPen(Qt::NoPen);
-//    p.setRenderHint(QPainter::Antialiasing);
-//    p.setBrush(QColor(0,0,0,255));
-//    p.drawRoundRect(0,0,$25,$25,22,22);
-//    p.end();
-//    $12 = ($25-1)/2;
-//    masks.group = Tile::Mask(tmp,$12,$12,$25-2*$12,$25-2*$12,0,0,0,0,22,22);
-   
-   // shadow line
-   tmp = QPixmap($49,$2);
-   tmp.fill(Qt::transparent);
-   p.begin(&tmp);
-   QLinearGradient lg(0,0,$49,0);
-   QGradientStops stops;
-   stops << QGradientStop( 0, QColor(255,255,255,0) )
-      << QGradientStop( 0.5, QColor(255,255,255,71) )
-      << QGradientStop( 1, QColor(255,255,255,0) );
-   lg.setStops(stops);
-   p.fillRect(0,0,$49,$1,lg);
-   stops.clear();
-   stops << QGradientStop( 0, QColor(111,111,111,0) )
-      << QGradientStop( 0.5, QColor(111,111,111,74) )
-      << QGradientStop( 1, QColor(111,111,111,0) );
-   lg.setStops(stops);
-   p.fillRect(0,$1,$49,$2-$1,lg);
-   p.end();
-   shadows.line = Tile::Line(tmp,Qt::Horizontal,$49_2,-$49_2);
-   
-   // ================================================================
-}
+#include "genpixmaps.cpp"
 
 void OxygenStyle::initMetrics()
 {
@@ -683,6 +455,7 @@ OxygenStyle::~OxygenStyle()
             gradients[i][j].clear();
    glowCache.clear();
    _btnAmbient.clear();
+   _tabShadow.clear();
    roundGlowCache.clear();
 //    if (timer)
 //    {
@@ -808,19 +581,6 @@ const Tile::Set &OxygenStyle::glow(const QColor & c, bool round) const
 }
 /**=========================*/
 
-/** render the everywhere used frames*/
-//TODO: GET RID OF THIS!, frames now render themselves...
-void OxygenStyle::renderFrame( QPainter *p, const QRect &r, Orientation3D o3D, Tile::PosFlags pf, const QWidget *widget, bool highlighted, bool round) const
-{
-#define HIGHCOLOR palette().color(QPalette::Active, QPalette::Highlight)
-   //TODO:pass option->palette
-   const Tile::Set *frame = highlighted ?
-      &glow(widget ? widget->HIGHCOLOR : qApp->HIGHCOLOR, round) :
-      round ? &frames.round[o3D] : &frames.rect[o3D];
-#undef HIGHCOLOR
-   frame->render(r, p, pf);
-}
-
 void OxygenStyle::fillWithMask(QPainter *painter, const QPoint &xy, const QPixmap &pix, const QPixmap &mask, QPoint offset) const
 {
    QPixmap qPix(mask.size());
@@ -831,7 +591,7 @@ void OxygenStyle::fillWithMask(QPainter *painter, const QPoint &xy, const QPixma
    painter->drawPixmap(xy, qPix);
 }
 
-void OxygenStyle::fillWithMask(QPainter *painter, const QRect &rect, const QBrush &brush, const Tile::Mask *mask, Tile::PosFlags pf, bool justClip, QPoint offset) const
+void OxygenStyle::fillWithMask(QPainter *painter, const QRect &rect, const QBrush &brush, const Tile::Mask *mask, Tile::PosFlags pf, bool justClip, QPoint offset, bool inverse, const QRect *outerRect) const
 {
    bool pixmode = !brush.texture().isNull();
    if (!mask)
@@ -855,56 +615,64 @@ void OxygenStyle::fillWithMask(QPainter *painter, const QRect &rect, const QBrus
    }
    // first the inner region
    //NOTE: using full alphablend can become enourmously slow due to VRAM size - even on HW that has Render acceleration!
-   painter->save();
-   painter->setClipRegion(mask->clipRegion(rect, pf), Qt::IntersectClip);
-   if (pixmode)
-      painter->drawTiledPixmap(rect, brush.texture(), offset);
-   else
-      painter->fillRect(rect, brush.color());
-   painter->restore();
+   if (!inverse || outerRect)
+   {
+      painter->save();
+      if (inverse)
+      {
+         QRegion cr = *outerRect; cr -= rect;
+         painter->setClipRegion(cr, Qt::IntersectClip);
+      }
+      else
+         painter->setClipRegion(mask->clipRegion(rect, pf), Qt::IntersectClip);
+      if (pixmode)
+         painter->drawTiledPixmap(outerRect?*outerRect:rect, brush.texture(), offset);
+      else
+         painter->fillRect(outerRect?*outerRect:rect, brush.color());
+      painter->restore();
+   }
    if (!mask->hasCorners()) return;
    QPixmap corner, fill; QPainter p;
-#define MAKE_CORNER(_CORNER_,_SETOFF_)\
-   corner = mask->corner(_CORNER_);\
+#define MAKE_CORNER(_CORNER_,_OX_,_OY_)\
+   corner = mask->corner(_CORNER_, inverse);\
    fill = QPixmap(corner.size());\
    w = rect.width()/2;\
    w = qMin(corner.width(), ((_CORNER_) & Tile::Top) ? w : rect.width()-w);\
    h = rect.height()/2;\
    h = qMin(corner.height(), ((_CORNER_) & Tile::Top) ? h : rect.height()-h);\
-   off._SETOFF_;\
    p.begin(&fill);\
    if (pixmode)\
-      p.drawTiledPixmap(fill.rect(),brush.texture(),off+offset);\
+      p.drawTiledPixmap(fill.rect(),brush.texture(),QPoint(_OX_,_OY_)+offset);\
    else\
       fill.fill(brush.color());\
    p.end();\
    corner = OXRender::applyAlpha(fill, corner)
    // the corners ========
-   QPoint off(0,0); int w,h;
+   int w,h;
    // top/left
    if (Tile::matches(Tile::Top | Tile::Left, pf))
    {
-      MAKE_CORNER(Tile::Top | Tile::Left, setX(0));
+      MAKE_CORNER(Tile::Top | Tile::Left, 0,0);
       painter->drawPixmap(rect.topLeft(), corner, QRect(0,0,w,h));
    }
    // top/right
    if (Tile::matches(Tile::Top | Tile::Right, pf))
    {
-      MAKE_CORNER(Tile::Top | Tile::Right, setX(rect.width()-w));
+      MAKE_CORNER(Tile::Top | Tile::Right, rect.width()-w, 0);
       painter->drawPixmap(rect.right()-w+1, rect.top(), corner,
                           corner.width()-w,0, w,h );
    }
    // bottom/right
    if (Tile::matches(Tile::Bottom | Tile::Right, pf))
    {
-      MAKE_CORNER(Tile::Bottom | Tile::Right, setY(rect.height()-h));
+      MAKE_CORNER(Tile::Bottom | Tile::Right, rect.width()-w, rect.height()-h);
       painter->drawPixmap(rect.right()-w+1, rect.bottom()-h+1, corner,
                           corner.width()-w,corner.height()-h, w,h );
    }
    // bottom/left
    if (Tile::matches(Tile::Bottom | Tile::Left, pf))
    {
-      MAKE_CORNER(Tile::Bottom | Tile::Left, setX(0));
+      MAKE_CORNER(Tile::Bottom | Tile::Left, 0, rect.height()-h);
       painter->drawPixmap(rect.x(), rect.bottom()-h+1, corner,
                           0,corner.height()-h, w,h);
    }
@@ -1019,8 +787,6 @@ void OxygenStyle::polish( QPalette &pal )
    popupPix = config.inversePopups ? fgPix : bgPix;
 }
 
-#include <QtDebug>
-
 void OxygenStyle::polish( QWidget * widget)
 {
 
@@ -1116,23 +882,46 @@ void OxygenStyle::polish( QWidget * widget)
       }
    }
    
-   // overwrite ugly lines
-   if (qobject_cast<QFrame *>(widget) &&
-       (static_cast<QFrame *>(widget)->frameShape() == QFrame::HLine ||
-        static_cast<QFrame *>(widget)->frameShape() == QFrame::VLine))
-      widget->installEventFilter(this);
-   
-   // toolbox handling - a shame they look that crap by default!
-   if (qobject_cast<QFrame *>(widget) && widget->inherits("QToolBox") && widget->layout())
+   if (QFrame *frame = qobject_cast<QFrame *>(widget))
    {
-      widget->layout()->setMargin ( 0 );
-      widget->layout()->setSpacing ( 0 );
+      // kill ugly winblows frames...
+      if (frame->frameShape() == QFrame::Box ||
+          frame->frameShape() == QFrame::Panel ||
+          frame->frameShape() == QFrame::WinPanel)
+         frame->setFrameShape(QFrame::StyledPanel);
+      
+      // overwrite ugly lines
+      if (frame->frameShape() == QFrame::HLine ||
+          frame->frameShape() == QFrame::VLine)
+         widget->installEventFilter(this);
+      
+      // toolbox handling - a shame they look that crap by default!
+      else if (widget->inherits("QToolBox") && widget->layout())
+      {
+         widget->layout()->setMargin ( 0 );
+         widget->layout()->setSpacing ( 0 );
+      }
+      
+      else if (frame->frameShape() == QFrame::StyledPanel)
+      {
+         if (widget->inherits("QTextEdit") && frame->lineWidth() == 1)
+            frame->setLineWidth(dpi.$4);
+         else
+         {
+            QList<VisualFrame*> vfs = frame->findChildren<VisualFrame*>();
+            bool addVF = true;
+            foreach (VisualFrame* vf, vfs)
+               if (vf->parent() == frame) addVF = false;
+            if (addVF)
+               new VisualFrame(frame, dpi.$4, dpi.$4, dpi.$4, frame->frameShadow() == QFrame::Sunken ? 0 : dpi.$4);
+         }
+      }
    }
    
    if (widget->autoFillBackground() &&
        // dad
        widget->parentWidget() &&
-       !qstrcmp( widget->parentWidget()->objectName(), "qt_scrollarea_viewport" ) &&
+       ( widget->parentWidget()->objectName() == "qt_scrollarea_viewport" ) &&
        //grampa
        widget->parentWidget()->parentWidget() &&
        qobject_cast<QAbstractScrollArea*>(widget->parentWidget()->parentWidget()) &&
@@ -1170,15 +959,14 @@ bool OxygenStyle::eventFilter( QObject *object, QEvent *ev )
       QFrame *frame = qobject_cast<QFrame*>(object);
       if (frame)
       {
-         if (frame->frameShape() == QFrame::HLine)
+         if (frame->frameShape() == QFrame::HLine ||
+             frame->frameShape() == QFrame::VLine)
          {
             QPainter p(frame);
-            shadows.line.render(frame->rect(), &p);
+            Orientation3D o3D = (frame->frameShadow() == QFrame::Sunken) ? Sunken:
+               (frame->frameShadow() == QFrame::Raised) ? Raised : Relief;
+            shadows.line[frame->frameShape() == QFrame::VLine][o3D].render(frame->rect(), &p);
             p.end();
-            return true;
-         }
-         if (frame->frameShape() == QFrame::VLine)
-         {
             return true;
          }
       }

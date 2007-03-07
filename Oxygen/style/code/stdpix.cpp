@@ -51,7 +51,7 @@ QPixmap OxygenStyle::standardPixmap ( StandardPixmap standardPixmap, const QStyl
    if (QPixmapCache::find(key, pm))
       return pm;
 #endif
-   pm.fill(QColor(0,0,0,0)); // make transparent by default
+   pm.fill(Qt::transparent); // make transparent by default
    QPainter painter(&pm);
    QRect ir;
    int left(0), right(0), top(0), bottom(0);
@@ -87,23 +87,21 @@ QPixmap OxygenStyle::standardPixmap ( StandardPixmap standardPixmap, const QStyl
             ;
          }
       }
-      ir = masks.rect[Sunken].clipRegion(rect).boundingRect();
-      
       if (opt && opt->state & State_Sunken) // pressed
-         painter.drawTiledPixmap(ir, gradient(bc, ir.height(), Qt::Vertical, GradSunken ));
+         fillWithMask(&painter, rect, gradient(bc, rect.height(), Qt::Vertical, GradSunken ), &masks.button);
       else if (opt && opt->state & State_MouseOver) // hovered
-         painter.drawTiledPixmap(ir, gradient(bc, ir.height(), Qt::Vertical));
+         fillWithMask(&painter, rect, gradient(bc, rect.height(), Qt::Vertical, GradSimple ), &masks.button);
       else // basic
          painter.drawTiledPixmap(ir, gradient(pal.color(QPalette::WindowText), ir.height(), Qt::Vertical));
-      renderFrame( &painter, rect, Sunken, Tile::Ring );
+      shadows.lineEdit[1].render(rect, &painter);
       QPen pen = painter.pen();
-      pen.setWidth(ir.height()/4);
+      pen.setWidth(rect.height()/4);
       pen.setColor(fc);
       painter.setPen(pen);
-      left = ir.left()+painter.pen().width();
-      right = ir.right()-painter.pen().width();
-      top = ir.top()+painter.pen().width();
-      bottom = ir.bottom()-painter.pen().width();
+      left = rect.left()+painter.pen().width();
+      right = rect.right()-painter.pen().width();
+      top = rect.top()+painter.pen().width();
+      bottom = rect.bottom()-painter.pen().width();
    }
    QColor color;
    switch (standardPixmap)
