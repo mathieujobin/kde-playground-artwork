@@ -306,65 +306,75 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
    }
    case PE_Q3DockWindowSeparator: // Item separator for Qt 3 compatible dock window and toolbar contents.
       break;
-   case PE_Frame: // Generic frame; see also QFrame.
-   {
-      if (widget && widget->inherits("QComboBoxPrivateContainer"))
-      {
-         QPen oldPen = painter->pen();
-         painter->setPen(PAL.color(QPalette::Window).dark(120));
-         painter->drawLine(RECT.x(), RECT.top(), RECT.x(), RECT.bottom());
-         painter->drawLine(RECT.x(), RECT.bottom(), RECT.right(), RECT.bottom());
-         painter->drawLine(RECT.right(), RECT.top(), RECT.right(), RECT.bottom());
+   case PE_Frame: { // Generic frame; see also QFrame.
+      if (widget) {
+         // handle the
+         if (widget->inherits("QComboBoxPrivateContainer")) {
+            QPen oldPen = painter->pen();
+            painter->setPen(PAL.color(QPalette::Window).dark(120));
+            painter->drawLine(RECT.x(), RECT.top(), RECT.x(), RECT.bottom());
+            painter->drawLine(RECT.x(), RECT.bottom(), RECT.right(), RECT.bottom());
+            painter->drawLine(RECT.right(), RECT.top(), RECT.right(), RECT.bottom());
+            
+            painter->setPen(PAL.color(QPalette::Base));
+            painter->drawLine(RECT.x(), RECT.top(), RECT.right(), RECT.top());
+            painter->setPen(oldPen);
+            break;
+         }
          
-         painter->setPen(PAL.color(QPalette::Base));
-         painter->drawLine(RECT.x(), RECT.top(), RECT.right(), RECT.top());
-         painter->setPen(oldPen);
-         break;
-      }
-      bool paintFrame = false;
-      if (widget && qobject_cast<const QFrame*>(widget))
-      {
-         if (widget->inherits("QTextEdit")) {
-            fillWithMask(painter, RECT, COLOR(Base), &masks.button);
-            paintFrame = true;
+         bool inverse = true, niceFrame = false; QRect rect = RECT; const QRect *outerRect = 0;
+         
+         const Tile::Mask *mask; const Tile::Set *shadow;
+         if (sunken) {
+            shadow = &shadows.lineEdit[isEnabled];
+            mask = &masks.button;
+         }
+         else if (option->state & State_Raised) {
+            shadow = &shadows.tab;
+            mask = &masks.tab;
          }
          else {
-            if (const QLabel* label = qobject_cast<const QLabel*>(widget))
-               if (label->text() != QString() && label->margin() < dpi.$3)
-                  const_cast<QLabel*>(label)->setMargin(dpi.$3);
-            break; // painted on visual frame
+            shadow = &shadows.relief;
+            mask = &masks.button;
+         }
+         
+         QPoint zero; QPalette::ColorRole role = widget->backgroundRole();
+         if (qobject_cast<const QFrame*>(widget)) { // frame, can be killed unless...
+            if (widget->inherits("QTextEdit")) { // ...it's a TextEdit!
+               niceFrame = true;
+               inverse = false; role = QPalette::Base;
+            }
+            else { // maybe we need to corect a textlabels margin
+               if (const QLabel* label = qobject_cast<const QLabel*>(widget))
+                  if (label->text() != QString() && label->margin() < dpi.$3)
+                     const_cast<QLabel*>(label)->setMargin(dpi.$3);
+               break; // painted on visual frame
+            }
+         }
+         else if (qobject_cast<const VisualFrame*>(widget)) {
+            niceFrame = true;
+            zero = widget->mapTo(widget->topLevelWidget(), QPoint(0,0));
+            if (!sunken) {
+               outerRect = &RECT;
+               if (option->state & State_Raised)
+                  rect = RECT.adjusted(dpi.$2,dpi.$1,-dpi.$2,-dpi.$4);
+               else
+                  rect = RECT.adjusted(dpi.$2,dpi.$2,-dpi.$2,-dpi.$2);
+            }
+         }
+         if (niceFrame) {
+            fillWithMask(painter, rect, PAL.brush(role), mask, Tile::Full, false, zero, inverse, outerRect);
+            shadow->render(RECT, painter);
+            break;
          }
       }
-      if (paintFrame || (widget && qobject_cast<const VisualFrame*>(widget)))
-      {
-         QPoint zero(0,0);
-         zero = widget->mapTo(widget->topLevelWidget(), QPoint(0,0));
-         const QBrush &brush = PAL.brush(widget->backgroundRole());
-         if (sunken)
-         {
-            fillWithMask(painter, RECT, brush, &masks.button, Tile::Full, false, zero, true);
-            shadows.lineEdit[isEnabled].render(RECT,painter);
-         }
-         else if (option->state & State_Raised)
-         {
-            QRect ir = RECT.adjusted(dpi.$2,dpi.$1,-dpi.$2,-dpi.$4);
-            fillWithMask(painter, ir, brush, &masks.tab, Tile::Full, false, zero, true, &RECT);
-            shadows.tab.render(RECT,painter);
-         }
-         else
-         {
-            QRect ir = RECT.adjusted(dpi.$2,dpi.$2,-dpi.$2,-dpi.$2);
-            fillWithMask(painter, ir, brush, &masks.button, Tile::Full, false, zero, true, &RECT);
-            shadows.relief.render(RECT,painter);
-         }
-      }
-      else
-      {
-         if (sunken)
-            shadows.sunken.render(RECT,painter);
-//          else if (option->state & State_Raised)
-//             shadows.raised.render(RECT,painter);
-      }
+      // fallback, we cannot paint shaped frame contents
+      if (sunken)
+         shadows.sunken.render(RECT,painter);
+//       else if (option->state & State_Raised)
+//          shadows.raised.render(RECT,painter);
+//       else
+//          shadows.raised.render(RECT,painter);
       break;
    }
    case PE_FrameMenu: // Frame for popup windows/menus; see also QMenu.
