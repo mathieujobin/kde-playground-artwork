@@ -572,39 +572,92 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       break;
    }
    case PE_IndicatorDockWidgetResizeHandle: // Resize handle for dock windows.
-   case PE_IndicatorToolBarHandle: // The handle of a toolbar.
-      if (!(widget && widget->parentWidget()) || widget->parentWidget()->underMouse())
+   {
+      QPoint *points; int num;
+      int $12 = dpi.$12, $6 = dpi.$6;
+      if (RECT.width() > RECT.height()) {
+         int x = RECT.left()+RECT.width()/3;
+         int y = RECT.top()+(RECT.height()-$6)/2;
+         num = RECT.width()/(3*$12);
+         if ((RECT.width()/3) % $12) ++num;
+         points = new QPoint[num];
+         for (int i = 0; i < num; ++i) {
+            points[i] = QPoint(x,y); x += $12;
+         }
+      }
+      else {
+         int x = RECT.left()+(RECT.width()-$6)/2;
+         int y = RECT.top()+RECT.height()/3;
+         num = RECT.height()/(3*$12);
+         if ((RECT.height()/3) % $12) ++num;
+         points = new QPoint[num];
+         for (int i = 0; i < num; ++i) {
+            points[i] = QPoint(x,y); y += $12;
+         }
+      }
+      painter->save();
+      painter->setPen(Qt::NoPen);
+      const QPixmap *fill; int cnt = num/2, imp = 1;
+      QPalette::ColorRole role = QPalette::WindowText;
+      if (hover) {
+         role = QPalette::Highlight;
+         imp = 8;
+      }
+      if (num%2)
       {
-         QPen pen = painter->pen();
-         QPen oldPen = pen;
-         pen.setColor(hover ? PAL.color(QPalette::Highlight) : midColor(PAL.color(QPalette::Window), PAL.color(QPalette::WindowText)));
-         pen.setWidth(2);
-         if (pe == PE_IndicatorToolBarHandle)
-            pen.setStyle(Qt::DashDotDotLine);
-         else
-         {
-            QVector<qreal> dashes;
-            dashes << 1 << 4;
-            pen.setDashPattern(dashes);
+         fill = &gradient(midColor(COLOR(Window), PAL.color(role), 3, imp), $6, Qt::Vertical, GradSunken);
+         fillWithMask(painter, points[cnt], *fill, masks.notch);
+      }
+      --num;
+      for (int i = 0; i < cnt; ++i)
+      {
+         fill = &gradient(midColor(COLOR(Window), PAL.color(role), 3+cnt-i, imp), $6, Qt::Vertical, GradSunken);
+         fillWithMask(painter, points[i], *fill, masks.notch);
+         fillWithMask(painter, points[num-i], *fill, masks.notch);
+      }
+      painter->restore();
+      delete points;
+      break;
+   }
+   case PE_IndicatorToolBarHandle: // The handle of a toolbar.
+      if (!(widget && widget->parentWidget()) ||
+          widget->parentWidget()->underMouse()) {
+         painter->save();
+         QRect rect = RECT; bool line = false; int dx, dy;
+         if (RECT.width() > RECT.height()) {
+            line = (RECT.width() > 9*RECT.height()/2);
+            if (line) {
+               dx = 3*RECT.height()/2; dy = 0;
+            }
+            rect.setLeft(rect.left()+(rect.width()-rect.height())/2);
+            rect.setWidth(rect.height());
          }
-         painter->setPen(pen);
-         if (RECT.width() > RECT.height())
-         {
-            int y = RECT.y()+(RECT.height()>>1)-1;
-            if (pe == PE_IndicatorToolBarHandle)
-               painter->drawLine(RECT.x(),y,RECT.right(),y);
-            else
-               painter->drawLine(RECT.x()+RECT.width()/3,y,RECT.right()-RECT.width()/3,y);
+         else {
+            line = (RECT.height() > 3*RECT.width());
+            if (line) {
+               dx = 0; dy = 3*RECT.width()/2;
+            }
+            rect.setTop(rect.top()+(rect.height()-rect.width())/2);
+            rect.setHeight(rect.width());
          }
-         else
-         {
-            int x = RECT.x()+(RECT.width()>>1)-1;
-            if (pe == PE_IndicatorToolBarHandle)
-               painter->drawLine(x,RECT.y(),x,RECT.bottom());
-            else
-               painter->drawLine(x,RECT.y()+RECT.height()/3,x,RECT.bottom()-RECT.height()/3);
+         QColor c = hover?COLOR(Highlight):COLOR(Window).dark(110);
+         painter->setRenderHint(QPainter::Antialiasing);
+         painter->setBrush(gradient(c, rect.height(), Qt::Vertical, GradSunken));
+         painter->setPen(Qt::NoPen);
+         painter->setBrushOrigin(rect.topLeft());
+         painter->drawEllipse(rect);
+         if (line) {
+            int $1 = dpi.$1;
+            rect.adjust($1,$1,-$1,-$1);
+            painter->setBrush(gradient(c, rect.height(), Qt::Vertical, GradSunken));
+            rect.translate(-dx,-dy);
+            painter->setBrushOrigin(rect.topLeft());
+            painter->drawEllipse(rect);
+            rect.translate( 2*dx, 2*dy);
+            painter->setBrushOrigin(rect.topLeft());
+            painter->drawEllipse(rect);
          }
-         painter->setPen(oldPen);
+         painter->restore();
       }
       break;
    case PE_IndicatorToolBarSeparator: // The separator in a toolbar.

@@ -157,6 +157,17 @@ void OxygenStyle::generatePixmaps()
    
    // ================================================================
    
+   // NOTCH =====================================
+   masks.notch = QPixmap(dpi.$6, dpi.$6);
+   masks.notch.fill(Qt::transparent);
+   p.begin(&masks.notch);
+   p.setPen(Qt::NoPen);
+   p.setRenderHint(QPainter::Antialiasing);
+   p.setBrush(Qt::black);
+   p.drawEllipse(0,0,dpi.$6,dpi.$6);
+   p.end();
+   // ================================================================
+   
    // RECTANGULAR =====================================
    
    // raised
@@ -285,7 +296,7 @@ void OxygenStyle::generatePixmaps()
       tmp = QPixmap(w,h);
       for (int j = 0; j < 3; ++j) // direction
       {
-         c1 = (j > 0) ? 111 : 255; c2 = (j > 0) ? 255 : 111;
+         c1 = (j > 0) ? 255 : 111; c2 = (j > 0) ? 111 : 255;
          tmp.fill(Qt::transparent);
          p.begin(&tmp);
          QGradientStops stops;

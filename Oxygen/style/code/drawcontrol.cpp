@@ -238,55 +238,21 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             x2 = textRect.x()-8;
          }
 
-         if (hover)
-         {
-            QPen pen = painter->pen();
-            QPen oldPen = pen;
-            if (dwOpt->movable)
-               pen.setStyle(Qt::DotLine);
-            else if (dwOpt->floatable)
-               pen.setStyle(Qt::DashLine);
-            else
-               break;
-            pen.setColor(midColor(PAL.color(QPalette::Window), PAL.color(QPalette::WindowText),2));
-            pen.setWidth(2);
-            painter->setPen(pen);
-            int y = RECT.y() + RECT.height()/2 - 2;
-            painter->drawLine( RECT.x()+4, y, x2, y ); y += 4;
-            painter->drawLine( RECT.x()+4, y, x2, y );
-            if (textRect.isValid())
-            {
-               painter->drawLine( textRect.right()+9, y, x3, y ); y -= 4;
-               painter->drawLine( textRect.right()+9, y, x3, y );
-            }
-            painter->setPen(oldPen);
-         }
+         const Tile::Line &line = shadows.line[0][Sunken];
+         textRect.setTop(textRect.top()+(textRect.height()-line.thickness())/2);
+         int x = textRect.right()+dpi.$4;
+         textRect.setRight(textRect.left()-dpi.$4);
+         textRect.setLeft(qMin(RECT.x()+RECT.width()/4,textRect.x()-(textRect.x()-RECT.x())/2));
+         line.render(textRect, painter, Tile::Left|Tile::Center);
+         textRect.setLeft(x);
+         textRect.setRight(qMax(RECT.right()-RECT.width()/4,x+(RECT.right()-x)/2));
+         line.render(textRect, painter, Tile::Right|Tile::Center);
+         //TODO: hover?
       }
       break;
    case CE_Splitter: // Splitter handle; see also QSplitter.
-   {
-      QPen pen = painter->pen();
-      QPen oldPen = pen;
-      pen.setStyle(Qt::DotLine); //TODO use common shape here
-      pen.setWidth(2);
-      if (hover)
-         pen.setColor(PAL.color(QPalette::Highlight));
-      else
-         pen.setColor(midColor(PAL.color(QPalette::Window),PAL.color(QPalette::WindowText)));
-      
-      if (RECT.width() > RECT.height())
-      {
-         int y = RECT.y()+(RECT.height()>>1)-1;
-         painter->drawLine(RECT.x()+RECT.width()/3, y, RECT.right()-RECT.width()/3, y);
-      }
-      else
-      {
-         int y = (RECT.y()+RECT.height()/5)<<1; int x = RECT.x()+(RECT.width()>>1)-1;
-         painter->drawLine(x, y, x, y+RECT.height()/5);
-      }
-      painter->setPen(oldPen);
+      drawPrimitive(PE_IndicatorDockWidgetResizeHandle,option,painter,widget);
       break;
-   }
    case CE_RadioButton: // A QRadioButton, draws a PE_ExclusiveRadioButton, a case CE_RadioButtonLabel
    case CE_CheckBox: // A QCheckBox, draws a PE_IndicatorCheckBox, a case CE_CheckBoxLabel
       if (const QStyleOptionButton *btn =

@@ -166,17 +166,30 @@ void VisualFrame::paintEvent ( QPaintEvent * event )
    style()->drawPrimitive(QStyle::PE_Frame, &opt, &p, this);
    p.end();
 }
+#include <QtDebug>
+void VisualFrame::passDownEvent(QEvent *ev, const QPoint &gMousePos)
+{
+   // the raised frames don't look like you could click in, we'll see if this should be chnged...
+   QFrame *frame = static_cast<QFrame*>(parent());
+   if (frame->frameShadow() == QFrame::Raised)
+      return;
+   QList<QWidget *> candidates = frame->findChildren<QWidget *>();
+   QList<QWidget *>::const_iterator i = candidates.constEnd();
+   while (i != candidates.constBegin()) {
+      --i;
+      if (*i == this)
+         continue;
+      if ((*i)->rect().contains((*i)->mapFromGlobal(gMousePos)))
+         break;
+   }
+   QCoreApplication::sendEvent( *i, ev );
+}
 
-// void VisualFrame::passDownEvent(QEvent *ev)
-// {
-//    // the raised frames don't look like you could click in, we'll see if this should be chnged...
-//    if (frame->frameShadow() == QFrame::Raised)
-//       return;
-//    QList<QWidget *> candidates = parentWidget().findChildren<QWidget *>();
-//    QList<QWidget *>::const_iterator i;
-//    for (i = list.constEnd(); i != list.constBegin(); --i)
-//      cout << *i << endl;
-// }
+void VisualFrame::mouseDoubleClickEvent ( QMouseEvent * event ) { passDownEvent((QEvent *)event, event->globalPos()); }
+void VisualFrame::mouseMoveEvent ( QMouseEvent * event ) { passDownEvent((QEvent *)event, event->globalPos()); }
+void VisualFrame::mousePressEvent ( QMouseEvent * event ) { passDownEvent((QEvent *)event, event->globalPos()); }
+void VisualFrame::mouseReleaseEvent ( QMouseEvent * event ) { passDownEvent((QEvent *)event, event->globalPos()); }
+void VisualFrame::wheelEvent ( QWheelEvent * event ) { passDownEvent((QEvent *)event, event->globalPos()); }
 
 bool VisualFrame::eventFilter ( QObject * o, QEvent * ev )
 {

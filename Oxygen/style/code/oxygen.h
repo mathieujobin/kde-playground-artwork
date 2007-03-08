@@ -125,20 +125,20 @@ public:
    VisualFrame(QFrame *parent, int top = 0, int left = 0, int right = 0, int bottom = 0);
    bool eventFilter ( QObject * o, QEvent * ev );
    void paintEvent ( QPaintEvent * event );
-// protected:
-//    void dragEnterEvent ( QDragEnterEvent * event ) { passDownEvent(event); }
-//    void dragLeaveEvent ( QDragLeaveEvent * event ) { passDownEvent(event); }
-//    void dragMoveEvent ( QDragMoveEvent * event ) { passDownEvent(event); }
-//    void dropEvent ( QDropEvent * event ) { passDownEvent(event); }
-//    void enterEvent ( QEvent * event ) { passDownEvent(event); }
-//    void leaveEvent ( QEvent * event ) { passDownEvent(event); }
-//    void mouseDoubleClickEvent ( QMouseEvent * event ) { passDownEvent(event); }
-//    void mouseMoveEvent ( QMouseEvent * event ) { passDownEvent(event); }
-//    void mousePressEvent ( QMouseEvent * event ) { passDownEvent(event); }
-//    void mouseReleaseEvent ( QMouseEvent * event ) { passDownEvent(event); }
-//    void wheelEvent ( QWheelEvent * event ) { passDownEvent(event); }
+protected:
+//    void dragEnterEvent ( QDragEnterEvent * event ) { passDownEvent(event, event->globalPos()); }
+//    void dragLeaveEvent ( QDragLeaveEvent * event ) { passDownEvent(event, event->globalPos()); }
+//    void dragMoveEvent ( QDragMoveEvent * event ) { passDownEvent(event, event->globalPos()); }
+//    void dropEvent ( QDropEvent * event ) { passDownEvent(event, event->globalPos()); }
+//    void enterEvent ( QEvent * event ) { passDownEvent(event, event->globalPos()); }
+//    void leaveEvent ( QEvent * event ) { passDownEvent(event, event->globalPos()); }
+   void mouseDoubleClickEvent ( QMouseEvent * event );
+   void mouseMoveEvent ( QMouseEvent * event );
+   void mousePressEvent ( QMouseEvent * event );
+   void mouseReleaseEvent ( QMouseEvent * event );
+   void wheelEvent ( QWheelEvent * event );
 private:
-//    void passDownEvent(QEvent *ev);
+   void passDownEvent(QEvent *ev, const QPoint &gMousePos);
    int off[4];
 };
 
@@ -238,7 +238,7 @@ private:
    struct
    {
       Tile::Mask rect[3], round[3], button, tab, group;
-      QPixmap radio, radioIndicator, radioGroove;
+      QPixmap radio, radioIndicator, radioGroove, notch;
    } masks;
    struct
    {

@@ -82,7 +82,7 @@ int OxygenStyle::pixelMetric ( PixelMetric pm, const QStyleOption * option, cons
          return (widget->height() - dpi.SliderControl);
    }
    case PM_DockWidgetSeparatorExtent: // Width of a separator in a horizontal dock window and the height of a separator in a vertical dock window
-      return dpi.$2;
+      return dpi.$10;
    case PM_DockWidgetHandleExtent: // Width of the handle in a horizontal dock window and the height of the handle in a vertical dock window
       return dpi.$6;
    case PM_DockWidgetFrameWidth: // Frame width of a dock window
