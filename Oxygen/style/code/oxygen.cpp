@@ -327,7 +327,7 @@ void OxygenStyle::makeStructure(int num, const QColor &c)
          p.drawLine( 0, i, 63, i );
          p.drawLine( 0, i+2, 63, i+2 );
       }
-      p.setPen( c.dark( 108 ) );
+      p.setPen( c );
       for ( i = 2; i < 63; i += 4 )
          p.drawLine( 0, i, 63, i );
       p.end();
@@ -734,7 +734,6 @@ void OxygenStyle::polish( QPalette &pal )
    switch (config.bgMode)
    {
    case FullPix:
-   case BrushedMetal:
    {
       int h,s,v;
       // create use a nice background
@@ -745,7 +744,7 @@ void OxygenStyle::polish( QPalette &pal )
       {
          if (v < 70) // very dark colors won't make nice backgrounds ;)
             c.setHsv(h,s,70);
-         _SHIFTCOLOR_(c);
+//          _SHIFTCOLOR_(c);
       }
       else if (v < 30) // very dark colors won't make nice backgrounds ;)
          c.setHsv(h,s,30);
@@ -753,20 +752,17 @@ void OxygenStyle::polish( QPalette &pal )
       
       if (!_bgBrush)
       {
-         if (config.bgMode == FullPix)
-         {
-            if (config.acceleration > None)
-               _bgBrush = new DynamicBrush((DynamicBrush::Mode)config.acceleration, this);
-            else
-               _bgBrush = new DynamicBrush(bgPix, shadowPix, bgYoffset_, this);
-         }
+         if (config.acceleration > None)
+            _bgBrush = new DynamicBrush((DynamicBrush::Mode)config.acceleration, this);
          else
-            _bgBrush = new DynamicBrush(QImage(":/leftCenter"), QImage(":/leftTile"), this);
+            _bgBrush = new DynamicBrush(bgPix, shadowPix, bgYoffset_, this);
       }
       break;
    }
-   case VerticalGradient:
-   case HorizontalGradient:
+   case VGradient1:
+   case HGradient1:
+   case VGradient2:
+   case HGradient2:
    {
       int h,s,v;
       // create use a nice background
@@ -775,15 +771,10 @@ void OxygenStyle::polish( QPalette &pal )
       if (v < 70) // very dark colors won't make nice backgrounds ;)
          c.setHsv(h,s,70);
       originalBgColor_ = c;
-      _SHIFTCOLOR_(c);
+//       _SHIFTCOLOR_(c);
       pal.setColor( QPalette::Window, c );
       if (!_bgBrush)
-      {
-         if (config.bgMode == VerticalGradient)
-            _bgBrush = new DynamicBrush(DynamicBrush::VerticalGradient, this);
-         else
-            _bgBrush = new DynamicBrush(DynamicBrush::HorizontalGradient, this);
-      }
+         _bgBrush = new DynamicBrush((DynamicBrush::Mode)config.bgMode, this);
       break;
    }
    case Scanlines:

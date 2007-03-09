@@ -40,12 +40,12 @@ class DynamicBrush : public QObject
 {
    Q_OBJECT
 public:
-   enum Mode {Tiled = 0, QtGradient, XRender, OpenGL, Tiled2, VerticalGradient, HorizontalGradient};
+   enum Mode {Tiled = 0, QtGradient, XRender, OpenGL,
+         VGradient1, HGradient1, VGradient2, HGradient2};
    DynamicBrush(Mode mode, QObject *parent = 0);
    DynamicBrush(Pixmap pixmap = -1, Pixmap shadow = -1, int bgYoffset = 0, QObject *parent = 0);
-   DynamicBrush(const QImage &leftCenter, const QImage &leftTile, QObject *parent = 0);
    ~DynamicBrush();
-   QPixmap shadow(const QRect &rect);
+//    QPixmap shadow(const QRect &rect);
    void setMode(Mode);
    void setXPixmap(Pixmap pixmap = -1, Pixmap shadow = -1);
    virtual bool eventFilter ( QObject * watched, QEvent * event );
@@ -54,11 +54,11 @@ private:
    void updateBrushTiled();
    void updateBrushGL();
    void updateBrushRender();
-   void updateBrushEdMetal();
-   void updateBrushVerticalGradient();
-   void updateBrushHorizontalGradient();
+   void updateBrushGradient1();
+   void updateBrushGradient2();
    void updateBrushQt();
    void initGL();
+   void generateTiles(Mode mode);
    QPixmap glPixmap(const QRect &rect, int darkness = 0);
    QSize _size;
    QWidget *_topLevelWidget;
@@ -66,8 +66,9 @@ private:
    int _bgYoffset;
    Mode _mode;
    QTimer *_timerBgWipe;
-   QPixmap _center[2][2];
    QPixmap _tile[2][2];
+   QColor _bgC[2];
+   bool _isActiveWindow;
    QPixmap _glShadow;
    QRect _lastShadowRect;
    QGLWidget *_glContext;

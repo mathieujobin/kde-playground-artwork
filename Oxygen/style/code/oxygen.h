@@ -43,8 +43,8 @@ class QFrame;
 
 namespace Oxygen {
 
-enum BGMode { Plain = 0, Scanlines, BrushedMetal, FullPix, VerticalGradient, HorizontalGradient };
-enum Acceleration { None = 0, XRender, OpenGL };
+enum BGMode { Plain = 0, Scanlines, Dummy, FullPix, VGradient1, HGradient1, VGradient2, HGradient2 };
+enum Acceleration { None = 0, QtGradient, XRender, OpenGL };
 enum TabTransition {Jump = 0, CrossFade, ScanlineBlend, SlideIn, SlideOut, RollIn, RollOut, OpenVertically, CloseVertically, OpenHorizontally, CloseHorizontally };
 
 class EventKiller : public QObject 

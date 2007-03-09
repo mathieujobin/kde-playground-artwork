@@ -63,60 +63,6 @@ static BgPixCache tlwbacks;
 #define MAX(x,y) ((x) > (y) ? (x) : (y))
 #endif
 
-#define SATURATION_COLOR(R,G,B) \
-   grey = (299 * R + 587 * G + 114 * B) / 1000; \
-   delta = 255 - grey; \
-   grey = (grey *(10 - 5)) / 10; \
-   iGrey = 255 - grey;\
-   destR = (iGrey * (srcR - delta) + grey * R) / 255; \
-   destG = (iGrey * (srcG - delta) + grey * G) / 255; \
-   destB = (iGrey * (srcB - delta) + grey * B) / 255
-    
-#define SATURATION_COLOR2(S,R,G,B) \
-   int max = 255+(int)(0.65*(100-S)); \
-   destR = CLAMP((srcR + R - 128), 0, max); \
-   destG = CLAMP((srcG + G - 128), 0, max); \
-   destB = CLAMP((srcB + B - 128), 0, max); \
-   destR = (S*destR + (100-S)*R)/100; \
-   destG = (S*destG + (100-S)*G)/100; \
-   destB = (S*destB + (100-S)*B)/100
-
-#define SATURATION_COLOR3(S,R,G,B) \
-   destR = (S*(srcR + R - 128)/100 + R)/2; \
-   destG = (S*(srcG + G - 128)/100 + G)/2; \
-   destB = (S*(srcB + B - 128)/100 + B)/2
-
-#define COLOR_SPACE\
-      destR = CLAMP(destR, 0, 255);\
-      destG = CLAMP(destG, 0, 255);\
-      destB = CLAMP(destB, 0, 255)
-
-static QPixmap tint(const QImage &img, const QColor& c)
-{
-   QImage *dest = new QImage( img.size(), QImage::Format_RGB32 );
-   unsigned int *data = ( unsigned int * ) img.bits();
-   unsigned int *destData = ( unsigned int* ) dest->bits();
-   int total = img.width() * img.height();
-   int srcR = c.red() - 128;
-   int srcG = c.green() - 128;
-   int srcB = c.blue() - 128;
-   int destR, destG, destB;
-   int current;
-   
-   // grain/merge from the gimp. TODO: use mmx/sse here
-   for ( current = 0 ; current < total ; ++current )
-   {
-      destR = srcR + qRed( data[ current ] );
-      destG = srcG + qGreen( data[ current ] );
-      destB = srcB + qBlue( data[ current ] );
-      COLOR_SPACE;
-      destData[ current ] = qRgba( destR, destG, destB, qAlpha(data[ current ]) );
-   }
-   QPixmap pix = QPixmap::fromImage(*dest);
-   delete dest;
-   return pix;
-}
-
 static QPixmap mirror(const QPixmap &pix, Qt::Orientation o)
 {
    Display *dpy = QX11Info::display();
@@ -146,7 +92,7 @@ static GLuint _background;
 
 void (DynamicBrush::*updateBrush)();
 
-DynamicBrush::DynamicBrush(Mode mode, QObject *parent) : QObject(parent), _mode(mode), _glContext(0)
+DynamicBrush::DynamicBrush(Mode mode, QObject *parent) : QObject(parent), _mode(mode), _glContext(0), _isActiveWindow(true)
 {
    _timerBgWipe = new QTimer(this);
    connect (_timerBgWipe, SIGNAL(timeout()), this, SLOT(wipeBackground()));
@@ -160,9 +106,10 @@ DynamicBrush::DynamicBrush(Mode mode, QObject *parent) : QObject(parent), _mode(
       _glContext = new QGLWidget( QGLFormat::defaultFormat(), 0 );
       initGL();
       break;
-   case Tiled2: updateBrush = &DynamicBrush::updateBrushEdMetal; break;
-   case VerticalGradient: updateBrush = &DynamicBrush::updateBrushVerticalGradient; break;
-   case HorizontalGradient: updateBrush = &DynamicBrush::updateBrushHorizontalGradient; break;
+   case HGradient1:
+   case VGradient1: updateBrush = &DynamicBrush::updateBrushGradient1; generateTiles(mode); break;
+   case HGradient2:
+   case VGradient2: updateBrush = &DynamicBrush::updateBrushGradient2; generateTiles(mode); break;
    }
 }
 
@@ -171,25 +118,6 @@ DynamicBrush::DynamicBrush(OXPixmap pixmap, OXPixmap shadow, int bgYoffset, QObj
    _timerBgWipe = new QTimer(this);
    connect (_timerBgWipe, SIGNAL(timeout()), this, SLOT(wipeBackground()));
    updateBrush = &DynamicBrush::updateBrushTiled;
-}
-
-DynamicBrush::DynamicBrush(const QImage &leftCenter, const QImage &leftTile, QObject *parent) : QObject(parent), _mode(Tiled2),_glContext(0)
-{
-   _timerBgWipe = new QTimer(this);
-   connect (_timerBgWipe, SIGNAL(timeout()), this, SLOT(wipeBackground()));
-   updateBrush = &DynamicBrush::updateBrushEdMetal;
-   QColor c = QApplication::palette().color(QPalette::Active, QPalette::Window);
-   QMatrix mirror;
-   mirror.setMatrix ( -1, 0, 0, 1, 0, 0);
-   _center[0][0] = tint(leftCenter, c);
-   _center[0][1] = tint(leftCenter.mirrored(true, false), c);
-   _tile[0][0] = tint(leftTile, c);
-   _tile[0][1] = tint(leftTile.mirrored(true, false), c);
-   c = c.dark(110);
-   _center[1][0] = tint(leftCenter, c);
-   _center[1][1] = tint(leftCenter.mirrored(true, false), c);
-   _tile[1][0] = tint(leftTile, c);
-   _tile[1][1] = tint(leftTile.mirrored(true, false), c);
 }
 
 DynamicBrush::~DynamicBrush()
@@ -221,9 +149,74 @@ void DynamicBrush::setMode(Mode mode)
          initGL();
       }
       break;
-   case Tiled2: updateBrush = &DynamicBrush::updateBrushEdMetal; break;
-   case VerticalGradient: updateBrush = &DynamicBrush::updateBrushVerticalGradient; break;
-   case HorizontalGradient: updateBrush = &DynamicBrush::updateBrushHorizontalGradient; break;
+   case HGradient1:
+   case VGradient1: updateBrush = &DynamicBrush::updateBrushGradient1; generateTiles(mode); break;
+   case HGradient2:
+   case VGradient2: updateBrush = &DynamicBrush::updateBrushGradient2; generateTiles(mode); break;
+   }
+}
+
+void DynamicBrush::generateTiles(Mode mode)
+{
+   QLinearGradient lg1, lg2;
+   QPainter p;
+   for (int i = 0; i < 2; ++i)
+   {
+      _bgC[i] = QApplication::palette().color(i?QPalette::Active:QPalette::Inactive, QPalette::Window);
+      switch (mode)
+      {
+      case HGradient1:
+      {
+         _tile[i][0] = QPixmap(64,32);
+         _tile[i][1] = QPixmap(64,32);
+         QColor dark = _bgC[i].dark(105);
+         lg1 = QLinearGradient(QPoint(0,0), QPoint(64, 0));
+         lg1.setColorAt(0, dark); lg1.setColorAt(1, _bgC[i]);
+         lg2 = QLinearGradient(QPoint(0,0), QPoint(64, 0));
+         lg2.setColorAt(0, _bgC[i]); lg2.setColorAt(1, dark);
+         break;
+      }
+      case VGradient1:
+      {
+         _tile[i][0] = QPixmap(32,64);
+         _tile[i][1] = QPixmap(32,64);
+         lg1 = QLinearGradient(QPoint(0,0), QPoint(0, 64));
+         lg1.setColorAt(0, _bgC[i].light(105)); lg1.setColorAt(1, _bgC[i]);
+         lg2 = QLinearGradient(QPoint(0,0), QPoint(0, 64));
+         lg2.setColorAt(0, _bgC[i]); lg2.setColorAt(1, _bgC[i].dark(105));
+         break;
+      }
+      case HGradient2:
+      {
+         _tile[i][0] = QPixmap(512,32);
+         _tile[i][1] = QPixmap(512,32);
+         QColor light = _bgC[i].light(104);
+         lg1 = QLinearGradient(QPoint(0,0), QPoint(512, 0));
+         lg1.setColorAt(0, _bgC[i]); lg1.setColorAt(1, light);
+         lg2 = QLinearGradient(QPoint(0,0), QPoint(512, 0));
+         lg2.setColorAt(0, light); lg2.setColorAt(1, _bgC[i]);
+         break;
+      }
+      case VGradient2:
+      {
+         _tile[i][0] = QPixmap(32, 512);
+         _tile[i][1] = QPixmap(32, 512);
+         QColor light = _bgC[i].light(104);
+         lg1 = QLinearGradient(QPoint(0,0), QPoint(0, 512));
+         lg1.setColorAt(0, _bgC[i]); lg1.setColorAt(1, light);
+         lg2 = QLinearGradient(QPoint(0,0), QPoint(0, 512));
+         lg2.setColorAt(0, light); lg2.setColorAt(1, _bgC[i]);
+         break;
+      }
+      default:
+         return;
+      }
+      p.begin(&_tile[i][0]);
+      p.fillRect(_tile[i][0].rect(), lg1);
+      p.end();
+      p.begin(&_tile[i][1]);
+      p.fillRect(_tile[i][1].rect(), lg2);
+      p.end();
    }
 }
 
@@ -286,8 +279,8 @@ bool DynamicBrush::eventFilter ( QObject * object, QEvent * ev )
    }
 
    /* In case the demanded size differs from the one we have: make an update ;)*/
-   if (_size.width() != size.width() ||
-       (_mode != Tiled2 && _size.height() != size.height()))
+   if (((_size.width() != size.width()) && (_mode != VGradient1) && (_mode != VGradient2)) ||
+       ((_size.height() != size.height()) && (_mode != HGradient1) && (_mode != HGradient2)))
    {
       _size = size;
        (this->*updateBrush)();
@@ -370,92 +363,117 @@ void DynamicBrush::updateBrushTiled()
    SETBACKGROUND(qPix);
 }
 
-void DynamicBrush::updateBrushVerticalGradient()
+void DynamicBrush::updateBrushGradient1()
 {
-   QPixmap qPix(32, _size.height());
-   QColor c(QApplication::palette().color(QPalette::Window));
-   qPix.fill(c);
-   int h_8 = qPix.height()/8;
-   QLinearGradient lg(QPoint(0,0), QPoint(0, h_8));
-   lg.setColorAt(0, c.dark(105)); lg.setColorAt(1, c);
-   QPainter p(&qPix);
-   p.fillRect(0,0,32,h_8,lg);
-   lg = QLinearGradient(QPoint(0,qPix.height()-h_8), QPoint(0, qPix.height()-1));
-   lg.setColorAt(0, c); lg.setColorAt(1, c.light(105));
-   p.fillRect(0,qPix.height()-h_8,32,h_8,lg);
-   SETBACKGROUND(qPix);
-}
-
-void DynamicBrush::updateBrushHorizontalGradient()
-{
-   QPixmap qPix(_size.width(), 32);
-   QColor c(QApplication::palette().color(QPalette::Window));
-   qPix.fill(c);
-   QColor cl = c.light(105);
-   int w_8 = qPix.width()/8;
-   QLinearGradient lg(QPoint(0,0), QPoint(w_8, 0));
-   lg.setColorAt(0, cl); lg.setColorAt(1, c);
-   QPainter p(&qPix);
-   p.fillRect(0,0,w_8,32,lg);
-   lg = QLinearGradient(QPoint(qPix.width()-w_8,0), QPoint(qPix.width()-1, 0));
-   lg.setColorAt(0, c); lg.setColorAt(1, cl);
-   p.fillRect(qPix.width()-w_8,0,w_8,32,lg);
-   SETBACKGROUND(qPix);
-}
-
-
-void DynamicBrush::updateBrushEdMetal()
-{
-   if (!_glShadow.isNull())
-      _glShadow = QPixmap();
-   
-   Display *dpy = QX11Info::display();
-   int width = _size.width();
-   int height = _center[0][0].height();
-   float factor = MIN(1.0, ((float)width)/(2*_tile[0][0].width()+2*_center[0][0].width()));
-   int wt = (int) (factor * _tile[0][0].width());
-   int wc = (int) (factor * _center[0][0].width());
-   int x = width/2 - wc;
-   int i;
-   /* we tile this together from the tile and the center images
-      The full center should be used for window.width >= 2*tileWidth + centerpartWidth
-      below, the center/tile parts percentage is adjusted to the window percentage
-      relative to the above value
-   */
-   QPixmap qPix(width, height);
-   GC gc = XCreateGC( dpy, qPix.handle(), 0, 0 );
-   // left tile ==================
-   for (i = x-wt; i > -1; i-=wt)
-      XCopyArea( dpy, _tile[0][0].handle(), qPix.handle(), gc,
-                 0, 0, wt, height, i, 0 );
-   if (i != 0)
+   QPixmap qPix;
+   if (_mode == VGradient1)
    {
-      i = -i+1;
-      XCopyArea( dpy, _tile[0][0].handle(), qPix.handle(), gc,
-                  _tile[0][0].width()-i, 0, i, height, 0, 0 );
+      qPix = QPixmap(32, _size.height());
+      qPix.fill(_bgC[_isActiveWindow]);
+      QPainter p(&qPix);
+      int h = qMin(64,(qPix.height()+1)/2);
+      p.drawTiledPixmap( 0, 0, 32, h, _tile[_isActiveWindow][0], 0, 64-h );
+      h = qMin(64,(qPix.height())/2);
+      p.drawTiledPixmap( 0, qPix.height()-h, 32, h, _tile[_isActiveWindow][1] );
+      p.end();
    }
-   
-   // left center ==================
-   XCopyArea( dpy, _center[0][0].handle(), qPix.handle(), gc,
-              0, 0, wc, height, x, 0 );
-   x += wc;
-   // right center ==================
-   XCopyArea( dpy, _center[0][1].handle(), qPix.handle(), gc,
-              _center[0][1].width() - wc, 0, wc, height, x, 0 );
-   x += wc;
-   // right tile ==================
-   for (i = x; i < width-wt; i+=wt)
-      XCopyArea( dpy, _tile[0][1].handle(), qPix.handle(), gc,
-                 0, 0, wt, height, i, 0 );
-   if (i != width)
-      XCopyArea( dpy, _tile[0][1].handle(), qPix.handle(), gc,
-                  0, 0, width-i, height, i, 0 );
-   
-   XFreeGC ( dpy , gc );
-   
-   /* update  the brush textures*/
+   else // horizontal
+   {
+      qPix = QPixmap(_size.width(), 32);
+      qPix.fill(_bgC[_isActiveWindow]);
+      QPainter p(&qPix);
+      int w = qMin(64,(qPix.width()+1)/2);
+      p.drawTiledPixmap( 0, 0, w, 32, _tile[_isActiveWindow][0], 64-w );
+      w = qMin(64,(qPix.width())/2);
+      p.drawTiledPixmap( qPix.width()-w, 0, w, 32, _tile[_isActiveWindow][1] );
+      p.end();
+   }
    SETBACKGROUND(qPix);
 }
+
+void DynamicBrush::updateBrushGradient2()
+{
+   QPixmap qPix;
+   if (_mode == VGradient2)
+   {
+      qPix = QPixmap(32, _size.height());
+      qPix.fill(_bgC[_isActiveWindow]);
+      QPainter p(&qPix);
+      int h = qMin(512,(qPix.height()+1)/2);
+      int h_2 = qPix.height()/2;
+      p.drawTiledPixmap( 0, h_2-h, 32, h, _tile[_isActiveWindow][0], 0, (512-h)/2 );
+      h = qMin(512, h_2);
+      p.drawTiledPixmap( 0, h_2, 32, h, _tile[_isActiveWindow][1], 0, (512-h)/2 );
+      p.end();
+   }
+   else // horizontal
+   {
+      qPix = QPixmap(_size.width(), 32);
+      qPix.fill(_bgC[_isActiveWindow]);
+      QPainter p(&qPix);
+      int w = qMin(512,(qPix.width()+1)/2);
+      int w_2 = qPix.width()/2;
+      p.drawTiledPixmap( w_2-w, 0, w, 32, _tile[_isActiveWindow][0], (512-w)/2 );
+      w = qMin(512,w_2);
+      p.drawTiledPixmap( w_2, 0, w, 32, _tile[_isActiveWindow][1], (512-w)/2 );
+      p.end();
+   }
+   SETBACKGROUND(qPix);
+}
+
+
+// void DynamicBrush::updateBrushEdMetal()
+// {
+//    if (!_glShadow.isNull())
+//       _glShadow = QPixmap();
+//    
+//    Display *dpy = QX11Info::display();
+//    int width = _size.width();
+//    int height = _center[0][0].height();
+//    float factor = MIN(1.0, ((float)width)/(2*_tile[0][0].width()+2*_center[0][0].width()));
+//    int wt = (int) (factor * _tile[0][0].width());
+//    int wc = (int) (factor * _center[0][0].width());
+//    int x = width/2 - wc;
+//    int i;
+//    /* we tile this together from the tile and the center images
+//       The full center should be used for window.width >= 2*tileWidth + centerpartWidth
+//       below, the center/tile parts percentage is adjusted to the window percentage
+//       relative to the above value
+//    */
+//    QPixmap qPix(width, height);
+//    GC gc = XCreateGC( dpy, qPix.handle(), 0, 0 );
+//    // left tile ==================
+//    for (i = x-wt; i > -1; i-=wt)
+//       XCopyArea( dpy, _tile[0][0].handle(), qPix.handle(), gc,
+//                  0, 0, wt, height, i, 0 );
+//    if (i != 0)
+//    {
+//       i = -i+1;
+//       XCopyArea( dpy, _tile[0][0].handle(), qPix.handle(), gc,
+//                   _tile[0][0].width()-i, 0, i, height, 0, 0 );
+//    }
+//    
+//    // left center ==================
+//    XCopyArea( dpy, _center[0][0].handle(), qPix.handle(), gc,
+//               0, 0, wc, height, x, 0 );
+//    x += wc;
+//    // right center ==================
+//    XCopyArea( dpy, _center[0][1].handle(), qPix.handle(), gc,
+//               _center[0][1].width() - wc, 0, wc, height, x, 0 );
+//    x += wc;
+//    // right tile ==================
+//    for (i = x; i < width-wt; i+=wt)
+//       XCopyArea( dpy, _tile[0][1].handle(), qPix.handle(), gc,
+//                  0, 0, wt, height, i, 0 );
+//    if (i != width)
+//       XCopyArea( dpy, _tile[0][1].handle(), qPix.handle(), gc,
+//                   0, 0, width-i, height, i, 0 );
+//    
+//    XFreeGC ( dpy , gc );
+//    
+//    /* update  the brush textures*/
+//    SETBACKGROUND(qPix);
+// }
 
 #include <QTime>
 #define _PROFILESTART_ QTime timer; int time; timer.start();
@@ -697,133 +715,133 @@ void DynamicBrush::updateBrushQt()
    SETBACKGROUND(qPix);
 }
 
-QPixmap DynamicBrush::shadow(const QRect &rect)
-{
-   switch (_mode)
-   {
-   case Tiled2:
-   {
-      QPixmap qPix(rect.size());
-      int width = _size.width();
-      int height = rect.height();
-      float factor = MIN(1.0, ((float)width)/(2*_tile[0][0].width()+2*_center[0][0].width()));
-      int wt = (int) (factor * _tile[0][0].width());
-      int wc = (int) (factor * _center[0][0].width());
-      int x = width/2 - wc;
-      QPainter p(&qPix);
-      //left
-      p.drawTiledPixmap(-rect.x(), 0, x, height, _tile[1][0], x % wt);
-      //left center
-      x -= rect.x();
-      p.drawTiledPixmap(x, 0, wc, height, _center[1][0]);
-      // right center
-      x += wc;
-      p.drawTiledPixmap(x, 0, wc, height, _center[1][1], _center[1][0].width()-wc);
-      // right
-      x += wc;
-      p.drawTiledPixmap(x, 0, rect.right()-x, height, _tile[1][1]);
-      p.end();
-      return qPix;
-   }
-   case Tiled:
-   {
-      QPixmap qPix(rect.size());
-      Drawable x11d = qPix.handle();
-      Display *dpy = QX11Info::display();
-      GC gc = XCreateGC( dpy, x11d, 0, 0 );
-      
-      int ttbh = 20;
-      int W_TopOff = _bgYoffset - ttbh;
-      int W_xBottom = QApplication::desktop()->width() - _size.width();
-      int W_xTop = W_xBottom/3;
-      int W_w_2 = (_size.width()>>1);
-      // topleft geometry : W_xTop, ttbh, W_w_2, W_TopOff
-      // topright geometry : (W_xTop<<1) + W_w_2, ttbh, windowSize.width() - W_w_2, W_TopOff
-      // bottom geometry: W_xBottom, yoff, windowSize.width(), windowSize.height() - yoff
-      
-      // top left ----------------
-      if (rect.x() < W_w_2 && rect.y() < W_TopOff)
-      {
-         XCopyArea( dpy, _shadow, x11d, gc,
-                     W_xTop + rect.x(), ttbh + rect.y(),
-                     //widget->width() - (rect.x() + rect.width() - W_w_2),
-                     W_w_2 - rect.x(),
-                     //widget->height() - (rect.y() + rect.height() - W_TopOff),
-                     W_TopOff - rect.y(),
-                     0, 0 );
-      }
-      
-      // top right ----------------
-      if (rect.right() > W_w_2 && rect.y() < W_TopOff)
-      {
-         W_xTop = (W_xTop<<1) + W_w_2;
-         int x, xOff, w;
-         if (rect.x() < W_w_2)
-         {
-            w = rect.right() - W_w_2;
-            x = W_w_2 - rect.x();
-            xOff = W_xTop;
-         }
-         else
-         {
-            w = rect.width();
-            x = 0;
-            xOff = W_xTop + (rect.x() - W_w_2);
-         }
-         XCopyArea( dpy, _shadow, x11d, gc,
-                     xOff, ttbh + rect.y(), w, W_TopOff - rect.y(),
-                     x, 0 );
-      }
-      
-      // bottom center part ----------------
-      if (rect.bottom() > W_TopOff)
-      {
-         int h, y, yOff;
-         if (rect.y() < W_TopOff)
-         {
-            h = rect.y() + rect.height() - W_TopOff;
-            y = W_TopOff - rect.y();
-            yOff = _bgYoffset;
-         }
-         else
-         {
-            h = rect.height();
-            y = 0;
-            yOff = rect.y() + ttbh;
-         }
-         XCopyArea( dpy, _shadow, x11d, gc,
-                     W_xBottom + rect.x(), yOff, rect.width(), h,
-                     0, y );
-      }
-      XFreeGC ( dpy , gc );
-      return qPix;
-   }
-   case OpenGL:
-      if (_glShadow.isNull() || _lastShadowRect != rect )
-      {
-         _lastShadowRect = rect;
-         _glShadow = glPixmap(rect, 10);
-      }
-      return _glShadow;
-   case QtGradient:
-   case XRender:
-      if (_glShadow.isNull() || _lastShadowRect != rect )
-      {
-         _glShadow = QPixmap(rect.size());
-         _lastShadowRect = rect;
-         QColor c = QApplication::palette().color(QPalette::Window).light(105);
-         ColorArray ca = ColorArray() << c << c.dark(110);
-         QPoint center(_glShadow.width()/2, _glShadow.height());
-         int r = sqrt(pow(_glShadow.width()/2,2)+pow(_glShadow.height(),2));
-         OXPicture rg = OXRender::gradient(center, 0, center, r, ca);
-         XRenderComposite (QX11Info::display(), PictOpSrc, rg, None, _glShadow.x11PictureHandle(),
-                           0, 0, 0, 0, 0, 0, _glShadow.width(), _glShadow.height());
-         XRenderFreePicture(QX11Info::display(), rg);
-      }
-      return _glShadow;
-   }
-   return QPixmap();
-}
+// QPixmap DynamicBrush::shadow(const QRect &rect)
+// {
+//    switch (_mode)
+//    {
+//    case Tiled2:
+//    {
+//       QPixmap qPix(rect.size());
+//       int width = _size.width();
+//       int height = rect.height();
+//       float factor = MIN(1.0, ((float)width)/(2*_tile[0][0].width()+2*_center[0][0].width()));
+//       int wt = (int) (factor * _tile[0][0].width());
+//       int wc = (int) (factor * _center[0][0].width());
+//       int x = width/2 - wc;
+//       QPainter p(&qPix);
+//       //left
+//       p.drawTiledPixmap(-rect.x(), 0, x, height, _tile[1][0], x % wt);
+//       //left center
+//       x -= rect.x();
+//       p.drawTiledPixmap(x, 0, wc, height, _center[1][0]);
+//       // right center
+//       x += wc;
+//       p.drawTiledPixmap(x, 0, wc, height, _center[1][1], _center[1][0].width()-wc);
+//       // right
+//       x += wc;
+//       p.drawTiledPixmap(x, 0, rect.right()-x, height, _tile[1][1]);
+//       p.end();
+//       return qPix;
+//    }
+//    case Tiled:
+//    {
+//       QPixmap qPix(rect.size());
+//       Drawable x11d = qPix.handle();
+//       Display *dpy = QX11Info::display();
+//       GC gc = XCreateGC( dpy, x11d, 0, 0 );
+//       
+//       int ttbh = 20;
+//       int W_TopOff = _bgYoffset - ttbh;
+//       int W_xBottom = QApplication::desktop()->width() - _size.width();
+//       int W_xTop = W_xBottom/3;
+//       int W_w_2 = (_size.width()>>1);
+//       // topleft geometry : W_xTop, ttbh, W_w_2, W_TopOff
+//       // topright geometry : (W_xTop<<1) + W_w_2, ttbh, windowSize.width() - W_w_2, W_TopOff
+//       // bottom geometry: W_xBottom, yoff, windowSize.width(), windowSize.height() - yoff
+//       
+//       // top left ----------------
+//       if (rect.x() < W_w_2 && rect.y() < W_TopOff)
+//       {
+//          XCopyArea( dpy, _shadow, x11d, gc,
+//                      W_xTop + rect.x(), ttbh + rect.y(),
+//                      //widget->width() - (rect.x() + rect.width() - W_w_2),
+//                      W_w_2 - rect.x(),
+//                      //widget->height() - (rect.y() + rect.height() - W_TopOff),
+//                      W_TopOff - rect.y(),
+//                      0, 0 );
+//       }
+//       
+//       // top right ----------------
+//       if (rect.right() > W_w_2 && rect.y() < W_TopOff)
+//       {
+//          W_xTop = (W_xTop<<1) + W_w_2;
+//          int x, xOff, w;
+//          if (rect.x() < W_w_2)
+//          {
+//             w = rect.right() - W_w_2;
+//             x = W_w_2 - rect.x();
+//             xOff = W_xTop;
+//          }
+//          else
+//          {
+//             w = rect.width();
+//             x = 0;
+//             xOff = W_xTop + (rect.x() - W_w_2);
+//          }
+//          XCopyArea( dpy, _shadow, x11d, gc,
+//                      xOff, ttbh + rect.y(), w, W_TopOff - rect.y(),
+//                      x, 0 );
+//       }
+//       
+//       // bottom center part ----------------
+//       if (rect.bottom() > W_TopOff)
+//       {
+//          int h, y, yOff;
+//          if (rect.y() < W_TopOff)
+//          {
+//             h = rect.y() + rect.height() - W_TopOff;
+//             y = W_TopOff - rect.y();
+//             yOff = _bgYoffset;
+//          }
+//          else
+//          {
+//             h = rect.height();
+//             y = 0;
+//             yOff = rect.y() + ttbh;
+//          }
+//          XCopyArea( dpy, _shadow, x11d, gc,
+//                      W_xBottom + rect.x(), yOff, rect.width(), h,
+//                      0, y );
+//       }
+//       XFreeGC ( dpy , gc );
+//       return qPix;
+//    }
+//    case OpenGL:
+//       if (_glShadow.isNull() || _lastShadowRect != rect )
+//       {
+//          _lastShadowRect = rect;
+//          _glShadow = glPixmap(rect, 10);
+//       }
+//       return _glShadow;
+//    case QtGradient:
+//    case XRender:
+//       if (_glShadow.isNull() || _lastShadowRect != rect )
+//       {
+//          _glShadow = QPixmap(rect.size());
+//          _lastShadowRect = rect;
+//          QColor c = QApplication::palette().color(QPalette::Window).light(105);
+//          ColorArray ca = ColorArray() << c << c.dark(110);
+//          QPoint center(_glShadow.width()/2, _glShadow.height());
+//          int r = sqrt(pow(_glShadow.width()/2,2)+pow(_glShadow.height(),2));
+//          OXPicture rg = OXRender::gradient(center, 0, center, r, ca);
+//          XRenderComposite (QX11Info::display(), PictOpSrc, rg, None, _glShadow.x11PictureHandle(),
+//                            0, 0, 0, 0, 0, 0, _glShadow.width(), _glShadow.height());
+//          XRenderFreePicture(QX11Info::display(), rg);
+//       }
+//       return _glShadow;
+//    }
+//    return QPixmap();
+// }
 
 #if 0 // this is some stored code - yet not used, but maybe later on
 

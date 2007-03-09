@@ -252,7 +252,7 @@ void OxygenStyle::generatePixmaps()
    p.setCompositionMode( QPainter::CompositionMode_DestinationIn );
    p.setBrush(QColor(0,0,0,0)); p.drawRoundRect(dpi.$4,dpi.$2,$49-dpi.$8,2*$49,11,6);
    p.setCompositionMode( QPainter::CompositionMode_SourceOver );
-   p.setPen(QColor(255,255,255,160)); p.setBrush(Qt::NoBrush);
+   p.setPen(QColor(255,255,255,200)); p.setBrush(Qt::NoBrush);
    p.drawRoundRect(dpi.$4,dpi.$2,$49-dpi.$8,2*$49,11,6);
    p.setRenderHint(QPainter::Antialiasing, false);
    p.setCompositionMode( QPainter::CompositionMode_DestinationIn );

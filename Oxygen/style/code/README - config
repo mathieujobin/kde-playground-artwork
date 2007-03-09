@@ -1,0 +1,47 @@
+Config file path:
+~/.config/Oxygen/Style.conf
+
+style section: (with def. values)
+
+[Style]
+# controls the way the huge bg pixmaps (BackgroundMode=3) are created
+# 0: No acceleration, the pixmap is fetched from a daemon "oxygenPP" that MUST be running if you wanna use this (maybe removed)
+# 1: the QGradient classes are used (afaics pure software) - slow
+# 2: XRender, *use this*, currently the fastest and in matters of color best adjusted function
+# 3: OpenGL, currently too dark - slow as long as we don't have HW for gl_ext_pixmap_from_texture...
+Acceleration=2
+
+# the background appereance
+# 0: plain color
+# 1: the beloved scanlines - don't argue, they'll stay ;)
+# 2: [reserved]
+# 3: complex lights (i.e. huge pixmap with several gradients, see above)
+BackgroundMode=3
+
+# 0: X
+# 1: V
+# 2: O
+CheckType=0
+
+# not fully supportes yet, don't try values < 1 here (if you want a stable desktop ;)
+Scale=1.0
+
+# affects the scanlines
+# 0: scanlines
+# 1: checkboard
+# 2: should have been bricks, looks crap ;P
+Structure=0
+
+# the way of tabblending
+# 0: Jump
+# 1: CrossFade
+# 2: ScanlineBlend
+# 3: SlideIn
+# 4: SlideOut
+# 5: RollIn
+# 6: RollOut
+# 7: OpenVertically
+# 8: CloseVertically
+# 9: OpenHorizontally
+# 10: CloseHorizontally
+TabTransition=1
