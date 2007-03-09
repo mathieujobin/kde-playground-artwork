@@ -286,15 +286,15 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                saveFlags &= ~State_Enabled;
          
          // erase
-         QPixmap bgPix = PAL.brush(QPalette::Window).texture();
-         if (bgPix.isNull())
-            painter->fillRect(RECT, COLOR(Window));
-         else
-         {
-            QPoint zero(0,0);
-            zero = widget->mapTo(widget->topLevelWidget(), zero);
-            painter->drawTiledPixmap( RECT, bgPix, zero);
-         }
+//          QPixmap bgPix = PAL.brush(QPalette::Window).texture();
+//          if (bgPix.isNull())
+//             painter->fillRect(RECT, COLOR(Window));
+//          else
+//          {
+//             QPoint zero(0,0);
+//             zero = widget->mapTo(widget->topLevelWidget(), zero);
+//             painter->drawTiledPixmap( RECT, bgPix, zero);
+//          }
          
 #define PAINT_ELEMENT(_SC_, _CE_)\
          if (scrollbar->subControls & _SC_)\

@@ -1116,7 +1116,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       }
       else
       {
-         r = RECT.adjusted(RECT.width()/3+dpi.$1,0,-RECT.width()/3+dpi.$1,0);
+         r = RECT.adjusted(RECT.width()/3,0,-RECT.width()/3,0);
          size = r.width(); direction = Qt::Horizontal;
          c = r.x()+r.width()/2;
       }

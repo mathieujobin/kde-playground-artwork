@@ -166,7 +166,7 @@ void VisualFrame::paintEvent ( QPaintEvent * event )
    style()->drawPrimitive(QStyle::PE_Frame, &opt, &p, this);
    p.end();
 }
-#include <QtDebug>
+
 void VisualFrame::passDownEvent(QEvent *ev, const QPoint &gMousePos)
 {
    // the raised frames don't look like you could click in, we'll see if this should be chnged...
@@ -175,14 +175,19 @@ void VisualFrame::passDownEvent(QEvent *ev, const QPoint &gMousePos)
       return;
    QList<QWidget *> candidates = frame->findChildren<QWidget *>();
    QList<QWidget *>::const_iterator i = candidates.constEnd();
+   QWidget *match = 0;
    while (i != candidates.constBegin()) {
       --i;
       if (*i == this)
          continue;
       if ((*i)->rect().contains((*i)->mapFromGlobal(gMousePos)))
+      {
+         match = *i;
          break;
+      }
    }
-   QCoreApplication::sendEvent( *i, ev );
+   if (!match) match = frame;
+   QCoreApplication::sendEvent( match, ev );
 }
 
 void VisualFrame::mouseDoubleClickEvent ( QMouseEvent * event ) { passDownEvent((QEvent *)event, event->globalPos()); }
@@ -844,6 +849,9 @@ void OxygenStyle::polish( QWidget * widget)
        || widget->inherits("Q3DockWindowResizeHandle")
       )
          widget->setAttribute(Qt::WA_Hover);
+   
+   if (qobject_cast<QScrollBar *>(widget))
+      widget->setAttribute(Qt::WA_OpaquePaintEvent, false);
    
    if (qobject_cast<QProgressBar*>(widget))
    {
