@@ -126,13 +126,13 @@ void SUSE2Config::load(KConfig *)
     int titlebarStyle = m_config->readNumEntry("TitleBarStyle", 0);
     m_dialog->titlebarStyle->setCurrentItem(titlebarStyle);
 
-    int titleButtonType = m_config->readNumEntry("TitleBarButtonType", 0);
+    int titleButtonType = m_config->readNumEntry("TitleBarButtonType", 2);
     m_dialog->buttonType->setCurrentItem(titleButtonType);
 
     bool customColors = m_config->readBoolEntry("CustomColors", false);
     m_dialog->customColors->setChecked(customColors);
 
-    bool useTitleProps = m_config->readBoolEntry("UseTitleProps", false);
+    bool useTitleProps = m_config->readBoolEntry("UseTitleProps", true);
     m_dialog->useTitleProps->setChecked(useTitleProps);
 
     bool animateButtons = m_config->readBoolEntry("AnimateButtons", true);
@@ -163,10 +163,10 @@ void SUSE2Config::load(KConfig *)
     QColor iBgColor = m_config->readColorEntry("AFgColor", &ibgcolor);
     m_dialog->inactiveBgColor->setColor(iBgColor);
 
-    bool iconShadow = m_config->readBoolEntry("IconShadow", false);
+    bool iconShadow = m_config->readBoolEntry("IconShadow", true);
     m_dialog->iconShadow->setChecked(iconShadow);
 
-    bool titleBarLogo = m_config->readBoolEntry("TitleBarLogo", true);
+    bool titleBarLogo = m_config->readBoolEntry("TitleBarLogo", false);
     m_dialog->titleBarLogo->setChecked(titleBarLogo);
 
     int titleBarLogoOffset = m_config->readNumEntry("TitleBarLogoOffset", 3);
@@ -213,7 +213,7 @@ void SUSE2Config::save(KConfig *) const
 
 void SUSE2Config::defaults()
 {
-    QRadioButton *alignButton = (QRadioButton*)m_dialog->titleAlign->child("AlignHCenter");
+    QRadioButton *alignButton = (QRadioButton*)m_dialog->titleAlign->child("AlignLeft");
     if (alignButton) alignButton->setChecked(true);
     QRadioButton *roundButton = (QRadioButton*)m_dialog->roundCorners->child("NotMaximized");
     if (roundButton) roundButton->setChecked(true);
@@ -222,9 +222,9 @@ void SUSE2Config::defaults()
     m_dialog->addSpace->setValue(4);
     m_dialog->titlebarStyle->setCurrentItem(0);
 
-    m_dialog->buttonType->setCurrentItem(0);
+    m_dialog->buttonType->setCurrentItem(2);
     m_dialog->customColors->setChecked(false);
-    m_dialog->useTitleProps->setChecked(false);
+    m_dialog->useTitleProps->setChecked(true);
     m_dialog->animateButtons->setChecked(true);
     m_dialog->redCloseButton->setChecked(false);
     m_dialog->iconSize->setValue(45);
@@ -233,9 +233,9 @@ void SUSE2Config::defaults()
     m_dialog->activeBgColor->setColor(QColor(210, 220, 240));
     m_dialog->inactiveFgColor->setColor(QColor(40, 40, 40));
     m_dialog->inactiveBgColor->setColor(QColor(240, 240, 240));
-    m_dialog->iconShadow->setChecked(false);
+    m_dialog->iconShadow->setChecked(true);
 
-    m_dialog->titleBarLogo->setChecked(true);
+    m_dialog->titleBarLogo->setChecked(false);
     m_dialog->titleBarLogoOffset->setValue(3);
     titlebarLogoURL = locate("data", "kwin/pics/titlebar_decor.png");
     QImage tmpLogo = QImage::QImage(titlebarLogoURL);
