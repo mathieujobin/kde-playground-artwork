@@ -76,9 +76,11 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       else if (hover) gt = GradGloss;
       else if (isDefault) gt = GradSimple;
       
-      QColor c = btnBgColor(PAL, isEnabled, hasFocus, isDefault);
-
+      if (hasFocus)
+         masks.button.outline(RECT, painter, COLOR(Highlight));
       shadows.button[isEnabled].render(RECT, painter, Tile::Ring);
+      
+      QColor c = btnBgColor(PAL, isEnabled, false, isDefault);
       QRect ir = RECT.adjusted($2,$1,-$2,-dpi.$3);
       fillWithMask(painter, ir, gradient(c, ir.height(), Qt::Vertical, gt), &masks.button);
       frames.button[isEnabled].render(ir,painter,Tile::Ring);
@@ -121,6 +123,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
    }
    case PE_FrameFocusRect: // Generic focus indicator.
    {
+      //TODO: THIS IS UUUUGLYYY!!!
       painter->save();
       painter->setBrush(Qt::NoBrush);
       painter->setPen(COLOR(Highlight));
@@ -221,19 +224,19 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
 
       int $2 = dpi.$2; int $1 = dpi.$1;
 
+      if (hasFocus)
+         masks.button.outline(RECT, painter, COLOR(Highlight));
       shadows.button[isEnabled].render(RECT,painter,Tile::Ring);
       
-      QColor c = btnBgColor(PAL, isEnabled, hasFocus);
+      QColor c = btnBgColor(PAL, isEnabled, false);
       
       QRect ir = RECT.adjusted($2,dpi.$1,-$2,-dpi.$3);
       fillWithMask(painter, ir, gradient(c, ir.height(), Qt::Vertical, gt), &masks.button);
-//       if (hasFocus)
-//          masks.button.outline(ir, painter, COLOR(Highlight));
       frames.button[isEnabled].render(ir,painter,Tile::Ring);
       
       if (!(sunken || (option->state & State_Off)))
       {
-         c = btnFgColor(PAL, isEnabled, hasFocus);
+         c = btnFgColor(PAL, isEnabled, false);
          QPen oldPen = painter->pen();
          bool hadAntiAlias = painter->renderHints() & QPainter::Antialiasing;
          painter->setRenderHint(QPainter::Antialiasing);
@@ -272,33 +275,34 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
    case PE_IndicatorRadioButton: // Exclusive on/off indicator, for example, a QRadioButton.
    {
       bool isOn = option->state & State_On;
-      sunken = sunken || isOn;
+      if (isOn) sunken = false;
       hover = hover && !isOn;
-      int $2 = dpi.$2;
+      int $2 = dpi.$2, $1 = dpi.$1;
       
-      QColor c = btnBgColor(PAL, isEnabled, hasFocus);
-      GradientType gt = hover ? GradRadialGloss : GradButton;
+      QColor c = btnBgColor(PAL, isEnabled, false);
+      GradientType gt = sunken ? GradSunken : (hover ? GradGloss/*GradRadialGloss*/ : GradButton);
       QPoint xy = RECT.topLeft();
+      if (hasFocus)
+      {
+         painter->save(); QPen pen = painter->pen();
+         pen.setColor(COLOR(Highlight)); pen.setWidth($1);
+         painter->setPen(pen); painter->setBrush(Qt::NoBrush);
+         painter->setRenderHint(QPainter::Antialiasing);
+         painter->drawEllipse(xy.x()+$1, xy.y()+$1, dpi.ExclusiveIndicator-$2, dpi.ExclusiveIndicator-$2);
+         painter->restore();
+      }
       painter->drawPixmap(xy, shadows.radio[isEnabled]);
       
-      xy += QPoint($2,dpi.$1);
+      xy += QPoint($2,$1);
       int sz = dpi.ExclusiveIndicator - dpi.$4;
       fillWithMask(painter, xy, gradient(c, sz, Qt::Vertical, gt), masks.radio);
-//       if (hasFocus)
-//       {
-//          painter->save();
-//          painter->setPen(COLOR(Highlight)); painter->setBrush(Qt::NoBrush);
-//          painter->setRenderHint(QPainter::Antialiasing);
-//          painter->drawEllipse(xy.x(), xy.y(), sz, sz);
-//          painter->restore();
-//       }
       xy += QPoint($2,$2);
       sz -= dpi.$4;
-      if (isEnabled)
-         fillWithMask(painter, xy, gradient(c, sz, Qt::Vertical, GradSunken), masks.radioGroove);
+//       if (isEnabled)
+//          fillWithMask(painter, xy, gradient(c, sz, Qt::Vertical, GradSunken), masks.radioGroove);
       if (isOn)
       {
-         QColor c = btnFgColor(PAL, isEnabled, hasFocus);
+         QColor c = btnFgColor(PAL, isEnabled, false);
          xy += QPoint($2,$2);
          fillWithMask(painter, xy, gradient(c, sz, Qt::Vertical, GradRadialGloss), masks.radioIndicator);
       }
@@ -338,11 +342,12 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
             mask = &masks.button;
          }
          
-         QPoint zero; QPalette::ColorRole role = widget->backgroundRole();
+         QPoint zero;
+         const QBrush *brush = &PAL.brush(widget->backgroundRole());
          if (qobject_cast<const QFrame*>(widget)) { // frame, can be killed unless...
             if (widget->inherits("QTextEdit")) { // ...it's a TextEdit!
                niceFrame = true;
-               inverse = false; role = QPalette::Base;
+               inverse = false; brush = &PAL.brush(QPalette::Base);
             }
             else { // maybe we need to corect a textlabels margin
                if (const QLabel* label = qobject_cast<const QLabel*>(widget))
@@ -352,6 +357,8 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
             }
          }
          else if (qobject_cast<const VisualFrame*>(widget)) {
+            if (widget->parentWidget() && widget->parentWidget()->parentWidget())
+               brush = &PAL.brush(widget->parentWidget()->parentWidget()->backgroundRole());
             niceFrame = true;
             zero = widget->mapTo(widget->topLevelWidget(), QPoint(0,0));
             if (!sunken) {
@@ -363,7 +370,9 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
             }
          }
          if (niceFrame) {
-            fillWithMask(painter, rect, PAL.brush(role), mask, Tile::Full, false, zero, inverse, outerRect);
+            fillWithMask(painter, rect, *brush, mask, Tile::Full, false, zero, inverse, outerRect);
+            if (hasFocus)
+               mask->outline(rect, painter, COLOR(Highlight));
             shadow->render(RECT, painter);
             break;
          }

@@ -208,7 +208,7 @@ void Set::outline(const QRect &r, QPainter *p, QColor c, PosFlags pf) const
    pen.setColor(c); pen.setWidth(1);
    p->setPen(pen);
    p->setBrush(Qt::NoBrush);
-   QRect rect = r;
+   QRect rect = r.adjusted(1,1,-1,-1);
    if (! (pf & Top))
       rect.setTop(rect.top()-100);
    if (! (pf & Left))

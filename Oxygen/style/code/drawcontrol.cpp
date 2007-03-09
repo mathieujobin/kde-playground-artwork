@@ -202,7 +202,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          if (btn->features & QStyleOptionButton::Flat)
             fc = PAL.color(QPalette::WindowText);
          else
-            fc = btnFgColor(PAL, isEnabled, hasFocus, isDefault);
+            fc = btnFgColor(PAL, isEnabled, false, isDefault);
 //          if (hasFocus) // dark background, let's paint an emboss
 //          {
 //             painter->setPen(COLOR(Highlight));

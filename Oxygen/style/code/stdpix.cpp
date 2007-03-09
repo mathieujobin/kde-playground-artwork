@@ -23,8 +23,13 @@
 #include <QPainter>
 #include <QPen>
 #include "oxygen.h"
+#include "inlinehelp.cpp"
+
+#define COLOR(_TYPE_) pal.color(QPalette::_TYPE_)
 
 using namespace Oxygen;
+
+extern Dpi dpi;
 
 QPixmap OxygenStyle::standardPixmap ( StandardPixmap standardPixmap, const QStyleOption * option, const QWidget * widget ) const
 {
@@ -34,7 +39,7 @@ QPixmap OxygenStyle::standardPixmap ( StandardPixmap standardPixmap, const QStyl
    if (opt)
    {
       pal = opt->palette;
-      rect = QRect(0, 0, opt->rect.width(), opt->rect.height());
+      rect = opt->rect; rect.moveTo(0,0);
       pm = QPixmap(opt->rect.size());
    }
    else // checking widget settings turned out to be a stupid idea, who knows what TT meant this for....
@@ -57,43 +62,47 @@ QPixmap OxygenStyle::standardPixmap ( StandardPixmap standardPixmap, const QStyl
    int left(0), right(0), top(0), bottom(0);
    if (SP_TitleBarMenuButton < standardPixmap && standardPixmap <= SP_TitleBarContextHelpButton)
    {
-      QColor bc = pal.color(QPalette::WindowText);
-      QColor fc = pal.color(QPalette::Window);
-      if (opt && opt->state & (State_Sunken | State_MouseOver))
+      QColor bc, fc;
+      switch (standardPixmap)
       {
-         switch (standardPixmap)
-         {
-         case SP_TitleBarMinButton: //  1  Minimize button on title bars (e.g., in QWorkspace)
-            fc = Qt::black;
-            bc = Qt::yellow;
-            break;
-         case SP_TitleBarNormalButton: //  4  Normal (restore) button on title bars
-            fc = Qt::black;
-            if (opt && opt->titleBarState == Qt::WindowMaximized)
-               bc = Qt::green;
-            else
-               bc = Qt::yellow;
-            break;
-         case SP_TitleBarMaxButton: //  2  Maximize button on title bars
+      case SP_TitleBarMinButton: //  1  Minimize button on title bars (e.g., in QWorkspace)
+         fc = Qt::black;
+         bc = Qt::yellow;
+         break;
+      case SP_TitleBarNormalButton: //  4  Normal (restore) button on title bars
+         fc = Qt::black;
+         if (opt && opt->titleBarState == Qt::WindowMaximized)
             bc = Qt::green;
-            fc = Qt::black;
-            break;
-         case SP_DockWidgetCloseButton:
-         case SP_TitleBarCloseButton:
-            bc = Qt::red;
-            fc = Qt::white;
-            break;
-         default:
-            ;
-         }
+         else
+            bc = Qt::yellow;
+         break;
+      case SP_TitleBarMaxButton: //  2  Maximize button on title bars
+         bc = Qt::green;
+         fc = Qt::black;
+         break;
+      case SP_DockWidgetCloseButton:
+      case SP_TitleBarCloseButton:
+         bc = Qt::red;
+         fc = Qt::white;
+         break;
+      default:
+         bc = COLOR(Window);
+         fc = COLOR(WindowText);
       }
-      if (opt && opt->state & State_Sunken) // pressed
-         fillWithMask(&painter, rect, gradient(bc, rect.height(), Qt::Vertical, GradSunken ), &masks.button);
-      else if (opt && opt->state & State_MouseOver) // hovered
-         fillWithMask(&painter, rect, gradient(bc, rect.height(), Qt::Vertical, GradSimple ), &masks.button);
-      else // basic
-         painter.drawTiledPixmap(ir, gradient(pal.color(QPalette::WindowText), ir.height(), Qt::Vertical));
-      shadows.lineEdit[1].render(rect, &painter);
+      bool sunken = false, isEnabled = false, hover = false;
+      if (option)
+      {
+         sunken = option->state & State_Sunken;
+         isEnabled = option->state & State_Enabled;
+         hover = isEnabled && (option->state & State_MouseOver);
+      }
+      QPoint xy = rect.topLeft();
+      painter.drawPixmap(xy, shadows.radio[1]);
+      xy += QPoint(dpi.$2,dpi.$1);
+      int sz = dpi.ExclusiveIndicator - dpi.$4;
+      GradientType gt = (sunken)?GradSunken:(hover?GradGloss:GradButton);
+      fillWithMask(&painter, xy, gradient(isEnabled?midColor(COLOR(Window), bc, 2, 1):COLOR(Window), sz, Qt::Vertical, gt), masks.radio);
+      painter.end(); return pm;
       QPen pen = painter.pen();
       pen.setWidth(rect.height()/4);
       pen.setColor(fc);
@@ -224,3 +233,5 @@ QPixmap OxygenStyle::standardPixmap ( StandardPixmap standardPixmap, const QStyl
 #endif
    return pm;
 }
+
+#undef COLOR

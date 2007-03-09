@@ -150,7 +150,7 @@ int OxygenStyle::pixelMetric ( PixelMetric pm, const QStyleOption * option, cons
    case PM_SplitterWidth: // Width of a splitter
       return dpi.$9;
    case PM_TitleBarHeight: // Height of the title bar
-      return dpi.$18;
+      return dpi.ExclusiveIndicator;
    case PM_IndicatorWidth: // Width of a check box indicator
    case PM_IndicatorHeight: // Height of a checkbox indicator
       return dpi.Indicator;

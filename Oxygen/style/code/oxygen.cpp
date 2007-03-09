@@ -157,11 +157,15 @@ void VisualFrame::paintEvent ( QPaintEvent * event )
    QFrame *frame = static_cast<QFrame*>(parent());
    QPainter p(this);
    p.setClipRegion(event->region(), Qt::IntersectClip);
-   QStyleOption opt; opt.initFrom(this);
+   QStyleOption opt;
    if (frame->frameShadow() == QFrame::Raised)
       opt.state |= QStyle::State_Raised;
    else
       opt.state |= QStyle::State_Sunken;
+   if (frame->hasFocus())
+      opt.state |= QStyle::State_HasFocus;
+   if (frame->isEnabled())
+      opt.state |= QStyle::State_Enabled;
    opt.rect = rect();
    style()->drawPrimitive(QStyle::PE_Frame, &opt, &p, this);
    p.end();
@@ -196,18 +200,24 @@ void VisualFrame::mousePressEvent ( QMouseEvent * event ) { passDownEvent((QEven
 void VisualFrame::mouseReleaseEvent ( QMouseEvent * event ) { passDownEvent((QEvent *)event, event->globalPos()); }
 void VisualFrame::wheelEvent ( QWheelEvent * event ) { passDownEvent((QEvent *)event, event->globalPos()); }
 
-bool VisualFrame::eventFilter ( QObject * o, QEvent * ev )
-{
-   if (ev->type() == QEvent::ZOrderChange && o == this)
-   {
+bool VisualFrame::eventFilter ( QObject * o, QEvent * ev ) {
+   if (ev->type() == QEvent::ZOrderChange && o == this) {
       this->raise();
       return false;
    }
-   if (ev->type() == QEvent::Resize && o == parent())
-   {
+   if (o != parent()) {
+      o->removeEventFilter(this);
+      return false;
+   }
+   if (ev->type() == QEvent::Resize) {
       QRect rect = static_cast<QFrame*>(o)->frameRect();
       move(rect.topLeft()); resize(rect.size());
       setMask(QRegion(rect).subtracted(rect.adjusted(off[0],off[1],-off[2],-off[3])));
+      return false;
+   }
+   if (ev->type() == QEvent::FocusIn ||
+       ev->type() == QEvent::FocusOut) {
+      update();
       return false;
    }
    return false;
@@ -934,7 +944,7 @@ void OxygenStyle::polish( QWidget * widget)
             foreach (VisualFrame* vf, vfs)
                if (vf->parent() == frame) addVF = false;
             if (addVF)
-               new VisualFrame(frame, dpi.$4, dpi.$4, dpi.$4, frame->frameShadow() == QFrame::Sunken ? 0 : dpi.$4);
+               new VisualFrame(frame, dpi.$4, dpi.$4, dpi.$4, frame->frameShadow() == QFrame::Sunken ? dpi.$1 : dpi.$4);
          }
       }
    }
@@ -1112,6 +1122,8 @@ void OxygenStyle::unPolish( QWidget *widget )
       widget->removeEventFilter(this);
    if (_bgBrush)
       widget->removeEventFilter(this);
+   if (qobject_cast<VisualFrame*>(widget))
+      widget->deleteLater();
 //    w->removeEventFilter(this);
 //    if (w->isTopLevel() || qobject_cast<QGroupBox*>(w) || w->inherits("KActiveLabel"))
 //       w->setPalette(QPalette());
