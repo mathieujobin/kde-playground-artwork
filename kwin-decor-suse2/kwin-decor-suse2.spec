@@ -12,7 +12,7 @@ URL:          http://www.gerdfleischer.de/kwin-decor-suse2/
 License:      GPL
 Group:        System/GUI/KDE
 Summary:      The KDE window decoration from SUSE 9.3 - 10.1
-Version:      0.4
+Version:      0.4.1rc1
 Release:      1
 BuildRoot:    %{_tmppath}/%{name}-%{version}-build
 Source:       %name-%version.tar.bz2

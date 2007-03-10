@@ -114,7 +114,7 @@ void SUSE2Config::load(KConfig *)
     QRadioButton *roundButton = (QRadioButton*)m_dialog->roundCorners->child(roundValue.latin1());
     if (roundButton) roundButton->setChecked(true);
 
-    bool menuClose = m_config->readBoolEntry("CloseOnMenuDoubleClick", true);
+    bool menuClose = m_config->readBoolEntry("CloseOnMenuDoubleClick", false);
     m_dialog->menuClose->setChecked(menuClose);
 
     bool titleShadow = m_config->readBoolEntry("TitleShadow", true);
