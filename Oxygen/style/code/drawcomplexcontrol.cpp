@@ -74,13 +74,21 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             hover = isEnabled && (sb->activeSubControls == SC_SpinBoxUp);
             
 //             shadows.button[1].render(copy.rect, painter, pf);
-            copy.rect.adjust(2,2,-2,0);
+//             copy.rect.adjust(2,2,-2,0);
 //             gt = (isEnabled && hover) ? (sunken ? GradSunken : GradGloss) : GradButton;
 //             fillWithMask(painter, copy.rect, gradient(COLOR(Button), RECT.height(), Qt::Vertical, gt),
 //                          &masks.button, pf | Tile::Center);
             
-            int dx = copy.rect.width()/5, dy = copy.rect.height()/5;
-            copy.rect.adjust(dx, dy,-dx,-dy);
+            int dx = copy.rect.width()/4, dy = copy.rect.height()/4;
+            copy.rect.adjust(dx, 2*dy,-dx,-dpi.$1);
+            
+            if (!sunken)
+            {
+               painter->setPen(COLOR(Base).dark(105));
+               copy.rect.translate(dpi.$2, dpi.$2);
+               drawPrimitive(PE_IndicatorArrowUp, &copy, painter, widget);
+               copy.rect.translate(-dpi.$2, -dpi.$2);
+            }
             
             QColor c;
             if (hover)
@@ -104,14 +112,22 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             hover = isEnabled && (sb->activeSubControls == SC_SpinBoxDown);
             
 //             shadows.button[1].render(copy.rect, painter, pf);
-            copy.rect.adjust(2,0,-2,-2);
+//             copy.rect.adjust(2,0,-2,-2);
 //             gt = (isEnabled && hover) ? (sunken ? GradSunken : GradGloss) : GradButton;
 
 //             fillWithMask(painter, copy.rect, gradient(COLOR(Button), RECT.height(), Qt::Vertical, gt), &masks.button,
 //                          pf | Tile::Center, false, QPoint(0,-uh));
             
-            int dx = copy.rect.width()/5, dy = copy.rect.height()/5;
-            copy.rect.adjust(dx, dy,-dx,-dy);
+            int dx = copy.rect.width()/4, dy = copy.rect.height()/4;
+            copy.rect.adjust(dx, dpi.$1,-dx,-2*dy);
+            
+            if (!sunken)
+            {
+               painter->setPen(COLOR(Base).dark(105));
+               copy.rect.translate(dpi.$2, dpi.$2);
+               drawPrimitive(PE_IndicatorArrowDown, &copy, painter, widget);
+               copy.rect.translate(-dpi.$2, -dpi.$2);
+            }
             
             QColor c;
             if (hover)

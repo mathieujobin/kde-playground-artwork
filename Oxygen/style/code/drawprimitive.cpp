@@ -152,17 +152,21 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       painter->setRenderHint(QPainter::Antialiasing);
       painter->setBrush(painter->pen().brush());
       
+      int w = RECT.width();
+      
       // we want a golden mean cut arrow ;) 1:1.6180339887498948482
       int x[3], y[2];
-      if (RECT.width() <  8*RECT.height()/5)
+      if (w <  8*RECT.height()/5)
       {
-         x[0] = RECT.x(); x[1] = RECT.right(); x[2] = x[0] + RECT.width()/2;
-         int h = 5*RECT.width()/8;
+         if (w%2) --w;
+         x[0] = RECT.x(); x[1] = RECT.right(); x[2] = x[0] + w/2;
+         int h = 5*w/8;  if (!(h%2)) --h;
          y[0] = RECT.y() + (RECT.height()-h)/2; y[1] = y[0] + h;
       }
       else
       {
-         int w = 8*RECT.height()/5;
+         w = 8*RECT.height()/5;
+         if (w%2) --w;
          x[0] = RECT.x() + (RECT.width()-w)/2; x[1] = x[0] + w; x[2] = x[0] + w/2;
          y[0] = RECT.y(); y[1] = RECT.bottom();
       }
@@ -188,16 +192,18 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       QBrush oldBrush = painter->brush();
       painter->setRenderHint(QPainter::Antialiasing);
       painter->setBrush(painter->pen().color());
-      int x[2], y[3];
-      if (RECT.height() <  8*RECT.width()/5)
+      int x[2], y[3], h = RECT.height();
+      if (h <  8*RECT.width()/5)
       {
-         y[0] = RECT.y(); y[1] = RECT.bottom(); y[2] = y[0] + RECT.height()/2;
-         int w = 5*RECT.height()/8;
+         if (h%2) --h;
+         y[0] = RECT.y(); y[1] = RECT.bottom(); y[2] = y[0] + h/2;
+         int w = 5*h/8; if (!(w%2)) --w;
          x[0] = RECT.x() + (RECT.width()-w)/2; x[1] = x[0] + w;
       }
       else
       {
-         int h = 8*RECT.width()/5;
+         h = 8*RECT.width()/5;
+         if (h%2) --h;
          y[0] = RECT.y() + (RECT.height()-h)/2; y[1] = y[0] + h; y[2] = y[0] + h/2;
          x[0] = RECT.x(); x[1] = RECT.right();
       }
