@@ -80,7 +80,10 @@ inline QColor midColor(const QColor &oc1, const QColor &c2, int w1 = 1, int w2 =
       c1.getHsv(&h,&s,&v);
       c1.setHsv(h,s,70);
    }
-   return QColor((w1*c1.red() + w2*c2.red())/sum,(w1*c1.green() + w2*c2.green())/sum,(w1*c1.blue() + w2*c2.blue())/sum);
+   return QColor((w1*c1.red() + w2*c2.red())/sum,
+                 (w1*c1.green() + w2*c2.green())/sum,
+                 (w1*c1.blue() + w2*c2.blue())/sum,
+                 (w1*c1.alpha() + w2*c2.alpha())/sum);
 }
 
 #define COLOR(_ROLE_) pal.color(QPalette::_ROLE_)

@@ -668,12 +668,13 @@ void OxygenStyle::fillWithMask(QPainter *painter, const QRect &rect, const QBrus
    w = qMin(corner.width(), ((_CORNER_) & Tile::Top) ? w : rect.width()-w);\
    h = rect.height()/2;\
    h = qMin(corner.height(), ((_CORNER_) & Tile::Top) ? h : rect.height()-h);\
-   p.begin(&fill);\
-   if (pixmode)\
+   if (pixmode) {\
+      p.begin(&fill);\
       p.drawTiledPixmap(fill.rect(),brush.texture(),QPoint(_OX_,_OY_)+offset);\
+      p.end();\
+   }\
    else\
       fill.fill(brush.color());\
-   p.end();\
    corner = OXRender::applyAlpha(fill, corner)
    // the corners ========
    int w,h;
