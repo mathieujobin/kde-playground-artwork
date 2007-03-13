@@ -130,7 +130,7 @@ debug
 
 misc
 ----
-  - 'sync to folder'
+	- 'sync to folder'
 		Used in places where the user selects a path to set the path to the
 		'working directory' (usually the location of the active document)
 		IDEAS: folder with an arrow pointing into it, e.g.
@@ -138,3 +138,6 @@ misc
 
 	- 'find in files'
 		IDEAS: folder with magnifying glass, folder with binnoculars
+
+
+//kate: indent-spaces off; indent-width 4; replace-tabs off;
