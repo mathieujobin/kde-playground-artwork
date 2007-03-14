@@ -1,4 +1,4 @@
-kate: tab-width 3; indent-mode normal; word-wrap-column 79;
+kate: tab-width 3; indent-mode normal; word-wrap-column 79; indent-spaces off; replace-tabs off;
 
 This is a list of icons that are needed by KDevelop, however they vary in
 wider applicability. The Oxygen team should make the call as to whether any
@@ -14,7 +14,7 @@ I follow both lists and can/will relay as needed.
 
 
 Legend:
-	i	- information (will use a standard icon)
+	i	- purely informational (will use a standard icon)
 	-	- needs to be drawn
 	+	- needs to be drawn (but used only as a base for other icons)
 	c	- completed (has been drawn)
@@ -28,10 +28,10 @@ project
 		IDEAS: a simple window
 
 	- 'new project'
-		IDEAS: 'project' with 'new' sparkle
+		SHOULD-BE: 'project' with 'new' sparkle
 
 	- 'open project'
-		IDEAS: 'project' with small folder overlayed
+		SHOULD-BE: 'project' with small folder overlayed
 
 	i 'subproject'
 		WILL-USE: folder icon
@@ -45,29 +45,38 @@ project
 		a specific portion of an application to build (for example, 'Kexi' would
 		be a target in KOffice).
 		IDEAS: a target i.e. a bulls-eye
+	
+	? 'conditional scope'
+		A section in a makefile that's only used if the given condition is true.
+		Mainly used as 16x16 icon in a list view.
+		IDEAS: a question mark. or maybe a question mark enclosed in braces.
+
+	? 'create conditional scope'
+		Used on the button that creates conditional scopes.
+		SHOULD-BE: the 'conditional scope' icon with a 'new' sparkle.
 
 build
 -----
 	+ 'build_overlay'
 		Used as an overlay for actions that involve building something.
 		IDEAS: Fat down arrow placed on the lower edge of another icon (usually
-				 lower left, maybe lower center as works best aesthetically)
+		       lower left, maybe lower center as works best aesthetically)
 
 	- 'build' ("build project")
 		Builds the project (like 'make')
-		IDEAS: 'project' + 'build_overlay'
+		SHOULD-BE: 'project' + 'build_overlay'
 
 	- 'build subproject'
 		Builds the current subproject (like 'cd subproject/ ; make')
-		IDEAS: 'subproject' + 'build_overlay'
+		SHOULD-BE: 'subproject' + 'build_overlay'
 
 	- 'build active' ("build active target")
 		Builds the 'active target' (like 'make target')
-		IDEAS: 'target' + 'build_overlay'
+		SHOULD-BE: 'target' + 'build_overlay'
 
 	- 'compile'
 		Compiles a single file
-		IDEAS: generic/text/C document icon + 'build_overlay'
+		IDEAS: generic/text/source document icon + 'build_overlay'
 
 	- 'clean'
 		Deletes built files ('$ make clean')
@@ -139,5 +148,54 @@ misc
 	- 'find in files'
 		IDEAS: folder with magnifying glass, folder with binnoculars
 
+code structure icons
+--------------------
+	- 'variable'
+		Icon representing variables (= single data objects)
+		IDEAS: a small cube or rotated rectangle in a rather unobtrusive color
 
-//kate: indent-spaces off; indent-width 4; replace-tabs off;
+	- 'function'
+		Icon representing functions and methods (= executable code)
+		IDEAS: a small cube or rotated rectangle in a more vibrant color
+
+	- 'class'
+		Icon representing classes
+		(= data types that combine multiple variables and methods)
+		IDEAS: something that combines multiple (two or three) 'function' and
+		       'variable' icons (note that functions and methods are similar in
+		       most programming languages), like for example three cubes
+
+	- 'struct'
+		Icon representing structs (= data types that combine multiple variables)
+		IDEAS: like 'class', but using only 'variable' icons, no 'function's
+
+	- 'interface'
+		Icon representing interfaces (= abstract code describing how classes can
+		be used; classes that "implement interfaces" have an expected behaviour)
+		IDEAS: like 'class', but more transparent / "ghostly"
+
+	- 'typedef'
+		Icon representing typedefs (= aliases for existing data types)
+		IDEAS: a simple rounded rectangle
+
+	- 'enum'
+		Icon representing enumerations
+		(= data types defined by which values they can hold)
+		IDEAS: a small cube or rectangle with even smaller items
+		       (like, one-pixel-high lines) in/on it
+
+	- 'union'
+		Icon representing unions (= data types that can hold variables of
+		more than one possible data type)
+		IDEAS: two intersecting 'typedef' icons
+
+	- 'scope'
+		Icon representing scopes and namespaces (= "grouping" of code/classes)
+		SHOULD-BE: an opening brace and a closing one
+
+	- 'protected' and 'private' overlays
+		Used to indicate the state of a variable or method.
+		SHOULD-BE: 'protected': a key, 'private': a lock.
+		(hopefully KDE 4 will provide the possibility of easily overlaying
+		icons, then we don't have to do icons for every possible combination.)
+
