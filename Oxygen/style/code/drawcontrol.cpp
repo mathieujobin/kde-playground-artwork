@@ -120,18 +120,16 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
    {
    case CE_PushButton: // A QPushButton, draws case CE_PushButtonBevel, case CE_PushButtonLabel and PE_FrameFocusRect
       if (const QStyleOptionButton *btn =
-          qstyleoption_cast<const QStyleOptionButton *>(option))
-      {
+          qstyleoption_cast<const QStyleOptionButton *>(option)) {
          QStyleOptionButton tmpBtn = *btn;
-         if (btn->features & QStyleOptionButton::Flat) // more like a toolbtn
-         {
+         if (btn->features & QStyleOptionButton::Flat) { // more like a toolbtn
             //TODO: handle focus indication here (or in the primitive...)!
             drawPrimitive(PE_PanelButtonTool, option, painter, widget);
          }
          else
             drawControl(CE_PushButtonBevel, &tmpBtn, painter, widget);
 //          tmpBtn.rect = subElementRect(SE_PushButtonContents, btn, widget);
-         tmpBtn.rect = btn->rect.adjusted(dpi.$3,dpi.$5,-dpi.$3,-dpi.$3);
+         tmpBtn.rect = btn->rect.adjusted(dpi.$4,dpi.$2,-dpi.$4,-dpi.$4);
          drawControl(CE_PushButtonLabel, &tmpBtn, painter, widget);
       }
       break;
@@ -152,15 +150,13 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       break;
    case CE_PushButtonLabel: // The label (icon with text or pixmap) of a QPushButton
       if (const QStyleOptionButton *btn =
-          qstyleoption_cast<const QStyleOptionButton *>(option)) 
-      {
+          qstyleoption_cast<const QStyleOptionButton *>(option)) {
          QRect ir = btn->rect;
          uint tf = Qt::AlignVCenter | Qt::TextShowMnemonic;
          if (!styleHint(SH_UnderlineShortcut, btn, widget))
             tf |= Qt::TextHideMnemonic;
          
-         if (!btn->icon.isNull()) 
-         {
+         if (!btn->icon.isNull()) {
             QIcon::Mode mode = isEnabled ? QIcon::Normal
                : QIcon::Disabled;
             if (mode == QIcon::Normal && hasFocus)
@@ -198,22 +194,20 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          
          bool isDefault = btn->features & QStyleOptionButton::DefaultButton;
          painter->save();
-         QColor fc;
-         if (btn->features & QStyleOptionButton::Flat)
-            fc = PAL.color(QPalette::WindowText);
-         else
-            fc = btnFgColor(PAL, isEnabled, false, isDefault);
-//          if (hasFocus) // dark background, let's paint an emboss
-//          {
-//             painter->setPen(COLOR(Highlight));
-//             ir.moveTop(ir.top()+3);
-//             drawItemText(painter, ir, tf, PAL, isEnabled, btn->text);
-//             ir.moveTop(ir.top()-3);
-//          }
-         if (isDefault || hasFocus)
-         {
-            QFont tmpFnt = painter->font(); tmpFnt.setBold(true);
-            painter->setFont(tmpFnt);
+         QColor fc, bc;
+         if (btn->features & QStyleOptionButton::Flat) {
+            bc = COLOR(Window);
+            fc = COLOR(WindowText);
+         }
+         else {
+            bc = btnBgColor(PAL, isEnabled, hover || hasFocus);
+            fc = btnFgColor(PAL, isEnabled, hover || hasFocus);
+         }
+         if (qGray(bc.rgb()) < 148) { // dark background, let's paint an emboss
+            painter->setPen(bc.dark(103));
+            ir.moveTop(ir.top()-1);
+            drawItemText(painter, ir, tf, PAL, isEnabled, btn->text);
+            ir.moveTop(ir.top()+1);
          }
          painter->setPen(fc);
          drawItemText(painter, ir, tf, PAL, isEnabled, btn->text);
@@ -462,9 +456,19 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       }
       break;
       case CE_ProgressBar: // CE_ProgressBarGroove, CE_ProgressBarContents, CE_ProgressBarLabel
-      if (const QStyleOptionProgressBar *pb
-          = qstyleoption_cast<const QStyleOptionProgressBar *>(option))
+#if 0
       {
+         QRect r = RECT.adjusted(0,0,0,-dpi.$2);
+         fillWithMask(painter, r, gradient(COLOR(WindowText), r.height(), Qt::Vertical, GradGlass), &masks.button, Tile::Full);
+         shadows.lineEdit[isEnabled].render(RECT, painter);
+         for (int i = r.x()+dpi.$2; i < r.x()+r.width()/2; i+=dpi.$8)
+            painter->fillRect(i, r.y()+dpi.$2, dpi.$5, r.height()-dpi.$4, gradient(COLOR(Window), r.height()-dpi.$4, Qt::Vertical, GradButton));
+//          fillWithMask(painter, RECT.adjusted(2,2,-RECT.width()/2,-2), gradient(COLOR(Window), RECT.height(), Qt::Vertical, GradButton), &masks.button);
+         break;
+      }
+#endif
+      if (const QStyleOptionProgressBar *pb
+          = qstyleoption_cast<const QStyleOptionProgressBar *>(option)) {
          QStyleOptionProgressBarV2 subopt = *pb;
 //          if (!anmiationUpdate)
          {
@@ -481,6 +485,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       }
       break;
    case CE_ProgressBarGroove: // The groove where the progress indicator is drawn in a QProgressBar
+      break;
       {
          if (const QStyleOptionProgressBarV2 *progress =
              qstyleoption_cast<const QStyleOptionProgressBarV2*>(option))
@@ -497,8 +502,8 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             }
             
 #if 1
-            shadows.button[1].render(RECT, painter);
-            fillWithMask(painter, rect, gradient(isEnabled?COLOR(Button):COLOR(Window), s, o, GradGloss), &masks.button);
+            shadows.button[0][1].render(RECT, painter);
+            fillWithMask(painter, rect, gradient(COLOR(Window), s, o, GradGloss), &masks.button);
 #else
             fillWithMask(painter, RECT, gradient(COLOR(WindowText), s, o, GradSunken), &masks.button);
 #endif
@@ -506,6 +511,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          break;
       }
    case CE_ProgressBarContents: // The progress indicator of a QProgressBar
+      break;
       if (const QStyleOptionProgressBarV2 *progress =
           qstyleoption_cast<const QStyleOptionProgressBarV2*>(option))
       {
@@ -521,7 +527,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             QRegion cr;
 #if 1
             QColor c = hasFocus?COLOR(Highlight):
-                     (isEnabled?COLOR(ButtonText):midColor(COLOR(Window),COLOR(WindowText)));
+                     (isEnabled?COLOR(WindowText):midColor(COLOR(Window),COLOR(WindowText)));
 #else
             QColor c = hasFocus?COLOR(Highlight):
                      (isEnabled?COLOR(Window):midColor(COLOR(Window),COLOR(WindowText)));
@@ -591,6 +597,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       }
       break;
    case CE_ProgressBarLabel: // The text label of a QProgressBar
+      break;
       if (const QStyleOptionProgressBarV2 *progress =
           qstyleoption_cast<const QStyleOptionProgressBarV2*>(option))
       {
@@ -654,7 +661,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             painter->setClipRect(cr);
             painter->setMatrix(m);
 #if 1
-            role = isEnabled ? (hasFocus?QPalette::HighlightedText:QPalette::Button):QPalette::Window;
+            role = hasFocus?QPalette::HighlightedText:QPalette::Window;
 #else
             role = hasFocus?QPalette::HighlightedText:QPalette::WindowText;
 #endif
@@ -667,7 +674,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             break;
          painter->setMatrix(m);
 #if 1
-         role = isEnabled ? (hasFocus?QPalette::Highlight:QPalette::ButtonText):QPalette::WindowText;
+         role = hasFocus?QPalette::Highlight:QPalette::WindowText;
 #else
          role = hasFocus?QPalette::Highlight:QPalette::Window;
 #endif
@@ -1015,8 +1022,8 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       break;
 //    case CE_SizeGrip: // Window resize handle; see also QSizeGrip.
    case CE_Header: // A header
-   if (const QStyleOptionHeader *header = qstyleoption_cast<const QStyleOptionHeader *>(option))
-   {
+   if (const QStyleOptionHeader *header =
+       qstyleoption_cast<const QStyleOptionHeader *>(option)) {
       QRegion clipRegion = painter->clipRegion();
       painter->setClipRect(option->rect);
       drawControl(CE_HeaderSection, header, painter, widget);
@@ -1024,8 +1031,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       subopt.rect = subElementRect(SE_HeaderLabel, header, widget);
       if (subopt.rect.isValid())
          drawControl(CE_HeaderLabel, &subopt, painter, widget);
-      if (header->sortIndicator != QStyleOptionHeader::None)
-      {
+      if (header->sortIndicator != QStyleOptionHeader::None) {
          subopt.rect = subElementRect(SE_HeaderArrow, option, widget);
          QPen oldPen = painter->pen();
          painter->setPen(hover?COLOR(Base):midColor(COLOR(Text),COLOR(Base),2,1));
@@ -1035,54 +1041,47 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       painter->setClipRegion(clipRegion);
       break;
    }
-   case CE_HeaderSection: // A header section
-   {
+   case CE_HeaderSection: { // A header section
    // NOT emphasize, as base/text is usually white/black -> no emphasize possible...
-#define _COLOR_ PAL.color(QPalette::Text)
       const QHeaderView* header = qobject_cast<const QHeaderView*>(widget);
       const QStyleOptionHeader* hopt = qstyleoption_cast<const QStyleOptionHeader*>(option);
       if (sunken ||
           (!hover && (header && header->isClickable () && hopt && header->sortIndicatorSection() == hopt->section)))
-         painter->drawTiledPixmap(RECT, gradient(_COLOR_, RECT.height(), Qt::Vertical, GradSunken));
-      else
-      {
+         painter->drawTiledPixmap(RECT, gradient(sunken?COLOR(Base):COLOR(Text), RECT.height(), Qt::Vertical, GradSunken));
+      else {
          int x,y,w,h;
-         RECT.getRect(&x,&y,&w,&h);
-         w--;
-         if (hover)
-            painter->drawTiledPixmap(x,y,w,h, gradient(_COLOR_, RECT.height(), Qt::Vertical, GradGloss));
-         else
-            painter->drawTiledPixmap(x,y,w,h, gradient(_COLOR_, RECT.height(), Qt::Vertical));
-         painter->drawTiledPixmap(x+w,y,1,h, gradient(_COLOR_, RECT.height(), Qt::Vertical, GradSunken));
+         RECT.getRect(&x,&y,&w,&h); w-=dpi.$1;
+         painter->drawTiledPixmap(x,y,w,h, gradient(hover?COLOR(Base):COLOR(Text), RECT.height(), Qt::Vertical, GradGlass));
+         painter->drawTiledPixmap(x+w,y,1,h, gradient(COLOR(Text), RECT.height(), Qt::Vertical, GradSunken));
       }
       break;
-#undef _COLOR_
    }
-   case CE_HeaderLabel: // The header's label
-   {
+   case CE_HeaderLabel: { // The header's label
       const QStyleOptionHeader* hopt = qstyleoption_cast<const QStyleOptionHeader*>(option);
       QRect rect = option->rect;
-      if ( !hopt->icon.isNull() )
-      {
+      if ( !hopt->icon.isNull() ) {
          QPixmap pixmap = hopt->icon.pixmap( 22,22, isEnabled ? QIcon::Normal : QIcon::Disabled );
          int pixw = pixmap.width();
          int pixh = pixmap.height();
          
          QRect pixRect = option->rect;
          pixRect.setY( option->rect.center().y() - (pixh - 1) / 2 );
-      // "pixh - 1" because of tricky integer division
+         // "pixh - 1" because of tricky integer division
          drawItemPixmap ( painter, pixRect, Qt::AlignCenter, pixmap );
          rect.setLeft( rect.left() + pixw + 2 );
       }
       painter->save();
-      if (qGray(PAL.color(QPalette::Text).rgb()) < 128) // dark background, let's paint an emboss
-      {
+      QColor bg = COLOR(Text), fg = COLOR(Base);
+      if (hover) {
+         bg = COLOR(Base); fg = COLOR(Text);
+      }
+      if (qGray(bg.rgb()) < 148) { // dark background, let's paint an emboss
          rect.moveTop(rect.top()-1);
-         painter->setPen(PAL.color(QPalette::Text).dark(120));
+         painter->setPen(bg.dark(120));
          drawItemText ( painter, rect, Qt::AlignCenter, PAL, isEnabled, hopt->text);
          rect.moveTop(rect.top()+1);
       }
-      painter->setPen(PAL.color(QPalette::Base));
+      painter->setPen(fg);
       drawItemText ( painter, rect, Qt::AlignCenter, PAL, isEnabled, hopt->text);
       painter->restore();
       break;
@@ -1090,18 +1089,18 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
    case CE_ScrollBarAddLine: // Scroll bar line increase indicator. (i.e., scroll down); see also QScrollBar.
    case CE_ScrollBarSubLine: // Scroll bar line decrease indicator (i.e., scroll up).
       if (const QStyleOptionSlider *opt =
-            qstyleoption_cast<const QStyleOptionSlider *>(option))
-      {
+            qstyleoption_cast<const QStyleOptionSlider *>(option)) {
+         bool alive = isEnabled && ((element == CE_ScrollBarAddLine && opt->sliderValue < opt->maximum) ||
+                                            (element == CE_ScrollBarSubLine && opt->sliderValue > opt->minimum));
          QPoint xy = RECT.topLeft();
-         painter->drawPixmap(xy, shadows.radio[isEnabled]);
+         if (sunken || !alive)
+            painter->drawPixmap(xy+QPoint(dpi.$1,dpi.$1), shadows.radio[1][hover]);
+         else
+            painter->drawPixmap(xy, shadows.radio[0][hover]);
          xy += QPoint(dpi.$2,dpi.$1);
          int sz = dpi.ExclusiveIndicator - dpi.$4;
-         GradientType gt = GradSunken;
-         if (!sunken && isEnabled &&
-             ((element == CE_ScrollBarAddLine && opt->sliderValue < opt->maximum) ||
-              (element == CE_ScrollBarSubLine && opt->sliderValue > opt->minimum)))
-            gt = hover ? GradGloss : GradButton;
-         fillWithMask(painter, xy, gradient(COLOR(Button), sz, Qt::Vertical, gt), masks.radio);
+         fillWithMask(painter, xy, gradient(btnBgColor(PAL, alive, hover|hasFocus), sz,
+                                            Qt::Vertical, alive?GradGlass:GradSunken), masks.radio);
          break;
       }
    case CE_ScrollBarSubPage: // Scroll bar page decrease indicator (i.e., page up).
@@ -1147,7 +1146,10 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          }
          
          // we need to paint a slider
-         shadows.button[isEnabled].render(RECT, painter);
+         hover = hover || sunken;
+         r = RECT;
+         if (sunken) r.adjust(dpi.$1,dpi.$1,-dpi.$1,-dpi.$2);
+         shadows.button[sunken][hover].render(r, painter);
          r = RECT.adjusted(dpi.$2,dpi.$1,-dpi.$2,-dpi.$3);
          if (option->state & QStyle::State_Horizontal) {
             size = r.height(); direction = Qt::Vertical;
@@ -1155,8 +1157,9 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          else {
             size = r.width(); direction = Qt::Horizontal;
          }
-         fillWithMask(painter, r, gradient(COLOR(Button), size, direction, GradGloss), &masks.button);
-         if (hover || sunken || scrollAreaHovered(widget))
+         fillWithMask(painter, r, gradient(btnBgColor(PAL, isEnabled, hover), size, direction, GradGlass), &masks.button);
+	 masks.button.outline(r, painter, Qt::white, true);
+         if (!hover && scrollAreaHovered(widget))
          {
             int dx, dy, off = sunken?dpi.$1:0;
             if (option->state & QStyle::State_Horizontal)
@@ -1171,7 +1174,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
                r.adjust(dx+off,dy,-dx+off,-dy);
                size = r.width();
             }
-            painter->drawTiledPixmap(r, gradient((hover||Sunken)?COLOR(Highlight):COLOR(ButtonText), size, direction, sunken?GradSunken:GradGloss));
+            painter->drawTiledPixmap(r, gradient(btnFgColor(PAL, isEnabled, hover), size, direction, GradGlass));
          }
       }
       break;
@@ -1180,10 +1183,11 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
    case CE_RubberBand: // Rubber band used in such things as iconview.
    {
       painter->save();
-      QColor c = PAL.color(QPalette::Highlight);
+      QColor c = COLOR(Highlight);
       painter->setPen(c);
-      c.setAlpha(160);
+      c.setAlpha(100);
       painter->setBrush(c);
+      painter->drawRect(RECT);
       painter->restore();
       break;
    }
@@ -1216,7 +1220,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          if (!cb->currentText.isEmpty() && !cb->editable)
          {
             editRect.adjust(3,0, -3, 0);
-            painter->setPen(midColor(COLOR(Window),COLOR(WindowText),1,3));
+            painter->setPen(midColor(COLOR(Base),COLOR(Text),1,2));
             drawItemText(painter, editRect, Qt::AlignCenter, PAL, isEnabled, cb->currentText);
          }
          painter->restore();

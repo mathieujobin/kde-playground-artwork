@@ -6,22 +6,30 @@ void OxygenStyle::generatePixmaps()
    // shadow
    int $1 = dpi.$1, $2 = dpi.$2, $2_2 = lround($2/2.0);
    int $9 = dpi.$9, $9_2 = ($9-1)/2;
+   int $7 = dpi.$7, $3 = dpi.$3;
    tmp = QPixmap($9,$9);
-   for (int i = 0; i < 2; ++i)
-   {
-      tmp.fill(Qt::transparent);
-      p.begin(&tmp);
-      p.setPen(Qt::NoPen);
-      p.setRenderHint(QPainter::Antialiasing);
-      p.setBrush(QColor(0,0,0,(i+1)*9));
-      p.drawRoundRect(0,0,$9,$9,60,60);
-      p.setBrush(QColor(0,0,0,(i+1)*20));
-      p.drawRoundRect($2_2,$2_2,$9-$2,$9-$2,80,80);
-      p.end();
-      shadows.button[i] = Tile::Set(tmp,$9_2,$9_2,$9-2*$9_2,$9-2*$9_2);
+   for (int i = 0; i < 2; ++i) { // opaque?
+      for (int j = 0; j < 2; ++j) { // sunken?
+         tmp.fill(Qt::transparent);
+         p.begin(&tmp);
+         p.setPen(Qt::NoPen);
+         p.setRenderHint(QPainter::Antialiasing);
+         p.setBrush(QColor(0,0,0,((j?10:1)+i)*6));
+         p.drawRoundRect(0,0,$9,$9,90,90);
+         if (!j)
+         {
+            p.setBrush(QColor(0,0,0,(1+i)*10));
+            p.drawRoundRect($1,$1,$9-2*$1,$9-2*$1,75,75);
+            p.setBrush(QColor(0,0,0,(1+i)*14));
+            p.drawRoundRect($2,$2,$9-2*$2,$9-2*$2,60,60);
+         }
+         p.end();
+         shadows.button[j][i] = Tile::Set(tmp,$9_2,$9_2,$9-2*$9_2,$9-2*$9_2);
+      }
    }
    
    // -> sunken
+   QLinearGradient lg; QGradientStops stops;
    QImage tmpImg($9,$9, QImage::Format_ARGB32);
    
    for (int i = 0; i < 2; ++i)
@@ -32,13 +40,27 @@ void OxygenStyle::generatePixmaps()
       p.begin(&tmpImg);
       p.setPen(Qt::NoPen);
       p.setRenderHint(QPainter::Antialiasing);
-      p.setBrush(QColor(0,0,0,55+add)); p.drawRoundRect(0,0,$9,$9,80,80);
+      p.setBrush(QColor(0,0,0,55+add)); p.drawRoundRect(0,0,$9,$7,80,80);
       p.setCompositionMode( QPainter::CompositionMode_DestinationOut );
       add = 30 - add;
-      p.setBrush(QColor(0,0,0,120+add)); p.drawRoundRect(0,$1,$9,dpi.$8,75,75);
-      p.setBrush(QColor(0,0,0,140+add)); p.drawRoundRect(0,$2,$9,dpi.$7,80,80);
-      p.setBrush(QColor(0,0,0,160+add)); p.drawRoundRect($1,dpi.$3,dpi.$7,dpi.$6,85,85);
-      p.setBrush(QColor(0,0,0,180+add)); p.drawRoundRect($2,dpi.$4,dpi.$3,dpi.$5,90,90);
+      p.setBrush(QColor(0,0,0,120+add)); p.drawRoundRect(0,$1,$9,dpi.$6,75,75);
+      p.setBrush(QColor(0,0,0,140+add)); p.drawRoundRect(0,$2,$9,dpi.$5,80,80);
+      p.setBrush(QColor(0,0,0,160+add)); p.drawRoundRect($1,$3,$7,dpi.$4,85,85);
+      p.setBrush(QColor(0,0,0,180+add)); p.drawRoundRect($2,dpi.$4,dpi.$5,$3,90,90);
+      p.setCompositionMode( QPainter::CompositionMode_SourceOver );
+      lg = QLinearGradient(0,0,0,$9);
+      stops << QGradientStop( 0, QColor(255,255,255, 90) )
+         << QGradientStop( 0.5, QColor(255,255,255, 190) )
+         << QGradientStop( 1, QColor(255,255,255, 90) );
+      lg.setStops(stops);
+      p.fillRect($3,$9-$2,$3,$1, lg);
+      stops.clear();
+      stops << QGradientStop( 0, QColor(255,255,255, 30) )
+         << QGradientStop( 0.5, QColor(255,255,255, 100) )
+         << QGradientStop( 1, QColor(255,255,255, 30) );
+      lg.setStops(stops);
+      p.fillRect($3,$9-$1,$3,$1, lg);
+      stops.clear();
       p.end();
    
       shadows.lineEdit[i] = Tile::Set(QPixmap::fromImage(tmpImg),$9_2,$9_2,$9-2*$9_2,$9-2*$9_2);
@@ -109,18 +131,21 @@ void OxygenStyle::generatePixmaps()
    int rw = dpi.ExclusiveIndicator;
    int rh = dpi.ExclusiveIndicator;
    // shadow
-   for (int i = 0; i < 2; ++i)
-   {
-      shadows.radio[i] = QPixmap(rw, rh);
-      shadows.radio[i].fill(Qt::transparent);
-      p.begin(&shadows.radio[i]);
-      p.setPen(Qt::NoPen);
-      p.setRenderHint(QPainter::Antialiasing);
-      p.setBrush(QColor(0,0,0,(i+1)*9));
-      p.drawEllipse(0,0,rw,rh);
-      p.setBrush(QColor(0,0,0,(i+1)*20));
-      p.drawEllipse($2_2,$2_2,rw-$2,rh-$2);
-      p.end();
+   for (int i = 0; i < 2; ++i) { // opaque?
+      for (int j = 0; j < 2; ++j) { // sunken?
+         shadows.radio[j][i] = QPixmap(rw-$1*j, rh-$1*j);
+         shadows.radio[j][i].fill(Qt::transparent);
+         p.begin(&shadows.radio[j][i]);
+         p.setPen(Qt::NoPen);
+         p.setRenderHint(QPainter::Antialiasing);
+         p.setBrush(QColor(0,0,0,(1+i+j)*9));
+         p.drawEllipse(shadows.radio[j][i].rect());
+         if (!j) {
+            p.setBrush(QColor(0,0,0,(i+1)*20));
+            p.drawEllipse($2_2,$2_2,rw-$2,rh-$2);
+         }
+         p.end();
+      }
    }
    
    // mask
@@ -173,7 +198,7 @@ void OxygenStyle::generatePixmaps()
    // raised
    
    // sunken
-   int $3 = dpi.$3, $4 = dpi.$4, $6 = dpi.$6;
+   int $4 = dpi.$4, $6 = dpi.$6;
    tmp = QPixmap($9,$9);
    tmp.fill(Qt::transparent);
    p.begin(&tmp);
@@ -259,7 +284,7 @@ void OxygenStyle::generatePixmaps()
    int $33 = SCALE(33);
    for (int i = 1; i < $33; ++i)
    {
-      p.setPen(QColor(0,0,0,i*lround(255.0/dpi.$32)));
+      p.setPen(QColor(0,0,0,CLAMP(i*lround(255.0/dpi.$32),0,255)));
       p.drawLine(0, $49-i, $49, $49-i);
    }
    p.end();
@@ -280,7 +305,7 @@ void OxygenStyle::generatePixmaps()
 //    masks.group = Tile::Mask(tmp,$12,$12,$25-2*$12,$25-2*$12,0,0,0,0,22,22);
    
    // shadow line
-   int w,h,c1,c2; QLinearGradient lg;
+   int w,h,c1,c2;
    for (int i = 0; i < 2; ++i) // orientarion
    {
       if (i)
@@ -299,7 +324,6 @@ void OxygenStyle::generatePixmaps()
          c1 = (j > 0) ? 255 : 111; c2 = (j > 0) ? 111 : 255;
          tmp.fill(Qt::transparent);
          p.begin(&tmp);
-         QGradientStops stops;
          stops << QGradientStop( 0, QColor(c1,c1,c1,0) )
             << QGradientStop( 0.5, QColor(c1,c1,c1,71) )
             << QGradientStop( 1, QColor(c1,c1,c1,0) );
@@ -317,6 +341,7 @@ void OxygenStyle::generatePixmaps()
             p.fillRect($1,0,$2-$1,$49,lg);
          else
             p.fillRect(0,$1,$49,$2-$1,lg);
+         stops.clear();
          p.end();
          shadows.line[i][j] = Tile::Line(tmp,i?Qt::Vertical:Qt::Horizontal,$49_2,-$49_2);
       }

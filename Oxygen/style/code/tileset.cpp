@@ -200,24 +200,33 @@ Picture Set::render(int W, int H, PosFlags pf) const
 #undef DRAW_TILED_PIXMAP
 }
 
-void Set::outline(const QRect &r, QPainter *p, QColor c, PosFlags pf) const
+void Set::outline(const QRect &r, QPainter *p, QColor c, bool strong, PosFlags pf) const
 {
    p->save();
-   p->setRenderHint(QPainter::Antialiasing);
+   p->setRenderHint(QPainter::Antialiasing, false);
    QPen pen = p->pen();
    pen.setColor(c); pen.setWidth(1);
    p->setPen(pen);
    p->setBrush(Qt::NoBrush);
-   QRect rect = r.adjusted(1,1,-1,-1);
+   QRect rect = r/*.adjusted(0,0,0,-1)*/;
    if (! (pf & Top))
       rect.setTop(rect.top()-100);
+   else if (strong)
+      p->drawLine(r.left()+width(TopLeft), r.top(), r.right()-width(TopRight), r.top());
    if (! (pf & Left))
       rect.setLeft(rect.left()-100);
+   else if (strong)
+      p->drawLine(r.left(), r.top()+height(TopRight), r.left(), r.bottom()-height(BtmRight));
    if (! (pf & Bottom))
       rect.setBottom(rect.bottom()+100);
+   else if (strong)
+      p->drawLine(r.left()+width(BtmLeft), r.bottom(), r.right()-width(BtmRight), r.bottom());
    if (! (pf & Right))
       rect.setRight(rect.right()+100);
+   else if (strong)
+      p->drawLine(r.right(), r.top()+height(TopRight), r.right(), r.bottom()-height(BtmRight));
    p->setClipRect(r);
+   p->setRenderHint(QPainter::Antialiasing);
    p->drawRoundRect(rect, ceil((float)rxf/rect.width()), ceil((float)ryf/rect.height()));
    p->restore();
 }

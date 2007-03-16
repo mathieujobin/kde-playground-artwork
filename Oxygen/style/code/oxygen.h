@@ -94,7 +94,7 @@ enum Orientation3D {Sunken = 0, Relief, Raised};
 typedef struct
 {
    int $1, $2, $3, $4, $5, $6, $7, $8, $9, $10;
-   int $12, $16, $32, $18, $80;
+   int $12, $16, $32, $18, $20, $80;
    int ScrollBarExtent;
    int ScrollBarSliderMin;
    int SliderThickness;
@@ -149,7 +149,7 @@ public:
    enum WidgetState{Basic = 0, Hovered, Focused, Active};
    enum GradientType {
       GradSimple, GradSunken,
-      GradGloss, GradRadialGloss,
+      GradGloss, GradGlass, GradRadialGloss,
       GradButton, GradButtonHover, GradButtonDisabled,
       GradGroup,
       NumGrads
@@ -221,7 +221,7 @@ private:
    const QPixmap &btnAmbient(int height) const;
    const QPixmap &tabShadow(int height) const;
    void fillWithMask(QPainter *painter, const QRect &rect, const QBrush &brush, const Tile::Mask *mask, Tile::PosFlags pf = Tile::Full, bool justClip = false, QPoint offset = QPoint(), bool inverse = false, const QRect *outerRect = 0L) const;
-   void fillWithMask(QPainter *painter, const QPoint &xy, const QPixmap &pix, const QPixmap &mask, QPoint offset = QPoint()) const;
+   void fillWithMask(QPainter *painter, const QPoint &xy, const QBrush &brush, const QPixmap &mask, QPoint offset = QPoint()) const;
    QColor mapFadeColor(const QColor &color, int index) const;
    void fadeIn(QPushButton *button);
    void fadeOut(QPushButton *button);
@@ -242,8 +242,8 @@ private:
    } masks;
    struct
    {
-      Tile::Set button[2], tab, sunken, group, lineEdit[2], raised, relief;
-      QPixmap radio[2];
+      Tile::Set button[2][2], tab, sunken, group, lineEdit[2], raised, relief;
+      QPixmap radio[2][2];
       Tile::Line line[2][3];
    } shadows;
    struct

@@ -90,27 +90,23 @@ inline QColor midColor(const QColor &oc1, const QColor &c2, int w1 = 1, int w2 =
 
 /**Internal, calcs button color depending on state*/
 
-inline QColor btnBgColor(const QPalette &pal, bool isEnabled, bool hasFocus, bool hover = false)
+inline QColor btnBgColor(const QPalette &pal, bool isEnabled, bool hover = false)
 {
    if (!isEnabled)
       return COLOR(Window);
-   if (hasFocus)
-      return COLOR(Highlight);
-//    if (hover)
-//       return pal.color(config.btnHoverBg);
-   return COLOR(Button);
+   if (hover)
+      return COLOR(WindowText);
+   return COLOR(Window).dark(103);
 }
 
 /**Internal, calcs buttonText color depending on state*/
-inline QColor btnFgColor(const QPalette &pal, bool isEnabled, bool hasFocus, bool hover = false)
+inline QColor btnFgColor(const QPalette &pal, bool isEnabled, bool hover = false)
 {
    if (!isEnabled)
       return midColor(COLOR(Window), COLOR(WindowText), 1, 3);
-   if (hasFocus)
-      return COLOR(HighlightedText);
-//    if (hover)
-//       return pal.color(config.btnHoverFg);
-   return COLOR(ButtonText);
+   if (hover)
+      return COLOR(Window);
+   return COLOR(WindowText);
 }
 
 #undef COLOR

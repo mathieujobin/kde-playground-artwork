@@ -105,7 +105,7 @@ const QPixmap &OxygenStyle::gradient(const QColor &c, int size, Qt::Orientation 
       }
    }
    
-   if (type == GradGloss || type == GradRadialGloss)
+   if (type == GradGloss || type == GradRadialGloss || type == GradGlass)
    // many XRender implementations cannot do this... FUCK!
    {
       // calculate the determining colors
@@ -117,16 +117,16 @@ const QPixmap &OxygenStyle::gradient(const QColor &c, int size, Qt::Orientation 
       
       add = ((180-qGray(b.rgb()))>>1);
       if (add < 0) add = -add/2;
+      if (type == GradGlass)
+         add = add>>4;
 
       cv = v+27+add;
-      if (cv > 255)
-      {
+      if (cv > 255) {
          delta = cv-255; cv = 255;
          cs = s - delta; if (cs < 0) cs = 0;
          ch = h - delta/6; if (ch < 0) ch = 360+ch;
       }
-      else
-      {
+      else {
          ch = h; cs = s;
       }
       bb.setHsv(ch,cs,cv);
@@ -135,19 +135,20 @@ const QPixmap &OxygenStyle::gradient(const QColor &c, int size, Qt::Orientation 
       cs = s*13/7; if (cs > 255) cs = 255;
       dd.setHsv(h,cs,cv);
       
-      if (type == GradGloss)
-      {
-         QLinearGradient lg(start, stop);
-         lg.setColorAt(0,bb); lg.setColorAt(0.5,b);
-         lg.setColorAt(0.5, dd); lg.setColorAt(1, d);
-         QPainter p(&qPix); p.fillRect(qPix.rect(), lg); p.end();
-      }
-      else
+      if (type == GradRadialGloss)
       {
          QRadialGradient rg(2*qPix.width()/3, qPix.height(), qPix.height());
          rg.setColorAt(0,d); rg.setColorAt(0.8,dd);
          rg.setColorAt(0.8, b); rg.setColorAt(1, bb);
          QPainter p(&qPix); p.fillRect(qPix.rect(), rg); p.end();
+      }
+      else
+      {
+         QLinearGradient lg(start, stop);
+         lg.setColorAt(0,bb); lg.setColorAt(0.5,b);
+         lg.setColorAt(0.5, dd);
+         (type == GradGlass) ? lg.setColorAt(1, b) : lg.setColorAt(.90, bb);
+         QPainter p(&qPix); p.fillRect(qPix.rect(), lg); p.end();
       }
    }
    else
@@ -197,14 +198,12 @@ const QPixmap &OxygenStyle::gradient(const QColor &c, int size, Qt::Orientation 
          if (add < 0) add = -add/2;
    
          cv = v+27+add;
-         if (cv > 255)
-         {
+         if (cv > 255) {
             delta = cv-255; cv = 255;
             cs = s - delta; if (cs < 0) cs = 0;
             ch = h - delta/6; if (ch < 0) ch = 360+ch;
          }
-         else
-         {
+         else {
             ch = h; cs = s;
          }
          bb.setHsv(ch,cs,cv);
@@ -222,10 +221,8 @@ const QPixmap &OxygenStyle::gradient(const QColor &c, int size, Qt::Orientation 
          colors << iC.dark(100+config.gradientIntensity*20/100)
             << iC.light(100+config.gradientIntensity*60/100);
          break;
-      case GradGroup:
-      {
-         if (o == Qt::Horizontal)
-         {
+      case GradGroup: {
+         if (o == Qt::Horizontal) {
             qPix = QPixmap(32, size);
             qPix.fill(Qt::transparent);
             start = QPoint(32, 0); stop = QPoint(32, qPix.height());
@@ -233,7 +230,7 @@ const QPixmap &OxygenStyle::gradient(const QColor &c, int size, Qt::Orientation 
             colors << c << iC;
             break;
          }
-         colors << c.light(100+(size>128?7:3)) << c;
+         colors << c.light(100+(qMin(7,size/15))) << c;
          break;
       }
       case GradSimple:

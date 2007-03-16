@@ -143,17 +143,21 @@ static EventKiller *eventKiller = new EventKiller();
 
 /** Let's try if we can supply round frames that shape their content */
 
-VisualFrame::VisualFrame(QFrame *parent, int st, int sl, int sr, int sb) : QWidget(parent)
-{
-   if (!(st+sl+sr+sb)) {deleteLater(); return;}
+VisualFrame::VisualFrame(QFrame *parent, int st, int sl, int sr, int sb) : QWidget(parent) {
+   if (!(parent && (st+sl+sr+sb))) {
+      deleteLater(); return;
+   }
+   connect(parent, SIGNAL(destroyed(QObject*)), this, SLOT(deleteLater()));
    off[0] = st; off[1] = sl; off[2] = sr; off[3] = sb;
    parent->installEventFilter(this);
    this->installEventFilter(this);
    show();
 }
 
-void VisualFrame::paintEvent ( QPaintEvent * event )
-{
+void VisualFrame::paintEvent ( QPaintEvent * event ) {
+   if (!parent()) {
+      deleteLater(); return;
+   }
    QFrame *frame = static_cast<QFrame*>(parent());
    QPainter p(this);
    p.setClipRegion(event->region(), Qt::IntersectClip);
@@ -171,8 +175,10 @@ void VisualFrame::paintEvent ( QPaintEvent * event )
    p.end();
 }
 
-void VisualFrame::passDownEvent(QEvent *ev, const QPoint &gMousePos)
-{
+void VisualFrame::passDownEvent(QEvent *ev, const QPoint &gMousePos) {
+   if (!parent()) {
+      deleteLater(); return;
+   }
    // the raised frames don't look like you could click in, we'll see if this should be chnged...
    QFrame *frame = static_cast<QFrame*>(parent());
    if (frame->frameShadow() == QFrame::Raised)
@@ -201,8 +207,9 @@ void VisualFrame::mouseReleaseEvent ( QMouseEvent * event ) { passDownEvent((QEv
 void VisualFrame::wheelEvent ( QWheelEvent * event ) { passDownEvent((QEvent *)event, event->globalPos()); }
 
 bool VisualFrame::eventFilter ( QObject * o, QEvent * ev ) {
-   if (ev->type() == QEvent::ZOrderChange && o == this) {
-      this->raise();
+   if (o == this) {
+      if (ev->type() == QEvent::ZOrderChange)
+         this->raise();
       return false;
    }
    if (o != parent()) {
@@ -320,7 +327,7 @@ void OxygenStyle::makeStructure(int num, const QColor &c)
    case 0: // scanlines
    {
       _scanlines[num]->fill( c.light(110).rgb() );
-      p.setPen( (num == 1) ? c.light(106) : c );
+      p.setPen( (num == 1) ? c.light(106) : c.light(103) );
       int i;
       for ( i = 1; i < 64; i += 4 )
       {
@@ -412,8 +419,8 @@ void OxygenStyle::initMetrics()
    dpi.$9 = SCALE(9); dpi.$10 =SCALE(10);
    
    dpi.$12 = SCALE(12); dpi.$16 = SCALE(16);
-   dpi.$18 = SCALE(18); dpi.$32 = SCALE(32);
-   dpi.$80 = SCALE(80);
+   dpi.$18 = SCALE(18); dpi.$20 = SCALE(20);
+   dpi.$32 = SCALE(32); dpi.$80 = SCALE(80);
    
    dpi.ScrollBarExtent = SCALE(20);
    dpi.ScrollBarSliderMin = SCALE(40);
@@ -609,12 +616,16 @@ const Tile::Set &OxygenStyle::glow(const QColor & c, bool round) const
 }
 /**=========================*/
 
-void OxygenStyle::fillWithMask(QPainter *painter, const QPoint &xy, const QPixmap &pix, const QPixmap &mask, QPoint offset) const
+void OxygenStyle::fillWithMask(QPainter *painter, const QPoint &xy, const QBrush &brush, const QPixmap &mask, QPoint offset) const
 {
    QPixmap qPix(mask.size());
-   QPainter p(&qPix);
-   p.drawTiledPixmap(mask.rect(),pix,offset);
-   p.end();
+   if (brush.texture().isNull())
+      qPix.fill(brush.color());
+   else {
+      QPainter p(&qPix);
+      p.drawTiledPixmap(mask.rect(),brush.texture(),offset);
+      p.end();
+   }
    qPix = OXRender::applyAlpha(qPix, mask);
    painter->drawPixmap(xy, qPix);
 }
@@ -714,8 +725,7 @@ void OxygenStyle::fillWithMask(QPainter *painter, const QRect &rect, const QBrus
 
 /**QStyle reimplementation ========================================= */
 
-void OxygenStyle::polish ( QApplication * app )
-{
+void OxygenStyle::polish ( QApplication * app ) {
 //    if (timer && !timer->isActive())
 //       timer->start(50);
    loadPixmaps();
@@ -725,6 +735,16 @@ void OxygenStyle::polish ( QApplication * app )
    QPalette pal = app->palette();
    polish(pal);
    app->setPalette(pal);
+   if (!_bgBrush && config.bgMode > Dummy) {
+      if (config.bgMode > FullPix)
+         _bgBrush = new DynamicBrush((DynamicBrush::Mode)config.bgMode, this);
+      else {
+      if (config.acceleration > None)
+         _bgBrush = new DynamicBrush((DynamicBrush::Mode)config.acceleration, this);
+      else
+         _bgBrush = new DynamicBrush(bgPix, shadowPix, bgYoffset_, this);
+      }
+   }
    app->installEventFilter(this);
 }
 
@@ -732,65 +752,22 @@ void OxygenStyle::polish ( QApplication * app )
 
 void OxygenStyle::polish( QPalette &pal )
 {
-   switch (config.bgMode)
-   {
-   case FullPix:
-   {
-      int h,s,v;
-      // create use a nice background
-      QColor c = pal.color(QPalette::Active, QPalette::Background);
-      c.getHsv(&h,&s,&v);
-      originalBgColor_ = c;
-      if (config.acceleration == None)
-      {
-         if (v < 70) // very dark colors won't make nice backgrounds ;)
-            c.setHsv(h,s,70);
-//          _SHIFTCOLOR_(c);
-      }
-      else if (v < 30) // very dark colors won't make nice backgrounds ;)
-         c.setHsv(h,s,30);
-      pal.setColor( QPalette::Window, c );
-      
-      if (!_bgBrush)
-      {
-         if (config.acceleration > None)
-            _bgBrush = new DynamicBrush((DynamicBrush::Mode)config.acceleration, this);
-         else
-            _bgBrush = new DynamicBrush(bgPix, shadowPix, bgYoffset_, this);
-      }
-      break;
-   }
-   case VGradient1:
-   case HGradient1:
-   case VGradient2:
-   case HGradient2:
-   {
-      int h,s,v;
-      // create use a nice background
-      QColor c = pal.color(QPalette::Active, QPalette::Background);
-      c.getHsv(&h,&s,&v);
-      if (v < 70) // very dark colors won't make nice backgrounds ;)
-         c.setHsv(h,s,70);
-      originalBgColor_ = c;
-//       _SHIFTCOLOR_(c);
-      pal.setColor( QPalette::Window, c );
-      if (!_bgBrush)
-         _bgBrush = new DynamicBrush((DynamicBrush::Mode)config.bgMode, this);
-      break;
-   }
-   case Scanlines:
-   {
+   if (config.bgMode == Scanlines) {
       QColor c = pal.color(QPalette::Active, QPalette::Background);
       makeStructure(0, c);
       QBrush brush( c, *_scanlines[0] );
       pal.setBrush( QPalette::Background, brush );
-      break;
    }
-   case Plain:
-   default:
-      break;
+   else if (config.bgMode != Plain) {
+      int h,s,v;
+      QColor c = pal.color(QPalette::Active, QPalette::Background);
+      c.getHsv(&h,&s,&v);
+      originalBgColor_ = c;
+      if (v < 70) // very dark colors won't make nice backgrounds ;)
+         c.setHsv(h,s,70);
+      pal.setColor( QPalette::Window, c );
    }
-
+   
    int highlightGray = qGray(pal.color(QPalette::Active, QPalette::Highlight).rgb());
    pal.setColor(QPalette::Disabled, QPalette::Highlight, QColor(highlightGray,highlightGray,highlightGray));
    
@@ -855,15 +832,13 @@ void OxygenStyle::polish( QWidget * widget)
    if (qobject_cast<QScrollBar *>(widget))
       widget->setAttribute(Qt::WA_OpaquePaintEvent, false);
    
-   if (qobject_cast<QProgressBar*>(widget))
-   {
+   if (qobject_cast<QProgressBar*>(widget)) {
       widget->installEventFilter(this);
       if (!timer->isActive()) timer->start(50);
       connect(widget, SIGNAL(destroyed(QObject*)), this, SLOT(progressbarDestroyed(QObject*)));
    }
    
-   if (qobject_cast<QTabWidget*>(widget))
-   {
+   if (qobject_cast<QTabWidget*>(widget)) {
       connect((QTabWidget*)widget, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
       connect(widget, SIGNAL(destroyed(QObject*)), this, SLOT(tabDestroyed(QObject*)));
    }
@@ -936,7 +911,7 @@ void OxygenStyle::polish( QWidget * widget)
             foreach (VisualFrame* vf, vfs)
                if (vf->parent() == frame) addVF = false;
             if (addVF)
-               new VisualFrame(frame, dpi.$4, dpi.$4, dpi.$4, frame->frameShadow() == QFrame::Sunken ? dpi.$1 : dpi.$4);
+               new VisualFrame(frame, dpi.$4, dpi.$4, dpi.$4, frame->frameShadow() == QFrame::Sunken ? dpi.$2 : dpi.$4);
          }
       }
    }
@@ -1027,8 +1002,8 @@ bool OxygenStyle::eventFilter( QObject *object, QEvent *ev )
    }
    case QEvent::Show:
    {
-      if (qobject_cast<QProgressBar*>(object) && ((QWidget*)object)->isEnabled())
-      {
+      if (qobject_cast<QProgressBar*>(object) &&
+          ((QWidget*)object)->isEnabled()) {
          progressbars[(QWidget*)object] = 0;
          return false;
       }
@@ -1071,8 +1046,7 @@ bool OxygenStyle::eventFilter( QObject *object, QEvent *ev )
       }
       return false;
    case QEvent::EnabledChange:
-      if (qobject_cast<QProgressBar*>(object))
-      {
+      if (qobject_cast<QProgressBar*>(object)) {
          if (((QWidget*)object)->isEnabled())
             progressbars[(QWidget*)object] = 0;
          else
@@ -1105,8 +1079,7 @@ void OxygenStyle::unPolish( QApplication */*app */)
 
 void OxygenStyle::unPolish( QWidget *widget )
 {
-   if (qobject_cast<QProgressBar*>(widget))
-   {
+   if (qobject_cast<QProgressBar*>(widget)) {
       widget->removeEventFilter(this);
       disconnect(widget, SIGNAL(destroyed(QObject*)), this, SLOT(progressbarDestroyed(QObject*)));
    }

@@ -97,7 +97,7 @@ QPixmap OxygenStyle::standardPixmap ( StandardPixmap standardPixmap, const QStyl
          hover = isEnabled && (option->state & State_MouseOver);
       }
       QPoint xy = rect.topLeft();
-      painter.drawPixmap(xy, shadows.radio[1]);
+      painter.drawPixmap(sunken?xy+QPoint(dpi.$1,dpi.$1):xy, shadows.radio[sunken][hover]);
       xy += QPoint(dpi.$2,dpi.$1);
       int sz = dpi.ExclusiveIndicator - dpi.$4;
       GradientType gt = (sunken)?GradSunken:(hover?GradGloss:GradButton);

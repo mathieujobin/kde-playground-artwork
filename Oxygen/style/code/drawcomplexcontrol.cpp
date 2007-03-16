@@ -72,6 +72,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             pf = Tile::Top | Tile::Left | Tile::Right;
             isEnabled = sb->stepEnabled & QAbstractSpinBox::StepUpEnabled;
             hover = isEnabled && (sb->activeSubControls == SC_SpinBoxUp);
+            sunken = sunken && (sb->activeSubControls == SC_SpinBoxUp);
             
 //             shadows.button[1].render(copy.rect, painter, pf);
 //             copy.rect.adjust(2,2,-2,0);
@@ -110,6 +111,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             pf = Tile::Bottom | Tile::Left | Tile::Right;
             isEnabled = sb->stepEnabled & QAbstractSpinBox::StepDownEnabled;
             hover = isEnabled && (sb->activeSubControls == SC_SpinBoxDown);
+            sunken = sunken && (sb->activeSubControls == SC_SpinBoxDown);
             
 //             shadows.button[1].render(copy.rect, painter, pf);
 //             copy.rect.adjust(2,0,-2,-2);
@@ -144,10 +146,8 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
       break;
    case CC_GroupBox:
       if (const QStyleOptionGroupBox *groupBox =
-          qstyleoption_cast<const QStyleOptionGroupBox *>(option))
-      {
-         if (groupBox->subControls & QStyle::SC_GroupBoxFrame)
-         {
+          qstyleoption_cast<const QStyleOptionGroupBox *>(option)) {
+         if (groupBox->subControls & QStyle::SC_GroupBoxFrame) {
             QStyleOptionFrameV2 frame;
             frame.QStyleOption::operator=(*groupBox);
             frame.features = groupBox->features;
@@ -158,14 +158,14 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          }
          
          // Draw title
-         if ((groupBox->subControls & QStyle::SC_GroupBoxLabel) && !groupBox->text.isEmpty())
-         {
-            QRect textRect = subControlRect(CC_GroupBox, option, SC_GroupBoxLabel, widget);
+         if ((groupBox->subControls & QStyle::SC_GroupBoxLabel) &&
+             !groupBox->text.isEmpty()) {
             QColor textColor = groupBox->textColor;
-            if (textColor.isValid())
-               painter->setPen(textColor);
+            if (textColor.isValid()) painter->setPen(textColor);
             QFont tmpfnt = painter->font(); tmpfnt.setBold(true);
             painter->setFont ( tmpfnt );
+            QStyleOptionGroupBox copy = *groupBox; copy.fontMetrics = QFontMetrics(tmpfnt);
+            QRect textRect = subControlRect(CC_GroupBox, &copy, SC_GroupBoxLabel, widget);
             int alignment = Qt::AlignCenter; //int(groupBox->textAlignment);
             if (!styleHint(QStyle::SH_UnderlineShortcut, option, widget))
                alignment |= Qt::TextHideMnemonic;
@@ -177,21 +177,10 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             int x = textRect.bottom(); textRect = RECT; textRect.setTop(x);
             x = textRect.width()/4; textRect.adjust(x,0,-x,0);
             shadows.line[0][Sunken].render(textRect, painter);
-#if 0
-            textRect.setTop(textRect.top()+(textRect.height()-shadows.line.thickness())/2);
-            int x = textRect.right()+dpi.$4;
-            textRect.setRight(textRect.left()-dpi.$4);
-            textRect.setLeft(qMin(RECT.x()+RECT.width()/4,textRect.x()-(textRect.x()-RECT.x())/2));
-            shadows.line.render(textRect, painter, Tile::Left|Tile::Center);
-            textRect.setLeft(x);
-            textRect.setRight(qMax(RECT.right()-RECT.width()/4,x+(RECT.right()-x)/2));
-            shadows.line.render(textRect, painter, Tile::Right|Tile::Center);
-#endif
          }
          
-            // Draw checkbox
-         if (groupBox->subControls & SC_GroupBoxCheckBox)
-         {
+         // Draw checkbox // TODO: sth better - maybe a round thing in the upper left corner...? also doesn't hover - yet.
+         if (groupBox->subControls & SC_GroupBoxCheckBox) {
             QStyleOptionButton box;
             box.QStyleOption::operator=(*groupBox);
             box.rect = subControlRect(CC_GroupBox, option, SC_GroupBoxCheckBox, widget);
@@ -212,57 +201,15 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          {
             if (cmb->editable)
                drawPrimitive(PE_PanelLineEdit, option, painter, widget);
-            else
-            {
-               int light = 5; // compromise ;) - shouldn't happen anyway
-               if (widget)
-               {
-                  // find proper color value for the bottom (because of out general gradient)
-                  // 0% -> darkness = 0, 100% -> darkness = 10
-                  // we could also simply create a gradient into translucent - but that can get slow... :(
-                  light = 0;
-                  QWidget *tlw = widget->parentWidget();
-                  while (tlw)
-                  {
-                     if (tlw->inherits("QGroupBox") && !light) light = 3; // have a little pushup as gb's are brighter
-                     if (tlw->windowFlags() & Qt::Window) // found toplevel
-                        break;
-                     tlw = tlw->parentWidget();
-                  }
-                  QPoint zero(0,0); zero = widget->mapTo(tlw, zero);
-                  light += 6*(tlw->height()-zero.y())/tlw->height();
-               }
-               c = c.light(100+light);
-               QColor dark = c.dark(103);
-               QRect r = RECT.adjusted(dpi.$2,dpi.$2,-dpi.$2,-dpi.$2);
-               light = r.bottom();
-               r.setBottom(r.top()+r.height()/2);
-               fillWithMask(painter, r, c, &masks.button, Tile::Full & ~Tile::Bottom);
-               int top = r.top(); r.setTop(r.bottom()); r.setBottom(light);
-               fillWithMask(painter, r, dark, &masks.button, Tile::Full & ~Tile::Top);
-               r.setTop(top);
-               if (!ar.isNull())
-                  shadows.line[1][Sunken].render(ar, painter);
-               painter->save();
-               int x = r.x()+2*r.width()/3;
-               QPoint points[4] = {
-                  QPoint(x, r.y()), QPoint(x+r.height(), r.y()),
-                  QPoint(x, r.bottom()), QPoint(x-r.height(), r.bottom())
-               };
-               painter->setPen(Qt::NoPen); painter->setBrush(dark);
-               painter->drawPolygon(points, 4);
-               x -= r.height()*1.5;
-               points[0] = QPoint(x, r.y()); points[1] = QPoint(x+r.height(), r.y());
-               points[2] = QPoint(x, r.bottom()); points[3] = QPoint(x-r.height(), r.bottom());
-               painter->setPen(Qt::NoPen); painter->setBrush(c);
-               painter->drawPolygon(points, 4);
-               painter->restore();
-               shadows.lineEdit[0].render(RECT, painter);
-               shadows.relief.render(RECT, painter);
+            else {
+               fillWithMask(painter,  RECT.adjusted(0,0,0,-dpi.$2), gradient(COLOR(Base), RECT.height()-dpi.$2, Qt::Vertical, GradGlass), &masks.button);
+               shadows.lineEdit[1].render(RECT, painter);
             }
          }
          if (!ar.isNull())
          {
+            QStyleOptionComboBox tmpOpt = *cmb;
+            hover = hover && !sunken && (cmb->activeSubControls == SC_ComboBoxArrow);
             QPalette::ColorRole fg, bg;
             if (cmb->editable) {
                fg = QPalette::Text; bg = QPalette::Base;
@@ -273,8 +220,6 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             ar.adjust((2*ar.width())/7,(2*ar.height())/7,-(2*ar.width())/7,-(2*ar.height())/7);
             painter->save();
             painter->setRenderHint ( QPainter::Antialiasing, true );
-            QStyleOptionComboBox tmpOpt = *cmb;
-            hover = hover && !sunken && (cmb->activeSubControls == SC_ComboBoxArrow);
             if (!sunken)
             {
                painter->setPen(c.dark(105));
@@ -373,7 +318,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                   fillWithMask(painter, r, gradient(COLOR(Window), r.height(), Qt::Vertical, GradSunken), &masks.button, pf);
                else
                {
-                  shadows.button[1].render(r, painter);
+                  shadows.button[0][1].render(r, painter);
                   r.adjust(2,1,-2,-2);
                   fillWithMask(painter, r, gradient(c, r.height(), Qt::Vertical, GradGloss), &masks.button, pf);
                }
@@ -382,7 +327,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                pf = Tile::Top | Tile::Right | Tile::Bottom | Tile::Center;
                if (slider->upsideDown)
                {
-                  shadows.button[1].render(r, painter);
+                  shadows.button[0][1].render(r, painter);
                   r.adjust(2,1,-2,-2);
                   fillWithMask(painter, r, gradient(c, r.height(), Qt::Vertical, GradGloss), &masks.button, pf);
                }
@@ -399,7 +344,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                   fillWithMask(painter, r, gradient(COLOR(Window), r.width(), Qt::Horizontal, GradSunken), &masks.button, pf);
                else
                {
-                  shadows.button[1].render(r, painter);
+                  shadows.button[0][1].render(r, painter);
                   r.adjust(2,1,-2,-2);
                   fillWithMask(painter, r, gradient(c, r.width(), Qt::Horizontal, GradGloss), &masks.button, pf);
                }
@@ -408,7 +353,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                pf = Tile::Left | Tile::Right | Tile::Bottom | Tile::Center;
                if (slider->upsideDown)
                {
-                  shadows.button[1].render(r, painter);
+                  shadows.button[0][1].render(r, painter);
                   r.adjust(2,1,-2,-2);
                   fillWithMask(painter, r, gradient(c, r.width(), Qt::Horizontal, GradGloss), &masks.button, pf);
                }
@@ -428,7 +373,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          {
             // shadow
             QPoint xy = handle.topLeft();
-            painter->drawPixmap(xy, shadows.radio[isEnabled]);
+            painter->drawPixmap(sunken?xy+QPoint(dpi.$1,dpi.$1):xy, shadows.radio[sunken][1]);
             // gradient
             xy += QPoint(dpi.$2,dpi.$2);
             GradientType gt = sunken ? GradSunken : (hover ?  GradGloss : GradButton);

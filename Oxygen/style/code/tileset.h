@@ -54,7 +54,7 @@ public:
    Set(const QPixmap &pix, int xOff, int yOff, int width, int height, int rx = 0, int ry = 0);
    Set(){}
    void render(const QRect &rect, QPainter *p, PosFlags pf = Ring) const;
-   void outline(const QRect &rect, QPainter *p, QColor c, PosFlags pf = Ring) const;
+   void outline(const QRect &rect, QPainter *p, QColor c, bool strong = false, PosFlags pf = Ring) const;
    Picture render(int width, int height, PosFlags pf = Ring) const;
    Picture render(const QSize &size, PosFlags pf = Ring) const;
    QRect rect(const QRect &rect, PosFlags pf) const;

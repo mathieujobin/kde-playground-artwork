@@ -35,8 +35,7 @@ QSize OxygenStyle::sizeFromContents ( ContentsType ct, const QStyleOption * opti
 //    case CT_CheckBox: // A check box, like QCheckBox
    case CT_ComboBox: // A combo box, like QComboBox
       if (const QStyleOptionComboBox *cb =
-          qstyleoption_cast<const QStyleOptionComboBox *>(option))
-      {
+          qstyleoption_cast<const QStyleOptionComboBox *>(option)) {
          int margin = cb->frame ? dpi.$2 : 0;
          int hgt = contentsSize.height() + 2*margin;
          margin = cb->editable ? dpi.$10 : dpi.$8;
@@ -108,14 +107,15 @@ QSize OxygenStyle::sizeFromContents ( ContentsType ct, const QStyleOption * opti
       break;
    case CT_PushButton: // A push button, like QPushButton
       if (const QStyleOptionButton *btn =
-          qstyleoption_cast<const QStyleOptionButton *>(option))
-      {
+          qstyleoption_cast<const QStyleOptionButton *>(option)) {
          if (btn->text.isEmpty())
 //             3px for shadow & outline + 1px padding -> 4px per side
             return ( QSize( contentsSize.width() + dpi.$8, contentsSize.height() + dpi.$8 ) );
-         else
-            return QSize((contentsSize.width()+dpi.$12 < dpi.$80) ? dpi.$80 : contentsSize.width()+dpi.$12,
-                         contentsSize.height()+dpi.$4);
+         else {
+            QSize sz = contentsSize;
+            return QSize((sz.width()+dpi.$20 < dpi.$80) ? dpi.$80 : contentsSize.width()+dpi.$20,
+                         contentsSize.height()+dpi.$6);
+         }
       }
 //    case CT_RadioButton: // A radio button, like QRadioButton
 //    case CT_SizeGrip: // A size grip, like QSizeGrip
@@ -130,7 +130,7 @@ QSize OxygenStyle::sizeFromContents ( ContentsType ct, const QStyleOption * opti
       return contentsSize;
 //    case CT_Splitter: // A splitter, like QSplitter
    case CT_TabBarTab: // A tab on a tab bar, like QTabBar
-      return contentsSize + QSize(dpi.$4,0);
+      return contentsSize + QSize(dpi.$12,0);
    case CT_TabWidget: // A tab widget, like QTabWidget
       return contentsSize + QSize(dpi.$8,dpi.$10);
    case CT_ToolButton: // A tool button, like QToolButton

@@ -92,11 +92,10 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
             break;
          case SC_ComboBoxListBoxPopup:
             ret = cb->rect;
-            if (cb->editable)
-            {
-               ret.adjust(3,0,-3,0);
-               ret.moveTop(ret.y()-3);
-            }
+//             if (cb->editable) {
+//                ret.adjust(3,0,-3,0);
+//                ret.moveTop(ret.y()-3);
+//             }
 //             else
 //             {
 //                ret.adjust(8,0,-8,0);
@@ -111,26 +110,17 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
       break;
    case CC_GroupBox:
       if (const QStyleOptionGroupBox *groupBox =
-          qstyleoption_cast<const QStyleOptionGroupBox *>(option))
-      {
-         switch (subControl)
-         {
+          qstyleoption_cast<const QStyleOptionGroupBox *>(option)) {
+         switch (subControl) {
          case SC_GroupBoxFrame:
             ret = groupBox->rect;
             break;
-         case SC_GroupBoxContents:
-         {
-#if 1
+         case SC_GroupBoxContents: {
             int top = groupBox->text.isEmpty() ? dpi.$6 : qMax(dpi.$6, groupBox->fontMetrics.height()+dpi.$2);
             ret = groupBox->rect.adjusted(dpi.$3,top,-dpi.$3,-dpi.$7);
-#else
-            int bottom = groupBox->text.isEmpty() ? dpi.$7 : qMax(dpi.$7, groupBox->fontMetrics.height()+dpi.$2);
-            ret = groupBox->rect.adjusted(dpi.$3,dpi.$6,-dpi.$3,-bottom);
-#endif
             break;
          }
-         case SC_GroupBoxCheckBox:
-         {
+         case SC_GroupBoxCheckBox: {
             int cbsz = pixelMetric(PM_IndicatorWidth, groupBox, widget);
             if (groupBox->direction == Qt::LeftToRight)
             {
@@ -145,8 +135,7 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
             ret.setHeight(cbsz);
             break;
          }
-         case SC_GroupBoxLabel:
-         {
+         case SC_GroupBoxLabel: {
             QFontMetrics fontMetrics = groupBox->fontMetrics;
             int h = fontMetrics.height()+dpi.$2;
             int tw = fontMetrics.size(Qt::TextShowMnemonic, groupBox->text + QLatin1Char(' ')).width();
@@ -156,8 +145,7 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
             ret.setHeight(h);
 
             // Adjusted rect for label + indicatorWidth + indicatorSpace
-            ret = alignedRect(groupBox->direction, Qt::AlignHCenter /*| groupBox->textAlignment*/,
-                                          QSize(tw, h), ret);
+            ret = alignedRect(groupBox->direction, Qt::AlignHCenter, QSize(tw, h), ret);
             break;
          }
          default:
