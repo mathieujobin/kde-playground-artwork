@@ -1045,14 +1045,14 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
    // NOT emphasize, as base/text is usually white/black -> no emphasize possible...
       const QHeaderView* header = qobject_cast<const QHeaderView*>(widget);
       const QStyleOptionHeader* hopt = qstyleoption_cast<const QStyleOptionHeader*>(option);
-      if (sunken ||
-          (!hover && (header && header->isClickable () && hopt && header->sortIndicatorSection() == hopt->section)))
-         painter->drawTiledPixmap(RECT, gradient(sunken?COLOR(Base):COLOR(Text), RECT.height(), Qt::Vertical, GradSunken));
+      sunken = sunken || (header && header->isClickable () && hopt && header->sortIndicatorSection() == hopt->section);
+      if (sunken)
+         painter->drawTiledPixmap(RECT, gradient(COLOR(Text), RECT.height(), Qt::Vertical, GradSunken));
       else {
-         int x,y,w,h;
-         RECT.getRect(&x,&y,&w,&h); w-=dpi.$1;
-         painter->drawTiledPixmap(x,y,w,h, gradient(hover?COLOR(Base):COLOR(Text), RECT.height(), Qt::Vertical, GradGlass));
-         painter->drawTiledPixmap(x+w,y,1,h, gradient(COLOR(Text), RECT.height(), Qt::Vertical, GradSunken));
+         QRect r = RECT; r.setWidth(RECT.width()-1);
+         painter->drawTiledPixmap(r, gradient(COLOR(Text), RECT.height(), Qt::Vertical, GradGlass));
+         r = RECT; r.setLeft(r.right()-dpi.$1);
+         painter->drawTiledPixmap(r, gradient(COLOR(Text), RECT.height(), Qt::Vertical, GradSunken));
       }
       break;
    }
@@ -1070,6 +1070,8 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          drawItemPixmap ( painter, pixRect, Qt::AlignCenter, pixmap );
          rect.setLeft( rect.left() + pixw + 2 );
       }
+      if (hopt->text.isEmpty())
+         break;
       painter->save();
       QColor bg = COLOR(Text), fg = COLOR(Base);
       if (hover) {
@@ -1129,15 +1131,12 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          Qt::Orientation direction; int size; QRect r;
    
          // the groove (add or sub page or if min == max, i.e. no slide usefull)
-         if (!isEnabled/*(opt->minimum < opt->maximum)*/)
-         {
-            if (option->state & QStyle::State_Horizontal)
-            {
+         if (!isEnabled/*(opt->minimum < opt->maximum)*/) {
+            if (option->state & QStyle::State_Horizontal) {
                r = RECT.adjusted(0,RECT.height()/3,0,-RECT.height()/3);
                size = r.height(); direction = Qt::Vertical;
             }
-            else
-            {
+            else {
                r = RECT.adjusted(RECT.width()/3,0,-RECT.width()/3,0);
                size = r.width(); direction = Qt::Horizontal;
             }
@@ -1159,17 +1158,14 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          }
          fillWithMask(painter, r, gradient(btnBgColor(PAL, isEnabled, hover), size, direction, GradGlass), &masks.button);
 	 masks.button.outline(r, painter, Qt::white, true);
-         if (!hover && scrollAreaHovered(widget))
-         {
+         if (!hover && scrollAreaHovered(widget)) {
             int dx, dy, off = sunken?dpi.$1:0;
-            if (option->state & QStyle::State_Horizontal)
-            {
+            if (option->state & QStyle::State_Horizontal) {
                dx = r.width()/10+dpi.$1; dy = r.height()/3;
                r.adjust(dx,dy+off,-dx,-dy+off);
                size = r.height();
             }
-            else
-            {
+            else {
                dx = r.width()/3; dy = r.height()/10+dpi.$1;
                r.adjust(dx+off,dy,-dx+off,-dy);
                size = r.width();
@@ -1195,13 +1191,11 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       break;
    case CE_ComboBoxLabel: // The label of a non-editable QComboBox
       if (const QStyleOptionComboBox *cb =
-          qstyleoption_cast<const QStyleOptionComboBox *>(option))
-      {
+          qstyleoption_cast<const QStyleOptionComboBox *>(option)) {
          QRect editRect = subControlRect(CC_ComboBox, cb, SC_ComboBoxEditField, widget);
          painter->save();
          painter->setClipRect(editRect);
-         if (!cb->currentIcon.isNull())
-         {
+         if (!cb->currentIcon.isNull()) {
             QIcon::Mode mode = isEnabled ? QIcon::Normal
                : QIcon::Disabled;
             QPixmap pixmap = cb->currentIcon.pixmap(cb->iconSize, mode);
@@ -1217,10 +1211,12 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             else
                editRect.translate(cb->iconSize.width() + 4, 0);
          }
-         if (!cb->currentText.isEmpty() && !cb->editable)
-         {
+         if (!cb->currentText.isEmpty() && !cb->editable) {
             editRect.adjust(3,0, -3, 0);
-            painter->setPen(midColor(COLOR(Base),COLOR(Text),1,2));
+            if (hover)
+               painter->setPen(midColor(COLOR(Text), COLOR(Base), 1, 4));
+            else
+               painter->setPen(midColor(COLOR(Base), COLOR(Text), 1, 2));
             drawItemText(painter, editRect, Qt::AlignCenter, PAL, isEnabled, cb->currentText);
          }
          painter->restore();

@@ -193,7 +193,6 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
           qstyleoption_cast<const QStyleOptionComboBox *>(option))
       {
          QRect ar;
-         QColor c = COLOR(Window);
          if ((cmb->subControls & SC_ComboBoxArrow) &&
              (!(widget && qobject_cast<const QComboBox*>(widget)) || ((const QComboBox*)widget)->count() > 0))
             ar = subControlRect(CC_ComboBox, cmb, SC_ComboBoxArrow, widget);
@@ -202,34 +201,29 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             if (cmb->editable)
                drawPrimitive(PE_PanelLineEdit, option, painter, widget);
             else {
-               fillWithMask(painter,  RECT.adjusted(0,0,0,-dpi.$2), gradient(COLOR(Base), RECT.height()-dpi.$2, Qt::Vertical, GradGlass), &masks.button);
+               fillWithMask(painter,  RECT.adjusted(0,0,0,-dpi.$2), gradient(hover?COLOR(Text):COLOR(Base), RECT.height()-dpi.$2, Qt::Vertical, GradGlass), &masks.button);
                shadows.lineEdit[1].render(RECT, painter);
             }
          }
          if (!ar.isNull())
          {
-            QStyleOptionComboBox tmpOpt = *cmb;
-            hover = hover && !sunken && (cmb->activeSubControls == SC_ComboBoxArrow);
-            QPalette::ColorRole fg, bg;
-            if (cmb->editable) {
-               fg = QPalette::Text; bg = QPalette::Base;
-            }
-            else {
-               fg = QPalette::WindowText; bg = QPalette::Window;
-            }
             ar.adjust((2*ar.width())/7,(2*ar.height())/7,-(2*ar.width())/7,-(2*ar.height())/7);
-            painter->save();
+            QStyleOptionComboBox tmpOpt = *cmb;
+            if (cmb->editable)
+               hover = hover && /*!sunken &&*/ (cmb->activeSubControls == SC_ComboBoxArrow);
             painter->setRenderHint ( QPainter::Antialiasing, true );
-            if (!sunken)
-            {
-               painter->setPen(c.dark(105));
-               tmpOpt.rect =  ar.translated(-dpi.$2, dpi.$2);
-               drawPrimitive(PE_IndicatorArrowDown, &tmpOpt, painter, widget);
+            painter->save();
+            if (cmb->editable) {
+               if (!sunken) {
+                  painter->setPen(COLOR(Base).dark(105));
+                  tmpOpt.rect =  ar.translated(-dpi.$2, dpi.$2);
+                  drawPrimitive(PE_IndicatorArrowDown, &tmpOpt, painter, widget);
+               }
             }
             if (hover || sunken)
-               painter->setPen( COLOR(Highlight));//cmb->editable?PAL.color(fg):PAL.color(fg).light(103) );
+               painter->setPen( cmb->editable ? COLOR(Highlight) : midColor(COLOR(Text), COLOR(Base), 1,2) );
             else
-               painter->setPen( midColor(PAL.color(bg), PAL.color(fg)) );
+               painter->setPen( midColor(COLOR(Base), COLOR(Text)) );
             tmpOpt.rect =  ar;
             drawPrimitive(PE_IndicatorArrowDown, &tmpOpt, painter, widget);
             painter->restore();
