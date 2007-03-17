@@ -157,7 +157,10 @@ void OxygenClient::init()
     mainlayout->setColumnStretch(1, 10);
 
     // setup titlebar buttons
-    for (int n=0; n<ButtonTypeCount; n++) button[n] = 0;
+    for (int n=0; n<ButtonTypeCount; n++) {
+        button[n] = 0;
+    }
+
     titlelayout->addSpacing(5);
     addButtons(titlelayout, options()->titleButtonsLeft());
     titlelayout->addSpacing(15);
@@ -474,6 +477,17 @@ void OxygenClient::paintEvent(QPaintEvent*)
 
     // draw the titlebar+buttton background
     painter.fillRect(QRect(0,TFRAMESIZE,width(), TITLESIZE), palette.window());
+
+    // draw the central gradient
+    QRadialGradient mainRadialGradient(width()/2, 10, width()/2,
+                                       width()/2, TFRAMESIZE*2);
+    mainRadialGradient.setColorAt(0.0, QColor(255, 255, 255, 55));
+    mainRadialGradient.setColorAt(0.0, QColor(255, 255, 255, 0));
+    QBrush gradientBrush(mainRadialGradient);
+//    kDebug() << "center: " <<  mainRadialGradient.center() << endl;
+//    kDebug() << "focalPoint: " <<  mainRadialGradient.focalPoint() << endl;
+//    kDebug() << "radius: " <<  mainRadialGradient.radius() << endl;
+    painter.fillRect(3, 3, width(), TFRAMESIZE*3, gradientBrush);
 
     // draw title text
     QRect title(titlebar_->geometry());
