@@ -201,12 +201,19 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             if (cmb->editable)
                drawPrimitive(PE_PanelLineEdit, option, painter, widget);
             else {
-               fillWithMask(painter,  RECT.adjusted(0,0,0,-dpi.$2), gradient(hover?COLOR(Text):COLOR(Base), RECT.height()-dpi.$2, Qt::Vertical, GradGlass), &masks.button);
+               QRect r = RECT.adjusted(0,0,0,-dpi.$2);
+               if (!hover || ar.isNull())
+                  fillWithMask(painter,  r, gradient(COLOR(Base), r.height(), Qt::Vertical, GradGlass), &masks.button);
+               else {
+                  r.setRight(ar.left());
+                  fillWithMask(painter, r, gradient(COLOR(Base), r.height(), Qt::Vertical, GradGlass), &masks.button, Tile::Full&~Tile::Right);
+                  r.setLeft(ar.left()); r.setRight(RECT.right());
+                  fillWithMask(painter, r, gradient(COLOR(Text), r.height(), Qt::Vertical, GradGlass), &masks.button, Tile::Full&~Tile::Left);
+               }
                shadows.lineEdit[1].render(RECT, painter);
             }
          }
-         if (!ar.isNull())
-         {
+         if (!ar.isNull()) {
             ar.adjust((2*ar.width())/7,(2*ar.height())/7,-(2*ar.width())/7,-(2*ar.height())/7);
             QStyleOptionComboBox tmpOpt = *cmb;
             if (cmb->editable)

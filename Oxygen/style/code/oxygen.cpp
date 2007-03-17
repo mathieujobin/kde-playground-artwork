@@ -433,7 +433,7 @@ void OxygenStyle::initMetrics()
 #undef SCALE
 
 /**THE STYLE ITSELF*/
-OxygenStyle::OxygenStyle() : QCommonStyle(), progressShift(0), anmiationUpdate(false), mouseButtonPressed_(false), internalEvent_(false), _bgBrush(0L), popupPix(0L), timer(0L)
+OxygenStyle::OxygenStyle() : QCommonStyle(), activeChunk(0), anmiationUpdate(false), mouseButtonPressed_(false), internalEvent_(false), _bgBrush(0L), popupPix(0L), timer(0L)
 {
    _scanlines[0] = _scanlines[1] = 0L;
    readSettings();

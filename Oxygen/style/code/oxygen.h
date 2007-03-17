@@ -265,7 +265,7 @@ private:
 
    
    //anmiated progressbars
-   uint progressShift;
+   uint activeChunk;
    bool anmiationUpdate;
 
    // button fading

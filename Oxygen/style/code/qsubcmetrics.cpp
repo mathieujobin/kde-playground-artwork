@@ -376,7 +376,7 @@ QRect OxygenStyle::subElementRect ( SubElement element, const QStyleOption * opt
       return option->rect;
    case SE_ProgressBarContents: // Area for the progress indicator
    case SE_ProgressBarLabel: // Area for the text label
-      return option->rect.adjusted(dpi.$3,dpi.$2,-dpi.$3,-dpi.$3);
+      return option->rect.adjusted(dpi.$2,dpi.$2,-dpi.$2,-dpi.$4);
 //    case SE_DialogButtonAccept: // Area for a dialog's accept button
 //    case SE_DialogButtonReject: // Area for a dialog's reject button
 //    case SE_DialogButtonApply: // Area for a dialog's apply button

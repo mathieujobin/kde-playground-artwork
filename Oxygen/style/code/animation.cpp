@@ -103,48 +103,51 @@ static QMap<QTabWidget*, TabAnimInfo*> tabwidgets;
 static int activeTabs = 0;
 
 // --- ProgressBars --------------------
-void OxygenStyle::updateProgressbars()
-{
-#if 1
+void OxygenStyle::updateProgressbars() {
    //Update the registered progressbars.
    QMap<QWidget*, uint>::iterator iter;
    QPainter p;
    QProgressBar *pb;
    QStyleOptionProgressBarV2 *opt = 0L;
    anmiationUpdate = true;
-   for (iter = progressbars.begin(); iter != progressbars.end(); iter++)
-   {
+   for (iter = progressbars.begin(); iter != progressbars.end(); iter++) {
       if ( !qobject_cast<QProgressBar*>(iter.key()) )
          continue;
       pb = (QProgressBar*)(iter.key());
-      if (pb->paintingActive() || !pb->isVisible() || !(pb->value() > pb->minimum()) || !(pb->value() < pb->maximum()))
+      if (pb->paintingActive() || !pb->isVisible() ||
+          !(pb->value() > pb->minimum()) || !(pb->value() < pb->maximum()))
          continue;
 #ifdef Q_WS_X11
       if (!opt)
          opt = new QStyleOptionProgressBarV2();
-      opt->palette = pb->palette();
+      opt->initFrom ( pb );
       opt->minimum = pb->minimum();
       opt->maximum = pb->maximum();
       opt->progress = pb->value();
+      
       opt->textAlignment = pb->alignment();
       opt->textVisible = pb->isTextVisible();
       opt->text = pb->text();
-      opt->rect = pb->rect();
-      opt->state = 0;
-      if (pb->isEnabled()) opt->state |= State_Enabled;
-      if (pb->hasFocus()) opt->state |= State_HasFocus;
-      if (pb->orientation() == Qt::Horizontal) opt->state |= State_Horizontal;
+
+//       opt->state = 0;
+//       if (pb->isEnabled()) opt->state |= State_Enabled;
+//       if (pb->hasFocus()) opt->state |= State_HasFocus;
+//       if (pb->orientation() == Qt::Horizontal) opt->state |= State_Horizontal;
       opt->bottomToTop = pb->textDirection() == QProgressBar::BottomToTop;
       opt->invertedAppearance = pb->invertedAppearance();
       opt->orientation = pb->orientation();
-      opt->direction = pb->layoutDirection();
       opt->rect = visualRect(pb->layoutDirection(), pb->rect(), subElementRect( SE_ProgressBarContents, opt, pb ));
 #endif
-      // we want custom sized rings, depending on the height of the progress
-      if (pb->orientation() == Qt::Vertical)
-         progressShift = ++iter.value() % (opt->rect.width()<<1);
+      // we wanna pulse the chunks
+      int chunks, maxChunks;
+      if (opt->orientation == Qt::Vertical)
+         chunks = opt->rect.height();
       else
-         progressShift = ++iter.value() % ((opt->rect.height()<<1)-1);
+         chunks = opt->rect.width();
+      maxChunks = chunks/dpi.$8;
+      chunks = (opt->progress * chunks) / ((opt->maximum - opt->minimum) * dpi.$8);
+      ++iter.value(); iter.value() %= (((maxChunks-chunks)/2)*chunks);
+      activeChunk = iter.value()/((maxChunks-chunks)/2);
       // i don't want to paint the whole progressbar, as only the progress and maybe the percentage needs an update - saves cpu especially on lack of HW accelerated XRender alpha blending
       // TODO: this is X11 only, find a better way (maybe just repaint the whole widget)
 #ifndef Q_WS_X11
@@ -154,8 +157,8 @@ void OxygenStyle::updateProgressbars()
       pb->setAttribute ( Qt::WA_PaintOutsidePaintEvent );
       p.begin(pb);
       drawControl( CE_ProgressBarContents, opt, &p, pb );
-      opt->rect = visualRect(pb->layoutDirection(), pb->rect(), subElementRect( SE_ProgressBarLabel, opt, pb ));
-      drawControl( CE_ProgressBarLabel, opt, &p, pb );
+//       opt->rect = visualRect(pb->layoutDirection(), pb->rect(), subElementRect( SE_ProgressBarLabel, opt, pb ));
+//       drawControl( CE_ProgressBarLabel, opt, &p, pb );
       p.end();
       pb->setAttribute ( Qt::WA_PaintOutsidePaintEvent, false );
 #endif
@@ -163,7 +166,6 @@ void OxygenStyle::updateProgressbars()
    if (opt)
       delete opt;
    anmiationUpdate = false;
-#endif
 }
 
 void OxygenStyle::progressbarDestroyed(QObject* obj)
