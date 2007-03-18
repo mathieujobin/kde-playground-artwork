@@ -276,8 +276,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
           qstyleoption_cast<const QStyleOptionTab *>(option))
       {
          bool needRestore = false;
-         if (widget && (RECT.right() > widget->width()))
-         {
+         if (widget && (RECT.right() > widget->width())) {
             needRestore = true;
             painter->save();
             QRect r = RECT; r.setRight(widget->width()-2*pixelMetric(PM_TabBarScrollButtonWidth,option,widget));
@@ -291,16 +290,14 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       break;
    case CE_TabBarTabShape: // The tab shape within a tab bar
       if (const QStyleOptionTab *tab =
-          qstyleoption_cast<const QStyleOptionTab *>(option))
-      {
+          qstyleoption_cast<const QStyleOptionTab *>(option)) {
          bool selected = option->state & State_Selected;
          int $2 = dpi.$2, $4 = dpi.$4, $8 = dpi.$8;
          if (!(hover || selected || sunken))
             break;
          Tile::PosFlags pf = 0; int size = 0; Qt::Orientation o = Qt::Vertical;
          QRect rect = RECT;
-         switch (tab->shape)
-         {
+         switch (tab->shape) {
          case QTabBar::RoundedNorth:
          case QTabBar::TriangularNorth:
             pf = Tile::Top | Tile::Left | Tile::Right;
@@ -328,8 +325,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             rect.setLeft(rect.left()+$2);
             break;
          }
-         if (selected)
-         {
+         if (selected) {
             size = (o == Qt::Vertical) ? 2*rect.height() : 2*rect.width();
             QPoint zero = RECT.topLeft();
             if (widget)
@@ -338,8 +334,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             shadows.tab.render(rect, painter, pf);
             break;
          }
-         else
-         {
+         else {
             QRect rect = RECT.adjusted($4,$4,-$4,-$4);
             fillWithMask(painter, rect, gradient(COLOR(Window), size, o, sunken?GradSunken:GradGloss), &masks.button);
          }

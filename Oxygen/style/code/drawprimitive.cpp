@@ -80,7 +80,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       if (sunken) r.adjust($1,0,-$1,-$1);
       else r.adjust($3,$1,-$3,-$3);
       if (isEnabled) {
-         fillWithMask(painter, r, gradient(c, r.height(), Qt::Vertical, isDefault?GradGloss:GradGlass), &masks.button);
+         fillWithMask(painter, r, gradient(c, r.height(), Qt::Vertical, isDefault?config.gradientStrong:config.gradient), &masks.button);
          // border - glass has over or underlightened borders,
          // we assume 360° overlight - looks nicer with the shadows ;)
          masks.button.outline(r, painter, Qt::white, true);
@@ -233,7 +233,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          painter->save();
          painter->setRenderHint(QPainter::Antialiasing);
          QRect r = RECT.adjusted(dpi.$6,dpi.$5,-dpi.$6,-dpi.$7);
-         const QPixmap &fill = gradient(c, r.height(), Qt::Vertical, GradGlass);
+         const QPixmap &fill = gradient(c, r.height(), Qt::Vertical, config.gradient);
          switch (config.checkType) {
          default:
          case 0: {
@@ -288,7 +288,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       xy += QPoint($2,$1);
       int sz = dpi.ExclusiveIndicator - dpi.$4;
       if (isEnabled)
-         fillWithMask(painter, xy, gradient(c, sz, Qt::Vertical, GradGlass), masks.radio);
+         fillWithMask(painter, xy, gradient(c, sz, Qt::Vertical, config.gradient), masks.radio);
       else
          fillWithMask(painter, xy, c, masks.radio);
       
@@ -297,7 +297,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          sz -= dpi.$4;
          QColor c = btnFgColor(PAL, isEnabled, hover||hasFocus);
          xy += QPoint($2,$2);
-         fillWithMask(painter, xy, gradient(c, sz, Qt::Vertical, GradGlass), masks.radioIndicator);
+         fillWithMask(painter, xy, gradient(c, sz, Qt::Vertical, config.gradient), masks.radioIndicator);
       }
       break;
    }
@@ -401,50 +401,55 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       break;
    case PE_FrameTabWidget: // Frame for tab widgets.
       if (const QStyleOptionTabWidgetFrame *twf =
-          qstyleoption_cast<const QStyleOptionTabWidgetFrame *>(option))
-      {
-         QRect rect(RECT), tabRect(RECT);
+          qstyleoption_cast<const QStyleOptionTabWidgetFrame *>(option)) {
+         QRect rect(RECT), tabRect(RECT), fillRect;
          int baseHeight = pixelMetric( PM_TabBarBaseHeight, option, widget )-1;
          int offset = 8;
          Qt::Orientation o = Qt::Vertical;
          Tile::PosFlags pf = 0;
-         switch (twf->shape)
-         {
+         switch (twf->shape) {
          case QTabBar::RoundedNorth:
          case QTabBar::TriangularNorth:
             rect.adjust(offset,0,-offset,0);
             rect.setHeight(baseHeight);
+            fillRect = rect.adjusted(dpi.$3, dpi.$2, -dpi.$3, 0);
             pf = Tile::Left | Tile::Right | Tile::Top;
-            tabRect.setTop(tabRect.top()+(baseHeight-dpi.$1));
+            tabRect.setTop(tabRect.top()+baseHeight);
+            baseHeight = fillRect.height();
             break;
          case QTabBar::RoundedSouth:
          case QTabBar::TriangularSouth:
             rect.adjust(offset,0,-offset,0);
             rect.setTop(rect.bottom()-baseHeight);
+            fillRect = rect.adjusted(dpi.$3, 0, -dpi.$3, -dpi.$3);
             pf = Tile::Left | Tile::Right | Tile::Bottom;
-            tabRect.setBottom(tabRect.bottom()-(baseHeight-dpi.$1));
+            tabRect.setBottom(tabRect.bottom()-(baseHeight-dpi.$3));
+            baseHeight = fillRect.height();
             break;
          case QTabBar::RoundedEast:
          case QTabBar::TriangularEast:
             rect.adjust(0,offset,0,-offset);
             rect.setLeft(rect.right()-baseHeight);
+            fillRect = rect.adjusted(0, dpi.$2, -dpi.$3, -dpi.$3);
             pf = Tile::Top | Tile::Right | Tile::Bottom;
             o = Qt::Horizontal;
-            tabRect.setRight(tabRect.right()-(baseHeight-dpi.$1));
+            tabRect.setRight(tabRect.right()-(baseHeight-dpi.$2));
+            baseHeight = fillRect.width();
             break;
          case QTabBar::RoundedWest:
          case QTabBar::TriangularWest:
             rect.adjust(0,offset,0,-offset);
             rect.setWidth(baseHeight);
+            fillRect = rect.adjusted(dpi.$3, dpi.$2, 0, -dpi.$3);
             pf = Tile::Top | Tile::Left | Tile::Bottom;
             o = Qt::Horizontal;
-            tabRect.setLeft(tabRect.left()+(baseHeight-dpi.$1));
+            tabRect.setLeft(tabRect.left()+(baseHeight-dpi.$2));
+            baseHeight = fillRect.width();
             break;
          }
          shadows.tab.render(rect, painter, pf);
-         rect.adjust(dpi.$3,dpi.$2,-dpi.$3,0);
-         fillWithMask(painter, rect, gradient(COLOR(WindowText), baseHeight, o, GradGloss), &masks.tab, pf | Tile::Center);
-         masks.tab.outline(rect, painter, COLOR(WindowText).dark(110), false, pf);
+         fillWithMask(painter, fillRect, gradient(COLOR(WindowText), baseHeight, o, config.gradientStrong), &masks.tab, pf | Tile::Center);
+         masks.tab.outline(fillRect, painter, COLOR(WindowText).dark(110), false, pf);
          shadows.tab.render(tabRect, painter, Tile::Ring);
       }
       break;
@@ -670,8 +675,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
 //    case PE_PanelTipLabel: // The panel for a tip label.
    case PE_FrameTabBarBase: // The frame that is drawn for a tabbar, ususally drawn for a tabbar that isn't part of a tab widget
       if (const QStyleOptionTabBarBase *tbb
-            = qstyleoption_cast<const QStyleOptionTabBarBase *>(option))
-      {
+            = qstyleoption_cast<const QStyleOptionTabBarBase *>(option)) {
          QRegion region(tbb->rect);
          region -= tbb->selectedTabRect;
          painter->save();
@@ -694,7 +698,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
             size = RECT.height();
             break;
          }
-         fillWithMask(painter, RECT, gradient(COLOR(WindowText), size, o, GradGloss), &masks.tab);
+         fillWithMask(painter, RECT, gradient(COLOR(WindowText), size, o, config.gradientStrong), &masks.tab);
          shadows.tab.render(RECT, painter);
          painter->restore();
       }

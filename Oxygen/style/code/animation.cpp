@@ -139,15 +139,15 @@ void OxygenStyle::updateProgressbars() {
       opt->rect = visualRect(pb->layoutDirection(), pb->rect(), subElementRect( SE_ProgressBarContents, opt, pb ));
 #endif
       // we wanna pulse the chunks
-      int chunks, maxChunks;
+      int chunks;
       if (opt->orientation == Qt::Vertical)
          chunks = opt->rect.height();
       else
          chunks = opt->rect.width();
-      maxChunks = chunks/dpi.$8;
       chunks = (opt->progress * chunks) / ((opt->maximum - opt->minimum) * dpi.$8);
-      ++iter.value(); iter.value() %= (((maxChunks-chunks)/2)*chunks);
-      activeChunk = iter.value()/((maxChunks-chunks)/2);
+      int factor = 1+qMax(20-chunks,0)*2; // we wanna do the whole thing in 1 sec @ max
+      ++iter.value(); iter.value() %= (factor*chunks);
+      activeChunk = iter.value()/factor;
       // i don't want to paint the whole progressbar, as only the progress and maybe the percentage needs an update - saves cpu especially on lack of HW accelerated XRender alpha blending
       // TODO: this is X11 only, find a better way (maybe just repaint the whole widget)
 #ifndef Q_WS_X11

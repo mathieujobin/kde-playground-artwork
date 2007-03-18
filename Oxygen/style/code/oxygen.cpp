@@ -398,11 +398,16 @@ void OxygenStyle::readSettings()
    
    config.inversePopups = settings.value("InversePopups",false).toBool();
 
-   config.scrollbarFg = (QPalette::ColorRole)settings.value("ScrollbarColor", QPalette::Window).toInt();
-   invColorRole(config.scrollbarFg, config.scrollbarBg, QPalette::Window, QPalette::WindowText);
-
    config.tabTransition = (TabTransition) settings.value("TabTransition", ScanlineBlend).toInt();
-   config.HAL9000 = settings.value("HAL9000", false).toBool();
+   
+   config.gradient = GradGlass;
+   config.gradientStrong = GradGloss;
+   config.HAL9000 = settings.value("HAL9000", true).toBool();
+   if (!config.HAL9000) {
+      config.gradient = GradButton;
+      config.gradientStrong = GradSimple;
+   }
+
    settings.endGroup();
 }
 

@@ -84,6 +84,13 @@ public:
 };
 
 enum Orientation3D {Sunken = 0, Relief, Raised};
+enum GradientType {
+   GradSimple = 0, GradSunken,
+   GradGloss, GradGlass, GradRadialGloss,
+   GradButton, GradButtonHover, GradButtonDisabled,
+   GradGroup,
+   NumGrads
+};
 // typedef Tile::PosFlags PosFlags;
 // enum Position
 // {
@@ -106,8 +113,7 @@ typedef struct
 typedef struct Config
 {
    bool inversePopups; // whether the popups are foreground or background colored
-   QPalette::ColorRole scrollbarBg;
-   QPalette::ColorRole scrollbarFg;
+   GradientType gradient, gradientStrong;
    BGMode bgMode;
    Acceleration acceleration;
    int structure;
@@ -147,13 +153,6 @@ class OxygenStyle : public QCommonStyle
    Q_OBJECT
 public:
    enum WidgetState{Basic = 0, Hovered, Focused, Active};
-   enum GradientType {
-      GradSimple, GradSunken,
-      GradGloss, GradGlass, GradRadialGloss,
-      GradButton, GradButtonHover, GradButtonDisabled,
-      GradGroup,
-      NumGrads
-   };
    
    OxygenStyle();
    virtual ~OxygenStyle();
