@@ -796,7 +796,7 @@ void OxygenStyle::polish( QWidget * widget)
    //TODO maybe we can exclude some more widgets here... (currently only popup menus)
    if (_bgBrush && !(qobject_cast<QMenu*>(widget) ||
          widget->inherits("QAlphaWidget") ||
-         widget->inherits("QComboBoxPrivateContainer")
+         widget->inherits("QComboBoxListView")
         ))
       widget->installEventFilter(_bgBrush);
 
@@ -833,8 +833,9 @@ void OxygenStyle::polish( QWidget * widget)
        || widget->inherits("Q3DockWindowResizeHandle")
       )
          widget->setAttribute(Qt::WA_Hover);
-   
-   if (qobject_cast<QScrollBar *>(widget))
+   if (qobject_cast<QScrollBar *>(widget) && !(widget->parentWidget() &&
+              widget->parentWidget()->parentWidget() &&
+              widget->parentWidget()->parentWidget()->inherits("QComboBoxListView")))
       widget->setAttribute(Qt::WA_OpaquePaintEvent, false);
    
    if (qobject_cast<QProgressBar*>(widget)) {

@@ -230,7 +230,7 @@ const QPixmap &OxygenStyle::gradient(const QColor &c, int size, Qt::Orientation 
             colors << c << iC;
             break;
          }
-         colors << c.light(100+(qMin(7,size/15))) << c;
+         colors << c.light(100+(qMin(3,size/15))) << c;
          break;
       }
       case GradSimple:

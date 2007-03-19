@@ -63,7 +63,10 @@ int OxygenStyle::pixelMetric ( PixelMetric pm, const QStyleOption * option, cons
    case PM_MaximumDragDistance: // Some feels require the scroll bar or other sliders to jump back to the original position when the mouse pointer is too far away while dragging; a value of -1 disables this behavior
       return -1;
    case PM_ScrollBarExtent: // Width of a vertical scroll bar and the height of a horizontal scroll bar
-      return dpi.ScrollBarExtent;
+      return (widget && widget->parentWidget() &&
+              widget->parentWidget()->parentWidget() &&
+              widget->parentWidget()->parentWidget()->inherits("QComboBoxListView")) ?
+         dpi.$16 : dpi.ScrollBarExtent;
    case PM_ScrollBarSliderMin: // The minimum height of a vertical scroll bar's slider and the minimum width of a horizontal scroll bar's slider
       return dpi.ScrollBarSliderMin;
    case PM_SliderThickness: // Total slider thickness

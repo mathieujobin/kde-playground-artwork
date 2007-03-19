@@ -66,7 +66,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
    case PE_PanelButtonCommand: // Button used to initiate an action, for example, a QPushButton.
    case PE_PanelButtonBevel: { // Generic panel with a button bevel.
       const int $1 = dpi.$1, $2 = dpi.$2, $3 = dpi.$3;
-      bool isOn = option->state & State_On;
+      bool isOn = !hover && option->state & State_On;
       const QStyleOptionButton* opt = qstyleoption_cast<const QStyleOptionButton*>(option);
       bool isDefault = opt && (opt->features & QStyleOptionButton::DefaultButton);
       QColor c = btnBgColor(PAL, isEnabled, hover || hasFocus);
@@ -80,7 +80,8 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       if (sunken) r.adjust($1,0,-$1,-$1);
       else r.adjust($3,$1,-$3,-$3);
       if (isEnabled) {
-         fillWithMask(painter, r, gradient(c, r.height(), Qt::Vertical, isDefault?config.gradientStrong:config.gradient), &masks.button);
+         GradientType gt = isOn ? GradSunken : ( isDefault ? config.gradientStrong : config.gradient);
+         fillWithMask(painter, r, gradient(c, r.height(), Qt::Vertical, gt), &masks.button);
          // border - glass has over or underlightened borders,
          // we assume 360° overlight - looks nicer with the shadows ;)
          masks.button.outline(r, painter, Qt::white, true);
@@ -306,7 +307,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
    case PE_Frame: { // Generic frame; see also QFrame.
       if (widget) {
          // handle the
-         if (widget->inherits("QComboBoxPrivateContainer")) {
+         if (widget->inherits("QComboBoxListView")) {
             QPen oldPen = painter->pen();
             painter->setPen(PAL.color(QPalette::Window).dark(120));
             painter->drawLine(RECT.x(), RECT.top(), RECT.x(), RECT.bottom());
@@ -456,21 +457,20 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
    case PE_FrameLineEdit: // Panel frame for line edits.
       shadows.lineEdit[isEnabled].render(RECT.adjusted(0,0,0,-dpi.$2),painter);
    case PE_FrameGroupBox: { // Panel frame around group boxes.
-      int lite = 5; // compromise ;) - shouldn't happen anyway
+      int lite = 3; // compromise ;) - shouldn't happen anyway
       if (widget) {
-         // find proper color value for the top (because of out general gradient)
-         // 0% -> lite = 10, 100% -> lite = 0
+         // 0% -> lite = 5, 100% -> lite = 0
          QWidget *tlw = widget->topLevelWidget();
          QPoint zero(0,0); zero = widget->mapTo(tlw, zero);
          lite = 5-(5*(zero.y()+widget->height()))/tlw->height();
       }
       QRect rect = RECT.adjusted(dpi.$4,dpi.$2,-dpi.$4,-dpi.$32);
       QColor c = COLOR(Window).light(100+lite);
-      fillWithMask(painter, rect, gradient(c, rect.height(), Qt::Vertical, GradGroup), &masks.button,
-                   Tile::Left|Tile::Top|Tile::Right);
+      fillWithMask(painter, rect, gradient(c, rect.height(), Qt::Vertical, GradGroup), &masks.button, Tile::Full&~Tile::Bottom);
       rect = RECT.adjusted(dpi.$4,0,-dpi.$4,0); rect.setTop(rect.bottom()-dpi.$32+dpi.$1);
       painter->drawTiledPixmap(rect, gradient(c, rect.height(), Qt::Horizontal, GradGroup));
       shadows.group.render(RECT, painter, Tile::Ring);
+      masks.button.outline(RECT.adjusted(dpi.$4,dpi.$2,-dpi.$4,-dpi.$32), painter, COLOR(Window).light(120), true, Tile::Full&~Tile::Bottom);
       break;
    }
 //    case PE_FrameButtonBevel: // Panel frame for a button bevel

@@ -64,7 +64,8 @@ int OxygenStyle::styleHint ( StyleHint hint, const QStyleOption * option, const 
    case SH_Menu_SloppySubMenus: // Whether popupmenu's must support sloppy submenu; as implemented on Mac OS.
       return true;
    case SH_ScrollView_FrameOnlyAroundContents: // Whether scrollviews draw their frame only around contents (like Motif), or around contents, scroll bars and corner widgets (like Windows).
-      return true; // find solution for round corner end
+      return (!(widget && widget->inherits("QComboBoxListView")));
+//       return true; // find solution for round corner end
    case SH_MenuBar_AltKeyNavigation: // Menu bars items are navigable by pressing Alt, followed by using the arrow keys to select the desired item.
       return true;
    case SH_ComboBox_ListMouseTracking: // Mouse tracking in combobox drop-down lists.
@@ -72,7 +73,7 @@ int OxygenStyle::styleHint ( StyleHint hint, const QStyleOption * option, const 
    case SH_MenuBar_MouseTracking: // Mouse tracking in menubars.
       return true;
    case SH_Menu_FillScreenWithScroll: // Whether scrolling popups should fill the screen as they are scrolled.
-      return true;
+      return false;
    case SH_ItemView_ChangeHighlightOnFocus: // Gray out selected items when losing focus.
       return true;
 //    case SH_Widget_ShareActivation: // Turn on sharing activation with floating modeless dialogs.
@@ -130,7 +131,9 @@ int OxygenStyle::styleHint ( StyleHint hint, const QStyleOption * option, const 
 
 #warning commenting those two line to make it compile. check.
 //   case SH_ScrollBar_BackgroundMode: // The backgroundMode() for a scroll bar.
-//      return Qt::PaletteBackground;
+//      return ((widget && widget->inherits("QComboBoxListView"))) ?
+//          Qt::PaletteBase :
+//          Qt::PaletteBackground;
 
 ///    case SH_ComboBox_LayoutDirection: // The layout direction for the combo box. By default it should be the same value as the QStyleOption's direction.
 ///    case SH_ItemView_EllipsisLocation: // The location where ellipses should be added for item text that is too long to fit in an view item.

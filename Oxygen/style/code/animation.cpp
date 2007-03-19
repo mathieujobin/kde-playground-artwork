@@ -145,9 +145,15 @@ void OxygenStyle::updateProgressbars() {
       else
          chunks = opt->rect.width();
       chunks = (opt->progress * chunks) / ((opt->maximum - opt->minimum) * dpi.$8);
-      int factor = 1+qMax(20-chunks,0)*2; // we wanna do the whole thing in 1 sec @ max
-      ++iter.value(); iter.value() %= (factor*chunks);
-      activeChunk = iter.value()/factor;
+      if (!chunks)
+         continue;
+      ++iter.value(); iter.value() %= 30; // modify "30" here and below to impact speed
+      if (chunks > 1)
+         activeChunk = (chunks*iter.value())/30;
+      else if (iter.value() > 10)
+         activeChunk = 0;
+      else
+         activeChunk = -1;
       // i don't want to paint the whole progressbar, as only the progress and maybe the percentage needs an update - saves cpu especially on lack of HW accelerated XRender alpha blending
       // TODO: this is X11 only, find a better way (maybe just repaint the whole widget)
 #ifndef Q_WS_X11

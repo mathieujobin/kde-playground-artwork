@@ -336,7 +336,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          }
          else {
             QRect rect = RECT.adjusted($4,$4,-$4,-$4);
-            fillWithMask(painter, rect, gradient(COLOR(Window), size, o, sunken?GradSunken:GradGloss), &masks.button);
+            fillWithMask(painter, rect, gradient(COLOR(Window), size, o, sunken?GradSunken:config.gradientStrong), &masks.button);
          }
       }
       break;
@@ -500,7 +500,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          if (val > 0.0) {
             int chunks, $8 = dpi.$8; QRect r = RECT;
             QColor dark = (progress->progress == progress->maximum) ?
-                  COLOR(Window) : midColor(COLOR(WindowText), COLOR(Window), 1, 6);
+                  COLOR(Window) : midColor(COLOR(WindowText), COLOR(Window), 1, 8);
 #define _COLOR_ (i==activeChunk) ? COLOR(Window) : dark
             // vertical progressbar, shake it baby ;P
             if (progress->orientation == Qt::Vertical) {
@@ -891,7 +891,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          {
             if (option->state & State_Selected)
             {
-               painter->drawTiledPixmap(RECT, gradient(COLOR(WindowText), RECT.height(), Qt::Vertical, GradGloss));
+               painter->drawTiledPixmap(RECT, gradient(COLOR(WindowText), RECT.height(), Qt::Vertical, config.gradientStrong));
                QFont f(painter->font());
                f.setBold(true);
                painter->setFont(f);
@@ -899,7 +899,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
                role = QPalette::Window;
             }
             else
-               painter->drawTiledPixmap(RECT, gradient(COLOR(Window), RECT.height(), Qt::Vertical, sunken ? GradSunken : hover?GradGloss:GradSimple));
+               painter->drawTiledPixmap(RECT, gradient(COLOR(Window), RECT.height(), Qt::Vertical, sunken ? GradSunken : hover?config.gradientStrong:config.gradient));
          }
          
          /**i WANT (read this TrottelTech: WANT!) this to be color swapped on select (and centered as sugar on top)
@@ -981,7 +981,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          painter->drawTiledPixmap(RECT, gradient(COLOR(Text), RECT.height(), Qt::Vertical, GradSunken));
       else {
          QRect r = RECT; r.setWidth(RECT.width()-1);
-         painter->drawTiledPixmap(r, gradient(COLOR(Text), RECT.height(), Qt::Vertical, GradGlass));
+         painter->drawTiledPixmap(r, gradient(COLOR(Text), RECT.height(), Qt::Vertical, config.gradient));
          r = RECT; r.setLeft(r.right()-dpi.$1);
          painter->drawTiledPixmap(r, gradient(COLOR(Text), RECT.height(), Qt::Vertical, GradSunken));
       }
@@ -1020,7 +1020,31 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       break;
    }
    case CE_ScrollBarAddLine: // Scroll bar line increase indicator. (i.e., scroll down); see also QScrollBar.
+      if (option->state & State_Item) { // combobox scroller
+         painter->save();
+         painter->setPen(hover?COLOR(Text):midColor(COLOR(Base),COLOR(Text)));
+         QStyleOption opt = *option;
+         opt.rect = RECT.adjusted(RECT.width()/4,RECT.height()/4,-RECT.width()/4,-RECT.height()/4);
+         if (option->state & QStyle::State_Horizontal)
+            drawPrimitive (PE_IndicatorArrowRight, &opt, painter, widget);
+         else
+            drawPrimitive (PE_IndicatorArrowDown, &opt, painter, widget);
+         painter->restore();
+         break;
+      }
    case CE_ScrollBarSubLine: // Scroll bar line decrease indicator (i.e., scroll up).
+      if (option->state & State_Item) { // combobox scroller
+         painter->save();
+         painter->setPen(hover?COLOR(Text):midColor(COLOR(Base),COLOR(Text)));
+         QStyleOption opt = *option;
+         opt.rect = RECT.adjusted(RECT.width()/4,RECT.height()/4,-RECT.width()/4,-RECT.height()/4);
+         if (option->state & QStyle::State_Horizontal)
+            drawPrimitive (PE_IndicatorArrowLeft, &opt, painter, widget);
+         else
+            drawPrimitive (PE_IndicatorArrowUp, &opt, painter, widget);
+         painter->restore();
+         break;
+      }
       if (const QStyleOptionSlider *opt =
             qstyleoption_cast<const QStyleOptionSlider *>(option)) {
          bool alive = isEnabled && ((element == CE_ScrollBarAddLine && opt->sliderValue < opt->maximum) ||
@@ -1033,21 +1057,20 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          xy += QPoint(dpi.$2,dpi.$1);
          int sz = dpi.ExclusiveIndicator - dpi.$4;
          fillWithMask(painter, xy, gradient(btnBgColor(PAL, alive, hover|hasFocus), sz,
-                                            Qt::Vertical, alive?GradGlass:GradSunken), masks.radio);
+                                            Qt::Vertical, alive?config.gradient:GradSunken), masks.radio);
          break;
       }
    case CE_ScrollBarSubPage: // Scroll bar page decrease indicator (i.e., page up).
-   case CE_ScrollBarAddPage: // Scolllbar page increase indicator (i.e., page down).
-   {
+   case CE_ScrollBarAddPage: {// Scolllbar page increase indicator (i.e., page down).
+      if (option->state & State_Item) // combobox scroller
+         break;
       Qt::Orientation direction; int size, c; QRect r;
-      if (option->state & QStyle::State_Horizontal)
-      {
+      if (option->state & QStyle::State_Horizontal) {
          r = RECT.adjusted(0,RECT.height()/3,0,-RECT.height()/3);
          size = r.height(); direction = Qt::Vertical;
          c = r.y()+r.height()/2;
       }
-      else
-      {
+      else {
          r = RECT.adjusted(RECT.width()/3,0,-RECT.width()/3,0);
          size = r.width(); direction = Qt::Horizontal;
          c = r.x()+r.width()/2;
@@ -1056,9 +1079,12 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       break;
    }
    case CE_ScrollBarSlider: // Scroll bar slider.
+      if (option->state & State_Item) {
+         painter->fillRect(RECT.adjusted(dpi.$2,0,-dpi.$2,0), (hover||sunken)?COLOR(Text):midColor(COLOR(Base),COLOR(Text),8,1));
+         break;
+      }
       if (const QStyleOptionSlider *opt =
-          qstyleoption_cast<const QStyleOptionSlider *>(option))
-      {
+          qstyleoption_cast<const QStyleOptionSlider *>(option)) {
          Qt::Orientation direction; int size; QRect r;
    
          // the groove (add or sub page or if min == max, i.e. no slide usefull)
@@ -1087,7 +1113,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          else {
             size = r.width(); direction = Qt::Horizontal;
          }
-         fillWithMask(painter, r, gradient(btnBgColor(PAL, isEnabled, hover), size, direction, GradGlass), &masks.button);
+         fillWithMask(painter, r, gradient(btnBgColor(PAL, isEnabled, hover), size, direction, config.gradient), &masks.button);
 	 masks.button.outline(r, painter, Qt::white, true);
          if (!hover && scrollAreaHovered(widget)) {
             int dx, dy, off = sunken?dpi.$1:0;
@@ -1101,7 +1127,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
                r.adjust(dx+off,dy,-dx+off,-dy);
                size = r.width();
             }
-            painter->drawTiledPixmap(r, gradient(btnFgColor(PAL, isEnabled, hover), size, direction, GradGlass));
+            painter->drawTiledPixmap(r, gradient(btnFgColor(PAL, isEnabled, hover), size, direction, config.gradient));
          }
       }
       break;

@@ -239,24 +239,21 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
       break;
    case CC_ScrollBar: // A scroll bar, like QScrollBar
       if (const QStyleOptionSlider *scrollbar =
-         qstyleoption_cast<const QStyleOptionSlider *>(option))
-      {
+         qstyleoption_cast<const QStyleOptionSlider *>(option)) {
          // Make a copy here and reset it for each primitive.
          QStyleOptionSlider newScrollbar = *scrollbar;
-         State saveFlags = scrollbar->state;
-         if (scrollbar->minimum == scrollbar->maximum)
-               saveFlags &= ~State_Enabled;
          
          // erase
-//          QPixmap bgPix = PAL.brush(QPalette::Window).texture();
-//          if (bgPix.isNull())
-//             painter->fillRect(RECT, COLOR(Window));
-//          else
-//          {
-//             QPoint zero(0,0);
-//             zero = widget->mapTo(widget->topLevelWidget(), zero);
-//             painter->drawTiledPixmap( RECT, bgPix, zero);
-//          }
+         if (widget->parentWidget() &&
+              widget->parentWidget()->parentWidget() &&
+              widget->parentWidget()->parentWidget()->inherits("QComboBoxListView")) {
+            painter->fillRect(RECT, PAL.brush(QPalette::Base));
+            newScrollbar.state |= State_Item;
+         }
+         
+         State saveFlags = newScrollbar.state;
+         if (scrollbar->minimum == scrollbar->maximum)
+               saveFlags &= ~State_Enabled;
          
 #define PAINT_ELEMENT(_SC_, _CE_)\
          if (scrollbar->subControls & _SC_)\
@@ -297,28 +294,24 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
       break;
    case CC_Slider: // A slider, like QSlider
       if (const QStyleOptionSlider *slider =
-          qstyleoption_cast<const QStyleOptionSlider *>(option))
-      {
+          qstyleoption_cast<const QStyleOptionSlider *>(option)) {
          QRect groove = QCommonStyle::subControlRect(CC_Slider, slider, SC_SliderGroove, widget);
          QRect handle = QCommonStyle::subControlRect(CC_Slider, slider, SC_SliderHandle, widget);
 
          hover = hover && (slider->activeSubControls & SC_SliderHandle);
          sunken = sunken && (slider->activeSubControls & SC_SliderHandle);
          
-         if ((slider->subControls & SC_SliderGroove) && groove.isValid())
-         {
+         if ((slider->subControls & SC_SliderGroove) && groove.isValid()) {
             QRect r; Tile::PosFlags pf = 0;
             QColor c = hasFocus ? COLOR(Highlight) : COLOR(ButtonText);
-            if ( slider->orientation == Qt::Horizontal )
-            {
+            if ( slider->orientation == Qt::Horizontal ) {
                groove.adjust(0,handle.height()/3,0,-handle.height()/3);
                r = groove;
                r.setRight(handle.left()+3);
                pf = Tile::Top | Tile::Left | Tile::Bottom | Tile::Center;
                if (slider->upsideDown)
                   fillWithMask(painter, r, gradient(COLOR(Window), r.height(), Qt::Vertical, GradSunken), &masks.button, pf);
-               else
-               {
+               else {
                   shadows.button[0][1].render(r, painter);
                   r.adjust(2,1,-2,-2);
                   fillWithMask(painter, r, gradient(c, r.height(), Qt::Vertical, GradGloss), &masks.button, pf);
@@ -326,8 +319,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                r = groove;
                r.setLeft(handle.right()-3);
                pf = Tile::Top | Tile::Right | Tile::Bottom | Tile::Center;
-               if (slider->upsideDown)
-               {
+               if (slider->upsideDown) {
                   shadows.button[0][1].render(r, painter);
                   r.adjust(2,1,-2,-2);
                   fillWithMask(painter, r, gradient(c, r.height(), Qt::Vertical, GradGloss), &masks.button, pf);
@@ -335,16 +327,14 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                else
                   fillWithMask(painter, r, gradient(COLOR(Window), r.height(), Qt::Vertical, GradSunken), &masks.button, pf);
             }
-            else // Vertical
-            {
+            else { // Vertical
                groove.adjust(handle.width()/3,0,-handle.width()/3,0);
                r = groove;
                r.setBottom(handle.top()+3);
                pf = Tile::Top | Tile::Left | Tile::Right | Tile::Center;
                if (slider->upsideDown)
                   fillWithMask(painter, r, gradient(COLOR(Window), r.width(), Qt::Horizontal, GradSunken), &masks.button, pf);
-               else
-               {
+               else {
                   shadows.button[0][1].render(r, painter);
                   r.adjust(2,1,-2,-2);
                   fillWithMask(painter, r, gradient(c, r.width(), Qt::Horizontal, GradGloss), &masks.button, pf);
@@ -352,8 +342,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                r = groove;
                r.setTop(handle.bottom()-3);
                pf = Tile::Left | Tile::Right | Tile::Bottom | Tile::Center;
-               if (slider->upsideDown)
-               {
+               if (slider->upsideDown) {
                   shadows.button[0][1].render(r, painter);
                   r.adjust(2,1,-2,-2);
                   fillWithMask(painter, r, gradient(c, r.width(), Qt::Horizontal, GradGloss), &masks.button, pf);
@@ -363,15 +352,13 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             }
          }
          
-         if (slider->subControls & SC_SliderTickmarks)
-         {
+         if (slider->subControls & SC_SliderTickmarks) {
             QStyleOptionSlider tmpSlider = *slider;
             tmpSlider.subControls = SC_SliderTickmarks;
             QCommonStyle::drawComplexControl(control, &tmpSlider, painter, widget);
          }
          
-         if (slider->subControls & SC_SliderHandle)
-         {
+         if (slider->subControls & SC_SliderHandle) {
             // shadow
             QPoint xy = handle.topLeft();
             painter->drawPixmap(sunken?xy+QPoint(dpi.$1,dpi.$1):xy, shadows.radio[sunken][1]);
@@ -382,8 +369,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                      gradient(isEnabled?COLOR(Button):COLOR(Window), handle.height()-dpi.$4, Qt::Vertical, gt),
                      masks.radio);
             // focus indicator
-            if (hasFocus)
-            {
+            if (hasFocus) {
                painter->save();
                painter->setBrush(gradient(COLOR(Highlight), handle.height()-dpi.$4, Qt::Vertical, gt));
                painter->setPen(Qt::NoPen);
