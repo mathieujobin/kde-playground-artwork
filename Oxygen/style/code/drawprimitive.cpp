@@ -43,6 +43,13 @@ extern Pixmap shadowPix;
 extern Config config;
 extern Dpi dpi;
 
+#define SAVE_PEN QPen saved_pen = painter->pen();
+#define RESTORE_PEN painter->setPen(saved_pen);
+#define SAVE_BRUSH QBrush saved_brush = painter->brush();
+#define RESTORE_BRUSH painter->setBrush(saved_brush);
+#define SAVE_ANTIALIAS bool hadAntiAlias = painter->renderHints() & QPainter::Antialiasing;
+#define RESTORE_ANTIALIAS painter->setRenderHint(QPainter::Antialiasing, hadAntiAlias);
+
 void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * option, QPainter * painter, const QWidget * widget) const
 {
    Q_ASSERT(option);
@@ -66,7 +73,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
    case PE_PanelButtonCommand: // Button used to initiate an action, for example, a QPushButton.
    case PE_PanelButtonBevel: { // Generic panel with a button bevel.
       const int $1 = dpi.$1, $2 = dpi.$2, $3 = dpi.$3;
-      bool isOn = !hover && option->state & State_On;
+      bool isOn = option->state & State_On;
       const QStyleOptionButton* opt = qstyleoption_cast<const QStyleOptionButton*>(option);
       bool isDefault = opt && (opt->features & QStyleOptionButton::DefaultButton);
       QColor c = btnBgColor(PAL, isEnabled, hover || hasFocus);
@@ -90,16 +97,13 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          fillWithMask(painter, r, c, &masks.button);
       break;
    }
-   case PE_PanelButtonTool: // Panel for a Tool button, used with QToolButton.
-   {
-      if (sunken || (option->state & State_On))
-      {
+   case PE_PanelButtonTool: { // Panel for a Tool button, used with QToolButton.
+      if (sunken || (option->state & State_On)) {
          if (sunken) hover = false;
          fillWithMask(painter, RECT, gradient(COLOR(Window),RECT.height(),Qt::Vertical, hover ? GradButton : GradSunken), &masks.button);
          shadows.lineEdit[1].render(RECT, painter);
       }
-      else if (hover)
-      {
+      else if (hover) {
          fillWithMask(painter, RECT.adjusted(dpi.$2,dpi.$1,-dpi.$2,0), gradient(COLOR(Window), RECT.height(), Qt::Vertical, GradButton), &masks.button);
          shadows.group.render(RECT, painter, Tile::Ring);
       }
@@ -108,7 +112,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
    case PE_PanelLineEdit: { // Panel for a QLineEdit.
       // spinboxes and combos allready have a lineedit as global frame
       if (widget && widget->parentWidget() &&
-          (widget->parentWidget()->inherits("QSpinBox") ||
+          (widget->parentWidget()->inherits("QAbstractSpinBox") ||
            widget->parentWidget()->inherits("QComboBox")))
          break;
       if (qstyleoption_cast<const QStyleOptionFrame *>(option) &&
@@ -143,86 +147,80 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
    case PE_IndicatorButtonDropDown: // indicator for a drop down button, for example, a tool button that displays a menu.
    case PE_IndicatorArrowDown: // Generic Down arrow.
    case PE_IndicatorSpinDown: // Down symbol for a spin widget.
-   case PE_IndicatorSpinMinus: // Decrease symbol for a spin widget.
-   {
-      if (const QStyleOptionHeader* hopt = qstyleoption_cast<const QStyleOptionHeader*>(option))
-      {
+   case PE_IndicatorSpinMinus: { // Decrease symbol for a spin widget.
+      if (const QStyleOptionHeader* hopt =
+          qstyleoption_cast<const QStyleOptionHeader*>(option)) {
          if (hopt->sortIndicator == QStyleOptionHeader::None)
             break;
          up = hopt->sortIndicator == QStyleOptionHeader::SortUp;
       }
-      bool hadAntiAlias = painter->renderHints() & QPainter::Antialiasing;
-      QBrush oldBrush = painter->brush();
+      SAVE_ANTIALIAS;
+      bool hadNoBrush = painter->brush() == Qt::NoBrush;
       painter->setRenderHint(QPainter::Antialiasing);
-      painter->setBrush(painter->pen().brush());
+      if (hadNoBrush)
+         painter->setBrush(painter->pen().brush());
       
       int w = RECT.width();
       
       // we want a golden mean cut arrow ;) 1:1.6180339887498948482
       int x[3], y[2];
-      if (w <  8*RECT.height()/5)
-      {
+      if (w <  8*RECT.height()/5) {
          if (w%2) --w;
          x[0] = RECT.x(); x[1] = RECT.right(); x[2] = x[0] + w/2;
          int h = 5*w/8;  if (!(h%2)) --h;
          y[0] = RECT.y() + (RECT.height()-h)/2; y[1] = y[0] + h;
       }
-      else
-      {
+      else {
          w = 8*RECT.height()/5;
          if (w%2) --w;
          x[0] = RECT.x() + (RECT.width()-w)/2; x[1] = x[0] + w; x[2] = x[0] + w/2;
          y[0] = RECT.y(); y[1] = RECT.bottom();
       }
-      if (up)
-      {
+      if (up) {
          const QPoint points[3] =  { QPoint(x[0], y[1]), QPoint(x[1], y[1]), QPoint(x[2], y[0]) };
          painter->drawPolygon(points, 3);
       }
-      else
-      {
+      else {
          const QPoint points[3] =  { QPoint(x[0], y[0]), QPoint(x[1], y[0]), QPoint(x[2], y[1]) };
          painter->drawPolygon(points, 3);
       }
-      painter->setBrush(oldBrush);
-      painter->setRenderHint(QPainter::Antialiasing, hadAntiAlias);
+      if (hadNoBrush)
+         painter->setBrush(Qt::NoBrush);
+      RESTORE_ANTIALIAS;
       break;
    }
    case PE_IndicatorArrowRight: // Generic Right arrow.
       up = true;
-   case PE_IndicatorArrowLeft: // Generic Left arrow.
-   {
-      bool hadAntiAlias = painter->renderHints() & QPainter::Antialiasing;
-      QBrush oldBrush = painter->brush();
+   case PE_IndicatorArrowLeft: { // Generic Left arrow.
+      SAVE_ANTIALIAS;
+      bool hadNoBrush = painter->brush() == Qt::NoBrush;
       painter->setRenderHint(QPainter::Antialiasing);
-      painter->setBrush(painter->pen().color());
+      if (hadNoBrush)
+         painter->setBrush(painter->pen().brush());
       int x[2], y[3], h = RECT.height();
-      if (h <  8*RECT.width()/5)
-      {
+      if (h <  8*RECT.width()/5) {
          if (h%2) --h;
          y[0] = RECT.y(); y[1] = RECT.bottom(); y[2] = y[0] + h/2;
          int w = 5*h/8; if (!(w%2)) --w;
          x[0] = RECT.x() + (RECT.width()-w)/2; x[1] = x[0] + w;
       }
-      else
-      {
+      else {
          h = 8*RECT.width()/5;
          if (h%2) --h;
          y[0] = RECT.y() + (RECT.height()-h)/2; y[1] = y[0] + h; y[2] = y[0] + h/2;
          x[0] = RECT.x(); x[1] = RECT.right();
       }
-      if (up) //right
-      {
+      if (up) { //right
          const QPoint points[3] =  { QPoint(x[0], y[0]), QPoint(x[0], y[1]), QPoint(x[1], y[2]) };
          painter->drawPolygon(points, 3);
       }
-      else
-      {
+      else {
          const QPoint points[3] =  { QPoint(x[0], y[2]), QPoint(x[1], y[0]), QPoint(x[1], y[1]) };
          painter->drawPolygon(points, 3);
       }
-      painter->setBrush(oldBrush);
-      painter->setRenderHint(QPainter::Antialiasing, hadAntiAlias);
+      if (hadNoBrush)
+         painter->setBrush(Qt::NoBrush);
+      RESTORE_ANTIALIAS;
       break;
    }
    case PE_IndicatorCheckBox: // On/off indicator, for example, a QCheckBox.
@@ -308,7 +306,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       if (widget) {
          // handle the
          if (widget->inherits("QComboBoxListView")) {
-            QPen oldPen = painter->pen();
+            SAVE_PEN;
             painter->setPen(PAL.color(QPalette::Window).dark(120));
             painter->drawLine(RECT.x(), RECT.top(), RECT.x(), RECT.bottom());
             painter->drawLine(RECT.x(), RECT.bottom(), RECT.right(), RECT.bottom());
@@ -316,7 +314,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
             
             painter->setPen(PAL.color(QPalette::Base));
             painter->drawLine(RECT.x(), RECT.top(), RECT.right(), RECT.top());
-            painter->setPen(oldPen);
+            RESTORE_PEN;
             break;
          }
          
@@ -386,7 +384,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
    }
    case PE_FrameMenu: // Frame for popup windows/menus; see also QMenu.
    {
-      QPen oldPen = painter->pen();
+      SAVE_PEN;
       QColor c = PAL.color(widget?widget->backgroundRole():QPalette::Window);
       painter->setPen(c);
       painter->drawLine(RECT.x(), RECT.top(), RECT.right(), RECT.top());
@@ -394,7 +392,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       painter->drawLine(RECT.x(), RECT.top(), RECT.x(), RECT.bottom());
       painter->drawLine(RECT.x(), RECT.bottom(), RECT.right(), RECT.bottom());
       painter->drawLine(RECT.right(), RECT.top(), RECT.right(), RECT.bottom());
-      painter->setPen(oldPen);
+      RESTORE_PEN;
       break;
    }
    case PE_PanelMenuBar: // Panel for menu bars.
@@ -500,8 +498,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       painter->drawRect(rect.adjusted(0, off, -off, 0));
       if (option->state & State_On)
       {
-         bool hadAntiAlias = painter->renderHints() & QPainter::Antialiasing;
-         QBrush oldBrush = painter->brush();
+         SAVE_ANTIALIAS; SAVE_BRUSH;
          painter->setRenderHint(QPainter::Antialiasing);
          painter->setBrush(painter->pen().brush());
          const QPoint points[4] = 
@@ -512,8 +509,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
                QPoint(rect.x()+rect.width()/3, rect.bottom()-rect.height()/5)
          };
          painter->drawPolygon(points, 4);
-         painter->setRenderHint(QPainter::Antialiasing, hadAntiAlias);
-         painter->setBrush(oldBrush);
+         RESTORE_ANTIALIAS; RESTORE_BRUSH;
       }
       break;
    }
@@ -533,7 +529,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
 //    case PE_Q3CheckListController: // Qt 3 compatible Controller part of a list view item.
    case PE_IndicatorBranch: // Lines used to represent the branch of a tree in a tree view.
    {
-      painter->save();
+      SAVE_PEN;
       int mid_h = RECT.x() + RECT.width() / 2;
       int mid_v = RECT.y() + RECT.height() / 2;
       int bef_h = mid_h;
@@ -541,13 +537,11 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       int aft_h = mid_h;
       int aft_v = mid_v;
       
-      QColor oc = painter->pen().color();
       painter->setPen(widget ?
                       midColor( PAL.color(widget->backgroundRole()), PAL.color(widget->foregroundRole())) :
                       midColor( PAL.color(QPalette::Base), PAL.color(QPalette::Text)) );
       static const int decoration_size = 9;
-      if (option->state & State_Children)
-      {
+      if (option->state & State_Children) {
          int delta = decoration_size / 2 + 2;
          bef_h -= delta;
          bef_v -= delta;
@@ -559,9 +553,8 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
                        option->direction == Qt::RightToLeft ? PE_IndicatorArrowLeft :
                        PE_IndicatorArrowRight, &tmpOpt, painter, widget);
       }
-      if (RECT.x() ==  -1) // this is for the first col and i don't see why we'd need a line here
-      {
-         painter->restore();
+      if (RECT.x() ==  -1) { // this is for the first col and i don't see why we'd need a line here
+         RESTORE_PEN;
          break;
       }
       
@@ -569,14 +562,13 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          painter->drawLine(mid_h, RECT.y(), mid_h, bef_v);
       if (option->state & State_Sibling)
          painter->drawLine(mid_h, aft_v, mid_h, RECT.bottom());
-      if (option->state & State_Item)
-      {
+      if (option->state & State_Item) {
          if (option->direction == Qt::RightToLeft)
             painter->drawLine(RECT.left(), mid_v, bef_h, mid_v);
          else
             painter->drawLine(aft_h, mid_v, RECT.right(), mid_v);
       }
-      painter->restore();
+      RESTORE_PEN;
       break;
    }
    case PE_IndicatorDockWidgetResizeHandle: // Resize handle for dock windows.

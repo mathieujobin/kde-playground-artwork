@@ -234,23 +234,21 @@ private:
 private:
    typedef QHash<uint, QPixmap> PixmapCache;
    typedef QHash<uint, Tile::Set> TileCache;
-   struct
-   {
+   struct {
       Tile::Mask rect[3], round[3], button, tab, group;
       QPixmap radio, radioIndicator, radioGroove, notch;
+      QPixmap winClose, winMin, winMax;
    } masks;
-   struct
-   {
+   struct {
       Tile::Set button[2][2], tab, sunken, group, lineEdit[2], raised, relief;
       QPixmap radio[2][2];
+      QPixmap winClose[2], winMin[2], winMax[2];
       Tile::Line line[2][3];
    } shadows;
-   struct
-   {
+   struct {
       Tile::Set rect[3], round[3], button[2];
    } frames;
-   struct
-   {
+   struct {
       Tile::Line top;
    } lights;
    

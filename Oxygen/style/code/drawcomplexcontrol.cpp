@@ -190,25 +190,24 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
       break;
    case CC_ComboBox: // A combobox, like QComboBox
       if (const QStyleOptionComboBox *cmb =
-          qstyleoption_cast<const QStyleOptionComboBox *>(option))
-      {
+          qstyleoption_cast<const QStyleOptionComboBox *>(option)) {
          QRect ar;
          if ((cmb->subControls & SC_ComboBoxArrow) &&
              (!(widget && qobject_cast<const QComboBox*>(widget)) || ((const QComboBox*)widget)->count() > 0))
             ar = subControlRect(CC_ComboBox, cmb, SC_ComboBoxArrow, widget);
-         if ((cmb->subControls & SC_ComboBoxFrame) && cmb->frame)
-         {
+         QRect r = RECT.adjusted(0,0,0,-dpi.$2);
+         const QPixmap &fill = gradient(COLOR(Base), r.height(), Qt::Vertical, GradGlass);
+         if ((cmb->subControls & SC_ComboBoxFrame) && cmb->frame) {
             if (cmb->editable)
                drawPrimitive(PE_PanelLineEdit, option, painter, widget);
             else {
-               QRect r = RECT.adjusted(0,0,0,-dpi.$2);
                if (!hover || ar.isNull())
-                  fillWithMask(painter,  r, gradient(COLOR(Base), r.height(), Qt::Vertical, GradGlass), &masks.button);
+                  fillWithMask(painter,  r, fill, &masks.button);
                else {
                   r.setRight(ar.left());
-                  fillWithMask(painter, r, gradient(COLOR(Base), r.height(), Qt::Vertical, GradGlass), &masks.button, Tile::Full&~Tile::Right);
+                  fillWithMask(painter, r, fill, &masks.button, Tile::Full&~Tile::Right);
                   r.setLeft(ar.left()); r.setRight(RECT.right());
-                  fillWithMask(painter, r, gradient(COLOR(Text), r.height(), Qt::Vertical, GradGlass), &masks.button, Tile::Full&~Tile::Left);
+                  fillWithMask(painter, r, gradient(COLOR(Text), r.height(), Qt::Vertical, sunken?GradSunken:GradGlass), &masks.button, Tile::Full&~Tile::Left);
                }
                shadows.lineEdit[1].render(RECT, painter);
             }
@@ -217,7 +216,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             ar.adjust((2*ar.width())/7,(2*ar.height())/7,-(2*ar.width())/7,-(2*ar.height())/7);
             QStyleOptionComboBox tmpOpt = *cmb;
             if (cmb->editable)
-               hover = hover && /*!sunken &&*/ (cmb->activeSubControls == SC_ComboBoxArrow);
+               hover = hover && (cmb->activeSubControls == SC_ComboBoxArrow);
             painter->setRenderHint ( QPainter::Antialiasing, true );
             painter->save();
             if (cmb->editable) {
@@ -227,8 +226,14 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                   drawPrimitive(PE_IndicatorArrowDown, &tmpOpt, painter, widget);
                }
             }
-            if (hover || sunken)
-               painter->setPen( cmb->editable ? COLOR(Highlight) : midColor(COLOR(Text), COLOR(Base), 1,2) );
+            if (hover || sunken) {
+               if (cmb->editable)
+                  painter->setPen(COLOR(Highlight));
+               else {
+                  painter->setBrush(fill);
+                  painter->setPen(Qt::NoPen);
+               }
+            }
             else
                painter->setPen( midColor(COLOR(Base), COLOR(Text)) );
             tmpOpt.rect =  ar;
@@ -303,49 +308,50 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          
          if ((slider->subControls & SC_SliderGroove) && groove.isValid()) {
             QRect r; Tile::PosFlags pf = 0;
-            QColor c = hasFocus ? COLOR(Highlight) : COLOR(ButtonText);
+            QColor c = hasFocus ? COLOR(WindowText) : COLOR(Window);
             if ( slider->orientation == Qt::Horizontal ) {
                groove.adjust(0,handle.height()/3,0,-handle.height()/3);
                r = groove;
                r.setRight(handle.left()+3);
-               pf = Tile::Top | Tile::Left | Tile::Bottom | Tile::Center;
+               pf = Tile::Full & ~Tile::Right;
                if (slider->upsideDown)
                   fillWithMask(painter, r, gradient(COLOR(Window), r.height(), Qt::Vertical, GradSunken), &masks.button, pf);
                else {
                   shadows.button[0][1].render(r, painter);
                   r.adjust(2,1,-2,-2);
-                  fillWithMask(painter, r, gradient(c, r.height(), Qt::Vertical, GradGloss), &masks.button, pf);
+                  fillWithMask(painter, r, gradient(c, r.height(), Qt::Vertical, GradGlass), &masks.button, pf);
                }
                r = groove;
                r.setLeft(handle.right()-3);
-               pf = Tile::Top | Tile::Right | Tile::Bottom | Tile::Center;
+               pf = Tile::Full & ~Tile::Left;
                if (slider->upsideDown) {
                   shadows.button[0][1].render(r, painter);
                   r.adjust(2,1,-2,-2);
-                  fillWithMask(painter, r, gradient(c, r.height(), Qt::Vertical, GradGloss), &masks.button, pf);
+                  fillWithMask(painter, r, gradient(c, r.height(), Qt::Vertical, GradGlass), &masks.button, pf);
                }
                else
                   fillWithMask(painter, r, gradient(COLOR(Window), r.height(), Qt::Vertical, GradSunken), &masks.button, pf);
             }
             else { // Vertical
+               handle.moveBy(-dpi.$1,0);
                groove.adjust(handle.width()/3,0,-handle.width()/3,0);
                r = groove;
                r.setBottom(handle.top()+3);
-               pf = Tile::Top | Tile::Left | Tile::Right | Tile::Center;
+               pf = Tile::Full & ~Tile::Bottom;
                if (slider->upsideDown)
                   fillWithMask(painter, r, gradient(COLOR(Window), r.width(), Qt::Horizontal, GradSunken), &masks.button, pf);
                else {
                   shadows.button[0][1].render(r, painter);
                   r.adjust(2,1,-2,-2);
-                  fillWithMask(painter, r, gradient(c, r.width(), Qt::Horizontal, GradGloss), &masks.button, pf);
+                  fillWithMask(painter, r, gradient(c, r.width(), Qt::Horizontal, GradGlass), &masks.button, pf);
                }
                r = groove;
                r.setTop(handle.bottom()-3);
-               pf = Tile::Left | Tile::Right | Tile::Bottom | Tile::Center;
+               pf = Tile::Full & ~Tile::Top;
                if (slider->upsideDown) {
                   shadows.button[0][1].render(r, painter);
                   r.adjust(2,1,-2,-2);
-                  fillWithMask(painter, r, gradient(c, r.width(), Qt::Horizontal, GradGloss), &masks.button, pf);
+                  fillWithMask(painter, r, gradient(c, r.width(), Qt::Horizontal, GradGlass), &masks.button, pf);
                }
                else
                   fillWithMask(painter, r, gradient(COLOR(Window), r.width(), Qt::Horizontal, GradSunken), &masks.button, pf);
@@ -363,27 +369,14 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             QPoint xy = handle.topLeft();
             painter->drawPixmap(sunken?xy+QPoint(dpi.$1,dpi.$1):xy, shadows.radio[sunken][1]);
             // gradient
-            xy += QPoint(dpi.$2,dpi.$2);
-            GradientType gt = sunken ? GradSunken : (hover ?  GradGloss : GradButton);
+            xy += QPoint(dpi.$2,dpi.$1);
             fillWithMask(painter, xy,
-                     gradient(isEnabled?COLOR(Button):COLOR(Window), handle.height()-dpi.$4, Qt::Vertical, gt),
-                     masks.radio);
-            // focus indicator
-            if (hasFocus) {
-               painter->save();
-               painter->setBrush(gradient(COLOR(Highlight), handle.height()-dpi.$4, Qt::Vertical, gt));
-               painter->setPen(Qt::NoPen);
-               painter->setRenderHint ( QPainter::Antialiasing );
-               int w = handle.width()/3; int h = handle.height()/3;
-               painter->setBrushOrigin(xy);
-               painter->drawEllipse ( handle.adjusted(w,h,-w,-h) );
-               painter->restore();
-            }
+                         gradient(btnBgColor(PAL, isEnabled, hover||hasFocus), handle.height()-dpi.$4, Qt::Vertical, config.gradient),
+                         masks.radio);
          }
       }
       break;
    case CC_ToolButton: // A tool button, like QToolButton
-      
       // special handling for the tabbar scrollers ----------------------------------
       if (widget && widget->parentWidget() && qobject_cast<QTabBar*>(widget->parent()))
       {

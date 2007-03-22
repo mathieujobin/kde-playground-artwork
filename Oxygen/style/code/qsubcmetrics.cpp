@@ -386,16 +386,15 @@ QRect OxygenStyle::subElementRect ( SubElement element, const QStyleOption * opt
 //    case SE_DialogButtonAbort: // Area for a dialog's abort button
 //    case SE_DialogButtonIgnore: // Area for a dialog's ignore button
 //    case SE_DialogButtonCustom: // Area for a dialog's custom widget area (in the button row)
-   case SE_HeaderArrow: //  
-   {
+   case SE_HeaderArrow: { //
       int x,y,w,h;
       option->rect.getRect(&x,&y,&w,&h);
       int margin = dpi.$2;// ;) pixelMetric(QStyle::PM_HeaderMargin, opt, widget);
       QRect r;
       if (option->state & State_Horizontal)
-         r.setRect(x + w - margin * 2 - (h / 2), y + h/4 + margin, h / 2, h/2 - margin*2);
+         r.setRect(x + w - 2*margin - (h / 2), y + h/4 + margin, h / 2, h/2);
       else
-         r.setRect(x + dpi.$5, y, h / 2, h - margin * 2);
+         r.setRect(x + dpi.$5, y, h / 2, h / 2 - margin * 2);
       r = visualRect(option->direction, option->rect, r);
       return r;
    }

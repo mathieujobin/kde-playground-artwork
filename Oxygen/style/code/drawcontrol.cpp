@@ -116,8 +116,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
    bool hover = isEnabled && (option->state & State_MouseOver);
    bool hasFocus = option->state & State_HasFocus;
    
-   switch ( element )
-   {
+   switch ( element ) {
    case CE_PushButton: // A QPushButton, draws case CE_PushButtonBevel, case CE_PushButtonLabel and PE_FrameFocusRect
       if (const QStyleOptionButton *btn =
           qstyleoption_cast<const QStyleOptionButton *>(option)) {
@@ -135,16 +134,18 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       break;
    case CE_PushButtonBevel: // The bevel and default indicator of a QPushButton.
       if (const QStyleOptionButton *btn =
-          qstyleoption_cast<const QStyleOptionButton *>(option))
-      {
+          qstyleoption_cast<const QStyleOptionButton *>(option)) {
          drawPrimitive(PE_PanelButtonCommand, option, painter, widget);
-         if (btn->features & QStyleOptionButton::HasMenu)
-         {
-            int mbi = pixelMetric(PM_MenuButtonIndicator, btn, widget);
-            QRect ir = btn->rect;
+         if (btn->features & QStyleOptionButton::HasMenu) {
+//             int mbi = pixelMetric(PM_MenuButtonIndicator, btn, widget);
             QStyleOptionButton newBtn = *btn;
-            newBtn.rect = QRect(ir.right() - mbi, ir.height() - 20, mbi, ir.height() - 4);
+            int sz = (RECT.height()-dpi.$6)/2;
+            newBtn.rect = QRect(RECT.right() - (dpi.$4+sz), (RECT.height()-sz)/2+dpi.$2, sz, sz);
+            painter->save();
+            painter->setPen(Qt::NoPen);
+            painter->setBrush(midColor(COLOR(Window),COLOR(WindowText)));
             drawPrimitive(PE_IndicatorArrowDown, &newBtn, painter, widget);
+            painter->restore();
          }
       }
       break;
@@ -962,12 +963,19 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       subopt.rect = subElementRect(SE_HeaderLabel, header, widget);
       if (subopt.rect.isValid())
          drawControl(CE_HeaderLabel, &subopt, painter, widget);
-      if (header->sortIndicator != QStyleOptionHeader::None) {
+      if (hover) {
+         if (subopt.sortIndicator == QStyleOptionHeader::SortDown)
+            subopt.sortIndicator = QStyleOptionHeader::SortUp;
+          else
+            subopt.sortIndicator = QStyleOptionHeader::SortDown;
+      }
+      if (subopt.sortIndicator != QStyleOptionHeader::None) {
          subopt.rect = subElementRect(SE_HeaderArrow, option, widget);
-         QPen oldPen = painter->pen();
-         painter->setPen(hover?COLOR(Base):midColor(COLOR(Text),COLOR(Base),2,1));
+         painter->save(); painter->setPen(Qt::NoPen);
+         const QPixmap &fill = gradient(hover?COLOR(Base):midColor(COLOR(Text),COLOR(Base)), RECT.height(), Qt::Vertical, sunken?GradSunken:config.gradient);
+         painter->setBrush(fill);
          drawPrimitive(PE_IndicatorHeaderArrow, &subopt, painter, widget);
-         painter->setPen(oldPen);
+         painter->restore();
       }
       painter->setClipRegion(clipRegion);
       break;
@@ -1005,9 +1013,6 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          break;
       painter->save();
       QColor bg = COLOR(Text), fg = COLOR(Base);
-      if (hover) {
-         bg = COLOR(Base); fg = COLOR(Text);
-      }
       if (qGray(bg.rgb()) < 148) { // dark background, let's paint an emboss
          rect.moveTop(rect.top()-1);
          painter->setPen(bg.dark(120));
@@ -1056,7 +1061,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             painter->drawPixmap(xy, shadows.radio[0][hover]);
          xy += QPoint(dpi.$2,dpi.$1);
          int sz = dpi.ExclusiveIndicator - dpi.$4;
-         fillWithMask(painter, xy, gradient(btnBgColor(PAL, alive, hover|hasFocus), sz,
+         fillWithMask(painter, xy, gradient(btnBgColor(PAL, alive, hover), sz,
                                             Qt::Vertical, alive?config.gradient:GradSunken), masks.radio);
          break;
       }

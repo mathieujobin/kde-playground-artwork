@@ -942,13 +942,12 @@ void OxygenStyle::polish( QWidget * widget)
    
    // swap qmenu colors
       
-   if (qobject_cast<QMenu *>(widget))
-   {
+   if (qobject_cast<QMenu *>(widget)) {
       widget->setBackgroundRole ( QPalette::WindowText );
       widget->setForegroundRole ( QPalette::Window );
-      QFont tmpFont = widget->font();
-      tmpFont.setBold(true);
-      widget->setFont(tmpFont);
+//       QFont tmpFont = widget->font();
+//       tmpFont.setBold(true);
+//       widget->setFont(tmpFont);
    }
    
    //========================

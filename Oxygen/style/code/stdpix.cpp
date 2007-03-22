@@ -30,20 +30,19 @@
 using namespace Oxygen;
 
 extern Dpi dpi;
+extern Config config;
 
 QPixmap OxygenStyle::standardPixmap ( StandardPixmap standardPixmap, const QStyleOption * option, const QWidget * widget ) const
 {
 
    QRect rect; QPalette pal; QPixmap pm;
    const QStyleOptionTitleBar *opt = qstyleoption_cast<const QStyleOptionTitleBar *>(option);
-   if (opt)
-   {
+   if (opt) {
       pal = opt->palette;
       rect = opt->rect; rect.moveTo(0,0);
       pm = QPixmap(opt->rect.size());
    }
-   else // checking widget settings turned out to be a stupid idea, who knows what TT meant this for....
-   {
+   else {
       rect = QRect(0,0,16,16);
       pal = qApp->palette();
       pm = QPixmap(rect.size());
@@ -58,65 +57,37 @@ QPixmap OxygenStyle::standardPixmap ( StandardPixmap standardPixmap, const QStyl
 #endif
    pm.fill(Qt::transparent); // make transparent by default
    QPainter painter(&pm);
-   QRect ir;
-   int left(0), right(0), top(0), bottom(0);
-   if (SP_TitleBarMenuButton < standardPixmap && standardPixmap <= SP_TitleBarContextHelpButton)
-   {
-      QColor bc, fc;
-      switch (standardPixmap)
-      {
-      case SP_TitleBarMinButton: //  1  Minimize button on title bars (e.g., in QWorkspace)
-         fc = Qt::black;
-         bc = Qt::yellow;
-         break;
-      case SP_TitleBarNormalButton: //  4  Normal (restore) button on title bars
-         fc = Qt::black;
-         if (opt && opt->titleBarState == Qt::WindowMaximized)
-            bc = Qt::green;
-         else
-            bc = Qt::yellow;
-         break;
-      case SP_TitleBarMaxButton: //  2  Maximize button on title bars
-         bc = Qt::green;
-         fc = Qt::black;
-         break;
-      case SP_DockWidgetCloseButton:
-      case SP_TitleBarCloseButton:
-         bc = Qt::red;
-         fc = Qt::white;
-         break;
-      default:
-         bc = COLOR(Window);
-         fc = COLOR(WindowText);
-      }
-      bool sunken = false, isEnabled = false, hover = false;
-      if (option)
-      {
-         sunken = option->state & State_Sunken;
-         isEnabled = option->state & State_Enabled;
-         hover = isEnabled && (option->state & State_MouseOver);
-      }
-      QPoint xy = rect.topLeft();
-      painter.drawPixmap(sunken?xy+QPoint(dpi.$1,dpi.$1):xy, shadows.radio[sunken][hover]);
-      xy += QPoint(dpi.$2,dpi.$1);
-      int sz = dpi.ExclusiveIndicator - dpi.$4;
-      GradientType gt = (sunken)?GradSunken:(hover?GradGloss:GradButton);
-      fillWithMask(&painter, xy, gradient(isEnabled?midColor(COLOR(Window), bc, 2, 1):COLOR(Window), sz, Qt::Vertical, gt), masks.radio);
-      painter.end(); return pm;
-      QPen pen = painter.pen();
-      pen.setWidth(rect.height()/4);
-      pen.setColor(fc);
-      painter.setPen(pen);
-      left = rect.left()+painter.pen().width();
-      right = rect.right()-painter.pen().width();
-      top = rect.top()+painter.pen().width();
-      bottom = rect.bottom()-painter.pen().width();
+   bool sunken = false, isEnabled = false, hover = false;
+   if (option) {
+      sunken = option->state & State_Sunken;
+      isEnabled = option->state & State_Enabled;
+      hover = isEnabled && (option->state & State_MouseOver);
    }
-   QColor color;
-   switch (standardPixmap)
-   {
-   case SP_TitleBarMenuButton://  0  Menu button on a title bar
-   {
+   int sz = 2*qMin(rect.width(), rect.height())/3;
+   QRect rndRect(0,0,sz,sz); bool foundRect = false;
+   switch (standardPixmap) {
+   case SP_DockWidgetCloseButton:
+   case SP_TitleBarCloseButton:
+      foundRect = true;
+      rndRect.moveCenter(rect.center());
+   case SP_TitleBarMinButton:
+      if (!foundRect) {
+         foundRect = true;
+         rndRect.moveBottomLeft(rect.bottomLeft());
+      }
+   case SP_TitleBarNormalButton:
+   case SP_TitleBarMaxButton:
+      if (!foundRect)
+         rndRect.moveTopRight(rect.topRight());
+      painter.setRenderHint ( QPainter::Antialiasing );
+      painter.setPen(Qt::NoPen);
+      painter.setBrush(gradient(COLOR(Window), rect.height(), Qt::Vertical, GradSunken));
+      painter.drawEllipse(rect);
+      painter.setBrush(gradient(btnBgColor(pal, isEnabled, hover), rndRect.height(), Qt::Vertical, config.gradient));
+      painter.setBrushOrigin(rndRect.topLeft());
+      painter.drawEllipse(rndRect);
+      break;
+   case SP_TitleBarMenuButton: { //  0  Menu button on a title bar
       QFont fnt = painter.font();
       fnt.setPixelSize ( rect.height() );
       painter.setFont(fnt);
@@ -124,55 +95,32 @@ QPixmap OxygenStyle::standardPixmap ( StandardPixmap standardPixmap, const QStyl
       painter.drawText(rect, Qt::AlignCenter, ";)");
       break;
    }
-   case SP_TitleBarMinButton: //  1  Minimize button on title bars (e.g., in QWorkspace)
-      painter.drawPoint(left, bottom);
-      break;
-   case SP_TitleBarNormalButton: //  4  Normal (restore) button on title bars
-      painter.drawPoint(ir.center().x() - painter.pen().width(), ir.center().y());
-      painter.drawPoint(ir.center().x() + painter.pen().width(), ir.center().y());
-      painter.drawPoint(ir.center().x(), ir.center().y() - painter.pen().width());
-      painter.drawPoint(ir.center().x(), ir.center().y() + painter.pen().width());
-      break;
-   case SP_TitleBarMaxButton: //  2  Maximize button on title bars
-      painter.drawPoint(left, top);
-      painter.drawPoint(left, bottom);
-      painter.drawPoint(right, top);
-      painter.drawPoint(right, bottom);
-      break;
-   case SP_DockWidgetCloseButton: //  8  Close button on dock windows (see also QDockWidget)
-   case SP_TitleBarCloseButton: //  3  Close button on title bars
-      painter.drawPoint(ir.center());
-      break;
    case SP_TitleBarShadeButton: //  5  Shade button on title bars
-      painter.drawPoint(ir.center().x(), top);
+      painter.drawPoint(rect.center().x(), rect.top());
       break;
    case SP_TitleBarUnshadeButton: //  6  Unshade button on title bars
-      painter.drawPoint(ir.center().x(), top);
-      painter.drawPoint(ir.center());
+      painter.drawPoint(rect.center().x(), rect.top());
+      painter.drawPoint(rect.center());
       break;
-   case SP_TitleBarContextHelpButton: //  7  The Context help button on title bars
-   {
+   case SP_TitleBarContextHelpButton: { //  7  The Context help button on title bars
       QFont fnt = painter.font();
-      fnt.setPixelSize ( ir.height() );
+      fnt.setPixelSize ( rect.height() );
       painter.setFont(fnt);
       painter.drawText(rect, Qt::AlignCenter, "?");
       break;
    }
-   case SP_MessageBoxInformation: //  9  The "information" icon
-   {
+   case SP_MessageBoxInformation: { //  9  The "information" icon
       QFont fnt = painter.font(); fnt.setPixelSize ( rect.height()-2 ); painter.setFont(fnt);
       painter.setRenderHint ( QPainter::Antialiasing );
       painter.drawEllipse(rect);
       painter.drawText(rect, Qt::AlignHCenter | Qt::AlignBottom, "!");
       break;
    }
-   case SP_MessageBoxWarning: //  10  The "warning" icon
-   {
+   case SP_MessageBoxWarning: { //  10  The "warning" icon
       QFont fnt = painter.font(); fnt.setPixelSize ( rect.height()-2 ); painter.setFont(fnt);
       painter.setRenderHint ( QPainter::Antialiasing );
       int hm = rect.x()+rect.width()/2;
-      const QPoint points[4] =
-      {
+      const QPoint points[4] = {
          QPoint(hm, rect.top()),
          QPoint(rect.left(), rect.bottom()),
          QPoint(rect.right(), rect.bottom()),
@@ -194,8 +142,7 @@ QPixmap OxygenStyle::standardPixmap ( StandardPixmap standardPixmap, const QStyl
 //       };
 //       painter.drawPolyLine(points);
 //       painter.drawText(rect, Qt::AlignCenter, "-");
-   case SP_MessageBoxQuestion: //  12  The "question" icon
-   {
+   case SP_MessageBoxQuestion: { //  12  The "question" icon
       QFont fnt = painter.font(); fnt.setPixelSize ( rect.height() ); painter.setFont(fnt);
       painter.drawText(rect, Qt::AlignCenter, "?");
       break;

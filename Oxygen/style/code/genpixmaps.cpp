@@ -347,4 +347,54 @@ void OxygenStyle::generatePixmaps()
       }
    }
    // ================================================================
+   
+#define _INITPIX_(_PIX_,_W_,_H_)\
+   _PIX_ = QPixmap(_W_, _H_);\
+   _PIX_.fill(Qt::transparent);\
+   p.begin(&_PIX_);\
+   p.setPen(Qt::NoPen);\
+   p.setRenderHint(QPainter::Antialiasing)
+      
+#define _CLOSE_ARROW_(_PIX_, _OFF_)\
+   triangle[0] = QPoint(_OFF_, _PIX_.rect().center().y()+_OFF_);\
+   triangle[1] = _PIX_.rect().topRight()+QPoint(-_OFF_,_OFF_);\
+   triangle[2] = _PIX_.rect().bottomRight()-QPoint(_OFF_,_OFF_);\
+   p.drawPolygon(triangle, 3)
+      
+#define _MIN_ARROW_(_PIX_, _OFF_)\
+   triangle[0] = _PIX_.rect().bottomLeft()+QPoint(_OFF_,-_OFF_);\
+   triangle[1] = _PIX_.rect().topLeft()+QPoint(_OFF_,_OFF_);\
+   triangle[2] = _PIX_.rect().bottomRight()-QPoint(_OFF_,_OFF_);\
+   p.drawPolygon(triangle, 3)
+      
+#define _MAX_ARROW_(_PIX_, _OFF_)\
+   triangle[0] = _PIX_.rect().topLeft()+QPoint(_OFF_,_OFF_);\
+   triangle[1] = _PIX_.rect().topRight()+QPoint(-_OFF_,_OFF_);\
+   triangle[2] = _PIX_.rect().bottomRight()-QPoint(_OFF_,_OFF_);\
+   p.drawPolygon(triangle, 3)
+   
+   // Window Buttons ===================================
+   QPoint triangle[3];
+   int $14 = SCALE(14), $15 = SCALE(15), $16 = dpi.$16;
+   _INITPIX_(masks.winClose, $14,$14);
+   p.setBrush(Qt::black);
+   _CLOSE_ARROW_(masks.winClose, 0);
+   p.end();
+   _INITPIX_(masks.winMin,$14,$14);
+   p.setBrush(Qt::black);
+   _MIN_ARROW_(masks.winMin, 0);
+   p.end();
+   _INITPIX_(masks.winMax,$14,$14);
+   p.setBrush(Qt::black);
+   _MAX_ARROW_(masks.winMax, 0);
+   p.end();
+   /*
+   shadows.winClose[0] = QPixmap($16, $16);
+   shadows.winMin[0] = QPixmap($16, $16);
+   shadows.winMax[0] = QPixmap($16, $16);
+   shadows.winClose[0] = QPixmap($15, $15);
+   shadows.winMin[0] = QPixmap($15, $15);
+   shadows.winMax[0] = QPixmap($15, $15);
+   */
+   // ================================================================
 }
