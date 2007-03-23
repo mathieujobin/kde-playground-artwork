@@ -191,7 +191,7 @@ OXPicture OXRender::gradient(const QPoint start, const QPoint stop, const ColorA
    }
    XFlush (dpy);
    OXPicture lgp = XRenderCreateLinearGradient(dpy, &lg, stps, cs, MIN(MAX(stops.size(),2),colors.size()));
-   delete stps;
+   delete[] stps;
    return lgp;
 }
 
