@@ -20,6 +20,7 @@
 
 #include <QComboBox>
 #include <QPainter>
+#include <QRect>
 #include <QTime>
 // #include <QPixmapCache>
 #include <QStyleOptionComplex>
@@ -333,7 +334,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                   fillWithMask(painter, r, gradient(COLOR(Window), r.height(), Qt::Vertical, GradSunken), &masks.button, pf);
             }
             else { // Vertical
-               handle.moveBy(-dpi.$1,0);
+               handle.translate(-dpi.$1,0);
                groove.adjust(handle.width()/3,0,-handle.width()/3,0);
                r = groove;
                r.setBottom(handle.top()+3);
