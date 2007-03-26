@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include <QEvent>
+#include <QStyle>
 #include "oxygen.h"
 
 using namespace Oxygen;

@@ -312,50 +312,14 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             QColor c = hasFocus ? COLOR(WindowText) : COLOR(Window);
             if ( slider->orientation == Qt::Horizontal ) {
                groove.adjust(0,handle.height()/3,0,-handle.height()/3);
-               r = groove;
-               r.setRight(handle.left()+3);
-               pf = Tile::Full & ~Tile::Right;
-               if (slider->upsideDown)
-                  fillWithMask(painter, r, gradient(COLOR(Window), r.height(), Qt::Vertical, GradSunken), &masks.button, pf);
-               else {
-                  shadows.button[0][1].render(r, painter);
-                  r.adjust(2,1,-2,-2);
-                  fillWithMask(painter, r, gradient(c, r.height(), Qt::Vertical, GradGlass), &masks.button, pf);
-               }
-               r = groove;
-               r.setLeft(handle.right()-3);
-               pf = Tile::Full & ~Tile::Left;
-               if (slider->upsideDown) {
-                  shadows.button[0][1].render(r, painter);
-                  r.adjust(2,1,-2,-2);
-                  fillWithMask(painter, r, gradient(c, r.height(), Qt::Vertical, GradGlass), &masks.button, pf);
-               }
-               else
-                  fillWithMask(painter, r, gradient(COLOR(Window), r.height(), Qt::Vertical, GradSunken), &masks.button, pf);
+               pf = Tile::Full;
+               fillWithMask(painter, groove, gradient(COLOR(Window), groove.height(), Qt::Vertical, GradSunken), &masks.button, pf);
             }
             else { // Vertical
                handle.translate(-dpi.$1,0);
                groove.adjust(handle.width()/3,0,-handle.width()/3,0);
-               r = groove;
-               r.setBottom(handle.top()+3);
-               pf = Tile::Full & ~Tile::Bottom;
-               if (slider->upsideDown)
-                  fillWithMask(painter, r, gradient(COLOR(Window), r.width(), Qt::Horizontal, GradSunken), &masks.button, pf);
-               else {
-                  shadows.button[0][1].render(r, painter);
-                  r.adjust(2,1,-2,-2);
-                  fillWithMask(painter, r, gradient(c, r.width(), Qt::Horizontal, GradGlass), &masks.button, pf);
-               }
-               r = groove;
-               r.setTop(handle.bottom()-3);
-               pf = Tile::Full & ~Tile::Top;
-               if (slider->upsideDown) {
-                  shadows.button[0][1].render(r, painter);
-                  r.adjust(2,1,-2,-2);
-                  fillWithMask(painter, r, gradient(c, r.width(), Qt::Horizontal, GradGlass), &masks.button, pf);
-               }
-               else
-                  fillWithMask(painter, r, gradient(COLOR(Window), r.width(), Qt::Horizontal, GradSunken), &masks.button, pf);
+               pf = Tile::Full;
+               fillWithMask(painter, groove, gradient(COLOR(Window), groove.width(), Qt::Horizontal, GradSunken), &masks.button, pf);
             }
          }
          
