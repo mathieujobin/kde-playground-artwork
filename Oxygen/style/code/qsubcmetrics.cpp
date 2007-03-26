@@ -102,7 +102,7 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
                      margin = currentItemRect.top() - ret.top();
                   }
                // correct qts wish to center the current item vertically...
-               ret.moveBy(0, (ret.height()+margin)/2-dpi.$2);
+               ret.translate(0, (ret.height()+margin)/2-dpi.$2);
             }
             break;
          default:
