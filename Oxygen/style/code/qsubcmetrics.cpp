@@ -18,7 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <QAbstractItemView>
 #include <QApplication>
+#include <QComboBox>
 #include <QTabBar>
 #include <QStyleOption>
 #include <QStyleOptionTab>
@@ -69,14 +71,12 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
       }
    case CC_ComboBox: // A combobox, like QComboBox
       if (const QStyleOptionComboBox *cb =
-          qstyleoption_cast<const QStyleOptionComboBox *>(option))
-      {
+          qstyleoption_cast<const QStyleOptionComboBox *>(option)) {
          int x,y,wi,he;
          cb->rect.getRect(&x,&y,&wi,&he);
          int margin = 1;//(!cb->editable) ? dpi.$1 : (cb->frame ? dpi.$4 : 0);
 
-         switch (subControl)
-         {
+         switch (subControl) {
          case SC_ComboBoxFrame:
             ret = cb->rect;
             break;
@@ -92,15 +92,18 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
             break;
          case SC_ComboBoxListBoxPopup:
             ret = cb->rect;
-//             if (cb->editable) {
-//                ret.adjust(3,0,-3,0);
-//                ret.moveTop(ret.y()-3);
-//             }
-//             else
-//             {
-//                ret.adjust(8,0,-8,0);
-//                ret.moveTop(ret.y()+1);
-//             }
+            if (!cb->editable) {
+               // shorten for the arrow
+               ret.setWidth(ret.width()-(int)((he - 2*margin)/1.1) + 3*margin);
+               margin = 0;
+               if (const QComboBox *combo =
+                   qobject_cast<const QComboBox *>(widget)) {
+                     const QRect currentItemRect = combo->view()->visualRect(combo->view()->currentIndex());
+                     margin = currentItemRect.top() - ret.top();
+                  }
+               // correct qts wish to center the current item vertically...
+               ret.moveBy(0, (ret.height()+margin)/2-dpi.$2);
+            }
             break;
          default:
             break;

@@ -118,13 +118,11 @@ int OxygenStyle::pixelMetric ( PixelMetric pm, const QStyleOption * option, cons
       return dpi.$10;
    case PM_TabBarBaseHeight: // Height of the area between the tab bar and the tab pages
    case PM_TabBarBaseOverlap: // Number of pixels the tab bar overlaps the tab bar base
-      if (qobject_cast<const QTabWidget*>(widget) && !widget->children().isEmpty())
-      {
+      if (qobject_cast<const QTabWidget*>(widget) &&
+          !widget->children().isEmpty()) {
          QTabBar *tabBar = 0L;
-         foreach(QObject *obj, widget->children())
-         {
-            if (qobject_cast<QTabBar*>(obj))
-            {
+         foreach(QObject *obj, widget->children()) {
+            if (qobject_cast<QTabBar*>(obj)) {
                tabBar = (QTabBar*)obj;
                break;
             }
@@ -132,8 +130,7 @@ int OxygenStyle::pixelMetric ( PixelMetric pm, const QStyleOption * option, cons
          if (!tabBar || !tabBar->isVisible())
             return 0;
          if (const QStyleOptionTabWidgetFrame *twf =
-             qstyleoption_cast<const QStyleOptionTabWidgetFrame *>(option))
-         {
+             qstyleoption_cast<const QStyleOptionTabWidgetFrame *>(option)) {
             if (twf->shape == QTabBar::RoundedEast ||
                 twf->shape == QTabBar::TriangularEast ||
                 twf->shape == QTabBar::RoundedWest ||

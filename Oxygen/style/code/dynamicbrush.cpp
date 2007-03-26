@@ -237,8 +237,7 @@ bool DynamicBrush::eventFilter ( QObject * object, QEvent * ev )
    /* Test for the currently demanded bg size */
    QSize size;
    bool triggerUpdate = false;
-   if (ev->type() == QEvent::UpdateRequest)
-   {
+   if (ev->type() == QEvent::UpdateRequest) {
       _topLevelWidget = widget->topLevelWidget();
       size = _topLevelWidget->size();
    }

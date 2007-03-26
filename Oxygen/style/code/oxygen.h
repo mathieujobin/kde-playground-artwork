@@ -113,7 +113,7 @@ typedef struct
 typedef struct Config
 {
    bool inversePopups; // whether the popups are foreground or background colored
-   GradientType gradient, gradientStrong;
+   GradientType gradient, gradBtn, gradientStrong;
    BGMode bgMode;
    Acceleration acceleration;
    int structure;

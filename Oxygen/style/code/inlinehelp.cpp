@@ -86,30 +86,32 @@ inline QColor midColor(const QColor &oc1, const QColor &c2, int w1 = 1, int w2 =
                  (w1*c1.alpha() + w2*c2.alpha())/sum);
 }
 
-#define COLOR(_ROLE_) pal.color(QPalette::_ROLE_)
+#define TMP_COLOR(_ROLE_) pal.color(QPalette::_ROLE_)
 
 /**Internal, calcs button color depending on state*/
 
 inline QColor btnBgColor(const QPalette &pal, bool isEnabled, bool hover = false)
 {
    if (!isEnabled)
-      return COLOR(Window);
+      return TMP_COLOR(Window);
    if (hover)
-      return COLOR(WindowText);
-   return COLOR(Window).dark(103);
+      return TMP_COLOR(WindowText);
+   return TMP_COLOR(Window).dark(103);
 }
+
+
 
 /**Internal, calcs buttonText color depending on state*/
 inline QColor btnFgColor(const QPalette &pal, bool isEnabled, bool hover = false)
 {
    if (!isEnabled)
-      return midColor(COLOR(Window), COLOR(WindowText), 1, 3);
+      return midColor(TMP_COLOR(Window), TMP_COLOR(WindowText), 1, 3);
    if (hover)
-      return COLOR(Window);
-   return COLOR(WindowText);
+      return TMP_COLOR(Window);
+   return TMP_COLOR(WindowText);
 }
 
-#undef COLOR
+#undef TMP_COLOR
 
 /**Internal, calcs a contrasted color to a qcolor*/
 inline QColor emphasize(const QColor &c, int value = 10)

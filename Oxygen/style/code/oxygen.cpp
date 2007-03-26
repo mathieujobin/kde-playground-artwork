@@ -92,22 +92,7 @@
 /**============= Oxygen includes ==========================*/
 #include "oxygen.h"
 #include "dynamicbrush.h"
-/**=========================================================*/
-
-
-/**============= Convenience Defs ==========================*/
-#define _IsNotHtmlWidget(w) ( w->objectName() != "__khtml" )
-#define _IsHtmlWidget(w) ( w->objectName() == "__khtml" )
-#define _IsViewportChild(w) w->parent() &&\
-( w->parent()->objectName() == "qt_viewport" || \
-  w->parent()->objectName() == "qt_clipped_viewport" )
-
-#define _HighContrastColor(c) (qGray(c.rgb()) < 128 ) ? Qt::white : Qt::black
-
-#define _BLOCKEVENTS_(obj) obj->installEventFilter(eventKiller)
-#define _UNBLOCKEVENTS_(obj) obj->removeEventFilter(eventKiller)
-
-#define _IsTabStack(w) ( w->objectName() == "qt_tabwidget_stackedwidget" )
+#include "makros.h"
 /**=========================================================*/
 
 
@@ -324,8 +309,7 @@ void OxygenStyle::makeStructure(int num, const QColor &c)
    switch (config.structure)
    {
    default:
-   case 0: // scanlines
-   {
+   case 0: { // scanlines
       _scanlines[num]->fill( c.light(110).rgb() );
       p.setPen( (num == 1) ? c.light(106) : c.light(103) );
       int i;
@@ -337,38 +321,33 @@ void OxygenStyle::makeStructure(int num, const QColor &c)
       p.setPen( c );
       for ( i = 2; i < 63; i += 4 )
          p.drawLine( 0, i, 63, i );
-      p.end();
+      break;
    }
-   case 1: //checkboard
-   {
+   case 1: { //checkboard
       p.setPen(Qt::NoPen);
       p.setBrush(c.light(102));
-      if (num == 1)
-      {
+      if (num == 1) {
          p.drawRect(0,0,16,16); p.drawRect(32,0,16,16);
          p.drawRect(16,16,16,16); p.drawRect(48,16,16,16);
          p.drawRect(0,32,16,16); p.drawRect(32,32,16,16);
          p.drawRect(16,48,16,16); p.drawRect(48,48,16,16);
       }
-      else
-      {
+      else {
          p.drawRect(0,0,32,32);
          p.drawRect(32,32,32,32);
       }
       p.setBrush(c.dark(102));
-      if (num == 1)
-      {
+      if (num == 1) {
          p.drawRect(16,0,16,16); p.drawRect(48,0,16,16);
          p.drawRect(0,16,16,16); p.drawRect(32,16,16,16);
          p.drawRect(16,32,16,16); p.drawRect(48,32,16,16);
          p.drawRect(0,48,16,16); p.drawRect(32,48,16,16);
       }
-      else
-      {
+      else {
          p.drawRect(32,0,32,32);
          p.drawRect(0,32,32,32);
       }
-      p.end();
+      break;
    }
    case 2: // bricks - sucks...
       p.setPen(c.dark(105));
@@ -377,6 +356,7 @@ void OxygenStyle::makeStructure(int num, const QColor &c)
       p.drawRect(0,16,16,16); p.drawRect(16,16,32,16); p.drawRect(48,16,16,16);
       p.drawRect(0,32,32,16); p.drawRect(32,32,32,16);
       p.drawRect(0,48,16,16); p.drawRect(16,48,32,16); p.drawRect(48,48,16,16);
+      break;
    }
    p.end();
 }
@@ -407,6 +387,10 @@ void OxygenStyle::readSettings()
       config.gradient = GradButton;
       config.gradientStrong = GradSimple;
    }
+   if (settings.value("InverseButtons", false).toBool())
+      config.gradBtn = GradSunken;
+   else
+      config.gradBtn = config.gradient;
 
    settings.endGroup();
 }
@@ -789,14 +773,19 @@ void OxygenStyle::polish( QPalette &pal )
    popupPix = config.inversePopups ? fgPix : bgPix;
 }
 
-void OxygenStyle::polish( QWidget * widget)
-{
+#include <QtDebug>
 
+static Atom winTypePopup = XInternAtom(QX11Info::display(), "_NET_WM_WINDOW_TYPE_POPUP_MENU", False);
+static Atom winType = XInternAtom(QX11Info::display(), "_NET_WM_WINDOW_TYPE", False);
+
+void OxygenStyle::polish( QWidget * widget) {
+   
    // installs dynamic brush to all widgets, taking care of a correct bg pixmap size
    //TODO maybe we can exclude some more widgets here... (currently only popup menus)
    if (_bgBrush && !(qobject_cast<QMenu*>(widget) ||
          widget->inherits("QAlphaWidget") ||
-         widget->inherits("QComboBoxListView")
+         widget->inherits("QComboBoxListView") ||
+         widget->inherits("QComboBoxPrivateContainer")
         ))
       widget->installEventFilter(_bgBrush);
 
@@ -872,8 +861,7 @@ void OxygenStyle::polish( QWidget * widget)
       )
    {
       widget->setBackgroundRole(QPalette::Window);
-      if (config.bgMode == Scanlines)
-      {
+      if (config.bgMode == Scanlines) {
          widget->setAutoFillBackground ( true );
          QPalette pal = widget->palette();
          QColor c = pal.color(QPalette::Active, QPalette::Window);
@@ -886,8 +874,8 @@ void OxygenStyle::polish( QWidget * widget)
       }
    }
    
-   if (QFrame *frame = qobject_cast<QFrame *>(widget))
-   {
+   if (!widget->isWindow())
+   if (QFrame *frame = qobject_cast<QFrame *>(widget)) {
       // kill ugly winblows frames...
       if (frame->frameShape() == QFrame::Box ||
           frame->frameShape() == QFrame::Panel ||
@@ -900,18 +888,18 @@ void OxygenStyle::polish( QWidget * widget)
          widget->installEventFilter(this);
       
       // toolbox handling - a shame they look that crap by default!
-      else if (widget->inherits("QToolBox") && widget->layout())
-      {
+      else if (widget->inherits("QToolBox") && widget->layout()) {
          widget->layout()->setMargin ( 0 );
          widget->layout()->setSpacing ( 0 );
       }
-      
-      else if (frame->frameShape() == QFrame::StyledPanel)
-      {
+
+//        && !(
+//          widget->inherits("QComboBoxListView") ||
+//          widget->inherits("QComboBoxPrivateContainer"))
+      else if (frame->frameShape() == QFrame::StyledPanel) {
          if (widget->inherits("QTextEdit") && frame->lineWidth() == 1)
             frame->setLineWidth(dpi.$4);
-         else
-         {
+         else {
             QList<VisualFrame*> vfs = frame->findChildren<VisualFrame*>();
             bool addVF = true;
             foreach (VisualFrame* vf, vfs)
@@ -932,39 +920,54 @@ void OxygenStyle::polish( QWidget * widget)
        // grangrampa
        widget->parentWidget()->parentWidget()->parentWidget() &&
        widget->parentWidget()->parentWidget()->parentWidget()->inherits("QToolBox")
-      )
-   {
+      ) {
       widget->parentWidget()->setAutoFillBackground(false);
       widget->setAutoFillBackground(false);
    }
    
    //======================
    
-   // swap qmenu colors
-      
-   if (qobject_cast<QMenu *>(widget)) {
+   // swap noneditable viewport color as well...
+   if (config.inversePopups && widget->autoFillBackground()) // just for performance...
+   if ( widget->objectName() == "qt_scrollarea_viewport" )
+   if (widget->parentWidget())
+   if (widget->parentWidget()->inherits("QComboBoxListView"))
+   if (widget->parentWidget()->parentWidget())
+   if (widget->parentWidget()->parentWidget()->parentWidget())
+   if (QComboBox* cmb  =
+       qobject_cast<QComboBox*>(widget->parentWidget()->parentWidget()->parentWidget()))
+   if (!cmb->isEditable()) {
       widget->setBackgroundRole ( QPalette::WindowText );
       widget->setForegroundRole ( QPalette::Window );
-//       QFont tmpFont = widget->font();
-//       tmpFont.setBold(true);
-//       widget->setFont(tmpFont);
+   }
+   
+   // swap qmenu colors
+   if (qobject_cast<QMenu *>(widget)) {
+      // this should tell beryl et. al this is a popup - doesn't work... yet
+      XChangeProperty(QX11Info::display(), widget->winId(), winType,
+                      XA_CARDINAL, 32, PropModeReplace, (const unsigned char*)&winTypePopup, 1L);
+      if (config.inversePopups) {
+         widget->setAutoFillBackground (true);
+         widget->setBackgroundRole ( QPalette::WindowText );
+         widget->setForegroundRole ( QPalette::Window );
+      }
+      if (qGray(widget->palette().color(QPalette::Active, widget->backgroundRole()).rgb()) < 100) {
+         QFont tmpFont = widget->font();
+         tmpFont.setBold(true);
+         widget->setFont(tmpFont);
+      }
    }
    
    //========================
 }
 
-bool OxygenStyle::eventFilter( QObject *object, QEvent *ev )
-{
-   switch (ev->type())
-   {
-   case QEvent::Paint:
-   {
+bool OxygenStyle::eventFilter( QObject *object, QEvent *ev ) {
+   switch (ev->type()) {
+   case QEvent::Paint: {
       QFrame *frame = qobject_cast<QFrame*>(object);
-      if (frame)
-      {
+      if (frame) {
          if (frame->frameShape() == QFrame::HLine ||
-             frame->frameShape() == QFrame::VLine)
-         {
+             frame->frameShape() == QFrame::VLine) {
             QPainter p(frame);
             Orientation3D o3D = (frame->frameShadow() == QFrame::Sunken) ? Sunken:
                (frame->frameShadow() == QFrame::Raised) ? Raised : Relief;
@@ -975,14 +978,13 @@ bool OxygenStyle::eventFilter( QObject *object, QEvent *ev )
       }
       return false;
    }
-   case QEvent::MouseButtonPress:
-   {
+   case QEvent::MouseButtonPress: {
       QMouseEvent *mev = (QMouseEvent*)ev;
 #ifdef MOUSEDEBUG
       qDebug() << object;
 #endif
-      if (( mev->button() == Qt::LeftButton) && object->inherits("QWorkspaceTitleBar"))
-      {
+      if (( mev->button() == Qt::LeftButton) &&
+          object->inherits("QWorkspaceTitleBar")) {
          //TODO this is a hack to get the popupmenu to the right side. bug TT to query the position with a SH
          QWidget *widget = (QWidget*)object;
          // check for menu button
@@ -994,8 +996,7 @@ bool OxygenStyle::eventFilter( QObject *object, QEvent *ev )
          // find popup
          MDI = qobject_cast<QWidget*>(MDI->parent()); if (!MDI) return false; //this is elsewhat...
          MDI = MDI->findChild<QMenu *>("qt_internal_mdi_popup");
-         if (!MDI)
-         {
+         if (!MDI) {
             qWarning("MDI popup not found, unable to calc menu position");
             return false;
          }
@@ -1005,15 +1006,13 @@ bool OxygenStyle::eventFilter( QObject *object, QEvent *ev )
       }
       return false;
    }
-   case QEvent::Show:
-   {
+   case QEvent::Show: {
       if (qobject_cast<QProgressBar*>(object) &&
           ((QWidget*)object)->isEnabled()) {
          progressbars[(QWidget*)object] = 0;
          return false;
       }
-      if (qobject_cast<QTabWidget*>(object))
-      {
+      if (qobject_cast<QTabWidget*>(object)) {
          tabwidgets[(QTabWidget*)object] =
             new TabAnimInfo((QTabWidget*)object, ((QTabWidget*)object)->currentIndex());
          return false;
@@ -1027,26 +1026,26 @@ bool OxygenStyle::eventFilter( QObject *object, QEvent *ev )
             area->verticalScrollBar()->repaint();\
 
    case QEvent::Enter:
-      if (QAbstractScrollArea* area = qobject_cast<QAbstractScrollArea*>(object))
-      {
+      if (QAbstractScrollArea* area =
+          qobject_cast<QAbstractScrollArea*>(object)) {
          if (!area->isEnabled()) return false;
          HANDLE_SCROLL_AREA_EVENT
          return false;
       }
-      else if (Q3ScrollView* area = qobject_cast<Q3ScrollView*>(object))
-      {
+      else if (Q3ScrollView* area =
+               qobject_cast<Q3ScrollView*>(object)) {
          if (!area->isEnabled()) return false;
          HANDLE_SCROLL_AREA_EVENT
          return false;
       }
       return false;
    case QEvent::Leave:
-      if (QAbstractScrollArea* area = qobject_cast<QAbstractScrollArea*>(object))
-      {
+      if (QAbstractScrollArea* area =
+          qobject_cast<QAbstractScrollArea*>(object)) {
          HANDLE_SCROLL_AREA_EVENT return false;
       }
-      else if (Q3ScrollView* area = qobject_cast<Q3ScrollView*>(object))
-      {
+      else if (Q3ScrollView* area =
+               qobject_cast<Q3ScrollView*>(object)) {
          HANDLE_SCROLL_AREA_EVENT return false;
       }
       return false;

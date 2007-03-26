@@ -20,6 +20,7 @@
 
 #include <QApplication>
 #include <QAbstractScrollArea>
+#include <QComboBox>
 #include <QDesktopWidget>
 #include <QLabel>
 #include <QLayout>
@@ -32,9 +33,8 @@
 #include "oxrender.h"
 #include "dynamicbrush.h"
 
-#include <QtDebug>
-
 #include "inlinehelp.cpp"
+#include "makros.h"
 
 using namespace Oxygen;
 
@@ -43,20 +43,10 @@ extern Pixmap shadowPix;
 extern Config config;
 extern Dpi dpi;
 
-#define SAVE_PEN QPen saved_pen = painter->pen();
-#define RESTORE_PEN painter->setPen(saved_pen);
-#define SAVE_BRUSH QBrush saved_brush = painter->brush();
-#define RESTORE_BRUSH painter->setBrush(saved_brush);
-#define SAVE_ANTIALIAS bool hadAntiAlias = painter->renderHints() & QPainter::Antialiasing;
-#define RESTORE_ANTIALIAS painter->setRenderHint(QPainter::Antialiasing, hadAntiAlias);
-
 void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * option, QPainter * painter, const QWidget * widget) const
 {
    Q_ASSERT(option);
    Q_ASSERT(painter);
-#define RECT option->rect
-#define PAL option->palette
-#define COLOR(_TYPE_) option->palette.color(QPalette::_TYPE_)
    
    bool sunken = option->state & State_Sunken;
    bool isEnabled = option->state & State_Enabled;
@@ -87,7 +77,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       if (sunken) r.adjust($1,0,-$1,-$1);
       else r.adjust($3,$1,-$3,-$3);
       if (isEnabled) {
-         GradientType gt = isOn ? GradSunken : ( isDefault ? config.gradientStrong : config.gradient);
+         GradientType gt = isOn ? GradSunken : ( isDefault ? config.gradientStrong : config.gradBtn);
          fillWithMask(painter, r, gradient(c, r.height(), Qt::Vertical, gt), &masks.button);
          // border - glass has over or underlightened borders,
          // we assume 360° overlight - looks nicer with the shadows ;)
@@ -232,7 +222,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          painter->save();
          painter->setRenderHint(QPainter::Antialiasing);
          QRect r = RECT.adjusted(dpi.$6,dpi.$5,-dpi.$6,-dpi.$7);
-         const QPixmap &fill = gradient(c, r.height(), Qt::Vertical, config.gradient);
+         const QPixmap &fill = gradient(c, r.height(), Qt::Vertical, config.gradBtn);
          switch (config.checkType) {
          default:
          case 0: {
@@ -270,8 +260,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       }
       break;
    }
-   case PE_IndicatorRadioButton: // Exclusive on/off indicator, for example, a QRadioButton.
-   {
+   case PE_IndicatorRadioButton: { // Exclusive on/off indicator, for example, a QRadioButton.
       bool isOn = option->state & State_On;
       if (isOn) sunken = false;
       hover = hover && !isOn;
@@ -281,22 +270,28 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       QPoint xy = RECT.topLeft();
       
       // shadow
-      painter->drawPixmap(sunken?xy+QPoint($1,$1):xy, shadows.radio[sunken][hover]);
+      painter->drawPixmap(sunken?xy+QPoint($1,$1):xy, shadows.radio[sunken][hover||hasFocus]);
       
       // glass
       xy += QPoint($2,$1);
       int sz = dpi.ExclusiveIndicator - dpi.$4;
       if (isEnabled)
-         fillWithMask(painter, xy, gradient(c, sz, Qt::Vertical, config.gradient), masks.radio);
+         fillWithMask(painter, xy, gradient(c, sz, Qt::Vertical, config.gradBtn), masks.radio);
       else
          fillWithMask(painter, xy, c, masks.radio);
+      painter->save();
+      painter->setBrush(Qt::NoBrush);
+      painter->setPen(Qt::white);
+      painter->setRenderHint(QPainter::Antialiasing);
+      painter->drawEllipse(xy.x(), xy.y(), sz, sz);
+      painter->restore();
       
       if (isOn) { // drop?
          xy += QPoint($2,$2);
          sz -= dpi.$4;
          QColor c = btnFgColor(PAL, isEnabled, hover||hasFocus);
          xy += QPoint($2,$2);
-         fillWithMask(painter, xy, gradient(c, sz, Qt::Vertical, config.gradient), masks.radioIndicator);
+         fillWithMask(painter, xy, gradient(c, sz, Qt::Vertical, config.gradBtn), masks.radioIndicator);
       }
       break;
    }
@@ -305,15 +300,15 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
    case PE_Frame: { // Generic frame; see also QFrame.
       if (widget) {
          // handle the
-         if (widget->inherits("QComboBoxListView")) {
+         if (widget->inherits("QComboBoxPrivateContainer")) {
             SAVE_PEN;
-            painter->setPen(PAL.color(QPalette::Window).dark(120));
-            painter->drawLine(RECT.x(), RECT.top(), RECT.x(), RECT.bottom());
-            painter->drawLine(RECT.x(), RECT.bottom(), RECT.right(), RECT.bottom());
-            painter->drawLine(RECT.right(), RECT.top(), RECT.right(), RECT.bottom());
+            bool isEditable = widget->parentWidget() && qobject_cast<const QComboBox*>(widget->parentWidget()) && ((QComboBox*)widget->parentWidget())->isEditable();
             
-            painter->setPen(PAL.color(QPalette::Base));
-            painter->drawLine(RECT.x(), RECT.top(), RECT.right(), RECT.top());
+            if (isEditable)
+               painter->setPen(COLOR(Base));
+            else
+            painter->setPen(COLOR(WindowText));
+            painter->drawRect(RECT.adjusted(0,0,-1,-1));
             RESTORE_PEN;
             break;
          }
@@ -382,10 +377,14 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
 //          shadows.raised.render(RECT,painter);
       break;
    }
-   case PE_FrameMenu: // Frame for popup windows/menus; see also QMenu.
-   {
+   case PE_FrameMenu: { // Frame for popup windows/menus; see also QMenu.
+#if 0
       SAVE_PEN;
-      QColor c = PAL.color(widget?widget->backgroundRole():QPalette::Window);
+      QPalette::ColorRole role = QPalette::Window;
+      if (widget)
+         role = widget->inherits("QComboBox") ? // this is a combo popup
+         QPalette::WindowText : widget->backgroundRole();
+      QColor c = PAL.color(role);
       painter->setPen(c);
       painter->drawLine(RECT.x(), RECT.top(), RECT.right(), RECT.top());
       painter->setPen(c.dark(110));
@@ -393,6 +392,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       painter->drawLine(RECT.x(), RECT.bottom(), RECT.right(), RECT.bottom());
       painter->drawLine(RECT.right(), RECT.top(), RECT.right(), RECT.bottom());
       RESTORE_PEN;
+#endif
       break;
    }
    case PE_PanelMenuBar: // Panel for menu bars.
@@ -412,7 +412,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
             rect.adjust(offset,0,-offset,0);
             rect.setHeight(baseHeight);
             fillRect = rect.adjusted(dpi.$3, dpi.$2, -dpi.$3, 0);
-            pf = Tile::Left | Tile::Right | Tile::Top;
+            pf = Tile::Ring & ~ Tile::Bottom;
             tabRect.setTop(tabRect.top()+baseHeight);
             baseHeight = fillRect.height();
             break;
@@ -421,7 +421,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
             rect.adjust(offset,0,-offset,0);
             rect.setTop(rect.bottom()-baseHeight);
             fillRect = rect.adjusted(dpi.$3, 0, -dpi.$3, -dpi.$3);
-            pf = Tile::Left | Tile::Right | Tile::Bottom;
+            pf = Tile::Ring & ~ Tile::Top;
             tabRect.setBottom(tabRect.bottom()-(baseHeight-dpi.$3));
             baseHeight = fillRect.height();
             break;
@@ -430,7 +430,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
             rect.adjust(0,offset,0,-offset);
             rect.setLeft(rect.right()-baseHeight);
             fillRect = rect.adjusted(0, dpi.$2, -dpi.$3, -dpi.$3);
-            pf = Tile::Top | Tile::Right | Tile::Bottom;
+            pf = Tile::Ring & ~ Tile::Left;
             o = Qt::Horizontal;
             tabRect.setRight(tabRect.right()-(baseHeight-dpi.$2));
             baseHeight = fillRect.width();
@@ -440,7 +440,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
             rect.adjust(0,offset,0,-offset);
             rect.setWidth(baseHeight);
             fillRect = rect.adjusted(dpi.$3, dpi.$2, 0, -dpi.$3);
-            pf = Tile::Top | Tile::Left | Tile::Bottom;
+            pf = Tile::Ring & ~ Tile::Right;
             o = Qt::Horizontal;
             tabRect.setLeft(tabRect.left()+(baseHeight-dpi.$2));
             baseHeight = fillRect.width();
@@ -700,7 +700,4 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
    default:
       QCommonStyle::drawPrimitive( pe, option, painter, widget );
    } // switch
-#undef RECT
-#undef PAL
-#undef COLOR
 }

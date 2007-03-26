@@ -21,6 +21,7 @@
 #include <Q3ScrollView>
 #include <QAbstractScrollArea>
 #include <QApplication>
+#include <QComboBox>
 #include <QHeaderView>
 #include <QStyleOptionTab>
 #include <QStyleOptionHeader>
@@ -33,6 +34,7 @@
 #include <QtDebug>
 
 #include "inlinehelp.cpp"
+#include "makros.h"
 
 using namespace Oxygen;
 
@@ -107,9 +109,6 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
 {
    Q_ASSERT(option);
    Q_ASSERT(painter);
-#define RECT option->rect
-#define PAL option->palette
-#define COLOR(_TYPE_) option->palette.color(QPalette::_TYPE_)
    
    bool sunken = option->state & State_Sunken;
    bool isEnabled = option->state & State_Enabled;
@@ -274,8 +273,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
 //    case CE_RadioButtonLabel: // The label (text or pixmap) of a QRadioButton
    case CE_TabBarTab: // The tab and label within a QTabBar
       if (const QStyleOptionTab *tab =
-          qstyleoption_cast<const QStyleOptionTab *>(option))
-      {
+          qstyleoption_cast<const QStyleOptionTab *>(option)) {
          bool needRestore = false;
          if (widget && (RECT.right() > widget->width())) {
             needRestore = true;
@@ -294,50 +292,73 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
           qstyleoption_cast<const QStyleOptionTab *>(option)) {
          bool selected = option->state & State_Selected;
          int $2 = dpi.$2, $4 = dpi.$4, $8 = dpi.$8;
+         QPoint off;
          if (!(hover || selected || sunken))
             break;
          Tile::PosFlags pf = 0; int size = 0; Qt::Orientation o = Qt::Vertical;
-         QRect rect = RECT;
+         QRect rect = RECT, fillRect = RECT;
          switch (tab->shape) {
          case QTabBar::RoundedNorth:
          case QTabBar::TriangularNorth:
-            pf = Tile::Top | Tile::Left | Tile::Right;
-            size = RECT.height()-$8;
-            rect.setTop(rect.top()+$2);
+            pf = Tile::Ring & ~Tile::Bottom;
+            if (selected) {
+               fillRect.adjust($2, $4, -$2, 0);
+               rect.adjust(0, $2, 0, 0);
+            }
+            else {
+               rect = RECT.adjusted($4,$4,-$4,-$4);
+               size = RECT.height()-$2; off.setY($2);
+            }
             break;
          case QTabBar::RoundedSouth:
          case QTabBar::TriangularSouth:
-            pf = Tile::Bottom | Tile::Left | Tile::Right;
-            size = RECT.height()-$8;
-            rect.setBottom(rect.bottom()-$2);
+            pf = Tile::Ring & ~Tile::Top;
+            if (selected) {
+               fillRect.adjust($2, 0, -$2, -dpi.$6);
+               rect.adjust(0, 0, 0, -$2);
+            }
+            else {
+               rect = RECT.adjusted($4,$4,-$4,-dpi.$6);
+               size = RECT.height()-$4; off.setY(dpi.$3);
+            }
             break;
          case QTabBar::RoundedEast:
          case QTabBar::TriangularEast:
-            pf = Tile::Top | Tile::Bottom | Tile::Right;
-            size = RECT.width()-$8;
             o = Qt::Horizontal;
-            rect.setRight(rect.right()-$2);
+            pf = Tile::Ring & ~Tile::Left;
+            if (selected) {
+               fillRect.adjust(0, $2, -dpi.$6, -$4);
+               rect.adjust(0, 0, -$4, 0);
+            }
+            else {
+               rect = RECT.adjusted($4,$4,-dpi.$6, -$4);
+               size = RECT.width()-$4; off.setX(dpi.$3);
+            }
             break;
          case QTabBar::RoundedWest:
          case QTabBar::TriangularWest:
-            pf = Tile::Top | Tile::Bottom | Tile::Left;
-            size = RECT.width()-$8;
             o = Qt::Horizontal;
-            rect.setLeft(rect.left()+$2);
+            pf = Tile::Ring & ~Tile::Right;
+            if (selected) {
+               fillRect.adjust(dpi.$6, $2, 0, -$4);
+               rect.adjust($4, 0, 0, 0);
+            }
+            else {
+               rect = RECT.adjusted(dpi.$6,$4,-$4, -$4);
+               size = RECT.width()-$4; off.setX(dpi.$3);
+            }
             break;
          }
          if (selected) {
-            size = (o == Qt::Vertical) ? 2*rect.height() : 2*rect.width();
-            QPoint zero = RECT.topLeft();
+            QPoint zero = fillRect.topLeft();
             if (widget)
                zero = widget->mapTo(widget->topLevelWidget(), zero);
-            fillWithMask(painter, rect.adjusted($2,dpi.$1,-$2,0), PAL.brush(QPalette::Window), &masks.tab, pf | Tile::Center, false, zero);
+            fillWithMask(painter, fillRect, PAL.brush(QPalette::Window), &masks.tab, pf | Tile::Center, false, zero);
             shadows.tab.render(rect, painter, pf);
             break;
          }
          else {
-            QRect rect = RECT.adjusted($4,$4,-$4,-$4);
-            fillWithMask(painter, rect, gradient(COLOR(Window), size, o, sunken?GradSunken:config.gradientStrong), &masks.button);
+            fillWithMask(painter, rect, gradient(COLOR(Window), size, o, sunken?GradSunken:config.gradientStrong), &masks.button, Tile::Full, false, off);
          }
       }
       break;
@@ -353,8 +374,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          if (selected) hover = false;
          int alignment = Qt::AlignCenter | Qt::TextShowMnemonic;
          
-         switch(tabV2.shape)
-         {
+         switch(tabV2.shape) {
          case QTabBar::RoundedNorth:
          case QTabBar::TriangularNorth:
             if (selected) tr.setTop(tr.top()+2);
@@ -375,8 +395,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             break;
          }
          
-         if (verticalTabs)
-         {
+         if (verticalTabs) {
             int newX, newY, newRot;
             if (east) {
                newX = tr.width(); newY = tr.y(); newRot = 90;
@@ -390,11 +409,9 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             painter->setMatrix(m, true);
          }
          
-         if (!tabV2.icon.isNull())
-         {
+         if (!tabV2.icon.isNull()) {
             QSize iconSize = tabV2.iconSize;
-            if (!iconSize.isValid())
-            {
+            if (!iconSize.isValid()) {
                int iconExtent = pixelMetric(PM_SmallIconSize);
                iconSize = QSize(iconExtent, iconExtent);
             }
@@ -405,8 +422,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          // color adjustment
          QColor cF, cB;
 
-         if (selected)
-         {
+         if (selected) {
             QFont tmpFnt = painter->font();
             tmpFnt.setBold(true);
             painter->setFont(tmpFnt);
@@ -418,8 +434,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          else {
             cF = COLOR(Window); cB = COLOR(WindowText);
          }
-         if (verticalTabs)
-         {
+         if (verticalTabs) {
             QPixmap pixmap(tr.size());
             pixmap.fill(Qt::transparent);
             QPainter pixPainter(&pixmap);
@@ -434,8 +449,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
                painter->drawPixmap(-dpi.$2, 0, tabShadow(tr.height()-dpi.$2));
             drawItemPixmap(painter, tr, alignment, pixmap);
          }
-         else
-         {
+         else {
             if (qGray(cB.rgb()) < 148) // dark background, let's paint an emboss
             {
                painter->setPen(cB.dark(120));
@@ -685,15 +699,13 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       break;
    case CE_MenuBarItem: // A menu item in a QMenuBar
       if (const QStyleOptionMenuItem *mbi =
-          qstyleoption_cast<const QStyleOptionMenuItem *>(option))
-      {
+          qstyleoption_cast<const QStyleOptionMenuItem *>(option)) {
          QPalette::ColorRole cr = QPalette::WindowText;
-         if (option->state & State_Selected)
-         {
+         if (option->state & State_Selected) {
             painter->save();
             painter->setRenderHint ( QPainter::Antialiasing );
-            painter->setPen ( PAL.color(QPalette::WindowText) );
-            painter->setBrush ( PAL.color(QPalette::WindowText) );
+            painter->setPen ( PAL.color(cr) );
+            painter->setBrush ( PAL.color(cr) );
             if (RECT.width() > RECT.height())
                painter->drawRoundRect(sunken ? RECT.adjusted(0,0,0,RECT.height()/5) : RECT,
                                       35*RECT.height()/RECT.width(), 35);
@@ -717,66 +729,68 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
    case CE_MenuItem: // A menu item in a QMenu
         // Draws one item in a popup menu.
       if (const QStyleOptionMenuItem *menuItem =
-          qstyleoption_cast<const QStyleOptionMenuItem *>(option))
-      {
-         QPalette::ColorRole fg = QPalette::WindowText;
-         QPalette::ColorRole bg = QPalette::Window;
-         if (widget)
-         {
-            bg = widget->backgroundRole();
-            fg = widget->foregroundRole();
+          qstyleoption_cast<const QStyleOptionMenuItem *>(option)) {
+         bool isCombo = widget && widget->inherits("QComboBox");
+         bool selected = menuItem->state & State_Selected;
+         QPalette::ColorRole fgr = QPalette::WindowText;
+         QPalette::ColorRole bgr = QPalette::Window;
+         if (isCombo && config.inversePopups) {
+         //combos send the combo, not the listview as widget, thus we must force this here
+            bgr = QPalette::WindowText;
+            fgr = QPalette::Window;
          }
-         
-         painter->fillRect(RECT, PAL.color(QPalette::Active, bg));
-         
-         if (menuItem->menuItemType == QStyleOptionMenuItem::Separator)
-         {
+         else if (widget) {
+            bgr = widget->backgroundRole();
+            fgr = widget->foregroundRole();
+         }
+         if (selected && isEnabled) {
+            QPalette::ColorRole hlp = bgr; bgr = fgr; fgr = hlp;
+         }
+         QColor bg = PAL.color(bgr);
+         QColor fg = isEnabled ? PAL.color(fgr) : midColor(PAL.color(bgr),PAL.color(fgr),2,1);
+
+         if (menuItem->menuItemType == QStyleOptionMenuItem::Separator) {
             int dx = RECT.width()/6, dy = (RECT.height()-shadows.line[0][Sunken].thickness())/2;
             shadows.line[0][Sunken].render(RECT.adjusted(dx,dy,-dx,-dy), painter);
-            if (!menuItem->text.isEmpty())
-            {
+            if (!menuItem->text.isEmpty()) {
                painter->setFont(menuItem->font);
-               drawItemText(painter, RECT, Qt::AlignCenter, PAL, isEnabled, menuItem->text, fg);
+               drawItemText(painter, RECT, Qt::AlignCenter, PAL, isEnabled, menuItem->text, fgr);
             }
             break;
          }
          painter->save();
-         bool selected = menuItem->state & State_Selected;
          bool checkable = menuItem->checkType != QStyleOptionMenuItem::NotCheckable;
          bool checked = menuItem->checked;
          
-         if (selected && isEnabled)
-         {
+         if (selected && isEnabled) {
             painter->setRenderHint ( QPainter::Antialiasing );
-            painter->setPen ( PAL.color(fg) );
-            painter->setBrush ( PAL.color(fg) );
+            painter->setPen ( Qt::NoPen );
+            painter->setBrush ( bg );
             if (RECT.width() > RECT.height())
                painter->drawRoundRect(RECT, 35*RECT.height()/RECT.width(), 35);
             else
                painter->drawRoundRect(RECT, 35, 35*RECT.width()/RECT.height());
          }
+             
+         painter->setPen ( fg );
+         painter->setBrush ( Qt::NoBrush );
         
          // Check
-         QRect checkRect(option->rect.left() + 7, option->rect.center().y() - 6, 13, 13);
-         checkRect = visualRect(menuItem->direction, menuItem->rect, checkRect);
-         if (checkable)
-         {
-            if (menuItem->checkType & QStyleOptionMenuItem::Exclusive)
-            {
+         if (!isCombo && checkable) {
+            QRect checkRect(option->rect.left() + 7, option->rect.center().y() - 6, 13, 13);
+            checkRect = visualRect(menuItem->direction, menuItem->rect, checkRect);
+            if (menuItem->checkType & QStyleOptionMenuItem::Exclusive) {
                // Radio button
                painter->setRenderHint ( QPainter::Antialiasing );
-               painter->setPen ( PAL.color(selected ? bg : fg) );
                painter->drawEllipse ( checkRect );
-               if (checked || sunken)
-               {
-                  painter->setBrush ( painter->pen().color() );
+               if (checked || sunken) {
+                  painter->setBrush ( fg );
                   painter->drawEllipse ( checkRect.adjusted(checkRect.width()/4, checkRect.height()/4, -checkRect.width()/4, -checkRect.height()/4) );
+                  painter->setBrush ( Qt::NoBrush );
                }
             }
-            else
-            {
+            else {
                // Check box
-               painter->setPen ( PAL.color(selected ? bg : fg) );
                QStyleOptionMenuItem tmpOpt = *menuItem;
                tmpOpt.rect = checkRect;
                if (checked) tmpOpt.state |= State_On; else tmpOpt.state &= ~State_On;
@@ -786,12 +800,11 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          
          // Text and icon, ripped from windows style
          const QStyleOptionMenuItem *menuitem = menuItem;
-         int checkcol = qMax(menuitem->maxIconWidth, checkable*20);
+         int checkcol = (!isCombo)*qMax(menuitem->maxIconWidth, checkable*20);
          QRect vCheckRect = visualRect(option->direction, menuitem->rect,
                                        QRect(menuitem->rect.x(), menuitem->rect.y(),
                                              checkcol, menuitem->rect.height()));
-         if (!menuItem->icon.isNull())
-         {
+         if (!menuItem->icon.isNull()) {
             QIcon::Mode mode = isEnabled ? (selected ? QIcon::Active : QIcon::Normal) : QIcon::Disabled;
             QPixmap pixmap = menuItem->icon.pixmap(pixelMetric(PM_SmallIconSize), mode, checked ? QIcon::On : QIcon::Off);
             
@@ -804,34 +817,22 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          int x, y, w, h;
          menuitem->rect.getRect(&x, &y, &w, &h);
          int tab = menuitem->tabWidth;
-         
-         QColor discol;
-         if (!isEnabled)
-         {
-            discol = midColor(PAL.color(bg),PAL.color(fg),2,1);
-            painter->setPen(discol);
-         }
-         else
-            painter->setPen(PAL.color(selected ? bg : fg));
-         
+             
          int xm = windowsItemFrame + checkcol + windowsItemHMargin;
          int xpos = menuitem->rect.x() + xm;
          QRect textRect(xpos, y + windowsItemVMargin, w - xm - windowsRightBorder - tab + 1, h - 2 * windowsItemVMargin);
          QRect vTextRect = visualRect(option->direction, menuitem->rect, textRect);
          QString s = menuitem->text;
-         if (!s.isEmpty())
-         {
+         if (!s.isEmpty()) {
             // draw text
             int t = s.indexOf('\t');
 #define text_flags Qt::AlignVCenter | Qt::TextShowMnemonic | Qt::TextDontClip | Qt::TextSingleLine
-            if (t >= 0)
-            {
+            if (t >= 0) {
                QRect vShortcutRect = visualRect(option->direction, RECT, QRect(textRect.topRight(), RECT.bottomRight()));
                painter->drawText(vShortcutRect, text_flags /*| Qt::AlignRight*/, s.mid(t + 1));
                s = s.left(t);
             }
-            if (menuitem->menuItemType == QStyleOptionMenuItem::DefaultItem)
-            {
+            if (menuitem->menuItemType == QStyleOptionMenuItem::DefaultItem) {
                QFont font = menuitem->font;
                font.setBold(true);
                painter->setFont(font);
@@ -840,8 +841,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          }
 #undef text_flags
             // Arrow
-         if (menuItem->menuItemType == QStyleOptionMenuItem::SubMenu)
-         {
+         if (menuItem->menuItemType == QStyleOptionMenuItem::SubMenu) {
             // draw sub menu arrow
             PrimitiveElement arrow =
                (option->direction == Qt::RightToLeft) ? PE_IndicatorArrowLeft : PE_IndicatorArrowRight;
@@ -857,17 +857,14 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          painter->restore();
       }
       break;
-   case CE_MenuScroller: // Scrolling areas in a QMenu when the style supports scrolling
-   {
+   case CE_MenuScroller: { // Scrolling areas in a QMenu when the style supports scrolling
       QPalette::ColorRole bg = widget ? widget->backgroundRole() : QPalette::Window;
-      if (option->state & State_DownArrow)
-      {
+      if (option->state & State_DownArrow) {
          painter->drawTiledPixmap(RECT, gradient(PAL.color(QPalette::Active, bg),
             RECT.height()*2, Qt::Vertical, sunken ? GradSunken : GradSimple), QPoint(0,RECT.height()));
          drawPrimitive(PE_IndicatorArrowDown, option, painter, widget);
       }
-      else
-      {
+      else {
          painter->drawTiledPixmap(RECT, gradient(PAL.color(QPalette::Active, bg),
             RECT.height()*2, Qt::Vertical, sunken ? GradSunken : GradSimple));
          drawPrimitive(PE_IndicatorArrowUp, option, painter, widget);
@@ -876,11 +873,15 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
    }
 //    case CE_MenuTearoff: // A menu item representing the tear off section of a QMenu
    case CE_MenuEmptyArea: // The area in a menu without menu items
-      painter->fillRect(RECT,PAL.color(widget?widget->backgroundRole():QPalette::Window));
-      break;
    case CE_MenuHMargin: // The horizontal extra space on the left/right of a menu
-   case CE_MenuVMargin: // The vertical extra space on the top/bottom of a menu
+   case CE_MenuVMargin: { // The vertical extra space on the top/bottom of a menu
+      QPalette::ColorRole role = QPalette::Window;
+      if (widget)
+         role = qobject_cast<const QComboBox*>(widget) ?
+         QPalette::WindowText : widget->backgroundRole();
+      painter->fillRect(RECT, PAL.color(role));
       break;
+   }
    case CE_Q3DockWindowEmptyArea: // The empty area of a QDockWidget
       break;
    case CE_ToolBoxTab: // The toolbox's tab area
@@ -956,14 +957,27 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
    case CE_Header: // A header
    if (const QStyleOptionHeader *header =
        qstyleoption_cast<const QStyleOptionHeader *>(option)) {
-      QRegion clipRegion = painter->clipRegion();
+      // init
+      const QRegion clipRegion = painter->clipRegion();
       painter->setClipRect(option->rect);
-      drawControl(CE_HeaderSection, header, painter, widget);
       QStyleOptionHeader subopt = *header;
+      const QHeaderView* hdv = qobject_cast<const QHeaderView*>(widget);
+      // extend the sunken state on sorting headers
+      sunken = sunken ||
+             (hdv && hdv->isClickable () && hdv->sortIndicatorSection() == header->section);
+      if (sunken)
+         subopt.state |= State_Sunken;
+      
+      // base
+      drawControl(CE_HeaderSection, &subopt, painter, widget);
+          
+      // label
       subopt.rect = subElementRect(SE_HeaderLabel, header, widget);
       if (subopt.rect.isValid())
          drawControl(CE_HeaderLabel, &subopt, painter, widget);
-      if (hover) {
+          
+      // sort Indicator on sorting or (inverted) on hovered headers
+      if (hover && hdv && hdv->isSortIndicatorShown()) {
          if (subopt.sortIndicator == QStyleOptionHeader::SortDown)
             subopt.sortIndicator = QStyleOptionHeader::SortUp;
           else
@@ -974,6 +988,8 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          painter->save(); painter->setPen(Qt::NoPen);
          const QPixmap &fill = gradient(hover?COLOR(Base):midColor(COLOR(Text),COLOR(Base)), RECT.height(), Qt::Vertical, sunken?GradSunken:config.gradient);
          painter->setBrush(fill);
+         if (hover)
+            painter->setPen(COLOR(Text));
          drawPrimitive(PE_IndicatorHeaderArrow, &subopt, painter, widget);
          painter->restore();
       }
@@ -981,15 +997,11 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       break;
    }
    case CE_HeaderSection: { // A header section
-   // NOT emphasize, as base/text is usually white/black -> no emphasize possible...
-      const QHeaderView* header = qobject_cast<const QHeaderView*>(widget);
-      const QStyleOptionHeader* hopt = qstyleoption_cast<const QStyleOptionHeader*>(option);
-      sunken = sunken || (header && header->isClickable () && hopt && header->sortIndicatorSection() == hopt->section);
       if (sunken)
          painter->drawTiledPixmap(RECT, gradient(COLOR(Text), RECT.height(), Qt::Vertical, GradSunken));
       else {
          QRect r = RECT; r.setWidth(RECT.width()-1);
-         painter->drawTiledPixmap(r, gradient(COLOR(Text), RECT.height(), Qt::Vertical, config.gradient));
+         painter->drawTiledPixmap(r, gradient(COLOR(Text), RECT.height(), Qt::Vertical, hover?config.gradientStrong:config.gradient));
          r = RECT; r.setLeft(r.right()-dpi.$1);
          painter->drawTiledPixmap(r, gradient(COLOR(Text), RECT.height(), Qt::Vertical, GradSunken));
       }
@@ -1118,7 +1130,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          else {
             size = r.width(); direction = Qt::Horizontal;
          }
-         fillWithMask(painter, r, gradient(btnBgColor(PAL, isEnabled, hover), size, direction, config.gradient), &masks.button);
+         fillWithMask(painter, r, gradient(btnBgColor(PAL, isEnabled, hover), size, direction, config.gradBtn), &masks.button);
 	 masks.button.outline(r, painter, Qt::white, true);
          if (!hover && scrollAreaHovered(widget)) {
             int dx, dy, off = sunken?dpi.$1:0;
@@ -1132,7 +1144,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
                r.adjust(dx+off,dy,-dx+off,-dy);
                size = r.width();
             }
-            painter->drawTiledPixmap(r, gradient(btnFgColor(PAL, isEnabled, hover), size, direction, config.gradient));
+            painter->drawTiledPixmap(r, gradient(btnFgColor(PAL, isEnabled, hover), size, direction, config.gradBtn));
          }
       }
       break;
@@ -1157,6 +1169,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          QRect editRect = subControlRect(CC_ComboBox, cb, SC_ComboBoxEditField, widget);
          painter->save();
          painter->setClipRect(editRect);
+         // icon
          if (!cb->currentIcon.isNull()) {
             QIcon::Mode mode = isEnabled ? QIcon::Normal
                : QIcon::Disabled;
@@ -1173,9 +1186,14 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             else
                editRect.translate(cb->iconSize.width() + 4, 0);
          }
+         // text
          if (!cb->currentText.isEmpty() && !cb->editable) {
             editRect.adjust(3,0, -3, 0);
-            painter->setPen(midColor(COLOR(Base), COLOR(Text), 1, 2));
+            const QComboBox* combo = widget ? qobject_cast<const QComboBox*>(widget) : 0;
+            if (combo && combo->view() && ((QWidget*)(combo->view()))->isVisible())
+               painter->setPen(COLOR(Base));
+            else
+               painter->setPen(midColor(COLOR(Base), COLOR(Text), 1, 2));
             drawItemText(painter, editRect, Qt::AlignCenter, PAL, isEnabled, cb->currentText);
          }
          painter->restore();
@@ -1186,7 +1204,4 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
    default:
          QCommonStyle::drawControl( element, option, painter, widget );
    } // switch
-#undef RECT
-#undef PAL
-#undef COLOR
 }

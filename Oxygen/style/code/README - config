@@ -29,6 +29,15 @@ BackgroundMode=3
 # 2: O
 CheckType=0
 
+# do you like glass/gloss?
+HAL9000=true
+
+# invert (sink) normal buttons etc by default
+InverseButtons=false
+
+# black popupmenus (i.e. the popup has the same color as the highlighted menu)
+InversePopups=true
+
 # not fully supportes yet, don't try values < 1 here (if you want a stable desktop ;)
 Scale=1.0
 

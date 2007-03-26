@@ -302,12 +302,10 @@ QRegion Tile::Mask::clipRegion(const QRect &rect, PosFlags pf) const
    return ret;
 }
 
-Line::Line(const QPixmap &pix, Qt::Orientation o, int d1, int d2)
-{
+Line::Line(const QPixmap &pix, Qt::Orientation o, int d1, int d2) {
    _o = o;
    QPainter p;
-   if (o == Qt::Horizontal)
-   {
+   if (o == Qt::Horizontal) {
       _thickness = pix.height();
       pixmap[0] = QPixmap(d1,pix.height());
       pixmap[0].fill(Qt::transparent);
@@ -329,8 +327,7 @@ Line::Line(const QPixmap &pix, Qt::Orientation o, int d1, int d2)
       p.drawPixmap(0,0,pix,pix.width()+d2,0,-d2,pix.height());
       p.end();
    }
-   else
-   {
+   else {
       _thickness = pix.width();
       pixmap[0] = QPixmap(pix.width(),d1);
       pixmap[0].fill(Qt::transparent);
@@ -339,7 +336,7 @@ Line::Line(const QPixmap &pix, Qt::Orientation o, int d1, int d2)
       p.end();
       
       int d = pix.height()-d1+d2;
-      pixmap[1] = QPixmap(pix.width(),MIN(32,d));
+      pixmap[1] = QPixmap(pix.width(), MAX(32,d));
       pixmap[1].fill(Qt::transparent);
       p.begin(&pixmap[1]);
       for (int i = 0; i+d < height(1); i+=d)
@@ -354,17 +351,14 @@ Line::Line(const QPixmap &pix, Qt::Orientation o, int d1, int d2)
    }
 }
 
-void Line::render(const QRect &rect, QPainter *p, PosFlags pf) const
-{
+void Line::render(const QRect &rect, QPainter *p, PosFlags pf) const {
    int d0,d2;
-   if (_o == Qt::Horizontal)
-   {
+   if (_o == Qt::Horizontal) {
       d0 = (pf & Left) ? width(0) : 0;
       d2 = (pf & Right) ? width(2) : 0;
       if ((pf & Center) && rect.width() >= d0+d2)
          p->drawTiledPixmap(rect.x()+d0, rect.y(), rect.width()-d0-d2, height(1), pixmap[1]);
-      else if (d0 || d2)
-      {
+      else if (d0 || d2) {
          d0 = qMin(d0,d0*rect.width()/(d0+d2));
          d2 = qMin(d2,rect.width()-d0);
       }
@@ -373,14 +367,13 @@ void Line::render(const QRect &rect, QPainter *p, PosFlags pf) const
       if (pf & Right)
          p->drawPixmap(rect.right()+1-d2,rect.y(),pixmap[2],width(2)-d2,0,d2,height(2));
    }
-   else
-   {
+   else {
       d0 = (pf & Top) ? height(0) : 0;
       d2 = (pf & Bottom) ? height(2) : 0;
-      if ((pf & Center) && rect.height() >= d0+d2)
+      if ((pf & Center) && rect.height() >= d0+d2) {
          p->drawTiledPixmap(rect.x(), rect.y()+d0, width(1), rect.height()-d0-d2, pixmap[1]);
-      else if (d0 || d2)
-      {
+      }
+      else if (d0 || d2) {
          d0 = qMin(d0,d0*rect.height()/(d0+d2));
          d2 = qMin(d2,rect.height()-d0);
       }
