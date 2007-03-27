@@ -447,8 +447,8 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
             break;
          }
          shadows.tab.render(rect, painter, pf);
-         fillWithMask(painter, fillRect, gradient(COLOR(WindowText), baseHeight, o, config.gradientStrong), &masks.tab, pf | Tile::Center);
-         masks.tab.outline(fillRect, painter, COLOR(WindowText).dark(110), false, pf);
+         fillWithMask(painter, fillRect, gradient(COLOR(Button), baseHeight, o, config.gradientStrong), &masks.tab, pf | Tile::Center);
+         masks.tab.outline(fillRect, painter, COLOR(Button).dark(110), false, pf);
          shadows.tab.render(tabRect, painter, Tile::Ring);
       }
       break;

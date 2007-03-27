@@ -95,7 +95,7 @@ inline QColor btnBgColor(const QPalette &pal, bool isEnabled, bool hover = false
    if (!isEnabled)
       return TMP_COLOR(Window);
    if (hover)
-      return TMP_COLOR(WindowText);
+      return TMP_COLOR(Button);
    return TMP_COLOR(Window).dark(103);
 }
 
@@ -107,7 +107,7 @@ inline QColor btnFgColor(const QPalette &pal, bool isEnabled, bool hover = false
    if (!isEnabled)
       return midColor(TMP_COLOR(Window), TMP_COLOR(WindowText), 1, 3);
    if (hover)
-      return TMP_COLOR(Window);
+      return TMP_COLOR(ButtonText);
    return TMP_COLOR(WindowText);
 }
 

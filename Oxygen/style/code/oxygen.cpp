@@ -472,8 +472,7 @@ OxygenStyle::OxygenStyle() : QCommonStyle(), activeChunk(0), anmiationUpdate(fal
    connect(timer, SIGNAL(timeout()), this, SLOT(updateTabAnimation()));
 }
 
-OxygenStyle::~OxygenStyle()
-{
+OxygenStyle::~OxygenStyle() {
    for (int i = 0; i < 2; i++)
       for (int j = 0; j < NumGrads; j++)
             gradients[i][j].clear();
@@ -481,12 +480,11 @@ OxygenStyle::~OxygenStyle()
    _btnAmbient.clear();
    _tabShadow.clear();
    roundGlowCache.clear();
-//    if (timer)
-//    {
-//       timer->disconnect();
-//       timer->stop();
+   if (timer) {
+      timer->disconnect();
+      timer->stop();
 //       delete timer;
-//    }
+   }
    progressbars.clear();
 
 //    bfi.clear();
@@ -1100,7 +1098,12 @@ void OxygenStyle::unPolish( QWidget *widget )
 
 QPalette OxygenStyle::standardPalette () const
 {
-   return QPalette ( Qt::black, QColor(245,245,245), Qt::white, QColor(200,200,200), QColor(220,220,220), Qt::black, Qt::black, Qt::white, QColor(245,245,245) );
+   QPalette pal ( Qt::black, QColor(30,31,32), // windowText, button
+                     Qt::white, QColor(200,201,202), QColor(221,222,223), //light, dark, mid
+                     Qt::black, Qt::white, //text, bright_text
+                     QColor(251,254,255), QColor(234,236,238) ); //base, window
+   pal.setColor(QPalette::ButtonText, QColor(234,236,238));
+   return pal;
 }
 
 /** eventcontrol slots*/

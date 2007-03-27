@@ -358,14 +358,13 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             break;
          }
          else {
-            fillWithMask(painter, rect, gradient(COLOR(Window), size, o, sunken?GradSunken:config.gradientStrong), &masks.button, Tile::Full, false, off);
+            fillWithMask(painter, rect, gradient(COLOR(ButtonText), size, o, sunken?GradSunken:config.gradientStrong), &masks.button, Tile::Full, false, off);
          }
       }
       break;
    case CE_TabBarTabLabel: // The label within a tab
       if (const QStyleOptionTab *tab =
-          qstyleoption_cast<const QStyleOptionTab *>(option))
-      {
+          qstyleoption_cast<const QStyleOptionTab *>(option)) {
          painter->save();
          QStyleOptionTabV2 tabV2(*tab);
          QRect tr = tabV2.rect; bool verticalTabs = false;
@@ -429,10 +428,10 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             cF = COLOR(WindowText); cB = COLOR(Window);
          }
          else if (hover) {
-            cF = COLOR(WindowText); cB = COLOR(Window);
+            cF = COLOR(Button); cB = COLOR(ButtonText);
          }
          else {
-            cF = COLOR(Window); cB = COLOR(WindowText);
+            cF = COLOR(ButtonText); cB = COLOR(Button);
          }
          if (verticalTabs) {
             QPixmap pixmap(tr.size());
@@ -1064,8 +1063,10 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       }
       if (const QStyleOptionSlider *opt =
             qstyleoption_cast<const QStyleOptionSlider *>(option)) {
-         bool alive = isEnabled && ((element == CE_ScrollBarAddLine && opt->sliderValue < opt->maximum) ||
-                                            (element == CE_ScrollBarSubLine && opt->sliderValue > opt->minimum));
+         bool alive = isEnabled && ((element == CE_ScrollBarAddLine &&
+                                     opt->sliderValue < opt->maximum) ||
+                                    (element == CE_ScrollBarSubLine &&
+                                     opt->sliderValue > opt->minimum));
          QPoint xy = RECT.topLeft();
          if (sunken || !alive)
             painter->drawPixmap(xy+QPoint(dpi.$1,dpi.$1), shadows.radio[1][hover]);
@@ -1144,7 +1145,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
                r.adjust(dx+off,dy,-dx+off,-dy);
                size = r.width();
             }
-            painter->drawTiledPixmap(r, gradient(btnFgColor(PAL, isEnabled, hover), size, direction, config.gradBtn));
+            painter->drawTiledPixmap(r, gradient(btnBgColor(PAL, isEnabled, true), size, direction, config.gradBtn));
          }
       }
       break;

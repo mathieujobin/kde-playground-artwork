@@ -189,6 +189,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
       if (const QStyleOptionComboBox *cmb =
           qstyleoption_cast<const QStyleOptionComboBox *>(option)) {
          QRect ar; const QComboBox* combo = widget ? qobject_cast<const QComboBox*>(widget) : 0;
+         bool listShown = combo && combo->view() && ((QWidget*)(combo->view()))->isVisible();
          if ((cmb->subControls & SC_ComboBoxArrow) && (!combo || combo->count() > 0))
             ar = subControlRect(CC_ComboBox, cmb, SC_ComboBoxArrow, widget);
          QRect r = RECT.adjusted(0,0,0,-dpi.$2);
@@ -197,8 +198,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             if (cmb->editable)
                drawPrimitive(PE_PanelLineEdit, option, painter, widget);
             else {
-               if (combo && combo->view() &&
-                   ((QWidget*)(combo->view()))->isVisible())
+               if (listShown && config.inversePopups)
                   fillWithMask(painter, r, gradient(COLOR(Text), r.height(), Qt::Vertical, GradGlass), &masks.button);
                else if (!hover || ar.isNull())
                   fillWithMask(painter,  r, fill, &masks.button);
@@ -214,6 +214,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          if (!ar.isNull()) {
             ar.adjust((2*ar.width())/7,(2*ar.height())/7,-(2*ar.width())/7,-(2*ar.height())/7);
             QStyleOptionComboBox tmpOpt = *cmb;
+            PrimitiveElement arrow = listShown ? PE_IndicatorArrowDown : PE_IndicatorArrowLeft;
             if (cmb->editable)
                hover = hover && (cmb->activeSubControls == SC_ComboBoxArrow);
             painter->setRenderHint ( QPainter::Antialiasing, true );
@@ -222,7 +223,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                if (!sunken) {
                   painter->setPen(COLOR(Base).dark(105));
                   tmpOpt.rect =  ar.translated(-dpi.$2, dpi.$2);
-                  drawPrimitive(PE_IndicatorArrowDown, &tmpOpt, painter, widget);
+                  drawPrimitive(arrow, &tmpOpt, painter, widget);
                }
             }
             if (hover || sunken) {
@@ -236,7 +237,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             else
                painter->setPen( midColor(COLOR(Base), COLOR(Text)) );
             tmpOpt.rect =  ar;
-            drawPrimitive(PE_IndicatorArrowDown, &tmpOpt, painter, widget);
+            drawPrimitive(arrow, &tmpOpt, painter, widget);
             painter->restore();
          }
       }
@@ -307,7 +308,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          
          if ((slider->subControls & SC_SliderGroove) && groove.isValid()) {
             QRect r; Tile::PosFlags pf = 0;
-            QColor c = hasFocus ? COLOR(WindowText) : COLOR(Window);
+            QColor c = btnBgColor(PAL, isEnabled, hasFocus);
             if ( slider->orientation == Qt::Horizontal ) {
                groove.adjust(0,handle.height()/3,0,-handle.height()/3);
                r = groove;

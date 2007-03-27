@@ -31,6 +31,7 @@ class DynamicBrush;
 class QPaintEvent;
 class QFrame;
 
+#include <QCache>
 #include <QHash>
 #include <QMap>
 #include <QCommonStyle>
@@ -232,7 +233,7 @@ private:
    void makeStructure(int num, const QColor &c);
    
 private:
-   typedef QHash<uint, QPixmap> PixmapCache;
+   typedef QCache<uint, QPixmap> PixmapCache;
    typedef QHash<uint, Tile::Set> TileCache;
    struct {
       Tile::Mask rect[3], round[3], button, tab, group;

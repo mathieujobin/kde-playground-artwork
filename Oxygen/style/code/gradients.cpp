@@ -53,9 +53,9 @@ const QPixmap &OxygenStyle::gradient(const QColor &c, int size, Qt::Orientation 
    ====================================================== */
    
    int sizeSloppyness = 1; uint magicNumber = 0;
-   PixmapCache::const_iterator it;
-   if (size < 105884) // this is where our dictionary reaches - should be enough for the moment ;)
-   {
+   QPixmap *pix = 0;
+   if (size < 105884) {
+   // this is where our dictionary reaches - should be enough for the moment ;)
       int frameBase = 0, frameSize = 20;
 
       while ((frameBase += frameSize) < size) {
@@ -72,13 +72,11 @@ const QPixmap &OxygenStyle::gradient(const QColor &c, int size, Qt::Orientation 
          (((iC.green() >> 1) & 0x7f) << 7 ) |
          ((iC.blue() >> 1) & 0x7f);
       
-      
-      it = cache->find(magicNumber);
-      if (it != cache->end())
-         return it.value();
+      pix = cache->object(magicNumber);
+      if (pix)
+         return *pix;
    }
-   else
-   {
+   else {
       qWarning("gradient with more than 105883 steps requested, returning NULL pixmap");
       return nullPix;
    }
@@ -87,27 +85,22 @@ const QPixmap &OxygenStyle::gradient(const QColor &c, int size, Qt::Orientation 
    int add = size % sizeSloppyness; if (!add) add = sizeSloppyness;
    size += add;
    
-   QPixmap qPix;
    QPoint start, stop;
    if (type == GradRadialGloss)
-      qPix = QPixmap(size, size);
-   else
-   {
-      if (o == Qt::Horizontal)
-      {
-         qPix = QPixmap(size, 32);
-         start = QPoint(0,32); stop = QPoint(qPix.width(),32);
+      pix = new QPixmap(size, size);
+   else {
+      if (o == Qt::Horizontal) {
+         pix = new QPixmap(size, 32);
+         start = QPoint(0,32); stop = QPoint(pix->width(),32);
       }
-      else
-      {
-         qPix = QPixmap(32, size);
-         start = QPoint(32, 0); stop = QPoint(32, qPix.height());
+      else {
+         pix = new QPixmap(32, size);
+         start = QPoint(32, 0); stop = QPoint(32, pix->height());
       }
    }
    
-   if (type == GradGloss || type == GradRadialGloss || type == GradGlass)
+   if (type == GradGloss || type == GradRadialGloss || type == GradGlass) {
    // many XRender implementations cannot do this... FUCK!
-   {
       // calculate the determining colors
       QColor d,dd,b,bb;
       int h,s, ch,cs,cv, delta, add;
@@ -135,31 +128,26 @@ const QPixmap &OxygenStyle::gradient(const QColor &c, int size, Qt::Orientation 
       cs = s*13/7; if (cs > 255) cs = 255;
       dd.setHsv(h,cs,cv);
       
-      if (type == GradRadialGloss)
-      {
-         QRadialGradient rg(2*qPix.width()/3, qPix.height(), qPix.height());
+      if (type == GradRadialGloss) {
+         QRadialGradient rg(2*pix->width()/3, pix->height(), pix->height());
          rg.setColorAt(0,d); rg.setColorAt(0.8,dd);
          rg.setColorAt(0.8, b); rg.setColorAt(1, bb);
-         QPainter p(&qPix); p.fillRect(qPix.rect(), rg); p.end();
+         QPainter p(pix); p.fillRect(pix->rect(), rg); p.end();
       }
-      else
-      {
+      else {
          QLinearGradient lg(start, stop);
          lg.setColorAt(0,bb); lg.setColorAt(0.5,b);
          lg.setColorAt(0.5, dd);
          (type == GradGlass) ? lg.setColorAt(1, b) : lg.setColorAt(.90, bb);
-         QPainter p(&qPix); p.fillRect(qPix.rect(), lg); p.end();
+         QPainter p(pix); p.fillRect(pix->rect(), lg); p.end();
       }
    }
-   else
-   {
+   else {
       ColorArray colors; PointArray stops;
-      switch (type)
-      {
+      switch (type) {
       case GradButton:
       case GradButtonHover:
-      case GradButtonDisabled:
-      {
+      case GradButtonDisabled: {
          int h,s, inc, dec;
          iC.getHsv(&h,&s,&v);
          QColor tc;
@@ -185,8 +173,7 @@ const QPixmap &OxygenStyle::gradient(const QColor &c, int size, Qt::Orientation 
          break;
       }
       case GradGloss:
-      case GradRadialGloss:
-      {
+      case GradRadialGloss: {
          // calculate the determining colors
          QColor d,dd,b,bb;
          int h,s, ch,cs,cv, delta, add;
@@ -223,9 +210,9 @@ const QPixmap &OxygenStyle::gradient(const QColor &c, int size, Qt::Orientation 
          break;
       case GradGroup: {
          if (o == Qt::Horizontal) {
-            qPix = QPixmap(32, size);
-            qPix.fill(Qt::transparent);
-            start = QPoint(32, 0); stop = QPoint(32, qPix.height());
+            pix = new QPixmap(32, size);
+            pix->fill(Qt::transparent);
+            start = QPoint(32, 0); stop = QPoint(32, pix->height());
             iC = c; iC.setAlpha(0);
             colors << c << iC;
             break;
@@ -240,72 +227,59 @@ const QPixmap &OxygenStyle::gradient(const QColor &c, int size, Qt::Orientation 
       }
       
       OXPicture grad = OXRender::gradient(start, stop, colors, stops);
-      OXRender::composite (grad, None, qPix, 0, 0, 0, 0, 0, 0, qPix.width(), qPix.height());
+      OXRender::composite (grad, None, *pix, 0, 0, 0, 0, 0, 0, pix->width(), pix->height());
       OXRender::freePicture(grad);
    }
    
    // cache for later ;)
-   if (cache->size() == cache->capacity())
-      // we're full, wipe for this time
-      cache->clear();
-   it = cache->insert(magicNumber, qPix);
-   return it.value();
+   cache->insert(magicNumber, pix);
+   return *pix;
 }
 
-const QPixmap &OxygenStyle::btnAmbient(int height) const
-{
-   if (height <= 0)
-   {
+const QPixmap &OxygenStyle::btnAmbient(int height) const {
+   if (height <= 0) {
       qWarning("NULL Pixmap requested, height was %d",height);
       return nullPix;
    }
-   PixmapCache::const_iterator it = _btnAmbient.find(height);
-      if (it != _btnAmbient.end())
-         return it.value();
+   QPixmap *pix = _btnAmbient.object(height);
+   if (pix)
+      return *pix;
       
-   QPixmap qPix(16*height/9,height); //golden mean relations
-   qPix.fill(Qt::transparent);
+   pix = new QPixmap(16*height/9,height); //golden mean relations
+   pix->fill(Qt::transparent);
    ColorArray colors = ColorArray() << QColor(255,255,255,128) << QColor(255,255,255,0);
-   OXPicture grad = OXRender::gradient(QPoint(qPix.width(), qPix.height()),
-                                       QPoint(qPix.width()/2,qPix.height()/2), colors);
-   OXRender::composite (grad, None, qPix, 0, 0, 0, 0, 0, 0, qPix.width(), qPix.height());
+   OXPicture grad = OXRender::gradient(QPoint(pix->width(), pix->height()),
+                                       QPoint(pix->width()/2,pix->height()/2), colors);
+   OXRender::composite (grad, None, *pix, 0, 0, 0, 0, 0, 0, pix->width(), pix->height());
    OXRender::freePicture(grad);
    
    // cache for later ;)
    PixmapCache *cache = &(const_cast<OxygenStyle*>( this )->_btnAmbient);
-   if (cache->size() == cache->capacity())
-      // we're full, wipe for this time
-      cache->clear();
-   it = cache->insert(height, qPix);
-   return it.value();
+   cache->insert(height, pix);
+   return *pix;
 }
 
-const QPixmap &OxygenStyle::tabShadow(int height) const
-{
-   if (height <= 0)
-   {
+const QPixmap &OxygenStyle::tabShadow(int height) const {
+   if (height <= 0) {
       qWarning("NULL Pixmap requested, height was %d",height);
       return nullPix;
    }
-   PixmapCache::const_iterator it = _tabShadow.find(height);
-      if (it != _tabShadow.end())
-         return it.value();
+   QPixmap *pix = _tabShadow.object(height);
+   if (pix)
+      return *pix;
       
-   QPixmap qPix(height/3,height);
-   qPix.fill(Qt::transparent);
+   pix = new QPixmap(height/3,height);
+   pix->fill(Qt::transparent);
    ColorArray colors = ColorArray() << QColor(0,0,0,75) << QColor(0,0,0,0);
-   float hypo = sqrt(pow(qPix.width(),2)+pow(qPix.height(),2));
-   float cosalpha = (float)(qPix.height())/hypo;
-   OXPicture grad = OXRender::gradient(QPoint(0, qPix.height()),
-                                       QPoint(qPix.width()*pow(cosalpha,2), qPix.height()-pow(qPix.width(),2)*cosalpha/hypo), colors);
-   OXRender::composite (grad, None, qPix, 0, 0, 0, 0, 0, 0, qPix.width(), qPix.height());
+   float hypo = sqrt(pow(pix->width(),2)+pow(pix->height(),2));
+   float cosalpha = (float)(pix->height())/hypo;
+   OXPicture grad = OXRender::gradient(QPoint(0, pix->height()),
+                                       QPoint(pix->width()*pow(cosalpha,2), pix->height()-pow(pix->width(),2)*cosalpha/hypo), colors);
+   OXRender::composite (grad, None, *pix, 0, 0, 0, 0, 0, 0, pix->width(), pix->height());
    OXRender::freePicture(grad);
    
    // cache for later ;)
    PixmapCache *cache = &(const_cast<OxygenStyle*>( this )->_tabShadow);
-   if (cache->size() == cache->capacity())
-      // we're full, wipe for this time
-      cache->clear();
-   it = cache->insert(height, qPix);
-   return it.value();
+   cache->insert(height, pix);
+   return *pix;
 }
