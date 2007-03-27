@@ -22,7 +22,7 @@
    <item row="0" column="0" colspan="2" >
     <widget class="QTabWidget" name="tabWidget" >
      <property name="currentIndex" >
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab" >
       <attribute name="title" >
@@ -35,68 +35,21 @@
        <property name="spacing" >
         <number>6</number>
        </property>
-       <item row="0" column="0" >
-        <widget class="QGroupBox" name="groupBox_4" >
-         <property name="title" >
-          <string>PushButtons</string>
-         </property>
-         <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>9</number>
+       <item row="1" column="0" >
+        <widget class="QComboBox" name="comboBox_2" >
+         <item>
+          <property name="text" >
+           <string>ComboBox</string>
           </property>
-          <property name="spacing" >
-           <number>6</number>
+         </item>
+         <item>
+          <property name="text" >
+           <string>An Item</string>
           </property>
-          <item row="3" column="0" >
-           <widget class="QPushButton" name="pushButton_5" >
-            <property name="text" >
-             <string>Flat Toggle</string>
-            </property>
-            <property name="checkable" >
-             <bool>true</bool>
-            </property>
-            <property name="checked" >
-             <bool>true</bool>
-            </property>
-            <property name="flat" >
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0" >
-           <widget class="QPushButton" name="pushButton" >
-            <property name="text" >
-             <string>Push Me</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" >
-           <widget class="QPushButton" name="pushButton_2" >
-            <property name="text" >
-             <string>Flat</string>
-            </property>
-            <property name="flat" >
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0" >
-           <widget class="QPushButton" name="pushButton_3" >
-            <property name="text" >
-             <string>Toggle</string>
-            </property>
-            <property name="checkable" >
-             <bool>true</bool>
-            </property>
-            <property name="checked" >
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         </item>
         </widget>
        </item>
-       <item row="1" column="0" >
+       <item row="2" column="0" >
         <spacer>
          <property name="orientation" >
           <enum>Qt::Vertical</enum>
@@ -109,7 +62,106 @@
          </property>
         </spacer>
        </item>
-       <item rowspan="2" row="0" column="1" >
+       <item row="3" column="0" >
+        <widget class="QGroupBox" name="groupBox_3" >
+         <property name="title" >
+          <string>CheckBoxes</string>
+         </property>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>9</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="1" column="0" >
+           <widget class="QCheckBox" name="checkBox_2" >
+            <property name="text" >
+             <string>Unchecked</string>
+            </property>
+            <property name="checkable" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" >
+           <widget class="QCheckBox" name="checkBox_3" >
+            <property name="text" >
+             <string>Unsure</string>
+            </property>
+            <property name="checked" >
+             <bool>false</bool>
+            </property>
+            <property name="tristate" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" >
+           <widget class="QCheckBox" name="checkBox" >
+            <property name="text" >
+             <string>Checked</string>
+            </property>
+            <property name="checkable" >
+             <bool>true</bool>
+            </property>
+            <property name="checked" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="3" column="1" >
+        <widget class="QGroupBox" name="groupBox_2" >
+         <property name="title" >
+          <string>RadioButtons</string>
+         </property>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>9</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="2" column="0" >
+           <widget class="QRadioButton" name="radioButton_3" >
+            <property name="text" >
+             <string>RadioButton</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" >
+           <widget class="QRadioButton" name="radioButton_2" >
+            <property name="text" >
+             <string>Unchecked</string>
+            </property>
+            <property name="checkable" >
+             <bool>true</bool>
+            </property>
+            <property name="checked" >
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" >
+           <widget class="QRadioButton" name="radioButton" >
+            <property name="text" >
+             <string>Checked</string>
+            </property>
+            <property name="checkable" >
+             <bool>true</bool>
+            </property>
+            <property name="checked" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item rowspan="3" row="0" column="1" >
         <widget class="QGroupBox" name="groupBox_5" >
          <property name="title" >
           <string>ToolButtons</string>
@@ -204,10 +256,10 @@
          </layout>
         </widget>
        </item>
-       <item row="2" column="1" >
-        <widget class="QGroupBox" name="groupBox_2" >
+       <item row="0" column="0" >
+        <widget class="QGroupBox" name="groupBox_4" >
          <property name="title" >
-          <string>RadioButtons</string>
+          <string>PushButtons</string>
          </property>
          <layout class="QGridLayout" >
           <property name="margin" >
@@ -216,30 +268,10 @@
           <property name="spacing" >
            <number>6</number>
           </property>
-          <item row="2" column="0" >
-           <widget class="QRadioButton" name="radioButton_3" >
+          <item row="3" column="0" >
+           <widget class="QPushButton" name="pushButton_5" >
             <property name="text" >
-             <string>RadioButton</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" >
-           <widget class="QRadioButton" name="radioButton_2" >
-            <property name="text" >
-             <string>Unchecked</string>
-            </property>
-            <property name="checkable" >
-             <bool>true</bool>
-            </property>
-            <property name="checked" >
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0" >
-           <widget class="QRadioButton" name="radioButton" >
-            <property name="text" >
-             <string>Checked</string>
+             <string>Flat Toggle</string>
             </property>
             <property name="checkable" >
              <bool>true</bool>
@@ -247,50 +279,32 @@
             <property name="checked" >
              <bool>true</bool>
             </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="2" column="0" >
-        <widget class="QGroupBox" name="groupBox_3" >
-         <property name="title" >
-          <string>CheckBoxes</string>
-         </property>
-         <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item row="1" column="0" >
-           <widget class="QCheckBox" name="checkBox_2" >
-            <property name="text" >
-             <string>Unchecked</string>
-            </property>
-            <property name="checkable" >
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0" >
-           <widget class="QCheckBox" name="checkBox_3" >
-            <property name="text" >
-             <string>Unsure</string>
-            </property>
-            <property name="checked" >
-             <bool>false</bool>
-            </property>
-            <property name="tristate" >
+            <property name="flat" >
              <bool>true</bool>
             </property>
            </widget>
           </item>
           <item row="0" column="0" >
-           <widget class="QCheckBox" name="checkBox" >
+           <widget class="QPushButton" name="pushButton" >
             <property name="text" >
-             <string>Checked</string>
+             <string>Push Me</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" >
+           <widget class="QPushButton" name="pushButton_2" >
+            <property name="text" >
+             <string>Flat</string>
+            </property>
+            <property name="flat" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" >
+           <widget class="QPushButton" name="pushButton_3" >
+            <property name="text" >
+             <string>Toggle</string>
             </property>
             <property name="checkable" >
              <bool>true</bool>
@@ -565,6 +579,22 @@
           <property name="text" >
            <string/>
           </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>New Item</string>
+          </property>
+          <property name="text" >
+           <string/>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>New Item</string>
+          </property>
+          <property name="text" >
+           <string/>
+          </property>
           <item>
            <property name="text" >
             <string>New Sub Item</string>
@@ -685,22 +715,6 @@
             </property>
            </item>
           </item>
-         </item>
-         <item>
-          <property name="text" >
-           <string>New Item</string>
-          </property>
-          <property name="text" >
-           <string/>
-          </property>
-         </item>
-         <item>
-          <property name="text" >
-           <string>New Item</string>
-          </property>
-          <property name="text" >
-           <string/>
-          </property>
          </item>
         </widget>
        </item>
@@ -1231,16 +1245,6 @@
      </widget>
     </widget>
    </item>
-   <item row="1" column="0" >
-    <widget class="QPushButton" name="pushButton_4" >
-     <property name="text" >
-      <string>Disabled</string>
-     </property>
-     <property name="checkable" >
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="1" >
     <widget class="QDialogButtonBox" name="buttonBox" >
      <property name="orientation" >
@@ -1248,6 +1252,16 @@
      </property>
      <property name="standardButtons" >
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" >
+    <widget class="QPushButton" name="pushButton_4" >
+     <property name="text" >
+      <string>Disabled</string>
+     </property>
+     <property name="checkable" >
+      <bool>true</bool>
      </property>
     </widget>
    </item>
