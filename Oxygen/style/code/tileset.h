@@ -88,7 +88,7 @@ class Line
 public:
    Line(const QPixmap &pix, Qt::Orientation o, int d1, int d2);
    Line(){}
-   void render(const QRect &rect, QPainter *p, PosFlags pf = Full) const;
+   void render(const QRect &rect, QPainter *p, PosFlags pf = Full, bool btmRight = false) const;
    inline int thickness() const { return _thickness; }
 private:
    inline int width(int i) const {return pixmap[i].width();}

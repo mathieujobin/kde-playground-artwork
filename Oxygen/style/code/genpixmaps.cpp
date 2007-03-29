@@ -347,7 +347,12 @@ void OxygenStyle::generatePixmaps()
       }
    }
    // ================================================================
-   
+   // Popup corners - not really pxmaps, though ;) ===================
+//    masks.popupCorner[0] = QRegion(0,0,$9,$9);
+//    masks.popupCorner[1] = QRegion(0,0,$9,$9);
+//    masks.popupCorner[2] = QRegion(0,0,$9,$9);
+//    masks.popupCorner[3] = QRegion(0,0,$9,$9);
+   // ================================================================
 #define _INITPIX_(_PIX_,_W_,_H_)\
    _PIX_ = QPixmap(_W_, _H_);\
    _PIX_.fill(Qt::transparent);\

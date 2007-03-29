@@ -313,9 +313,10 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
             break;
          }
          
-         bool inverse = true, niceFrame = false; QRect rect = RECT; const QRect *outerRect = 0;
+         bool inverse = true, niceFrame = false;
+         QRect rect = RECT; const QRect *outerRect = 0;
          
-         const Tile::Mask *mask; const Tile::Set *shadow;
+         const Tile::Mask *mask = 0L; const Tile::Set *shadow = 0L;
          if (sunken) {
             shadow = &shadows.lineEdit[isEnabled];
             mask = &masks.button;
@@ -324,11 +325,6 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
             shadow = &shadows.tab;
             mask = &masks.tab;
          }
-         else {
-            shadow = &shadows.relief;
-            mask = &masks.button;
-         }
-         
          QPoint zero;
          const QBrush *brush = &PAL.brush(widget->backgroundRole());
          if (qobject_cast<const QFrame*>(widget)) { // frame, can be killed unless...
@@ -357,24 +353,42 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
             }
          }
          if (niceFrame) {
-            fillWithMask(painter, rect, *brush, mask, Tile::Full, false, zero, inverse, outerRect);
+            if (mask)
+               fillWithMask(painter, rect, *brush, mask, Tile::Full, false, zero, inverse, outerRect);
             if (hasFocus) {
                painter->save();
                painter->setPen(QPen(COLOR(Highlight), dpi.$2));
                painter->drawLine(rect.left()+dpi.$4, rect.bottom(), rect.right()-dpi.$3, rect.bottom());
                painter->restore();
             }
-            shadow->render(RECT, painter);
+            if (shadow)
+               shadow->render(RECT, painter);
+            else { // plain frame
+               //horizontal
+               shadows.line[false][Sunken].render(RECT, painter, Tile::Full, false);
+               shadows.line[false][Sunken].render(RECT, painter, Tile::Full, true);
+               //vertical
+               shadows.line[true][Sunken].render(RECT, painter, Tile::Full, false);
+               shadows.line[true][Sunken].render(RECT, painter, Tile::Full, true);
+               break;
+            }
             break;
          }
       }
       // fallback, we cannot paint shaped frame contents
       if (sunken)
          shadows.sunken.render(RECT,painter);
-//       else if (option->state & State_Raised)
+      else if (option->state & State_Raised)
 //          shadows.raised.render(RECT,painter);
-//       else
-//          shadows.raised.render(RECT,painter);
+         break;
+      else {
+         //horizontal
+         shadows.line[false][Sunken].render(RECT, painter, Tile::Full, false);
+         shadows.line[false][Sunken].render(RECT, painter, Tile::Full, true);
+         //vertical
+         shadows.line[true][Sunken].render(RECT, painter, Tile::Full, false);
+         shadows.line[true][Sunken].render(RECT, painter, Tile::Full, true);
+      }
       break;
    }
    case PE_FrameMenu: { // Frame for popup windows/menus; see also QMenu.
@@ -393,6 +407,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       painter->drawLine(RECT.right(), RECT.top(), RECT.right(), RECT.bottom());
       RESTORE_PEN;
 #endif
+      painter->fillRect(RECT, Qt::white);
       break;
    }
    case PE_PanelMenuBar: // Panel for menu bars.

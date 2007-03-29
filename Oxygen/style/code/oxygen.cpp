@@ -149,7 +149,7 @@ void VisualFrame::paintEvent ( QPaintEvent * event ) {
    QStyleOption opt;
    if (frame->frameShadow() == QFrame::Raised)
       opt.state |= QStyle::State_Raised;
-   else
+   else if (frame->frameShadow() == QFrame::Sunken)
       opt.state |= QStyle::State_Sunken;
    if (frame->hasFocus())
       opt.state |= QStyle::State_HasFocus;
@@ -780,7 +780,8 @@ void OxygenStyle::polish( QWidget * widget) {
    
    // installs dynamic brush to all widgets, taking care of a correct bg pixmap size
    //TODO maybe we can exclude some more widgets here... (currently only popup menus)
-   if (_bgBrush && !(qobject_cast<QMenu*>(widget) ||
+   if (_bgBrush && !(
+         qobject_cast<QMenu*>(widget) ||
          widget->inherits("QAlphaWidget") ||
          widget->inherits("QComboBoxListView") ||
          widget->inherits("QComboBoxPrivateContainer")
@@ -944,6 +945,9 @@ void OxygenStyle::polish( QWidget * widget) {
       // this should tell beryl et. al this is a popup - doesn't work... yet
       XChangeProperty(QX11Info::display(), widget->winId(), winType,
                       XA_CARDINAL, 32, PropModeReplace, (const unsigned char*)&winTypePopup, 1L);
+      // WARNING: compmgrs like e.g. beryl deny to shadow shaped windows,
+      // if we cannot find a way to get ARGB menus independent from the app settings, the compmgr must handle the round corners here
+      widget->installEventFilter(this); // for the round corners
       if (config.inversePopups) {
          widget->setAutoFillBackground (true);
          widget->setBackgroundRole ( QPalette::WindowText );
@@ -974,6 +978,36 @@ bool OxygenStyle::eventFilter( QObject *object, QEvent *ev ) {
             return true;
          }
       }
+      return false;
+   }
+   case QEvent::Resize: {
+      if (QMenu *menu = qobject_cast<QMenu*>(object)) {
+         QPalette::ColorRole role = menu->backgroundRole();
+         QColor c = menu->palette().color(QPalette::Active, role);
+         int size = ((QResizeEvent*)ev)->size().height();
+         const QPixmap &glass = gradient(c, size, Qt::Vertical, config.gradient);
+         QBrush brush(c, glass);
+         QPalette pal = menu->palette();
+         pal.setBrush(QPalette::Active, role, brush);
+         pal.setBrush(QPalette::Inactive, role, brush);
+         pal.setBrush(QPalette::Disabled, role, brush);
+         menu->setPalette(pal);
+         return false;
+      }
+//          QResizeEvent *rev = (QResizeEvent*)ev;
+//          int w = ((QResizeEvent*)ev)->size().width(),
+//             h = ((QResizeEvent*)ev)->size().height();
+//          QRegion mask(0,0,w,h);
+//          mask -= masks.popupCorner[0]; // tl
+//          QRect br = masks.popupCorner[1].boundingRect();
+//          mask -= masks.popupCorner[1].translated(w-br.width(), 0); // tr
+//          br = masks.popupCorner[2].boundingRect();
+//          mask -= masks.popupCorner[2].translated(0, h-br.height()); // bl
+//          br = masks.popupCorner[3].boundingRect();
+//          mask -= masks.popupCorner[3].translated(w-br.width(), h-br.height()); // br
+//          menu->setMask(mask);
+//       }
+//    }
       return false;
    }
    case QEvent::MouseButtonPress: {

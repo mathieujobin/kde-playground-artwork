@@ -239,6 +239,7 @@ private:
       Tile::Mask rect[3], round[3], button, tab, group;
       QPixmap radio, radioIndicator, radioGroove, notch;
       QPixmap winClose, winMin, winMax;
+      QRegion popupCorner[4];
    } masks;
    struct {
       Tile::Set button[2][2], tab, sunken, group, lineEdit[2], raised, relief;

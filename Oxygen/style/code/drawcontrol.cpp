@@ -874,11 +874,11 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
    case CE_MenuEmptyArea: // The area in a menu without menu items
    case CE_MenuHMargin: // The horizontal extra space on the left/right of a menu
    case CE_MenuVMargin: { // The vertical extra space on the top/bottom of a menu
-      QPalette::ColorRole role = QPalette::Window;
-      if (widget)
-         role = qobject_cast<const QComboBox*>(widget) ?
-         QPalette::WindowText : widget->backgroundRole();
-      painter->fillRect(RECT, PAL.color(role));
+//       QPalette::ColorRole role = QPalette::Window;
+//       if (widget)
+//          role = qobject_cast<const QComboBox*>(widget) ?
+//          QPalette::WindowText : widget->backgroundRole();
+//       painter->fillRect(RECT, PAL.brush(role));
       break;
    }
    case CE_Q3DockWindowEmptyArea: // The empty area of a QDockWidget
