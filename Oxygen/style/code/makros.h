@@ -24,5 +24,6 @@
 #define RECT option->rect
 #define PAL option->palette
 #define COLOR(_TYPE_) option->palette.color(QPalette::_TYPE_)
+#define CONF_COLOR(_TYPE_) option->palette.color(config._TYPE_)
 
 #endif //OXYGEN_DEFS_H

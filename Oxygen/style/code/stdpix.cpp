@@ -23,7 +23,6 @@
 #include <QPainter>
 #include <QPen>
 #include "oxygen.h"
-#include "inlinehelp.cpp"
 
 #define COLOR(_TYPE_) pal.color(QPalette::_TYPE_)
 
@@ -31,6 +30,8 @@ using namespace Oxygen;
 
 extern Dpi dpi;
 extern Config config;
+
+#include "inlinehelp.cpp"
 
 QPixmap OxygenStyle::standardPixmap ( StandardPixmap standardPixmap, const QStyleOption * option, const QWidget * widget ) const
 {

@@ -91,13 +91,13 @@ int OxygenStyle::pixelMetric ( PixelMetric pm, const QStyleOption * option, cons
    case PM_DockWidgetFrameWidth: // Frame width of a dock window
       return dpi.$1;
    case PM_MenuBarPanelWidth: // Frame width of a menubar, defaults to PM_DefaultFrameWidth
-      return dpi.$1;
+      return 0;
    case PM_MenuBarItemSpacing: // Spacing between menubar items
-      return dpi.$10;
+      return dpi.$6;
    case PM_MenuBarHMargin: // Spacing between menubar items and left/right of bar
-      return dpi.$10;
+      return dpi.$6;
    case PM_MenuBarVMargin: // Spacing between menubar items and top/bottom of bar
-      return dpi.$2;
+      return 0;
    case PM_ToolBarFrameWidth: // Width of the frame around toolbars
       return dpi.$4;
    case PM_ToolBarHandleExtent: // Width of a toolbar handle in a horizontal toolbar and the height of the handle in a vertical toolbar

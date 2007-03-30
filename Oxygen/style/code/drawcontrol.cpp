@@ -20,9 +20,11 @@
 
 #include <Q3ScrollView>
 #include <QAbstractScrollArea>
+#include <QAction>
 #include <QApplication>
 #include <QComboBox>
 #include <QHeaderView>
+#include <QMenuBar>
 #include <QStyleOptionTab>
 #include <QStyleOptionHeader>
 #include <QStyleOptionSlider>
@@ -33,13 +35,13 @@
 
 #include <QtDebug>
 
-#include "inlinehelp.cpp"
-#include "makros.h"
-
 using namespace Oxygen;
 
 extern Config config;
 extern Dpi dpi;
+
+#include "inlinehelp.cpp"
+#include "makros.h"
 
 static const int windowsItemFrame	= 1; // menu item frame width
 static const int windowsItemHMargin	= 3; // menu item hor text margin
@@ -358,7 +360,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             break;
          }
          else {
-            fillWithMask(painter, rect, gradient(COLOR(ButtonText), size, o, sunken?GradSunken:config.gradientStrong), &masks.button, Tile::Full, false, off);
+            fillWithMask(painter, rect, gradient(PAL.color(config.role_tab[1]), size, o, sunken?GradSunken:config.gradientStrong), &masks.button, Tile::Full, false, off);
          }
       }
       break;
@@ -428,17 +430,18 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             cF = COLOR(WindowText); cB = COLOR(Window);
          }
          else if (hover) {
-            cF = COLOR(Button); cB = COLOR(ButtonText);
+            cF = PAL.color(config.role_tab[0]);
+            cB = PAL.color(config.role_tab[1]);
          }
          else {
-            cF = COLOR(ButtonText); cB = COLOR(Button);
+            cF = PAL.color(config.role_tab[1]);
+            cB = PAL.color(config.role_tab[0]);
          }
          if (verticalTabs) {
             QPixmap pixmap(tr.size());
             pixmap.fill(Qt::transparent);
             QPainter pixPainter(&pixmap);
-            if (qGray(cB.rgb()) < 148) // dark background, let's paint an emboss
-            {
+            if (qGray(cB.rgb()) < 148) { // dark background, let's paint an emboss
                pixPainter.setPen(cB.dark(120));
                drawItemText(&pixPainter, pixmap.rect().translated(0,-1), alignment, PAL, isEnabled, tab->text);
             }
@@ -465,17 +468,6 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       }
       break;
       case CE_ProgressBar: // CE_ProgressBarGroove, CE_ProgressBarContents, CE_ProgressBarLabel
-#if 0
-      {
-         QRect r = RECT.adjusted(0,0,0,-dpi.$2);
-         fillWithMask(painter, r, gradient(COLOR(WindowText), r.height(), Qt::Vertical, GradGlass), &masks.button, Tile::Full);
-         shadows.lineEdit[isEnabled].render(RECT, painter);
-         for (int i = r.x()+dpi.$2; i < r.x()+r.width()/2; i+=dpi.$8)
-            painter->fillRect(i, r.y()+dpi.$2, dpi.$5, r.height()-dpi.$4, gradient(COLOR(Window), r.height()-dpi.$4, Qt::Vertical, GradButton));
-//          fillWithMask(painter, RECT.adjusted(2,2,-RECT.width()/2,-2), gradient(COLOR(Window), RECT.height(), Qt::Vertical, GradButton), &masks.button);
-         break;
-      }
-#endif
       if (const QStyleOptionProgressBar *pb
           = qstyleoption_cast<const QStyleOptionProgressBar *>(option)) {
          QStyleOptionProgressBarV2 subopt = *pb;
@@ -500,7 +492,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          if (progress->orientation == Qt::Vertical) {
             o = Qt::Horizontal; s = RECT.width();
          }
-         fillWithMask(painter, r, gradient(COLOR(WindowText), s, o, GradGlass), &masks.button, Tile::Full);
+         fillWithMask(painter, r, gradient(PAL.color(config.role_progress[0]), s, o, GradGlass), &masks.button, Tile::Full);
          shadows.lineEdit[isEnabled].render(RECT, painter);
       }
       break;
@@ -514,8 +506,9 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          if (val > 0.0) {
             int chunks, $8 = dpi.$8; QRect r = RECT;
             QColor dark = (progress->progress == progress->maximum) ?
-                  COLOR(Window) : midColor(COLOR(WindowText), COLOR(Window), 1, 8);
-#define _COLOR_ (i==activeChunk) ? COLOR(Window) : dark
+               PAL.color(config.role_progress[1]) :
+               midColor(PAL.color(config.role_progress[0]), PAL.color(config.role_progress[1]), 1, 8);
+#define _COLOR_ (i==activeChunk) ? PAL.color(config.role_progress[1]) : dark
             // vertical progressbar, shake it baby ;P
             if (progress->orientation == Qt::Vertical) {
                chunks = val * r.height() / $8 + 1;
@@ -701,22 +694,18 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
           qstyleoption_cast<const QStyleOptionMenuItem *>(option)) {
          QPalette::ColorRole cr = QPalette::WindowText;
          if (option->state & State_Selected) {
-            painter->save();
-            painter->setRenderHint ( QPainter::Antialiasing );
-            painter->setPen ( PAL.color(cr) );
-            painter->setBrush ( PAL.color(cr) );
-            if (RECT.width() > RECT.height())
-               painter->drawRoundRect(sunken ? RECT.adjusted(0,0,0,RECT.height()/5) : RECT,
-                                      35*RECT.height()/RECT.width(), 35);
-            else
-               painter->drawRoundRect(sunken ? RECT.adjusted(0,0,0,RECT.height()/5) : RECT,
-                                      35, 35*RECT.width()/RECT.height());
-            painter->restore();
-            cr = QPalette::Window;
+            QRect rect = RECT;
+            if (sunken)
+               rect.adjust(dpi.$2, dpi.$1, -dpi.$2, -dpi.$2);
+            shadows.button[sunken][true].render(rect, painter);
+            rect = RECT.adjusted(dpi.$3, dpi.$2, -dpi.$3, -dpi.$3);
+            const QPixmap &fill = gradient(CONF_COLOR(role_popup[0]), rect.height(), Qt::Vertical, config.gradient);
+            fillWithMask(painter, rect, fill, &masks.button);
+            masks.button.outline(rect, painter, Qt::white, true);
+            cr = config.role_popup[1];
          }
-         uint alignment = Qt::AlignCenter | Qt::TextShowMnemonic | Qt::TextDontClip | Qt::TextSingleLine;
-      
          QPixmap pix = mbi->icon.pixmap(pixelMetric(PM_SmallIconSize), isEnabled ? QIcon::Normal : QIcon::Disabled);
+         uint alignment = Qt::AlignCenter | Qt::TextShowMnemonic | Qt::TextDontClip | Qt::TextSingleLine;
          if (!pix.isNull())
             drawItemPixmap(painter,mbi->rect, alignment, pix);
          else
@@ -733,10 +722,10 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          bool selected = menuItem->state & State_Selected;
          QPalette::ColorRole fgr = QPalette::WindowText;
          QPalette::ColorRole bgr = QPalette::Window;
-         if (isCombo && config.inversePopups) {
+         if (isCombo) {
          //combos send the combo, not the listview as widget, thus we must force this here
-            bgr = QPalette::WindowText;
-            fgr = QPalette::Window;
+            bgr = config.role_popup[0];
+            fgr = config.role_popup[1];
          }
          else if (widget) {
             bgr = widget->backgroundRole();

@@ -193,20 +193,20 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          if ((cmb->subControls & SC_ComboBoxArrow) && (!combo || combo->count() > 0))
             ar = subControlRect(CC_ComboBox, cmb, SC_ComboBoxArrow, widget);
          QRect r = RECT.adjusted(0,0,0,-dpi.$2);
-         const QPixmap &fill = gradient(COLOR(Base), r.height(), Qt::Vertical, GradGlass);
+         const QPixmap *fill = 0;
          if ((cmb->subControls & SC_ComboBoxFrame) && cmb->frame) {
             if (cmb->editable)
                drawPrimitive(PE_PanelLineEdit, option, painter, widget);
             else {
-               if (listShown && config.inversePopups)
-                  fillWithMask(painter, r, gradient(COLOR(Text), r.height(), Qt::Vertical, GradGlass), &masks.button);
-               else if (!hover || ar.isNull())
-                  fillWithMask(painter,  r, fill, &masks.button);
+               fill = &gradient(listShown?PAL.color(config.role_btn[0]):COLOR(Base),
+                                r.height(), Qt::Vertical, GradGlass);
+               if (!hover || ar.isNull() || listShown)
+                  fillWithMask(painter,  r, *fill, &masks.button);
                else {
                   r.setRight(ar.left());
-                  fillWithMask(painter, r, fill, &masks.button, Tile::Full&~Tile::Right);
+                  fillWithMask(painter, r, *fill, &masks.button, Tile::Full&~Tile::Right);
                   r.setLeft(ar.left()); r.setRight(RECT.right());
-                  fillWithMask(painter, r, gradient(COLOR(Text), r.height(), Qt::Vertical, sunken?GradSunken:GradGlass), &masks.button, Tile::Full&~Tile::Left);
+                  fillWithMask(painter, r, gradient(PAL.color(config.role_btn[0]), r.height(), Qt::Vertical, sunken?GradSunken:GradGlass), &masks.button, Tile::Full&~Tile::Left);
                }
                shadows.lineEdit[1].render(RECT, painter);
             }
@@ -226,11 +226,13 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                   drawPrimitive(arrow, &tmpOpt, painter, widget);
                }
             }
-            if (hover || sunken) {
+            if (hover || listShown) {
                if (cmb->editable)
                   painter->setPen(COLOR(Highlight));
                else {
-                  painter->setBrush(fill);
+                  if (!fill || listShown)
+                     fill = &gradient(listShown?PAL.color(config.role_btn[1]):COLOR(Base), r.height(), Qt::Vertical, GradGlass);
+                  painter->setBrush(*fill);
                   painter->setPen(Qt::NoPen);
                }
             }

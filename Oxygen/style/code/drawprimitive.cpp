@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <QAction>
 #include <QApplication>
 #include <QAbstractScrollArea>
 #include <QComboBox>
@@ -25,6 +26,8 @@
 #include <QLabel>
 #include <QLayout>
 #include <QLineEdit>
+#include <QMenu>
+#include <QMenuBar>
 #include <QStyleOptionButton>
 #include <QPainter>
 #include <QPainterPath>
@@ -33,8 +36,7 @@
 #include "oxrender.h"
 #include "dynamicbrush.h"
 
-#include "inlinehelp.cpp"
-#include "makros.h"
+#include <QtDebug>
 
 using namespace Oxygen;
 
@@ -42,6 +44,9 @@ extern int bgYoffset_;
 extern Pixmap shadowPix;
 extern Config config;
 extern Dpi dpi;
+
+#include "inlinehelp.cpp"
+#include "makros.h"
 
 void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * option, QPainter * painter, const QWidget * widget) const
 {
@@ -307,7 +312,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
             if (isEditable)
                painter->setPen(COLOR(Base));
             else
-            painter->setPen(COLOR(WindowText));
+               painter->setPen(Qt::white);
             painter->drawRect(RECT.adjusted(0,0,-1,-1));
             RESTORE_PEN;
             break;
@@ -409,6 +414,33 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
 #endif
       painter->fillRect(RECT, Qt::white);
       break;
+      painter->save();
+      painter->setPen(QPen(Qt::white, dpi.$1));
+      if (widget)
+      if (const QMenu* menu = qobject_cast<const QMenu*>(widget))
+      if (menu->menuAction()) {
+         QList<QWidget *> list = menu->menuAction()->associatedWidgets();
+         QMenuBar* mbar = 0;
+         for (int i = 0; i < list.size(); ++i)
+            if (mbar = qobject_cast<QMenuBar*>(list.at(i))) {
+            if (mbar->activeAction() == menu->menuAction())
+               break;
+            else
+               mbar = 0;
+            }
+         if (mbar) {
+            QRect actionRect = mbar->actionGeometry(mbar->activeAction());
+            QPoint off = menu->mapFromGlobal(mbar->mapToGlobal(actionRect.topLeft()));
+            actionRect.moveTopLeft(off);
+            int $3 = dpi.$3;
+            actionRect.adjust($3,-$3,-$3,$3);
+            QRegion cr = RECT; cr -= actionRect;
+            painter->setClipRegion(cr, Qt::IntersectClip);
+         }
+      }
+      painter->fillRect(RECT, Qt::white);
+      painter->restore();
+      break;
    }
    case PE_PanelMenuBar: // Panel for menu bars.
    case PE_FrameDockWidget: // Panel frame for dock windows and toolbars.
@@ -417,7 +449,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       if (const QStyleOptionTabWidgetFrame *twf =
           qstyleoption_cast<const QStyleOptionTabWidgetFrame *>(option)) {
          QRect rect(RECT), tabRect(RECT), fillRect;
-         int baseHeight = pixelMetric( PM_TabBarBaseHeight, option, widget )-1;
+         int baseHeight = pixelMetric( PM_TabBarBaseHeight, option, widget )-dpi.$2;
          int offset = 8;
          Qt::Orientation o = Qt::Vertical;
          Tile::PosFlags pf = 0;
@@ -462,8 +494,8 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
             break;
          }
          shadows.tab.render(rect, painter, pf);
-         fillWithMask(painter, fillRect, gradient(COLOR(Button), baseHeight, o, config.gradientStrong), &masks.tab, pf | Tile::Center);
-         masks.tab.outline(fillRect, painter, COLOR(Button).dark(110), false, pf);
+             fillWithMask(painter, fillRect, gradient(CONF_COLOR(role_tab[0]), baseHeight, o, config.gradientStrong), &masks.tab, pf | Tile::Center);
+         masks.tab.outline(fillRect, painter, CONF_COLOR(role_tab[0]).dark(110), false, pf);
          shadows.tab.render(tabRect, painter, Tile::Ring);
       }
       break;

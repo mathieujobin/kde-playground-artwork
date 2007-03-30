@@ -35,9 +35,6 @@ HAL9000=true
 # invert (sink) normal buttons etc by default
 InverseButtons=false
 
-# black popupmenus (i.e. the popup has the same color as the highlighted menu)
-InversePopups=true
-
 # not fully supportes yet, don't try values < 1 here (if you want a stable desktop ;)
 Scale=1.0
 
@@ -46,6 +43,25 @@ Scale=1.0
 # 1: checkboard
 # 2: should have been bricks, looks crap ;P
 Structure=0
+
+# the color roles to use for various elements, the counter color is autocalculated
+# WindowText: 0
+# Window: 10
+# Base: 9
+# Text: 6
+# Button: 1
+# ButtonText: 8
+# Highlight: 12
+# HighlightedText: 13
+
+# all buttons, colored parts of combos, sliders (in scrollbars as well)
+role_button=1
+# popup menus (also for non editable combos), menubar highlight
+role_popup=10
+# the progressbar
+role_progress=0
+# tabwidget header
+role_tab=1
 
 # the way of tabblending
 # 0: Jump

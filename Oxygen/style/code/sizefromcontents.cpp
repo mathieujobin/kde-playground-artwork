@@ -62,7 +62,7 @@ QSize OxygenStyle::sizeFromContents ( ContentsType ct, const QStyleOption * opti
    case CT_LineEdit: // A line edit, like QLineEdit
       return contentsSize + QSize(dpi.$4,dpi.$5);
    case CT_MenuBarItem: // A menu bar item, like the buttons in a QMenuBar
-      return QSize(qMax(contentsSize.width()+12, (contentsSize.height()+2)*8/5), contentsSize.height()+2);
+      return QSize(qMax(contentsSize.width()+dpi.$18, (contentsSize.height()+dpi.$4)*8/5), contentsSize.height()+dpi.$6);
    case CT_MenuItem: // A menu item, like QMenuItem
       if (const QStyleOptionMenuItem *menuItem =
           qstyleoption_cast<const QStyleOptionMenuItem *>(option))

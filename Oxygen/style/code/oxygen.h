@@ -111,9 +111,7 @@ typedef struct
    int ExclusiveIndicator;
 } Dpi;
 
-typedef struct Config
-{
-   bool inversePopups; // whether the popups are foreground or background colored
+typedef struct Config {
    GradientType gradient, gradBtn, gradientStrong;
    BGMode bgMode;
    Acceleration acceleration;
@@ -123,6 +121,7 @@ typedef struct Config
    bool HAL9000;
    double scale;
    int checkType;
+   QPalette::ColorRole role_progress[2], role_tab[2], role_btn[2], role_popup[2];
 } Config;
 
 class VisualFrame : public QWidget

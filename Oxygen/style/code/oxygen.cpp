@@ -376,8 +376,6 @@ void OxygenStyle::readSettings()
    
    config.gradientIntensity = settings.value("GradientIntensity",70).toInt();
    
-   config.inversePopups = settings.value("InversePopups",false).toBool();
-
    config.tabTransition = (TabTransition) settings.value("TabTransition", ScanlineBlend).toInt();
    
    config.gradient = GradGlass;
@@ -391,6 +389,24 @@ void OxygenStyle::readSettings()
       config.gradBtn = GradSunken;
    else
       config.gradBtn = config.gradient;
+   
+   // color roles
+   config.role_progress[0] =
+      (QPalette::ColorRole) settings.value("role_progress", QPalette::WindowText).toInt();
+   invColorRole(config.role_progress[0], config.role_progress[1],
+                QPalette::WindowText, QPalette::Window);
+   config.role_tab[0] =
+      (QPalette::ColorRole) settings.value("role_tab", QPalette::Button).toInt();
+   invColorRole(config.role_tab[0], config.role_tab[1],
+                QPalette::Button, QPalette::ButtonText);
+   config.role_btn[0] =
+      (QPalette::ColorRole) settings.value("role_button", QPalette::Button).toInt();
+   invColorRole(config.role_btn[0], config.role_btn[1],
+                QPalette::Button, QPalette::ButtonText);
+   config.role_popup[0] =
+      (QPalette::ColorRole) settings.value("role_popup", QPalette::Window).toInt();
+   invColorRole(config.role_popup[0], config.role_popup[1],
+                QPalette::Window, QPalette::WindowText);
 
    settings.endGroup();
 }
@@ -718,7 +734,7 @@ void OxygenStyle::polish ( QApplication * app ) {
    loadPixmaps();
    if (app->desktop())
       bgYoffset_ = app->desktop()->height()*bgYoffset_/738;
-   popupPix = config.inversePopups ? fgPix : bgPix;
+   popupPix = bgPix;
    QPalette pal = app->palette();
    polish(pal);
    app->setPalette(pal);
@@ -768,7 +784,7 @@ void OxygenStyle::polish( QPalette &pal )
 //    if (qApp->desktop())
 //       bgYoffset_ = qApp->desktop()->height()*bgYoffset_/738;
    
-   popupPix = config.inversePopups ? fgPix : bgPix;
+   popupPix = bgPix;
 }
 
 #include <QtDebug>
@@ -821,12 +837,23 @@ void OxygenStyle::polish( QWidget * widget) {
        || widget->inherits("Q3DockWindowResizeHandle")
       )
          widget->setAttribute(Qt::WA_Hover);
+   
+   if (qobject_cast<QAbstractButton*>(widget)) {
+      widget->setBackgroundRole ( QPalette::Window );
+      widget->setForegroundRole ( QPalette::WindowText );
+   }
+   if (qobject_cast<QComboBox *>(widget)) {
+      widget->setBackgroundRole ( QPalette::Base );
+      widget->setForegroundRole ( QPalette::Text );
+   }
    if (qobject_cast<QScrollBar *>(widget) && !(widget->parentWidget() &&
               widget->parentWidget()->parentWidget() &&
               widget->parentWidget()->parentWidget()->inherits("QComboBoxListView")))
       widget->setAttribute(Qt::WA_OpaquePaintEvent, false);
    
    if (qobject_cast<QProgressBar*>(widget)) {
+      widget->setBackgroundRole ( config.role_progress[0] );
+      widget->setForegroundRole ( config.role_progress[1] );
       widget->installEventFilter(this);
       if (!timer->isActive()) timer->start(50);
       connect(widget, SIGNAL(destroyed(QObject*)), this, SLOT(progressbarDestroyed(QObject*)));
@@ -927,7 +954,7 @@ void OxygenStyle::polish( QWidget * widget) {
    //======================
    
    // swap noneditable viewport color as well...
-   if (config.inversePopups && widget->autoFillBackground()) // just for performance...
+   if (widget->autoFillBackground()) // just for performance...
    if ( widget->objectName() == "qt_scrollarea_viewport" )
    if (widget->parentWidget())
    if (widget->parentWidget()->inherits("QComboBoxListView"))
@@ -936,8 +963,8 @@ void OxygenStyle::polish( QWidget * widget) {
    if (QComboBox* cmb  =
        qobject_cast<QComboBox*>(widget->parentWidget()->parentWidget()->parentWidget()))
    if (!cmb->isEditable()) {
-      widget->setBackgroundRole ( QPalette::WindowText );
-      widget->setForegroundRole ( QPalette::Window );
+      widget->setBackgroundRole ( config.role_popup[0] );
+      widget->setForegroundRole ( config.role_popup[1] );
    }
    
    // swap qmenu colors
@@ -948,11 +975,9 @@ void OxygenStyle::polish( QWidget * widget) {
       // WARNING: compmgrs like e.g. beryl deny to shadow shaped windows,
       // if we cannot find a way to get ARGB menus independent from the app settings, the compmgr must handle the round corners here
       widget->installEventFilter(this); // for the round corners
-      if (config.inversePopups) {
-         widget->setAutoFillBackground (true);
-         widget->setBackgroundRole ( QPalette::WindowText );
-         widget->setForegroundRole ( QPalette::Window );
-      }
+      widget->setAutoFillBackground (true);
+      widget->setBackgroundRole ( config.role_popup[0] );
+      widget->setForegroundRole ( config.role_popup[1] );
       if (qGray(widget->palette().color(QPalette::Active, widget->backgroundRole()).rgb()) < 100) {
          QFont tmpFont = widget->font();
          tmpFont.setBold(true);
