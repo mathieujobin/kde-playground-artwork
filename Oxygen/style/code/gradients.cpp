@@ -259,12 +259,13 @@ const QPixmap &OxygenStyle::btnAmbient(int height) const {
    return *pix;
 }
 
-const QPixmap &OxygenStyle::tabShadow(int height) const {
+const QPixmap &OxygenStyle::tabShadow(int height, bool bottom) const {
    if (height <= 0) {
       qWarning("NULL Pixmap requested, height was %d",height);
       return nullPix;
    }
-   QPixmap *pix = _tabShadow.object(height);
+   uint val = height + bottom*0x80000000;
+   QPixmap *pix = _tabShadow.object(val);
    if (pix)
       return *pix;
       
@@ -273,13 +274,23 @@ const QPixmap &OxygenStyle::tabShadow(int height) const {
    ColorArray colors = ColorArray() << QColor(0,0,0,75) << QColor(0,0,0,0);
    float hypo = sqrt(pow(pix->width(),2)+pow(pix->height(),2));
    float cosalpha = (float)(pix->height())/hypo;
-   OXPicture grad = OXRender::gradient(QPoint(0, pix->height()),
-                                       QPoint(pix->width()*pow(cosalpha,2), pix->height()-pow(pix->width(),2)*cosalpha/hypo), colors);
+   QPoint p1, p2;
+   if (bottom) {
+      p1 = QPoint(0, 0);
+      p2 = QPoint((int)(pix->width()*pow(cosalpha, 2)),
+                  (int)(pow(pix->width(), 2)*cosalpha/hypo));
+   }
+   else {
+      p1 = QPoint(0, pix->height());
+      p2 = QPoint((int)(pix->width()*pow(cosalpha, 2)),
+                  (int)pix->height() - (int)(pow(pix->width(), 2)*cosalpha/hypo));
+   }
+   OXPicture grad = OXRender::gradient(p1, p2, colors);
    OXRender::composite (grad, None, *pix, 0, 0, 0, 0, 0, 0, pix->width(), pix->height());
    OXRender::freePicture(grad);
    
    // cache for later ;)
    PixmapCache *cache = &(const_cast<OxygenStyle*>( this )->_tabShadow);
-   cache->insert(height, pix);
+   cache->insert(val, pix);
    return *pix;
 }

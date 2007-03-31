@@ -380,8 +380,8 @@ void OxygenStyle::readSettings()
    
    config.gradient = GradGlass;
    config.gradientStrong = GradGloss;
-   config.HAL9000 = settings.value("HAL9000", true).toBool();
-   if (!config.HAL9000) {
+   config.aqua = settings.value("Aqua", true).toBool();
+   if (!config.aqua) {
       config.gradient = GradButton;
       config.gradientStrong = GradSimple;
    }
@@ -392,16 +392,22 @@ void OxygenStyle::readSettings()
    
    // color roles
    config.role_progress[0] =
-      (QPalette::ColorRole) settings.value("role_progress", QPalette::WindowText).toInt();
+      (QPalette::ColorRole) settings.value("role_progressGroove", QPalette::WindowText).toInt();
    invColorRole(config.role_progress[0], config.role_progress[1],
                 QPalette::WindowText, QPalette::Window);
+   config.role_progress[1] =
+      (QPalette::ColorRole) settings.value("role_progress", config.role_progress[1]).toInt();
    config.role_tab[0] =
       (QPalette::ColorRole) settings.value("role_tab", QPalette::Button).toInt();
    invColorRole(config.role_tab[0], config.role_tab[1],
                 QPalette::Button, QPalette::ButtonText);
    config.role_btn[0] =
-      (QPalette::ColorRole) settings.value("role_button", QPalette::Button).toInt();
+      (QPalette::ColorRole) settings.value("role_button", QPalette::Window).toInt();
    invColorRole(config.role_btn[0], config.role_btn[1],
+                QPalette::Button, QPalette::WindowText);
+   config.role_btnHover[0] =
+      (QPalette::ColorRole) settings.value("role_buttonHover", QPalette::Button).toInt();
+   invColorRole(config.role_btnHover[0], config.role_btnHover[1],
                 QPalette::Button, QPalette::ButtonText);
    config.role_popup[0] =
       (QPalette::ColorRole) settings.value("role_popup", QPalette::Window).toInt();
@@ -839,8 +845,8 @@ void OxygenStyle::polish( QWidget * widget) {
          widget->setAttribute(Qt::WA_Hover);
    
    if (qobject_cast<QAbstractButton*>(widget)) {
-      widget->setBackgroundRole ( QPalette::Window );
-      widget->setForegroundRole ( QPalette::WindowText );
+      widget->setBackgroundRole ( config.role_btn[0] );
+      widget->setForegroundRole ( config.role_btn[1] );
    }
    if (qobject_cast<QComboBox *>(widget)) {
       widget->setBackgroundRole ( QPalette::Base );
@@ -961,8 +967,9 @@ void OxygenStyle::polish( QWidget * widget) {
    if (widget->parentWidget()->parentWidget())
    if (widget->parentWidget()->parentWidget()->parentWidget())
    if (QComboBox* cmb  =
-       qobject_cast<QComboBox*>(widget->parentWidget()->parentWidget()->parentWidget()))
-   if (!cmb->isEditable()) {
+      qobject_cast<QComboBox*>(widget->parentWidget()->parentWidget()->parentWidget()))
+      if (!(cmb->isEditable() ||
+            config.role_popup[0] == QPalette::Window)) {
       widget->setBackgroundRole ( config.role_popup[0] );
       widget->setForegroundRole ( config.role_popup[1] );
    }

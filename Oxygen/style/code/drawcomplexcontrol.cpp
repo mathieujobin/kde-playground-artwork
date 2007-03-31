@@ -188,29 +188,44 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
    case CC_ComboBox: // A combobox, like QComboBox
       if (const QStyleOptionComboBox *cmb =
           qstyleoption_cast<const QStyleOptionComboBox *>(option)) {
-         QRect ar; const QComboBox* combo = widget ? qobject_cast<const QComboBox*>(widget) : 0;
-         bool listShown = combo && combo->view() && ((QWidget*)(combo->view()))->isVisible();
+         QRect ar, r = RECT.adjusted(0,0,0,-dpi.$2);
+         const QComboBox* combo = widget ?
+                qobject_cast<const QComboBox*>(widget) : 0;
+         bool listShown;
+         // color settings
+         QPalette::ColorRole crB = config.role_popup[0], crF = config.role_popup[1];
+         if (crB == QPalette::Window) { // often close to base, use btn and splitted
+            crB = QPalette::Button; crF = QPalette::ButtonText;
+            listShown = false;
+         }
+         else
+            listShown = combo && combo->view() &&
+                ((QWidget*)(combo->view()))->isVisible();
+         
+         // do we have an arrow?
          if ((cmb->subControls & SC_ComboBoxArrow) && (!combo || combo->count() > 0))
             ar = subControlRect(CC_ComboBox, cmb, SC_ComboBoxArrow, widget);
-         QRect r = RECT.adjusted(0,0,0,-dpi.$2);
-         const QPixmap *fill = 0;
+         
+         // the label
          if ((cmb->subControls & SC_ComboBoxFrame) && cmb->frame) {
             if (cmb->editable)
                drawPrimitive(PE_PanelLineEdit, option, painter, widget);
             else {
-               fill = &gradient(listShown?PAL.color(config.role_btn[0]):COLOR(Base),
+               const QPixmap &fill = gradient(listShown?PAL.color(crB):COLOR(Base),
                                 r.height(), Qt::Vertical, GradGlass);
-               if (!hover || ar.isNull() || listShown)
-                  fillWithMask(painter,  r, *fill, &masks.button);
-               else {
+               if (!hover || ar.isNull() || listShown) // unique color
+                  fillWithMask(painter,  r, fill, &masks.button);
+               else { // splitted view
                   r.setRight(ar.left());
-                  fillWithMask(painter, r, *fill, &masks.button, Tile::Full&~Tile::Right);
+                  fillWithMask(painter, r, fill, &masks.button, Tile::Full&~Tile::Right);
                   r.setLeft(ar.left()); r.setRight(RECT.right());
-                  fillWithMask(painter, r, gradient(PAL.color(config.role_btn[0]), r.height(), Qt::Vertical, sunken?GradSunken:GradGlass), &masks.button, Tile::Full&~Tile::Left);
+                  fillWithMask(painter, r, gradient(PAL.color(crB), r.height(), Qt::Vertical, sunken?GradSunken:GradGlass), &masks.button, Tile::Full&~Tile::Left);
                }
                shadows.lineEdit[1].render(RECT, painter);
             }
          }
+         
+         // the arrow
          if (!ar.isNull()) {
             ar.adjust((2*ar.width())/7,(2*ar.height())/7,-(2*ar.width())/7,-(2*ar.height())/7);
             QStyleOptionComboBox tmpOpt = *cmb;
@@ -230,10 +245,8 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                if (cmb->editable)
                   painter->setPen(COLOR(Highlight));
                else {
-                  if (!fill || listShown)
-                     fill = &gradient(listShown?PAL.color(config.role_btn[1]):COLOR(Base), r.height(), Qt::Vertical, GradGlass);
-                  painter->setBrush(*fill);
                   painter->setPen(Qt::NoPen);
+                  painter->setBrush(gradient(PAL.color(crF), r.height(), Qt::Vertical, GradGlass));
                }
             }
             else

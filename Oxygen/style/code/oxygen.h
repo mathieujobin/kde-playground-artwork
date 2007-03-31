@@ -118,10 +118,11 @@ typedef struct Config {
    int structure;
    TabTransition tabTransition;
    int gradientIntensity;
-   bool HAL9000;
+   bool aqua;
    double scale;
    int checkType;
-   QPalette::ColorRole role_progress[2], role_tab[2], role_btn[2], role_popup[2];
+   QPalette::ColorRole role_progress[2], role_tab[2],
+      role_btn[2], role_btnHover[2], role_popup[2];
 } Config;
 
 class VisualFrame : public QWidget
@@ -218,7 +219,7 @@ private:
    OxygenStyle& operator=( const OxygenStyle & );
    const QPixmap &gradient(const QColor &c, int size, Qt::Orientation o, GradientType type = GradSimple) const;
    const QPixmap &btnAmbient(int height) const;
-   const QPixmap &tabShadow(int height) const;
+   const QPixmap &tabShadow(int height, bool bottom = false) const;
    void fillWithMask(QPainter *painter, const QRect &rect, const QBrush &brush, const Tile::Mask *mask, Tile::PosFlags pf = Tile::Full, bool justClip = false, QPoint offset = QPoint(), bool inverse = false, const QRect *outerRect = 0L) const;
    void fillWithMask(QPainter *painter, const QPoint &xy, const QBrush &brush, const QPixmap &mask, QPoint offset = QPoint()) const;
    QColor mapFadeColor(const QColor &color, int index) const;

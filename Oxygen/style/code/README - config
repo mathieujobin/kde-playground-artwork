@@ -30,7 +30,7 @@ BackgroundMode=3
 CheckType=0
 
 # do you like glass/gloss?
-HAL9000=true
+Aqua=true
 
 # invert (sink) normal buttons etc by default
 InverseButtons=false
@@ -55,11 +55,13 @@ Structure=0
 # HighlightedText: 13
 
 # all buttons, colored parts of combos, sliders (in scrollbars as well)
-role_button=1
+role_button=10
+role_buttonHover=1
 # popup menus (also for non editable combos), menubar highlight
 role_popup=10
 # the progressbar
-role_progress=0
+role_progress=10
+role_progressGroove=0
 # tabwidget header
 role_tab=1
 

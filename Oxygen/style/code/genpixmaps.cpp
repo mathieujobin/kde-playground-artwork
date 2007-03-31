@@ -380,7 +380,7 @@ void OxygenStyle::generatePixmaps()
    
    // Window Buttons ===================================
    QPoint triangle[3];
-   int $14 = SCALE(14), $15 = SCALE(15), $16 = dpi.$16;
+   int $14 = SCALE(14);// $15 = SCALE(15), $16 = dpi.$16;
    _INITPIX_(masks.winClose, $14,$14);
    p.setBrush(Qt::black);
    _CLOSE_ARROW_(masks.winClose, 0);

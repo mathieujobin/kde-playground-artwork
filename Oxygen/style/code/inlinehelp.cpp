@@ -87,6 +87,7 @@ inline QColor midColor(const QColor &oc1, const QColor &c2, int w1 = 1, int w2 =
 }
 
 #define TMP_COLOR(_ROLE_) pal.color(QPalette::_ROLE_)
+#define TMP_CONF_COLOR(_ROLE_) pal.color(config._ROLE_)
 
 /**Internal, calcs button color depending on state*/
 
@@ -95,8 +96,8 @@ inline QColor btnBgColor(const QPalette &pal, bool isEnabled, bool hover = false
    if (!isEnabled)
       return TMP_COLOR(Window);
    if (hover)
-      return pal.color(config.role_btn[0]);
-   return TMP_COLOR(Window).dark(103);
+      return TMP_CONF_COLOR(role_btnHover[0]);
+   return TMP_CONF_COLOR(role_btn[0]).dark(103);
 }
 
 
@@ -107,11 +108,12 @@ inline QColor btnFgColor(const QPalette &pal, bool isEnabled, bool hover = false
    if (!isEnabled)
       return midColor(TMP_COLOR(Window), TMP_COLOR(WindowText), 1, 3);
    if (hover)
-      return pal.color(config.role_btn[1]);
-   return TMP_COLOR(WindowText);
+      return TMP_CONF_COLOR(role_btnHover[1]);
+   return TMP_CONF_COLOR(role_btn[1]);
 }
 
 #undef TMP_COLOR
+#undef TMP_CONF_COLOR
 
 /**Internal, calcs a contrasted color to a qcolor*/
 inline QColor emphasize(const QColor &c, int value = 10)

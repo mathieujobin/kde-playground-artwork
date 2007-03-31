@@ -374,6 +374,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          bool selected = tabV2.state & State_Selected;
          if (selected) hover = false;
          int alignment = Qt::AlignCenter | Qt::TextShowMnemonic;
+         bool bottom = false;
          
          switch(tabV2.shape) {
          case QTabBar::RoundedNorth:
@@ -382,6 +383,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             break;
          case QTabBar::RoundedSouth:
          case QTabBar::TriangularSouth:
+            bottom = true;
             if (selected) tr.setBottom(tr.bottom()-2);
             break;
          case QTabBar::RoundedEast:
@@ -447,8 +449,12 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             }
             pixPainter.setPen( cF);
             drawItemText(&pixPainter, pixmap.rect(), alignment, PAL, isEnabled, tab->text);
-            if (tab->selectedPosition == QStyleOptionTab::PreviousIsSelected)
-               painter->drawPixmap(-dpi.$2, 0, tabShadow(tr.height()-dpi.$2));
+            QStyleOptionTab::SelectedPosition selPos = east ?
+               QStyleOptionTab::PreviousIsSelected :
+               QStyleOptionTab::NextIsSelected;
+            if (tab->selectedPosition == selPos) {
+               painter->drawPixmap(-dpi.$2, 0, tabShadow(tr.height()-dpi.$2, false));
+            }
             drawItemPixmap(painter, tr, alignment, pixmap);
          }
          else {
@@ -461,8 +467,10 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             }
             painter->setPen(cF);
             drawItemText(painter, tr, alignment, PAL, isEnabled, tab->text);
-            if (tab->selectedPosition == QStyleOptionTab::PreviousIsSelected)
-               painter->drawPixmap(tr.x()-dpi.$2, tr.y(), tabShadow(tr.height()-dpi.$2));
+            if (tab->selectedPosition == QStyleOptionTab::PreviousIsSelected) {
+               if (bottom) tr.adjust(0,dpi.$2,0,0);
+               painter->drawPixmap(tr.x()-dpi.$2, tr.y(), tabShadow(tr.height()-dpi.$2, bottom));
+            }
          }
          painter->restore();
       }
@@ -507,21 +515,20 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             int chunks, $8 = dpi.$8; QRect r = RECT;
             QColor dark = (progress->progress == progress->maximum) ?
                PAL.color(config.role_progress[1]) :
-               midColor(PAL.color(config.role_progress[0]), PAL.color(config.role_progress[1]), 1, 8);
+               midColor(PAL.color(config.role_progress[0]), PAL.color(config.role_progress[1]));
 #define _COLOR_ (i==activeChunk) ? PAL.color(config.role_progress[1]) : dark
             // vertical progressbar, shake it baby ;P
             if (progress->orientation == Qt::Vertical) {
-               chunks = val * r.height() / $8 + 1;
-               r.setBottom(r.bottom() - (r.height() % $8)/2 + dpi.$1);
-               for (int i = 1; i < chunks; ++i)
+               chunks = val * r.height() / $8;
+               r.setBottom(r.bottom() - (r.height() % $8)/2 - $8 + dpi.$1);
+               for (int i = 0; i < chunks; ++i)
                   painter->fillRect(r.x(), r.bottom()-i*$8, r.width(), dpi.$5, gradient(_COLOR_, r.width(), Qt::Horizontal, GradButton));
             }
             else {
                chunks = val * RECT.width() / $8;
                if (reverse) {
-                  r.setRight(r.right() - (r.width() % $8)/2 + dpi.$1);
-                  ++chunks;
-                  for (int i = 1; i < chunks; ++i)
+                  r.setRight(r.right() - (r.width() % $8)/2 - $8 + dpi.$1);
+                  for (int i = 0; i < chunks; ++i)
                      painter->fillRect(r.right()-i*$8, r.y(), dpi.$5, r.height(), gradient(_COLOR_, r.height(), Qt::Horizontal, GradButton));
                }
                else {
@@ -874,13 +881,10 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       break;
    case CE_ToolBoxTab: // The toolbox's tab area
       if (const QStyleOptionToolBox* tbt =
-          qstyleoption_cast<const QStyleOptionToolBox*>(option))
-      {
+          qstyleoption_cast<const QStyleOptionToolBox*>(option)) {
          QPalette::ColorRole role = QPalette::WindowText, bgRole = QPalette::Window;
-         if (isEnabled)
-         {
-            if (option->state & State_Selected)
-            {
+         if (isEnabled) {
+            if (option->state & State_Selected) {
                painter->drawTiledPixmap(RECT, gradient(COLOR(WindowText), RECT.height(), Qt::Vertical, config.gradientStrong));
                QFont f(painter->font());
                f.setBold(true);
@@ -891,7 +895,6 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             else
                painter->drawTiledPixmap(RECT, gradient(COLOR(Window), RECT.height(), Qt::Vertical, sunken ? GradSunken : hover?config.gradientStrong:config.gradient));
          }
-         
          /**i WANT (read this TrottelTech: WANT!) this to be color swapped on select (and centered as sugar on top)
          now as the toolboxbutton is a private class and it's selected member is as well, i cannot overwrite the paint event
          so instead i repeat a null rect for selected tabs contents (from subElementRect query), what makes the widget abort the content painting
@@ -901,13 +904,11 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          QRect cr = option->rect.adjusted(0, 0, -30, 0);
          QRect tr, ir;
          int ih = 0;
-         if (pm.isNull())
-         {
+         if (pm.isNull()) {
             tr = cr;
             tr.adjust(4, 0, -8, 0);
          }
-         else
-         {
+         else {
             int iw = pm.width() + 4;
             ih = pm.height();
             ir = QRect(cr.left() + 4, cr.top(), iw + 2, ih);
@@ -915,8 +916,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          }
          
          QString txt = tbt->text;
-         if (painter->fontMetrics().width(txt) > tr.width())
-         {
+         if (painter->fontMetrics().width(txt) > tr.width()) {
             txt = txt.left(1);
             int ew = painter->fontMetrics().width("...");
             int i = 1;
@@ -928,8 +928,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          if (ih)
             painter->drawPixmap(ir.left(), (RECT.height() - ih) / 2, pm);
 
-         if (qGray(PAL.color(bgRole).rgb()) < 128) // dark background, let's paint an emboss
-         {
+             if (qGray(PAL.color(bgRole).rgb()) < 128) { // dark background, let's paint an emboss
             painter->save();
             painter->setPen(PAL.color(bgRole).dark(120));
             tr.moveTop(tr.top()-1);
@@ -1179,9 +1178,13 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          // text
          if (!cb->currentText.isEmpty() && !cb->editable) {
             editRect.adjust(3,0, -3, 0);
-            const QComboBox* combo = widget ? qobject_cast<const QComboBox*>(widget) : 0;
+            const QComboBox* combo = widget ?
+               qobject_cast<const QComboBox*>(widget) : 0;
             if (combo && combo->view() && ((QWidget*)(combo->view()))->isVisible())
-               painter->setPen(COLOR(Base));
+               painter->setPen(config.role_popup[0] != QPalette::Window ?
+                               CONF_COLOR(role_popup[1]) : COLOR(Text));
+            else if (hover)
+               painter->setPen(COLOR(Text));
             else
                painter->setPen(midColor(COLOR(Base), COLOR(Text), 1, 2));
             drawItemText(painter, editRect, Qt::AlignCenter, PAL, isEnabled, cb->currentText);
