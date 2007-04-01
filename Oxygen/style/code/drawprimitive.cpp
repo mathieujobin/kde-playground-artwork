@@ -124,13 +124,11 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       shadows.lineEdit[isEnabled].render(RECT, painter);
       break;
    }
-   case PE_FrameFocusRect: // Generic focus indicator.
-   {
-      //TODO: THIS IS UUUUGLYYY!!!
+   case PE_FrameFocusRect: { // Generic focus indicator.
       painter->save();
       painter->setBrush(Qt::NoBrush);
       painter->setPen(COLOR(Highlight));
-      painter->drawRect(RECT.adjusted(0,0,-1,-1));
+      painter->drawLine(RECT.bottomLeft(), RECT.bottomRight());
       painter->restore();
       break;
    }
@@ -247,13 +245,12 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
             QPoint(r.x(), r.bottom()-r.height()/3),
             QPoint(r.x()+r.width()/3, r.bottom()-r.height()/5)
             };
-            painter->drawPolygon(points, 4);
+            painter->drawPolygon(points, (option->state & State_On)?4:2);
             break;
          }
          case 2:
             if (option->state & State_On)
                painter->fillRect(r, fill);
-//                fillWithMask(painter, r, fill, &masks.button);
             else {
                QRect r2 = r; r2.setBottom(r.top()+r.height()/3);
                fillWithMask(painter, r2, fill, &masks.button);
@@ -495,7 +492,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          }
          shadows.tab.render(rect, painter, pf);
              fillWithMask(painter, fillRect, gradient(CONF_COLOR(role_tab[0]), baseHeight, o, config.gradientStrong), &masks.tab, pf | Tile::Center);
-         masks.tab.outline(fillRect, painter, CONF_COLOR(role_tab[0]).dark(110), false, pf);
+         masks.tab.outline(fillRect, painter, CONF_COLOR(role_tab[0]).dark(110), true, pf);
          shadows.tab.render(tabRect, painter, Tile::Ring);
       }
       break;

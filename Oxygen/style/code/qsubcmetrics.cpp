@@ -158,16 +158,14 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
       break;
    case CC_ScrollBar: // A scroll bar, like QScrollBar
       if (const QStyleOptionSlider *scrollbar =
-          qstyleoption_cast<const QStyleOptionSlider *>(option))
-      {
+          qstyleoption_cast<const QStyleOptionSlider *>(option)) {
          int sbextent = pixelMetric(PM_ScrollBarExtent, scrollbar, widget);
          int maxlen = ((scrollbar->orientation == Qt::Horizontal) ?
                        scrollbar->rect.width() : scrollbar->rect.height()) - (sbextent * 2);
          int sliderlen;
          
             // calculate slider length
-         if (scrollbar->maximum != scrollbar->minimum)
-         {
+         if (scrollbar->maximum != scrollbar->minimum) {
             uint range = scrollbar->maximum - scrollbar->minimum;
             sliderlen = (qint64(scrollbar->pageStep) * maxlen) / (range + scrollbar->pageStep);
             
@@ -183,28 +181,23 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
          int sliderstart = sliderPositionFromValue(scrollbar->minimum,
             scrollbar->maximum, scrollbar->sliderPosition, maxlen - sliderlen,
             scrollbar->upsideDown);
-         switch (subControl)
-         {
+         switch (subControl) {
          case SC_ScrollBarSubLine:            // top/left button
-            if (scrollbar->orientation == Qt::Horizontal)
-            {
+            if (scrollbar->orientation == Qt::Horizontal) {
                int buttonWidth = qMin(scrollbar->rect.width() / 2, sbextent);
                ret.setRect(scrollbar->rect.width() - 2*buttonWidth, 0, buttonWidth, sbextent);
             }
-            else
-            {
+            else {
                int buttonHeight = qMin(scrollbar->rect.height() / 2, sbextent);
                ret.setRect(0, scrollbar->rect.height() - 2*buttonHeight, sbextent, buttonHeight);
             }
             break;
          case SC_ScrollBarAddLine:            // bottom/right button
-            if (scrollbar->orientation == Qt::Horizontal)
-            {
+            if (scrollbar->orientation == Qt::Horizontal) {
                int buttonWidth = qMin(scrollbar->rect.width()/2, sbextent);
                ret.setRect(scrollbar->rect.width() - buttonWidth, 0, buttonWidth, sbextent);
             }
-            else
-            {
+            else {
                int buttonHeight = qMin(scrollbar->rect.height()/2, sbextent);
                ret.setRect(0, scrollbar->rect.height() - buttonHeight, sbextent, buttonHeight);
             }

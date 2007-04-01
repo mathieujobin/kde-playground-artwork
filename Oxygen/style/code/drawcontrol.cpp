@@ -194,7 +194,6 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          else
             tf |= Qt::AlignHCenter;
          
-         bool isDefault = btn->features & QStyleOptionButton::DefaultButton;
          painter->save();
          QColor fc, bc;
          if (btn->features & QStyleOptionButton::Flat) {
@@ -293,7 +292,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       if (const QStyleOptionTab *tab =
           qstyleoption_cast<const QStyleOptionTab *>(option)) {
          bool selected = option->state & State_Selected;
-         int $2 = dpi.$2, $4 = dpi.$4, $8 = dpi.$8;
+             int $2 = dpi.$2, $4 = dpi.$4;
          QPoint off;
          if (!(hover || selected || sunken))
             break;
@@ -375,6 +374,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          if (selected) hover = false;
          int alignment = Qt::AlignCenter | Qt::TextShowMnemonic;
          bool bottom = false;
+         bool reverse = (option->direction == Qt::RightToLeft);
          
          switch(tabV2.shape) {
          case QTabBar::RoundedNorth:
@@ -467,7 +467,10 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             }
             painter->setPen(cF);
             drawItemText(painter, tr, alignment, PAL, isEnabled, tab->text);
-            if (tab->selectedPosition == QStyleOptionTab::PreviousIsSelected) {
+            QStyleOptionTab::SelectedPosition selPos = reverse ?
+               QStyleOptionTab::NextIsSelected :
+               QStyleOptionTab::PreviousIsSelected;
+            if (tab->selectedPosition == selPos) {
                if (bottom) tr.adjust(0,dpi.$2,0,0);
                painter->drawPixmap(tr.x()-dpi.$2, tr.y(), tabShadow(tr.height()-dpi.$2, bottom));
             }

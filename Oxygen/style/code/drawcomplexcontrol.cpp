@@ -57,7 +57,6 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          if (sb->frame && (sb->subControls & SC_SpinBoxFrame))
             drawPrimitive ( PE_PanelLineEdit, sb, painter, widget );
          
-         GradientType gt;
          Tile::PosFlags pf;
          
          if (sb->subControls & SC_SpinBoxUp)
@@ -191,7 +190,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          QRect ar, r = RECT.adjusted(0,0,0,-dpi.$2);
          const QComboBox* combo = widget ?
                 qobject_cast<const QComboBox*>(widget) : 0;
-         bool listShown;
+         bool listShown, reverse = (option->direction == Qt::RightToLeft);
          // color settings
          QPalette::ColorRole crB = config.role_popup[0], crF = config.role_popup[1];
          if (crB == QPalette::Window) { // often close to base, use btn and splitted
@@ -216,10 +215,24 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                if (!hover || ar.isNull() || listShown) // unique color
                   fillWithMask(painter,  r, fill, &masks.button);
                else { // splitted view
-                  r.setRight(ar.left());
-                  fillWithMask(painter, r, fill, &masks.button, Tile::Full&~Tile::Right);
-                  r.setLeft(ar.left()); r.setRight(RECT.right());
-                  fillWithMask(painter, r, gradient(PAL.color(crB), r.height(), Qt::Vertical, sunken?GradSunken:GradGlass), &masks.button, Tile::Full&~Tile::Left);
+                  Tile::PosFlags pf;
+                  if (reverse) {
+                     r.setLeft(ar.right()); pf = Tile::Full&~Tile::Left;
+                  }
+                  else {
+                     r.setRight(ar.left()); pf = Tile::Full&~Tile::Right;
+                  }
+                  fillWithMask(painter, r, fill, &masks.button, pf);
+                  if (reverse) {
+                     r.setLeft(RECT.left()); r.setRight(ar.right());
+                     pf = Tile::Full&~Tile::Right;
+                  }
+                  else {
+                     r.setLeft(ar.left()); r.setRight(RECT.right());
+                     pf = Tile::Full&~Tile::Left;
+                  }
+                  fillWithMask(painter, r, gradient(PAL.color(crB), r.height(), Qt::Vertical,
+                                  sunken ? GradSunken : GradGlass), &masks.button, pf);
                }
                shadows.lineEdit[1].render(RECT, painter);
             }
@@ -229,7 +242,13 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          if (!ar.isNull()) {
             ar.adjust((2*ar.width())/7,(2*ar.height())/7,-(2*ar.width())/7,-(2*ar.height())/7);
             QStyleOptionComboBox tmpOpt = *cmb;
-            PrimitiveElement arrow = listShown ? PE_IndicatorArrowDown : PE_IndicatorArrowLeft;
+            PrimitiveElement arrow;
+            if (listShown)
+               arrow = PE_IndicatorArrowDown;
+            else if (reverse)
+               arrow = PE_IndicatorArrowRight;
+            else
+               arrow = PE_IndicatorArrowLeft;
             if (cmb->editable)
                hover = hover && (cmb->activeSubControls == SC_ComboBoxArrow);
             painter->setRenderHint ( QPainter::Antialiasing, true );
@@ -393,13 +412,11 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
       break;
    case CC_ToolButton: // A tool button, like QToolButton
       // special handling for the tabbar scrollers ----------------------------------
-      if (widget && widget->parentWidget() && qobject_cast<QTabBar*>(widget->parent()))
-      {
-      // this is a qtabbar scrollbutton and needs to be erased...
-         QColor c = widget->parentWidget()->palette().color(QPalette::WindowText);
-         QColor c2 = widget->parentWidget()->palette().color(QPalette::Window);
-         if (sunken)
-         {
+      if (widget && widget->parentWidget() &&
+          qobject_cast<QTabBar*>(widget->parent())) {
+         QColor c = widget->parentWidget()->palette().color(config.role_tab[0]);
+         QColor c2 = widget->parentWidget()->palette().color(config.role_tab[1]);
+         if (sunken) {
             int dy = (RECT.height()-RECT.width())/2;
             QRect r = RECT.adjusted(dpi.$2,dy,-dpi.$2,-dy);
             painter->drawTiledPixmap(r, gradient(c, r.height(), Qt::Vertical, GradSunken));
@@ -538,8 +555,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
 //    case CC_Q3ListView: // Used for drawing the Q3ListView class
    case CC_Dial: // A dial, like QDial
       if (const QStyleOptionSlider *dial =
-          qstyleoption_cast<const QStyleOptionSlider *>(option))
-      {
+          qstyleoption_cast<const QStyleOptionSlider *>(option)) {
          painter->save();
          QRect rect = RECT;
          if (rect.width() > rect.height()) {
@@ -549,7 +565,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             rect.setTop(rect.y()+(rect.height()-rect.width())/2); rect.setHeight(rect.width());
          }
          
-         int d = rect.width()/6;
+         int d = qMax(rect.width()/4,10);
          int r = rect.width()/2-2*d/3;
          qreal a;
          if (dial->maximum == dial->minimum)
@@ -580,7 +596,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          // the drop
          painter->setPen(Qt::NoPen);
          painter->setRenderHint( QPainter::Antialiasing );
-         rect = QRect(0,0,2*d/3,2*d/3);
+         rect = QRect(0,0,3*d/4,3*d/4);
          rect.moveCenter(cp);
          painter->setBrush(QColor(0,0,0,50));
          painter->drawEllipse(rect);
