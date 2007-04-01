@@ -1,7 +1,5 @@
 project(kstyle-oxygen-config)
 
-include_directories( ${KDE4_INCLUDE_DIR} ${KDE4_KDEUI_INCLUDES} ${QT_INCLUDES} ${KDE4_KDECORE_INCLUDES})
-
 
 ########### next target ###############
 

@@ -26,6 +26,7 @@ kde4_add_plugin(kstyle-oxygen ${oxygen_SRCS} )
 target_link_libraries( kstyle-oxygen 
 	${KDE4_KDECORE_LIBS} 
 	${QT_QT3SUPPORT_LIBRARY} 
+	${QT_QTOPENGL_LIBRARY}
 	${KDE4_KDEFX_LIBS} 
 	${X11_X11_LIB}
 	${X11_Xfixes_LIB}
@@ -35,7 +36,10 @@ target_link_libraries( kstyle-oxygen
 	${X11_Xrandr_LIB}
 	${X11_XTest_LIB}
 	${X11_LIBRARIES}
-	freetype fontconfig QtOpenGL png GLU GL)
+#	freetype
+#	fontconfig
+	GLU GL
+)
 
 install( TARGETS kstyle-oxygen DESTINATION ${PLUGIN_INSTALL_DIR}/plugins/styles/ )
 
