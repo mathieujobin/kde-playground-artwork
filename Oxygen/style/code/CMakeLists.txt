@@ -1,7 +1,5 @@
 project(kstyle-oxygen)
 
-include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_SOURCE_DIR}/kdefx ${KDE4_KDECORE_INCLUDES} )
-
 ########### next target ###############
 
 set( oxygen_SRCS
