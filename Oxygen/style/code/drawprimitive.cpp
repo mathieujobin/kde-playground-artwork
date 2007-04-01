@@ -419,7 +419,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          QList<QWidget *> list = menu->menuAction()->associatedWidgets();
          QMenuBar* mbar = 0;
          for (int i = 0; i < list.size(); ++i)
-            if (mbar = qobject_cast<QMenuBar*>(list.at(i))) {
+            if ((mbar = qobject_cast<QMenuBar*>(list.at(i)))) {
             if (mbar->activeAction() == menu->menuAction())
                break;
             else

@@ -92,7 +92,7 @@ static GLuint _background;
 
 void (DynamicBrush::*updateBrush)();
 
-DynamicBrush::DynamicBrush(Mode mode, QObject *parent) : QObject(parent), _mode(mode), _glContext(0), _isActiveWindow(true)
+DynamicBrush::DynamicBrush(Mode mode, QObject *parent) : QObject(parent), _mode(mode), _isActiveWindow(true), _glContext(0)
 {
    _timerBgWipe = new QTimer(this);
    connect (_timerBgWipe, SIGNAL(timeout()), this, SLOT(wipeBackground()));
