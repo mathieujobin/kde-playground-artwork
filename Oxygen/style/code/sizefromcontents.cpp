@@ -65,16 +65,14 @@ QSize OxygenStyle::sizeFromContents ( ContentsType ct, const QStyleOption * opti
       return QSize(qMax(contentsSize.width()+dpi.$18, (contentsSize.height()+dpi.$4)*8/5), contentsSize.height()+dpi.$6);
    case CT_MenuItem: // A menu item, like QMenuItem
       if (const QStyleOptionMenuItem *menuItem =
-          qstyleoption_cast<const QStyleOptionMenuItem *>(option))
-      {
+          qstyleoption_cast<const QStyleOptionMenuItem *>(option)) {
          bool checkable = menuItem->menuHasCheckableItems;
-         int maxpmw = menuItem->maxIconWidth;
+         int maxpmw = config.showMenuIcons*menuItem->maxIconWidth;
          int w = contentsSize.width(), h = contentsSize.height();
          QSize sz;
          if (menuItem->menuItemType == QStyleOptionMenuItem::Separator)
             sz = QSize (10, menuItem->text.isEmpty() ? 6 : menuItem->fontMetrics.lineSpacing());
-         else
-         {
+         else {
             h = qMax(h, menuItem->fontMetrics.lineSpacing());
             if (!menuItem->icon.isNull())
                h = qMax(h, menuItem->icon.pixmap(pixelMetric(PM_SmallIconSize), QIcon::Normal).height() + 4);
@@ -82,16 +80,14 @@ QSize OxygenStyle::sizeFromContents ( ContentsType ct, const QStyleOption * opti
             if (menuItem->text.contains('\t'))
                w += 12;
             if (maxpmw > 0)
-               w += maxpmw + 6;
-            if (checkable && maxpmw < 20)
-               w += 20 - maxpmw;
-            if (checkable || maxpmw > 0)
-               w += 2;
-            w += 12;
+               w += maxpmw + dpi.$6;
+            if (checkable)
+               w += dpi.$20;
+            w += (checkable + (maxpmw > 0))*dpi.$2;
+            w += dpi.$12;
             if (menuItem->menuItemType == QStyleOptionMenuItem::SubMenu)
                w += 2 * windowsArrowHMargin;
-            if (menuItem->menuItemType == QStyleOptionMenuItem::DefaultItem)
-            {
+            if (menuItem->menuItemType == QStyleOptionMenuItem::DefaultItem) {
                 // adjust the font and add the difference in size.
                 // it would be better if the font could be adjusted in the getStyleOptions qmenu func!!
                QFontMetrics fm(menuItem->font);

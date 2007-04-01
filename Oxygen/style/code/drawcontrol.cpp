@@ -757,8 +757,9 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             break;
          }
          painter->save();
-         bool checkable = menuItem->checkType != QStyleOptionMenuItem::NotCheckable;
-         bool checked = menuItem->checked;
+         bool checkable = !isCombo && 
+                (menuItem->checkType != QStyleOptionMenuItem::NotCheckable);
+         bool checked = checkable && menuItem->checked;
          
          if (selected && isEnabled) {
             painter->setRenderHint ( QPainter::Antialiasing );
@@ -770,39 +771,13 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
                painter->drawRoundRect(RECT, 35, 35*RECT.width()/RECT.height());
          }
              
-         painter->setPen ( fg );
-         painter->setBrush ( Qt::NoBrush );
-        
-         // Check
-         if (!isCombo && checkable) {
-            QRect checkRect(option->rect.left() + 7, option->rect.center().y() - 6, 13, 13);
-            checkRect = visualRect(menuItem->direction, menuItem->rect, checkRect);
-            if (menuItem->checkType & QStyleOptionMenuItem::Exclusive) {
-               // Radio button
-               painter->setRenderHint ( QPainter::Antialiasing );
-               painter->drawEllipse ( checkRect );
-               if (checked || sunken) {
-                  painter->setBrush ( fg );
-                  painter->drawEllipse ( checkRect.adjusted(checkRect.width()/4, checkRect.height()/4, -checkRect.width()/4, -checkRect.height()/4) );
-                  painter->setBrush ( Qt::NoBrush );
-               }
-            }
-            else {
-               // Check box
-               QStyleOptionMenuItem tmpOpt = *menuItem;
-               tmpOpt.rect = checkRect;
-               if (checked) tmpOpt.state |= State_On; else tmpOpt.state &= ~State_On;
-               drawPrimitive(PE_IndicatorMenuCheckMark, &tmpOpt, painter, widget);
-            }
-         }
-         
          // Text and icon, ripped from windows style
          const QStyleOptionMenuItem *menuitem = menuItem;
-         int checkcol = (!isCombo)*qMax(menuitem->maxIconWidth, checkable*20);
-         QRect vCheckRect = visualRect(option->direction, menuitem->rect,
-                                       QRect(menuitem->rect.x(), menuitem->rect.y(),
-                                             checkcol, menuitem->rect.height()));
-         if (!menuItem->icon.isNull()) {
+         int iconCol = config.showMenuIcons*menuitem->maxIconWidth;
+         
+         if (config.showMenuIcons && !menuItem->icon.isNull()) {
+            QRect vCheckRect = visualRect(option->direction, RECT,
+                                       QRect(RECT.x(), RECT.y(), iconCol, RECT.height()));
             QIcon::Mode mode = isEnabled ? (selected ? QIcon::Active : QIcon::Normal) : QIcon::Disabled;
             QPixmap pixmap = menuItem->icon.pixmap(pixelMetric(PM_SmallIconSize), mode, checked ? QIcon::On : QIcon::Off);
             
@@ -811,15 +786,18 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             
             painter->drawPixmap(pmr.topLeft(), pixmap);
          }
+             
+         painter->setPen ( fg );
+         painter->setBrush ( Qt::NoBrush );
          
          int x, y, w, h;
-         menuitem->rect.getRect(&x, &y, &w, &h);
+         RECT.getRect(&x, &y, &w, &h);
          int tab = menuitem->tabWidth;
              
-         int xm = windowsItemFrame + checkcol + windowsItemHMargin;
-         int xpos = menuitem->rect.x() + xm;
-         QRect textRect(xpos, y + windowsItemVMargin, w - xm - windowsRightBorder - tab + 1, h - 2 * windowsItemVMargin);
-         QRect vTextRect = visualRect(option->direction, menuitem->rect, textRect);
+         int xm = windowsItemFrame + iconCol + windowsItemHMargin;
+         int xpos = RECT.x() + xm;
+         QRect textRect(xpos, y + windowsItemVMargin, w - xm - checkable*dpi.$20 - windowsRightBorder - tab + 1, h - 2 * windowsItemVMargin);
+         QRect vTextRect = visualRect(option->direction, RECT, textRect);
          QString s = menuitem->text;
          if (!s.isEmpty()) {
             // draw text
@@ -838,7 +816,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             painter->drawText(vTextRect, text_flags | Qt::AlignLeft, s.left(t));
          }
 #undef text_flags
-            // Arrow
+         // Arrow
          if (menuItem->menuItemType == QStyleOptionMenuItem::SubMenu) {
             // draw sub menu arrow
             PrimitiveElement arrow =
@@ -851,6 +829,28 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             tmpOpt.rect = visualRect(option->direction, RECT, QRect(xpos, RECT.y() + (RECT.height() - dim)/2, dim, dim));
             
             drawPrimitive(arrow, &tmpOpt, painter, widget);
+         }
+         else if (!isCombo && checkable) { // Checkmark
+            QRect checkRect(RECT.right() - dpi.$20, option->rect.center().y() - dpi.$6, dpi.$13, dpi.$13);
+            checkRect = visualRect(menuItem->direction, menuItem->rect, checkRect);
+            if (menuItem->checkType & QStyleOptionMenuItem::Exclusive) {
+               // Radio button
+               painter->setRenderHint ( QPainter::Antialiasing );
+               painter->drawEllipse ( checkRect );
+               if (checked || sunken) {
+                  painter->setBrush ( fg );
+                  painter->drawEllipse ( checkRect.adjusted(checkRect.width()/4, checkRect.height()/4, -checkRect.width()/4, -checkRect.height()/4) );
+                  painter->setBrush ( Qt::NoBrush );
+               }
+            }
+            else {
+               // Check box
+               painter->setBrush ( Qt::NoBrush );
+               QStyleOptionMenuItem tmpOpt = *menuItem;
+               tmpOpt.rect = checkRect;
+               if (checked) tmpOpt.state |= State_On; else tmpOpt.state &= ~State_On;
+               drawPrimitive(PE_IndicatorMenuCheckMark, &tmpOpt, painter, widget);
+            }
          }
          painter->restore();
       }

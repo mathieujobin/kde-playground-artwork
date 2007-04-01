@@ -102,7 +102,7 @@ enum GradientType {
 typedef struct
 {
    int $1, $2, $3, $4, $5, $6, $7, $8, $9, $10;
-   int $12, $16, $32, $18, $20, $80;
+   int $12, $13, $16, $32, $18, $20, $80;
    int ScrollBarExtent;
    int ScrollBarSliderMin;
    int SliderThickness;
@@ -118,7 +118,7 @@ typedef struct Config {
    int structure;
    TabTransition tabTransition;
    int gradientIntensity;
-   bool aqua;
+   bool aqua, showMenuIcons;
    double scale;
    int checkType;
    QPalette::ColorRole role_progress[2], role_tab[2],

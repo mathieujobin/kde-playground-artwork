@@ -390,6 +390,8 @@ void OxygenStyle::readSettings()
    else
       config.gradBtn = config.gradient;
    
+   config.showMenuIcons = settings.value("ShowMenuIcons", false).toBool();
+   
    // color roles
    config.role_progress[0] =
       (QPalette::ColorRole) settings.value("role_progressGroove", QPalette::WindowText).toInt();
@@ -429,9 +431,10 @@ void OxygenStyle::initMetrics()
    dpi.$7 = SCALE(7); dpi.$8 = SCALE(8);
    dpi.$9 = SCALE(9); dpi.$10 =SCALE(10);
    
-   dpi.$12 = SCALE(12); dpi.$16 = SCALE(16);
-   dpi.$18 = SCALE(18); dpi.$20 = SCALE(20);
-   dpi.$32 = SCALE(32); dpi.$80 = SCALE(80);
+   dpi.$12 = SCALE(12); dpi.$13 = SCALE(13);
+   dpi.$16 = SCALE(16); dpi.$18 = SCALE(18);
+   dpi.$20 = SCALE(20); dpi.$32 = SCALE(32);
+   dpi.$80 = SCALE(80);
    
    dpi.ScrollBarExtent = SCALE(20);
    dpi.ScrollBarSliderMin = SCALE(40);

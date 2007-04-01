@@ -38,6 +38,9 @@ InverseButtons=false
 # not fully supportes yet, don't try values < 1 here (if you want a stable desktop ;)
 Scale=1.0
 
+# whether there shall be unstylish icons in popupmenus
+ShowMenuIcons=false
+
 # affects the scanlines
 # 0: scanlines
 # 1: checkboard
