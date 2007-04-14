@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>535</width>
+            <width>538</width>
             <height>277</height>
         </rect>
     </property>
@@ -88,7 +88,7 @@
                             <cstring>roundCorners</cstring>
                         </property>
                         <property name="title">
-                            <string>Round Top Corners</string>
+                            <string>Rounded Top Corners</string>
                         </property>
                         <hbox>
                             <property name="name">
@@ -101,8 +101,11 @@
                                 <property name="text">
                                     <string>Alwa&amp;ys</string>
                                 </property>
+                                <property name="accel">
+                                    <string>Alt+Y</string>
+                                </property>
                                 <property name="whatsThis" stdset="0">
-                                    <string>Always draw round window top corners.</string>
+                                    <string>Always draw rounded window top corners.</string>
                                 </property>
                             </widget>
                             <widget class="QRadioButton">
@@ -112,8 +115,11 @@
                                 <property name="text">
                                     <string>Not maximi&amp;zed</string>
                                 </property>
+                                <property name="accel">
+                                    <string>Alt+Z</string>
+                                </property>
                                 <property name="whatsThis" stdset="0">
-                                    <string>Draw round top corners if the window is not maximized.</string>
+                                    <string>Draw rounded top corners if the window is not maximized.</string>
                                 </property>
                             </widget>
                             <widget class="QRadioButton">
@@ -123,8 +129,11 @@
                                 <property name="text">
                                     <string>Ne&amp;ver</string>
                                 </property>
+                                <property name="accel">
+                                    <string>Alt+V</string>
+                                </property>
                                 <property name="whatsThis" stdset="0">
-                                    <string>Never draw round window top corners.</string>
+                                    <string>Never draw rounded window top corners.</string>
                                 </property>
                             </widget>
                         </hbox>
@@ -819,4 +828,13 @@
     <tabstop>selectButton</tabstop>
 </tabstops>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>knuminput.h</includehint>
+    <includehint>knuminput.h</includehint>
+    <includehint>kcolorbutton.h</includehint>
+    <includehint>kcolorbutton.h</includehint>
+    <includehint>kcolorbutton.h</includehint>
+    <includehint>kcolorbutton.h</includehint>
+    <includehint>knuminput.h</includehint>
+</includehints>
 </UI>
