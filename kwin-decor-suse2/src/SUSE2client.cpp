@@ -760,8 +760,6 @@ void SUSE2Client::update_captionBuffer()
                      AlignCenter, c);
     painter.end();
 
-    titleLength = aCaptionBuffer->width();
-
     captionBufferDirty = false;
 }
 

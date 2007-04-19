@@ -69,10 +69,9 @@ private:
     QPixmap *aCaptionBuffer, *iCaptionBuffer;
     void update_captionBuffer();
 
-    QPixmap *aTitleBarTile, *iTitleBarTile, *aTitleBarTopTile, *iTitleBarTopTile;
+    QPixmap *aTitleBarTile, *iTitleBarTile;
     QImage gradient;
     QColor aGradientBottom, iGradientBottom, aAntialiasBase, iAntialiasBase;
-    int titleLength;
     bool pixmaps_created;
     void create_pixmaps();
     void delete_pixmaps();
