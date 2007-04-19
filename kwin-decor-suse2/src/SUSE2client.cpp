@@ -451,9 +451,22 @@ void SUSE2Client::paintEvent(QPaintEvent *e)
         }
 
         if(tW > 0) {
-            painter.drawTiledPixmap(tX, Rtitle.top() - TOPMARGIN + btnMarginTop+2,
-                                    tW, Rtitle.height() + titleEdgeBottom + titleEdgeTop,
-                                    *titleBfrPtr, 0, 2);
+            if (titleBfrPtr->width()+2*titleMargin > Rtitle.width()) {
+                QPixmap *tmp = new QPixmap(30, Rtitle.height());
+                QPainter fade;
+                fade.begin(tmp);
+                fade.drawPixmap(0, 0, *titleBfrPtr, Rtitle.right()-30-2*titleMargin-Rtitle.left(), 0);
+                QImage background = (active ? *aTitleBarTile : *iTitleBarTile).convertToImage();
+                QImage tmpImg = tmp->convertToImage();
+                QImage blended = KImageEffect::blend(tmpImg, background, gradient, KImageEffect::Red);
+
+                painter.drawPixmap(tX, Rtitle.top() - TOPMARGIN + btnMarginTop+2, *titleBfrPtr,
+                                   0, 2, tW - 2* titleMargin, -1);
+                painter.drawImage(Rtitle.right()-30-titleMargin, Rtitle.top() - TOPMARGIN + btnMarginTop+2,
+                                  blended, 0, 2);
+            } else {
+                painter.drawPixmap(tX, Rtitle.top() - TOPMARGIN + btnMarginTop+2, *titleBfrPtr, 0, 2);
+            }
         }
     }
     titleBfrPtr = 0;
@@ -590,37 +603,37 @@ void SUSE2Client::create_pixmaps()
     const int titleHeight = layoutMetric(LM_TitleHeight);
 
     // aTitleBarTile
-    tempPixmap.resize(1, titleHeight + TOPMARGIN + DECOHEIGHT);
+    tempPixmap.resize(30, titleHeight + TOPMARGIN + DECOHEIGHT);
     KPixmapEffect::gradient(tempPixmap,
                             Handler()->getColor(TitleGradientFrom, true),
                             Handler()->getColor(TitleGradientTo, true),
                             KPixmapEffect::VerticalGradient);
-    aTitleBarTile = new QPixmap(1, titleHeight + TOPMARGIN + DECOHEIGHT);
+    aTitleBarTile = new QPixmap(30, titleHeight + TOPMARGIN + DECOHEIGHT);
     painter.begin(aTitleBarTile);
     painter.drawPixmap(0, 0, tempPixmap);
 
     QImage t;
     if (Handler()->titlebarStyle() == 0) { // new, Toplight
-        t = QImage(1, (titleHeight + TOPMARGIN + DECOHEIGHT)/3 + 1, 32 );
-        t = KImageEffect::gradient(QSize(1, t.height()),
+        t = QImage(30, (titleHeight + TOPMARGIN + DECOHEIGHT)/3 + 1, 32 );
+        t = KImageEffect::gradient(QSize(30, t.height()),
                                 Handler()->getColor(TitleGradientFrom, true).light(130),
                                 Handler()->getColor(TitleGradientTo, true),
                                 KImageEffect::VerticalGradient/*, 100, 100*/);
         painter.drawImage(0, 2, t, 0, 0, -1, tempPixmap.height()-2);
         t.create(t.width(), t.height()*2, t.depth());
-        t = KImageEffect::unbalancedGradient(QSize(1, t.height()),
+        t = KImageEffect::unbalancedGradient(QSize(30, t.height()),
                                 Handler()->getColor(TitleGradientTo, true),
                                 Handler()->getColor(TitleGradientFrom, true),
                                 KImageEffect::VerticalGradient, 100, 100);
         painter.drawImage(0, t.height()/2, t, 0, 0, -1, t.height());
     } else { // older, Balanced
-        t = QImage(1, (titleHeight + TOPMARGIN + DECOHEIGHT)/2 + 1, 32 );
-        t = KImageEffect::gradient(QSize(1, t.height()),
+        t = QImage(30, (titleHeight + TOPMARGIN + DECOHEIGHT)/2 + 1, 32 );
+        t = KImageEffect::gradient(QSize(30, t.height()),
                                 Handler()->getColor(TitleGradientFrom, true).light(150),
                                 Handler()->getColor(TitleGradientTo, true).light(110),
                                 KImageEffect::VerticalGradient);
         painter.drawImage(0, 2, t, 0, 0, -1, tempPixmap.height()-2);
-        t = KImageEffect::gradient(QSize(1, t.height()),
+        t = KImageEffect::gradient(QSize(30, t.height()),
                                 Handler()->getColor(TitleGradientTo, true),
                                 Handler()->getColor(TitleGradientFrom, true),
                                 KImageEffect::VerticalGradient);
@@ -630,12 +643,12 @@ void SUSE2Client::create_pixmaps()
     painter.end();
 
     // iTitleBarTile
-    tempPixmap.resize(1, titleHeight + TOPMARGIN + DECOHEIGHT);
+    tempPixmap.resize(30, titleHeight + TOPMARGIN + DECOHEIGHT);
     KPixmapEffect::gradient(tempPixmap,
                             Handler()->getColor(TitleGradientFrom, false),
                             Handler()->getColor(TitleGradientTo, false),
                             KPixmapEffect::VerticalGradient);
-    iTitleBarTile = new QPixmap(1, titleHeight + TOPMARGIN + DECOHEIGHT);
+    iTitleBarTile = new QPixmap(30, titleHeight + TOPMARGIN + DECOHEIGHT);
     painter.begin(iTitleBarTile);
     painter.drawPixmap(0, 0, tempPixmap);
     painter.end();
@@ -646,6 +659,12 @@ void SUSE2Client::create_pixmaps()
     QImage iTempImage = iTitleBarTile->convertToImage();
     iGradientBottom = QColor::QColor(iTempImage.pixel(0, iTempImage.height()-1));
     iAntialiasBase = QColor::QColor(iTempImage.pixel(0, 2));
+
+    // the gradient for the fade out effect
+    gradient = KImageEffect::gradient(QSize(30, titleHeight + TOPMARGIN + DECOHEIGHT),
+                                            QColor(255,255,255),
+                                            QColor(0,0,0),
+                                            KImageEffect::HorizontalGradient);
 
     pixmaps_created = true;
 }
@@ -740,6 +759,8 @@ void SUSE2Client::update_captionBuffer()
                      iCaptionBuffer->rect().width() - logoWidth, iCaptionBuffer->rect().height() - titleEdgeTop - titleEdgeBottom,
                      AlignCenter, c);
     painter.end();
+
+    titleLength = aCaptionBuffer->width();
 
     captionBufferDirty = false;
 }
