@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006-2007 by Thomas Lübking                             *
+ *   Copyright (C) 2006-2007 by Thomas Lï¿½bking                             *
  *   thomas.luebking@web.de                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -1145,7 +1145,7 @@ bool OxygenStyle::eventFilter( QObject *object, QEvent *ev ) {
       if (qobject_cast<QAbstractButton*>(object) ||
           qobject_cast<QComboBox*>(object)) {
          QWidget *widget = (QWidget*)object;
-         if (widget->hasMouse())
+         if (widget->testAttribute(Qt::WA_UnderMouse))
             widget->repaint();
          else
             fadeIn(widget);
@@ -1156,7 +1156,7 @@ bool OxygenStyle::eventFilter( QObject *object, QEvent *ev ) {
       if (qobject_cast<QAbstractButton*>(object) || 
           qobject_cast<QComboBox*>(object)) {
          QWidget *widget = (QWidget*)object;
-         if (widget->hasMouse())
+         if (widget->testAttribute(Qt::WA_UnderMouse))
             widget->repaint();
          else
             fadeOut((QWidget*)(object));
