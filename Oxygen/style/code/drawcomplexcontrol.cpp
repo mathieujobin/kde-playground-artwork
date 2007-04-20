@@ -209,11 +209,11 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             if (cmb->editable)
                drawPrimitive(PE_PanelLineEdit, option, painter, widget);
             else {
-               const QPixmap &fill = gradient(listShown?PAL.color(crB):COLOR(Base),
-                                r.height(), Qt::Vertical, GradGlass);
+               const QPixmap &fill = gradient(listShown ? PAL.color(crB) :
+                     COLOR(Base), r.height(), Qt::Vertical, GradGlass);
                
                int step = hoverStep(widget);
-               hover = hover || step;
+               hover = hover || step || hasFocus;
                
                if (!hover || ar.isNull() || listShown) // unique color
                   fillWithMask(painter,  r, fill, &masks.button);
@@ -235,7 +235,9 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                      r.setLeft(ar.left()); r.setRight(RECT.right());
                      pf = Tile::Full&~Tile::Left;
                   }
-                  QColor c = step?midColor(COLOR(Base),PAL.color(crB),6-step,step):PAL.color(crB);
+                  QColor c = step ?
+                        midColor(COLOR(Base), PAL.color(crB), 6-step, step) :
+                        PAL.color(crB);
                   fillWithMask(painter, r, gradient(c, r.height(), Qt::Vertical,
                                   sunken ? GradSunken : GradGlass), &masks.button, pf);
                }
