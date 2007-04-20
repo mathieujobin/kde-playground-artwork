@@ -41,7 +41,7 @@ class DynamicBrush : public QObject
    Q_OBJECT
 public:
    enum Mode {Tiled = 0, QtGradient, XRender, OpenGL,
-         VGradient1, HGradient1, VGradient2, HGradient2};
+         VGradient1, HGradient1, VGradient2, HGradient2, Glass};
    DynamicBrush(Mode mode, QObject *parent = 0);
    DynamicBrush(Pixmap pixmap = -1, Pixmap shadow = -1, int bgYoffset = 0, QObject *parent = 0);
    ~DynamicBrush();
@@ -57,6 +57,7 @@ private:
    void updateBrushGradient1();
    void updateBrushGradient2();
    void updateBrushQt();
+   void updateBrushGlass();
    void initGL();
    void generateTiles(Mode mode);
    QPixmap glPixmap(const QRect &rect, int darkness = 0);

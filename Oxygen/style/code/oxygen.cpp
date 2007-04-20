@@ -111,7 +111,7 @@ public:
    }
 };
 
-Q_EXPORT_PLUGIN(OxygenStylePlugin)
+Q_EXPORT_PLUGIN2(OxygenStyle, OxygenStylePlugin)
 /**=========================================================*/
 using namespace Oxygen;
 
@@ -371,7 +371,7 @@ void OxygenStyle::readSettings()
    config.structure = settings.value("Structure", 0).toInt();
    
    config.scale = settings.value("Scale", 1.0).toDouble();
-   config.checkType = settings.value("CheckType", 0).toInt();
+   config.checkType = settings.value("CheckType", 1).toInt();
    
    
    config.gradientIntensity = settings.value("GradientIntensity",70).toInt();
@@ -495,6 +495,8 @@ OxygenStyle::OxygenStyle() : QCommonStyle(), activeChunk(0), anmiationUpdate(fal
 //    timer->start(50);
    connect(timer, SIGNAL(timeout()), this, SLOT(updateProgressbars()));
    connect(timer, SIGNAL(timeout()), this, SLOT(updateTabAnimation()));
+   connect(timer, SIGNAL(timeout()), this, SLOT(updateFades()));
+   connect(timer, SIGNAL(timeout()), this, SLOT(updateComplexFades()));
 }
 
 OxygenStyle::~OxygenStyle() {
@@ -817,17 +819,18 @@ void OxygenStyle::polish( QWidget * widget) {
    widget->installEventFilter(this);
 #endif
    
-   if (qobject_cast<QPushButton *>(widget)
-#ifndef QT_NO_COMBOBOX
-       || qobject_cast<QComboBox *>(widget)
-#endif
+   if (false
+//         qobject_cast<QPushButton *>(widget)
+// #ifndef QT_NO_COMBOBOX
+//        || qobject_cast<QComboBox *>(widget)
+// #endif
 #ifndef QT_NO_SPINBOX
        || qobject_cast<QAbstractSpinBox *>(widget)
 #endif
-       || qobject_cast<QCheckBox *>(widget)
+//        || qobject_cast<QCheckBox *>(widget)
        || qobject_cast<QScrollBar *>(widget)
        || widget->inherits("QHeaderView")
-       || qobject_cast<QRadioButton *>(widget)
+//        || qobject_cast<QRadioButton *>(widget)
 #ifndef QT_NO_SPLITTER
        || qobject_cast<QSplitterHandle *>(widget)
 #endif
@@ -850,15 +853,21 @@ void OxygenStyle::polish( QWidget * widget) {
    if (qobject_cast<QAbstractButton*>(widget)) {
       widget->setBackgroundRole ( config.role_btn[0] );
       widget->setForegroundRole ( config.role_btn[1] );
+      widget->installEventFilter(this);
    }
    if (qobject_cast<QComboBox *>(widget)) {
       widget->setBackgroundRole ( QPalette::Base );
       widget->setForegroundRole ( QPalette::Text );
+      widget->installEventFilter(this);
    }
-   if (qobject_cast<QScrollBar *>(widget) && !(widget->parentWidget() &&
-              widget->parentWidget()->parentWidget() &&
-              widget->parentWidget()->parentWidget()->inherits("QComboBoxListView")))
-      widget->setAttribute(Qt::WA_OpaquePaintEvent, false);
+   if (qobject_cast<QAbstractSlider *>(widget)) {
+      widget->installEventFilter(this);
+      if (qobject_cast<QScrollBar *>(widget) &&
+         !(widget->parentWidget() &&
+            widget->parentWidget()->parentWidget() &&
+            widget->parentWidget()->parentWidget()->inherits("QComboBoxListView")))
+         widget->setAttribute(Qt::WA_OpaquePaintEvent, false);
+   }
    
    if (qobject_cast<QProgressBar*>(widget)) {
       widget->setBackgroundRole ( config.role_progress[0] );
@@ -1093,7 +1102,15 @@ bool OxygenStyle::eventFilter( QObject *object, QEvent *ev ) {
             area->verticalScrollBar()->repaint();\
 
    case QEvent::Enter:
-      if (QAbstractScrollArea* area =
+      if (qobject_cast<QAbstractButton*>(object) ||
+          qobject_cast<QComboBox*>(object) ||
+          qobject_cast<QAbstractSlider*>(object)) {
+         QWidget *widget = (QWidget*)object;
+         if (widget->hasFocus()) return false;
+         fadeIn(widget);
+         return false;
+      }
+      else if (QAbstractScrollArea* area =
           qobject_cast<QAbstractScrollArea*>(object)) {
          if (!area->isEnabled()) return false;
          HANDLE_SCROLL_AREA_EVENT
@@ -1107,13 +1124,43 @@ bool OxygenStyle::eventFilter( QObject *object, QEvent *ev ) {
       }
       return false;
    case QEvent::Leave:
-      if (QAbstractScrollArea* area =
+      if (qobject_cast<QAbstractButton*>(object) || 
+          qobject_cast<QComboBox*>(object) ||
+          (qobject_cast<QAbstractSlider*>(object) && !static_cast<QAbstractSlider*>(object)->isSliderDown())) {
+         QWidget *widget = (QWidget*)object;
+         if (widget->hasFocus()) return false;
+         fadeOut(widget);
+         return false;
+      }
+      else if (QAbstractScrollArea* area =
           qobject_cast<QAbstractScrollArea*>(object)) {
          HANDLE_SCROLL_AREA_EVENT return false;
       }
       else if (Q3ScrollView* area =
                qobject_cast<Q3ScrollView*>(object)) {
          HANDLE_SCROLL_AREA_EVENT return false;
+      }
+      return false;
+   case QEvent::FocusIn:
+      if (qobject_cast<QAbstractButton*>(object) ||
+          qobject_cast<QComboBox*>(object)) {
+         QWidget *widget = (QWidget*)object;
+         if (widget->hasMouse())
+            widget->repaint();
+         else
+            fadeIn(widget);
+         return false;
+      }
+      return false;
+   case QEvent::FocusOut:
+      if (qobject_cast<QAbstractButton*>(object) || 
+          qobject_cast<QComboBox*>(object)) {
+         QWidget *widget = (QWidget*)object;
+         if (widget->hasMouse())
+            widget->repaint();
+         else
+            fadeOut((QWidget*)(object));
+         return false;
       }
       return false;
    case QEvent::EnabledChange:
@@ -1190,53 +1237,6 @@ void OxygenStyle::fakeMouse()
    }
 }
 
-void OxygenStyle::fadeIn(QPushButton *button)
-{
-   ButtonFades::iterator it = bfi.find(button->winId());
-   if (it == bfi.end())
-      it = bfi.insert(button->winId(), ButtonFadeInfo());
-   it.value().fadeIn = true;
-   if (it.value().timerId == 0)
-   {
-      it.value().index = 0;
-      it.value().timerId = button->startTimer(50);
-   }
-}
-
-void OxygenStyle::fadeOut(QPushButton *button)
-{
-   ButtonFades::iterator it = bfi.find(button->winId());
-   if (it == bfi.end())
-      it = bfi.insert(button->winId(), ButtonFadeInfo());
-   it.value().fadeIn = false;
-   if (it.value().timerId == 0)
-   {
-      it.value().index = 9;
-      it.value().timerId = button->startTimer(50);
-   }
-}
-
-QColor OxygenStyle::mapFadeColor(const QColor &color, int index) const
-{
-   OxygenStyle *ptr = const_cast<OxygenStyle*>( this );
-   FadeColors::iterator it = ptr->fadeColorMap.find(color.rgb());
-   if (it != fadeColorMap.end())
-      return QColor(it.value()[index]);
-   // no color map found, create one and return the queried value
-   QRgb *rgb = new QRgb[10];
-   int iRed = qApp->palette().color(QPalette::Active, QPalette::Button).red();
-   int iGreen = qApp->palette().color(QPalette::Active, QPalette::Button).green();
-   int iBlue = qApp->palette().color(QPalette::Active, QPalette::Button).blue();
-   int cRed = color.red();
-   int cGreen = color.green();
-   int cBlue = color.blue();
-   for (int i = 1; i < 11; i++)
-   {
-      rgb[i-1] = qRgb( iRed + (cRed-iRed)*(i)/11, iGreen + (cGreen-iGreen)*(i)/11, iBlue + (cBlue-iBlue)*(i)/11);
-   }
-   ptr->fadeColorMap.insert(color.rgb(), rgb);
-   return QColor(rgb[index]);
-}
 // cause of cmake
 #include "oxygen.moc"
 

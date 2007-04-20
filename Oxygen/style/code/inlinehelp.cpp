@@ -61,8 +61,7 @@ option->state & State_ReadOnly ? "ReadOnly, " : "") : qWarning("MISSING OPTIONS"
 #endif
 
 /**Internal calculates hsv v from color, faster than calling qcolor.hsv if you only want v*/
-inline int colorValue(const QColor &c)
-{
+inline int colorValue(const QColor &c) {
    int v = c.red();
    if (c.green() > v) v = c.green();
    if (c.blue() > v) v = c.blue();
@@ -70,13 +69,11 @@ inline int colorValue(const QColor &c)
 }
 
 /**Internal, calcs weighted mid of two colors*/
-inline QColor midColor(const QColor &oc1, const QColor &c2, int w1 = 1, int w2 = 1)
-{
+inline QColor midColor(const QColor &oc1, const QColor &c2, int w1 = 1, int w2 = 1) {
    int sum = (w1+w2);
    QColor c1 = oc1;
    int h,s, v = colorValue(c1);
-   if (v < 70)
-   {
+   if (v < 70) {
       c1.getHsv(&h,&s,&v);
       c1.setHsv(h,s,70);
    }
@@ -91,10 +88,13 @@ inline QColor midColor(const QColor &oc1, const QColor &c2, int w1 = 1, int w2 =
 
 /**Internal, calcs button color depending on state*/
 
-inline QColor btnBgColor(const QPalette &pal, bool isEnabled, bool hover = false)
-{
+inline QColor btnBgColor(const QPalette &pal, bool isEnabled, bool hover = false, int step = 0) {
    if (!isEnabled)
       return TMP_COLOR(Window);
+   if (step)
+      return midColor(TMP_CONF_COLOR(role_btn[0]),
+                         TMP_CONF_COLOR(role_btnHover[0]),
+                         6-step, step);
    if (hover)
       return TMP_CONF_COLOR(role_btnHover[0]);
    return TMP_CONF_COLOR(role_btn[0]).dark(103);
@@ -103,10 +103,13 @@ inline QColor btnBgColor(const QPalette &pal, bool isEnabled, bool hover = false
 
 
 /**Internal, calcs buttonText color depending on state*/
-inline QColor btnFgColor(const QPalette &pal, bool isEnabled, bool hover = false)
-{
+inline QColor btnFgColor(const QPalette &pal, bool isEnabled, bool hover = false, int step = 0) {
    if (!isEnabled)
       return midColor(TMP_COLOR(Window), TMP_COLOR(WindowText), 1, 3);
+   if (step)
+      return midColor(TMP_CONF_COLOR(role_btn[1]),
+                         TMP_CONF_COLOR(role_btnHover[1]),
+                         6-step, step);
    if (hover)
       return TMP_CONF_COLOR(role_btnHover[1]);
    return TMP_CONF_COLOR(role_btn[1]);
@@ -116,28 +119,23 @@ inline QColor btnFgColor(const QPalette &pal, bool isEnabled, bool hover = false
 #undef TMP_CONF_COLOR
 
 /**Internal, calcs a contrasted color to a qcolor*/
-inline QColor emphasize(const QColor &c, int value = 10)
-{
+inline QColor emphasize(const QColor &c, int value = 10) {
    int h,s,v;
    QColor ret;
    c.getHsv(&h,&s,&v);
-   if (v < 75+value)
-   {
+   if (v < 75+value) {
       ret.setHsv(h,s,CLAMP(85+value,85,255));
       return ret;
    }
-   if (v > 200)
-   {
-      if (s > 30)
-      {
+   if (v > 200) {
+      if (s > 30) {
          h -= 5; if (h < 0) h = 360 + h;
          s = (s<<3)/9;
          v += value;
          ret.setHsv(h,CLAMP(s,30,255),CLAMP(v,0,255));
          return ret;
       }
-      if (v > 230)
-      {
+      if (v > 230) {
          ret.setHsv(h,s,CLAMP(v-value,0,255));
          return ret;
       }
@@ -155,14 +153,12 @@ inline QColor light(const QColor &c, int value)
    int h,s,v;
    c.getHsv(&h,&s,&v);
    QColor ret;
-   if (v < 255-value)
-   {
+   if (v < 255-value) {
       ret.setHsv(h,s,CLAMP(v+value,0,255)); //value could be negative
       return ret;
    }
    // psychovisual uplightning, i.e. shift hue and lower saturation
-   if (s > 30)
-   {
+   if (s > 30) {
       h -= (value*5/20); if (h < 0) h = 400 + h;
       s = CLAMP((s<<3)/9,30,255);
       ret.setHsv(h,s,255);

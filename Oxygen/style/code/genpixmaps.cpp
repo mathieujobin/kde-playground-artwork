@@ -1,3 +1,5 @@
+#define fillRect(_X_,_Y_,_W_,_H_,_B_) setPen(Qt::NoPen); p.setBrush(_B_); p.drawRect(_X_,_Y_,_W_,_H_)
+
 void OxygenStyle::generatePixmaps()
 {
    QPixmap tmp; QPainter p;
@@ -32,8 +34,7 @@ void OxygenStyle::generatePixmaps()
    QLinearGradient lg; QGradientStops stops;
    QImage tmpImg($9,$9, QImage::Format_ARGB32);
    
-   for (int i = 0; i < 2; ++i)
-   {
+   for (int i = 0; i < 2; ++i) {
       int add = i*30;
       tmpImg.fill(Qt::transparent);
    
@@ -328,19 +329,23 @@ void OxygenStyle::generatePixmaps()
             << QGradientStop( 0.5, QColor(c1,c1,c1,71) )
             << QGradientStop( 1, QColor(c1,c1,c1,0) );
          lg.setStops(stops);
-         if (i)
+         if (i) {
             p.fillRect(0,0,$1,$49,lg);
-         else
+         }
+         else {
             p.fillRect(0,0,$49,$1,lg);
+         }
          stops.clear();
          stops << QGradientStop( 0, QColor(c2,c2,c2,0) )
             << QGradientStop( 0.5, QColor(c2,c2,c2,74) )
             << QGradientStop( 1, QColor(c2,c2,c2,0) );
          lg.setStops(stops);
-         if (i)
+         if (i) {
             p.fillRect($1,0,$2-$1,$49,lg);
-         else
+         }
+         else {
             p.fillRect(0,$1,$49,$2-$1,lg);
+         }
          stops.clear();
          p.end();
          shadows.line[i][j] = Tile::Line(tmp,i?Qt::Vertical:Qt::Horizontal,$49_2,-$49_2);
@@ -403,3 +408,4 @@ void OxygenStyle::generatePixmaps()
    */
    // ================================================================
 }
+#undef fillRect

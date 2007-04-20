@@ -21,8 +21,12 @@
 #include "oxrender.h"
 // #include <private/qwidget_p.h>
 
-bool TabAnimInfo::eventFilter( QObject* object, QEvent* event )
-{
+#define ANIMATIONS (activeTabs + progressbars.count() + \
+hoverWidgets.count() + complexHoverWidgets.count())
+
+#define startTimer if (!timer->isActive()) timer->start(50)
+
+bool TabAnimInfo::eventFilter( QObject* object, QEvent* event ) {
    if (event->type() != QEvent::Paint || !animStep)
       return false;
    QPainter p((QWidget*)object);
@@ -33,8 +37,7 @@ bool TabAnimInfo::eventFilter( QObject* object, QEvent* event )
 
 // QPixmap::grabWidget(.) currently fails on the background offset,
 // so we use our own implementation
-QPixmap grabWidget(QWidget * root)
-{
+QPixmap grabWidget(QWidget * root) {
     if (!root)
         return QPixmap();
    
@@ -52,16 +55,13 @@ QPixmap grabWidget(QWidget * root)
    
    // resizing (in case)
    if (root->testAttribute(Qt::WA_PendingResizeEvent) ||
-       !root->testAttribute(Qt::WA_WState_Created))
-   {
+       !root->testAttribute(Qt::WA_WState_Created)) {
       QResizeEvent e(root->size(), QSize());
       QApplication::sendEvent(root, &e);
    }
-   foreach (QWidget *w, widgets)
-   {
+   foreach (QWidget *w, widgets) {
       if (root->testAttribute(Qt::WA_PendingResizeEvent) ||
-         !root->testAttribute(Qt::WA_WState_Created))
-      {
+         !root->testAttribute(Qt::WA_WState_Created)) {
          QResizeEvent e(w->size(), QSize());
          QApplication::sendEvent(w, &e);
       }
@@ -73,12 +73,9 @@ QPixmap grabWidget(QWidget * root)
    QCoreApplication::sendEvent(root, &e);
    QPainter::restoreRedirected(root);
    
-   foreach (QWidget *w, widgets)
-   {
-      if (w->isVisibleTo(root))
-      {
-         if (w->autoFillBackground())
-         {
+   foreach (QWidget *w, widgets) {
+      if (w->isVisibleTo(root)) {
+         if (w->autoFillBackground()) {
             const QBrush bg = w->palette().brush(w->backgroundRole());
             QPainter p(&pix);
             QRect wrect = QRect(zero, w->size()).translated(w->mapTo(root, zero));
@@ -98,14 +95,20 @@ QPixmap grabWidget(QWidget * root)
    return pix;
 }
 
-static QMap<QWidget*, uint> progressbars;
-static QMap<QTabWidget*, TabAnimInfo*> tabwidgets;
+static QHash<QWidget*, uint> progressbars;
+typedef QHash<QWidget*, HoverFadeInfo> HoverFades;
+HoverFades hoverWidgets;
+typedef QHash<QWidget*, ComplexHoverFadeInfo> ComplexHoverFades;
+ComplexHoverFades complexHoverWidgets;
+static QHash<QTabWidget*, TabAnimInfo*> tabwidgets;
 static int activeTabs = 0;
 
 // --- ProgressBars --------------------
 void OxygenStyle::updateProgressbars() {
+   if (progressbars.isEmpty())
+      return;
    //Update the registered progressbars.
-   QMap<QWidget*, uint>::iterator iter;
+   QHash<QWidget*, uint>::iterator iter;
    QPainter p;
    QProgressBar *pb;
    QStyleOptionProgressBarV2 *opt = 0L;
@@ -174,19 +177,16 @@ void OxygenStyle::updateProgressbars() {
    anmiationUpdate = false;
 }
 
-void OxygenStyle::progressbarDestroyed(QObject* obj)
-{
+void OxygenStyle::progressbarDestroyed(QObject* obj) {
    progressbars.remove(static_cast<QWidget*>(obj));
-   if (!activeTabs && progressbars.count() == 0)
-      timer->stop();
+   if (!ANIMATIONS) timer->stop();
 }
 
 // --- TabWidgets --------------------
-void OxygenStyle::tabChanged(int index)
-{
+void OxygenStyle::tabChanged(int index) {
    if (config.tabTransition == Jump) return; // ugly nothing ;)
    QTabWidget* tw = (QTabWidget*)sender();
-   QMap<QTabWidget*, TabAnimInfo*>::iterator i = tabwidgets.find(tw);
+   QHash<QTabWidget*, TabAnimInfo*>::iterator i = tabwidgets.find(tw);
    if (i == tabwidgets.end()) // this tab isn't handled for some reason?
       return;
    
@@ -199,8 +199,7 @@ void OxygenStyle::tabChanged(int index)
    tai->tabPix[0] = /*QPixmap::*/grabWidget(ctw);
    
    ctw = tw->currentWidget();
-   if (!ctw)
-   {
+   if (!ctw) {
       tai->tabPix[0] = QPixmap();
       return;
    }
@@ -211,13 +210,11 @@ void OxygenStyle::tabChanged(int index)
    // TAB Transitions, NOTE, I'm using a bit X11 code here as this prevents deep pixmap
    // copies that are sometimes not necessary
    // TODO make an - ifdef'd ? - qt version for other platforms
-   switch (config.tabTransition)
-   {
+   switch (config.tabTransition) {
    case CrossFade:
       OXRender::blend(tai->tabPix[1], tai->tabPix[2], 0.1666);
       break;
-   case SlideIn:
-   {
+   case SlideIn: {
       //TODO handle different bar positions
       Display *dpy = QX11Info::display();
       GC gc = XCreateGC( dpy, tai->tabPix[2].handle(), 0, 0 );
@@ -227,16 +224,14 @@ void OxygenStyle::tabChanged(int index)
       XFreeGC ( dpy , gc );
       break;
    }
-   case SlideOut:
-   {
+   case SlideOut: {
       tai->tabPix[2] = tai->tabPix[1];
       //TODO handle different bar positions
       QPainter p(&tai->tabPix[2]);
       p.drawPixmap(0,0,tai->tabPix[0],0,tai->tabPix[0].height()/7,tai->tabPix[0].width(),6*tai->tabPix[0].height()/7);
       break;
    }
-   case RollOut:
-   {
+   case RollOut: {
       Display *dpy = QX11Info::display();
       GC gc = XCreateGC( dpy, tai->tabPix[2].handle(), 0, 0 );
       int h = tai->tabPix[1].height()/7;
@@ -246,8 +241,7 @@ void OxygenStyle::tabChanged(int index)
       XFreeGC ( dpy , gc );
       break;
    }
-   case RollIn:
-   {
+   case RollIn: {
       Display *dpy = QX11Info::display();
       GC gc = XCreateGC( dpy, tai->tabPix[2].handle(), 0, 0 );
       int h = tai->tabPix[1].height()/14;
@@ -259,8 +253,7 @@ void OxygenStyle::tabChanged(int index)
       XFreeGC ( dpy , gc );
       break;
    }
-   case CloseVertically:
-   {
+   case CloseVertically: {
       Display *dpy = QX11Info::display();
       GC gc = XCreateGC( dpy, tai->tabPix[2].handle(), 0, 0 );
       int h = tai->tabPix[1].height()/14;
@@ -272,8 +265,7 @@ void OxygenStyle::tabChanged(int index)
       XFreeGC ( dpy , gc );
       break;
    }
-   case OpenVertically:
-   {
+   case OpenVertically: {
       tai->tabPix[2] = tai->tabPix[1];
       QPainter p(&tai->tabPix[2]);
       int h = 6*tai->tabPix[0].height()/14;
@@ -283,8 +275,7 @@ void OxygenStyle::tabChanged(int index)
                    0,tai->tabPix[0].height()/2,tai->tabPix[0].width(),h);
       break;
    }
-   case CloseHorizontally:
-   {
+   case CloseHorizontally: {
       Display *dpy = QX11Info::display();
       GC gc = XCreateGC( dpy, tai->tabPix[2].handle(), 0, 0 );
       int w = tai->tabPix[1].width()/14;
@@ -296,8 +287,7 @@ void OxygenStyle::tabChanged(int index)
       XFreeGC ( dpy , gc );
       break;
    }
-   case OpenHorizontally:
-   {
+   case OpenHorizontally: {
       tai->tabPix[2] = tai->tabPix[1];
       QPainter p(&tai->tabPix[2]);
       int w = 6*tai->tabPix[0].width()/14;
@@ -308,8 +298,7 @@ void OxygenStyle::tabChanged(int index)
       break;
    }
    case ScanlineBlend:
-   default:
-   {
+   default: {
       Display *dpy = QX11Info::display();
       GC gc = XCreateGC( dpy, tai->tabPix[2].handle(), 0, 0 );
       for (int i = 6; i < tai->tabPix[2].height(); i+=6)
@@ -321,34 +310,31 @@ void OxygenStyle::tabChanged(int index)
    ctw->parentWidget()->installEventFilter(tai);
    _BLOCKEVENTS_(ctw);
    QList<QWidget*> widgets = ctw->findChildren<QWidget*>();
-   foreach(QWidget *widget, widgets)
-   {
+   foreach(QWidget *widget, widgets) {
       _BLOCKEVENTS_(widget);
-      if (widget->autoFillBackground())
-      {
+      if (widget->autoFillBackground()) {
          tai->autofillingWidgets.append(widget);
          widget->setAutoFillBackground(false);
       }
    }
    ctw->repaint();
-   if (!timer->isActive()) timer->start(50);
+   startTimer;
 }
 
-void OxygenStyle::updateTabAnimation()
-{
-   QMap<QTabWidget*, TabAnimInfo*>::iterator i;
+void OxygenStyle::updateTabAnimation() {
+   if (tabwidgets.isEmpty())
+      return;
+   QHash<QTabWidget*, TabAnimInfo*>::iterator i;
    activeTabs = 0;
    TabAnimInfo* tai;
    QWidget *ctw = 0, *widget = 0; QList<QWidget*> widgets;
    int index;
-   for (i = tabwidgets.begin(); i != tabwidgets.end(); i++)
-   {
+   for (i = tabwidgets.begin(); i != tabwidgets.end(); i++) {
       tai = i.value();
       if (!tai->animStep)
          continue;
       ctw = i.key()->currentWidget();
-      if (! --(tai->animStep)) // zero, stop animation
-      {
+      if (! --(tai->animStep)) { // zero, stop animation
          tai->tabPix[2] =
             tai->tabPix[1] =
             tai->tabPix[0] = QPixmap();
@@ -356,11 +342,9 @@ void OxygenStyle::updateTabAnimation()
          _UNBLOCKEVENTS_(ctw);
          widgets = ctw->findChildren<QWidget*>();
 //          ctw->repaint();
-         foreach(widget, widgets)
-         {
+         foreach(widget, widgets) {
             index = tai->autofillingWidgets.indexOf(widget);
-            if (index != -1)
-            {
+            if (index != -1) {
                tai->autofillingWidgets.removeAt(index);
                widget->setAutoFillBackground(true);
             }
@@ -372,13 +356,11 @@ void OxygenStyle::updateTabAnimation()
          continue;
       }
       ++activeTabs;
-      switch (config.tabTransition)
-      {
+      switch (config.tabTransition) {
       case CrossFade:
          OXRender::blend(tai->tabPix[1], tai->tabPix[2], 1.1666-0.1666*tai->animStep);
          break;
-      case SlideIn:
-      {
+      case SlideIn: {
          //TODO handle different bar positions
          Display *dpy = QX11Info::display();
          GC gc = XCreateGC( dpy, tai->tabPix[2].handle(), 0, 0 );
@@ -389,16 +371,14 @@ void OxygenStyle::updateTabAnimation()
          XFreeGC ( dpy , gc );
          break;
       }
-      case SlideOut:
-      {
+      case SlideOut: {
          tai->tabPix[2] = tai->tabPix[1];
          //TODO handle different bar positions
          QPainter p(&tai->tabPix[2]);
          p.drawPixmap(0,0,tai->tabPix[0],0,(7-tai->animStep)*tai->tabPix[0].height()/7,tai->tabPix[0].width(),tai->animStep*tai->tabPix[0].height()/7);
          break;
       }
-      case RollOut:
-      {
+      case RollOut: {
          Display *dpy = QX11Info::display();
          GC gc = XCreateGC( dpy, tai->tabPix[2].handle(), 0, 0 );
          int h = (7-tai->animStep)*tai->tabPix[1].height()/7;
@@ -408,8 +388,7 @@ void OxygenStyle::updateTabAnimation()
          XFreeGC ( dpy , gc );
          break;
       }
-      case RollIn:
-      {
+      case RollIn: {
          Display *dpy = QX11Info::display();
          GC gc = XCreateGC( dpy, tai->tabPix[2].handle(), 0, 0 );
          int h = (7-tai->animStep)*tai->tabPix[1].height()/14;
@@ -421,8 +400,7 @@ void OxygenStyle::updateTabAnimation()
          XFreeGC ( dpy , gc );
          break;
       }
-      case CloseVertically:
-      {
+      case CloseVertically: {
          Display *dpy = QX11Info::display();
          GC gc = XCreateGC( dpy, tai->tabPix[2].handle(), 0, 0 );
          int h = (7-tai->animStep)*tai->tabPix[1].height()/14;
@@ -434,8 +412,7 @@ void OxygenStyle::updateTabAnimation()
          XFreeGC ( dpy , gc );
          break;
       }
-      case OpenVertically:
-      {
+      case OpenVertically: {
          tai->tabPix[2] = tai->tabPix[1];
          QPainter p(&tai->tabPix[2]);
          int h = tai->animStep*tai->tabPix[0].height()/14;
@@ -445,8 +422,7 @@ void OxygenStyle::updateTabAnimation()
                      0,tai->tabPix[0].height()/2,tai->tabPix[0].width(),h);
          break;
       }
-      case CloseHorizontally:
-      {
+      case CloseHorizontally: {
          Display *dpy = QX11Info::display();
          GC gc = XCreateGC( dpy, tai->tabPix[2].handle(), 0, 0 );
          int w = (7-tai->animStep)*tai->tabPix[1].width()/14;
@@ -458,8 +434,7 @@ void OxygenStyle::updateTabAnimation()
          XFreeGC ( dpy , gc );
          break;
       }
-      case OpenHorizontally:
-      {
+      case OpenHorizontally: {
          tai->tabPix[2] = tai->tabPix[1];
          QPainter p(&tai->tabPix[2]);
          int w = tai->animStep*tai->tabPix[0].width()/14;
@@ -470,8 +445,7 @@ void OxygenStyle::updateTabAnimation()
          break;
       }
       case ScanlineBlend:
-      default:
-      {
+      default: {
       Display *dpy = QX11Info::display();
       GC gc = XCreateGC( dpy, tai->tabPix[2].handle(), 0, 0 );
       for (int i = tai->animStep; i < tai->tabPix[2].height(); i+=6)
@@ -482,15 +456,153 @@ void OxygenStyle::updateTabAnimation()
       }
       ctw->parentWidget()->repaint();
    }
-   if (!activeTabs && progressbars.count() == 0)
-      timer->stop();
+   if (!ANIMATIONS) timer->stop();
 }
 
-void OxygenStyle::tabDestroyed(QObject* obj)
-{
+void OxygenStyle::tabDestroyed(QObject* obj) {
    tabwidgets.remove(static_cast<QTabWidget*>(obj));
 //    delete tai;
-   if (tabwidgets.count() == 0 && progressbars.count() == 0)
-      timer->stop();
+   if (!ANIMATIONS) timer->stop();
 }
 
+void OxygenStyle::updateFades() {
+   if (hoverWidgets.isEmpty())
+      return;
+   QList<HoverFades::iterator> remList;
+   HoverFades::iterator it;
+   for (it = hoverWidgets.begin(); it != hoverWidgets.end(); it++) {
+      if (it.value().fadeIn) {
+         it.value().step += 2;
+         it.key()->update();
+         if (it.value().step > 4)
+            remList.append(it);
+      }
+      else { // fade out
+         --it.value().step;
+         it.key()->update();
+         if (it.value().step < 1)
+            remList.append(it);
+      }
+   }
+   foreach(it, remList) {
+      disconnect(it.key(), SIGNAL(destroyed(QObject*)), this, SLOT(fadeDestroyed(QObject*)));
+      hoverWidgets.erase(it);
+   }
+   if (!ANIMATIONS) timer->stop();
+}
+
+void OxygenStyle::updateComplexFades() {
+   if (complexHoverWidgets.isEmpty())
+      return;
+   QList<ComplexHoverFades::iterator> remList;
+   ComplexHoverFades::iterator it; bool update;
+   for (it = complexHoverWidgets.begin(); it != complexHoverWidgets.end(); it++) {
+      ComplexHoverFadeInfo &info = it.value();
+      update = false;
+      for (SubControl control = (SubControl)0x01;
+           control <= (SubControl)0x80;
+           control = (SubControl)(control<<1)) {
+         if (info.fadingInControls & control) {
+            update = true;
+            info.steps[control] += 2;
+            if (info.steps.value(control) > 4)
+               info.fadingInControls &= ~control;
+         }
+         else if (info.fadingOutControls & control) {
+            update = true;
+            --info.steps[control];
+            if (info.steps.value(control) < 1)
+               info.fadingOutControls &= ~control;
+         }
+      }
+      if (update)
+         it.key()->update();
+      if (info.activeSubControls == SC_None && // needed to detect changes!
+          info.fadingOutControls == SC_None &&
+          info.fadingInControls == SC_None)
+         remList.append(it);
+   }
+   foreach(it, remList) {
+      disconnect(it.key(), SIGNAL(destroyed(QObject*)), this,
+                 SLOT(complexFadeDestroyed(QObject*)));
+      complexHoverWidgets.erase(it);
+   }
+   if (!ANIMATIONS) timer->stop();
+}
+
+void OxygenStyle::fadeIn(QWidget *widget) {
+   HoverFades::iterator it = hoverWidgets.find(widget);
+   if (it == hoverWidgets.end()) {
+      it = hoverWidgets.insert(widget, HoverFadeInfo(1, true));
+   }
+   it.value().fadeIn = true;
+   connect(widget, SIGNAL(destroyed(QObject*)), this, SLOT(fadeDestroyed(QObject*)));
+   startTimer;
+}
+
+void OxygenStyle::fadeOut(QWidget *widget) {
+   HoverFades::iterator it = hoverWidgets.find(widget);
+   if (it == hoverWidgets.end()) {
+      it = hoverWidgets.insert(widget, HoverFadeInfo(6, false));
+   }
+   it.value().fadeIn = false;
+   connect(widget, SIGNAL(destroyed(QObject*)), this, SLOT(fadeDestroyed(QObject*)));
+   startTimer;
+}
+
+void OxygenStyle::fadeDestroyed(QObject* obj) {
+   hoverWidgets.remove(static_cast<QWidget*>(obj));
+   if (!ANIMATIONS) timer->stop();
+}
+
+int OxygenStyle::hoverStep(const QWidget *widget) const {
+   if (!widget)
+      return 0;
+   HoverFades::iterator it = hoverWidgets.find(const_cast<QWidget*>(widget));
+   if (it != hoverWidgets.end())
+      return it.value().step;
+   return 0;
+}
+
+const ComplexHoverFadeInfo *OxygenStyle::complexHoverFadeInfo(const QWidget *widget,
+   SubControls activeSubControls) const {
+      QWidget *w = const_cast<QWidget*>(widget);
+   ComplexHoverFades::iterator it = complexHoverWidgets.find(w);
+   if (it == complexHoverWidgets.end()) {
+      // we have no entry yet
+      if (activeSubControls == SC_None)
+         return 0; // no need here
+      // ...but we'll need one
+      it = complexHoverWidgets.insert(w, ComplexHoverFadeInfo());
+      connect(widget, SIGNAL(destroyed(QObject*)),
+               this, SLOT(complexFadeDestroyed(QObject*)));
+      startTimer;
+   }
+   // we now have an entry - check for validity and update in case
+   ComplexHoverFadeInfo *info = &it.value();
+   if (info->activeSubControls != activeSubControls) { // sth. changed
+      SubControls diff = info->activeSubControls ^ activeSubControls;
+      SubControls newActive = diff & activeSubControls;
+      SubControls newDead = diff & info->activeSubControls;
+      info->fadingInControls &= ~newDead;
+      info->fadingInControls |= newActive;
+      info->fadingOutControls &= ~newActive;
+      info->fadingOutControls |= newDead;
+      info->activeSubControls = activeSubControls;
+      for (SubControl control = (SubControl)0x01;
+      control <= (SubControl)0x80;
+      control = (SubControl)(control<<1)) {
+         if (newActive & control)
+            info->steps[control] = 1;
+         else if (newDead & control) {
+            info->steps[control] = 6;
+         }
+      }
+   }
+   return info;
+}
+
+void OxygenStyle::complexFadeDestroyed(QObject* obj) {
+   complexHoverWidgets.remove(static_cast<QWidget*>(obj));
+   if (!ANIMATIONS) timer->stop();
+}

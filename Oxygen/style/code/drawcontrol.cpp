@@ -39,6 +39,9 @@ using namespace Oxygen;
 
 extern Config config;
 extern Dpi dpi;
+typedef QHash<QWidget*, HoverFadeInfo> HoverFades;
+extern HoverFades hoverWidgets;
+extern int complexStep;
 
 #include "inlinehelp.cpp"
 #include "makros.h"
@@ -1065,8 +1068,9 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             painter->drawPixmap(xy, shadows.radio[0][hover]);
          xy += QPoint(dpi.$2,dpi.$1);
          int sz = dpi.ExclusiveIndicator - dpi.$4;
-         fillWithMask(painter, xy, gradient(btnBgColor(PAL, alive, hover), sz,
-                                            Qt::Vertical, alive?config.gradient:GradSunken), masks.radio);
+         fillWithMask(painter, xy, gradient(btnBgColor(PAL, alive, hover, complexStep),
+                                            sz, Qt::Vertical,
+                                            alive?config.gradient:GradSunken), masks.radio);
          break;
       }
    case CE_ScrollBarSubPage: // Scroll bar page decrease indicator (i.e., page up).
@@ -1122,9 +1126,14 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          else {
             size = r.width(); direction = Qt::Horizontal;
          }
-         fillWithMask(painter, r, gradient(btnBgColor(PAL, isEnabled, hover), size, direction, config.gradBtn), &masks.button);
+
+         // slider base
+         fillWithMask(painter, r, gradient(btnBgColor(PAL, isEnabled, hover, complexStep),
+                                           size, direction, config.gradBtn), &masks.button);
 	 masks.button.outline(r, painter, Qt::white, true);
-         if (!hover && scrollAreaHovered(widget)) {
+         
+         // and maybe a "scrollarea hovered indicator"
+         if ((!hover || complexStep) && scrollAreaHovered(widget)) {
             int dx, dy, off = sunken?dpi.$1:0;
             if (option->state & QStyle::State_Horizontal) {
                dx = r.width()/10+dpi.$1; dy = r.height()/3;
@@ -1136,7 +1145,8 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
                r.adjust(dx+off,dy,-dx+off,-dy);
                size = r.width();
             }
-            painter->drawTiledPixmap(r, gradient(btnBgColor(PAL, isEnabled, true), size, direction, config.gradBtn));
+            painter->drawTiledPixmap(r, gradient(btnBgColor(PAL, isEnabled, true),
+                                                 size, direction, config.gradBtn));
          }
       }
       break;

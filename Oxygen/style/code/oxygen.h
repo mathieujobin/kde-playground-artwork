@@ -44,7 +44,7 @@ class QFrame;
 
 namespace Oxygen {
 
-enum BGMode { Plain = 0, Scanlines, Dummy, FullPix, VGradient1, HGradient1, VGradient2, HGradient2 };
+enum BGMode { Plain = 0, Scanlines, Dummy, FullPix, VGradient1, HGradient1, VGradient2, HGradient2, Glass };
 enum Acceleration { None = 0, QtGradient, XRender, OpenGL };
 enum TabTransition {Jump = 0, CrossFade, ScanlineBlend, SlideIn, SlideOut, RollIn, RollOut, OpenVertically, CloseVertically, OpenHorizontally, CloseHorizontally };
 
@@ -57,21 +57,23 @@ public:
 
 class OxygenStyle;
 
-class ButtonFadeInfo 
-{
+class HoverFadeInfo {
 public:
-   ButtonFadeInfo()
-   {
-   timerId=0; index=0; fadeIn=TRUE;
-   }
-public:
-   int timerId;
-   int index;
+   HoverFadeInfo(int s = 0, bool fI = true) {step = s; fadeIn = fI;}
+   int step;
    bool fadeIn;
 };
 
-class TabAnimInfo : public QObject
-{
+class ComplexHoverFadeInfo {
+public:
+   ComplexHoverFadeInfo() {
+      activeSubControls = fadingInControls = fadingOutControls = QStyle::SC_None;
+   }
+   QStyle::SubControls activeSubControls, fadingInControls, fadingOutControls;
+   QHash<QStyle::SubControl, int> steps;
+};
+
+class TabAnimInfo : public QObject {
    Q_OBJECT
 public:
    TabAnimInfo(QObject *parent = 0, int currentTab = -1) :
@@ -92,15 +94,8 @@ enum GradientType {
    GradGroup,
    NumGrads
 };
-// typedef Tile::PosFlags PosFlags;
-// enum Position
-// {
-//    Top = 0x1, Left=0x2, Bottom=0x4, Right=0x8,
-//    Ring=0xf, Center=0x10, Full=0x1f
-// };
 
-typedef struct
-{
+typedef struct {
    int $1, $2, $3, $4, $5, $6, $7, $8, $9, $10;
    int $12, $13, $16, $32, $18, $20, $80;
    int ScrollBarExtent;
@@ -125,8 +120,7 @@ typedef struct Config {
       role_btn[2], role_btnHover[2], role_popup[2];
 } Config;
 
-class VisualFrame : public QWidget
-{
+class VisualFrame : public QWidget {
    Q_OBJECT
 public:
    VisualFrame(QFrame *parent, int top = 0, int left = 0, int right = 0, int bottom = 0);
@@ -149,8 +143,7 @@ private:
    int off[4];
 };
 
-class OxygenStyle : public QCommonStyle
-{
+class OxygenStyle : public QCommonStyle {
    Q_OBJECT
 public:
    enum WidgetState{Basic = 0, Hovered, Focused, Active};
@@ -207,32 +200,52 @@ signals:
 private slots:
    void fakeMouse();
    void handleIPC(int, int);
-   /** animation */
+   
+   // animation slots ============================
    void progressbarDestroyed(QObject*);
    void updateProgressbars();
+   
    void tabChanged(int index);
    void updateTabAnimation();
    void tabDestroyed(QObject* obj);
+   
+   void updateFades();
+   void fadeDestroyed(QObject* obj);
+   
+   void updateComplexFades();
+   void complexFadeDestroyed(QObject* obj);
+   
+   //=========================================
 
 private:
    OxygenStyle( const OxygenStyle & );
    OxygenStyle& operator=( const OxygenStyle & );
-   const QPixmap &gradient(const QColor &c, int size, Qt::Orientation o, GradientType type = GradSimple) const;
+   const QPixmap &gradient(const QColor &c, int size, Qt::Orientation o,
+                           GradientType type = GradSimple) const;
    const QPixmap &btnAmbient(int height) const;
    const QPixmap &tabShadow(int height, bool bottom = false) const;
-   void fillWithMask(QPainter *painter, const QRect &rect, const QBrush &brush, const Tile::Mask *mask, Tile::PosFlags pf = Tile::Full, bool justClip = false, QPoint offset = QPoint(), bool inverse = false, const QRect *outerRect = 0L) const;
-   void fillWithMask(QPainter *painter, const QPoint &xy, const QBrush &brush, const QPixmap &mask, QPoint offset = QPoint()) const;
+   void fillWithMask(QPainter *painter, const QRect &rect, const QBrush &brush,
+                     const Tile::Mask *mask, Tile::PosFlags pf = Tile::Full,
+                     bool justClip = false,
+                     QPoint offset = QPoint(), bool inverse = false,
+                     const QRect *outerRect = 0L) const;
+   void fillWithMask(QPainter *painter, const QPoint &xy, const QBrush &brush,
+                     const QPixmap &mask, QPoint offset = QPoint()) const;
    QColor mapFadeColor(const QColor &color, int index) const;
-   void fadeIn(QPushButton *button);
-   void fadeOut(QPushButton *button);
+   void fadeIn(QWidget *button);
+   void fadeOut(QWidget *button);
    QPixmap *tint(const QImage &img, const QColor& c) const;
    const Tile::Set &glow(const QColor & c, bool round = false) const;
    void readSettings();
    void generatePixmaps();
    void initMetrics();
    void makeStructure(int num, const QColor &c);
+   int hoverStep(const QWidget *widget) const;
+   const ComplexHoverFadeInfo *complexHoverFadeInfo(const QWidget *widget,
+      SubControls activeSubControls) const;
    
 private:
+   typedef QHash<QWidget*, HoverFadeInfo> HoverFades;
    typedef QCache<uint, QPixmap> PixmapCache;
    typedef QHash<uint, Tile::Set> TileCache;
    struct {
@@ -266,20 +279,15 @@ private:
    //anmiated progressbars
    uint activeChunk;
    bool anmiationUpdate;
-
-   // button fading
-   typedef QMap<uint, ButtonFadeInfo> ButtonFades;
-   ButtonFades bfi;
-   typedef QMap<QRgb, QRgb*> FadeColors;
-   FadeColors fadeColorMap;
-
+   int complexStep;
    
 //    QPalette tooltipPalette;
    
-   // toolbar title functionality
+   // toolbar title functionality ========================
    QPoint cursorPos_;
    bool mouseButtonPressed_;
    bool internalEvent_;
+   // ===========================
    DynamicBrush *_bgBrush;
    Pixmap popupPix;
    QTimer* timer;

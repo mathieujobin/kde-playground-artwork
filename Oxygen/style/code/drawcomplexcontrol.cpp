@@ -34,7 +34,6 @@ extern Dpi dpi;
 #include "inlinehelp.cpp"
 #include "makros.h"
 
-
 void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptionComplex * option, QPainter * painter, const QWidget * widget) const
 {
    Q_ASSERT(option);
@@ -212,6 +211,10 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             else {
                const QPixmap &fill = gradient(listShown?PAL.color(crB):COLOR(Base),
                                 r.height(), Qt::Vertical, GradGlass);
+               
+               int step = hoverStep(widget);
+               hover = hover || step;
+               
                if (!hover || ar.isNull() || listShown) // unique color
                   fillWithMask(painter,  r, fill, &masks.button);
                else { // splitted view
@@ -223,6 +226,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                      r.setRight(ar.left()); pf = Tile::Full&~Tile::Right;
                   }
                   fillWithMask(painter, r, fill, &masks.button, pf);
+                  
                   if (reverse) {
                      r.setLeft(RECT.left()); r.setRight(ar.right());
                      pf = Tile::Full&~Tile::Right;
@@ -231,7 +235,8 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                      r.setLeft(ar.left()); r.setRight(RECT.right());
                      pf = Tile::Full&~Tile::Left;
                   }
-                  fillWithMask(painter, r, gradient(PAL.color(crB), r.height(), Qt::Vertical,
+                  QColor c = step?midColor(COLOR(Base),PAL.color(crB),6-step,step):PAL.color(crB);
+                  fillWithMask(painter, r, gradient(c, r.height(), Qt::Vertical,
                                   sunken ? GradSunken : GradGlass), &masks.button, pf);
                }
                shadows.lineEdit[1].render(RECT, painter);
@@ -282,8 +287,8 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          // Make a copy here and reset it for each primitive.
          QStyleOptionSlider newScrollbar = *scrollbar;
          
-         // erase
-         if (widget->parentWidget() &&
+         // TODO: this is a stupid hack, move the whole special scrollbar painting here!
+         if (widget && widget->parentWidget() &&
               widget->parentWidget()->parentWidget() &&
               widget->parentWidget()->parentWidget()->inherits("QComboBoxListView")) {
             painter->fillRect(RECT, PAL.brush(QPalette::Base));
@@ -294,16 +299,23 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          if (scrollbar->minimum == scrollbar->maximum)
                saveFlags &= ~State_Enabled;
          
+         SubControls hoverControls = scrollbar->activeSubControls &
+               (SC_ScrollBarSubLine | SC_ScrollBarAddLine | SC_ScrollBarSlider);
+         const ComplexHoverFadeInfo *info =
+               complexHoverFadeInfo(widget, hoverControls);
+         
 #define PAINT_ELEMENT(_SC_, _CE_)\
-         if (scrollbar->subControls & _SC_)\
-         {\
+         if (scrollbar->subControls & _SC_) {\
             newScrollbar.rect = scrollbar->rect;\
             newScrollbar.state = saveFlags;\
             newScrollbar.rect = subControlRect(control, &newScrollbar, _SC_, widget);\
-            if (newScrollbar.rect.isValid())\
-            {\
+            if (newScrollbar.rect.isValid()) {\
                if (!(scrollbar->activeSubControls & _SC_))\
                   newScrollbar.state &= ~(State_Sunken | State_MouseOver);\
+               if (info && (info->fadingInControls & _SC_ || info->fadingOutControls & _SC_))\
+                  const_cast<OxygenStyle*>( this )->complexStep = info->steps.value(_SC_); \
+               else \
+                  const_cast<OxygenStyle*>( this )->complexStep = 0; \
                drawControl(_CE_, &newScrollbar, painter, widget);\
             }\
          }//
@@ -315,17 +327,22 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          PAINT_ELEMENT(SC_ScrollBarFirst, CE_ScrollBarFirst);
          PAINT_ELEMENT(SC_ScrollBarLast, CE_ScrollBarLast);
          
-         if (scrollbar->subControls & SC_ScrollBarSlider)
-         {
+         if (scrollbar->subControls & SC_ScrollBarSlider) {
             newScrollbar.rect = scrollbar->rect;
             newScrollbar.state = saveFlags;
-            newScrollbar.rect = subControlRect(control, &newScrollbar, SC_ScrollBarSlider, widget);
-            if (newScrollbar.rect.isValid())
-            {
+            newScrollbar.rect = subControlRect(control, &newScrollbar,
+                                               SC_ScrollBarSlider, widget);
+            if (newScrollbar.rect.isValid()) {
                if (!(scrollbar->activeSubControls & SC_ScrollBarSlider))
                   newScrollbar.state &= ~(State_Sunken | State_MouseOver);
                if (scrollbar->state & State_HasFocus)
                   newScrollbar.state |= (State_Sunken | State_MouseOver);
+               if (info && (info->fadingInControls & SC_ScrollBarSlider ||
+                   info->fadingOutControls & SC_ScrollBarSlider))
+                  const_cast<OxygenStyle*>( this )->complexStep =
+                        info->steps.value(SC_ScrollBarSlider);
+               else
+                  const_cast<OxygenStyle*>( this )->complexStep = 0;
                drawControl(CE_ScrollBarSlider, &newScrollbar, painter, widget);
             }
          }
@@ -399,13 +416,18 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          }
          
          if (slider->subControls & SC_SliderHandle) {
+            const ComplexHoverFadeInfo *info =
+                  complexHoverFadeInfo(widget, slider->activeSubControls & SC_SliderHandle);
+            int step = (info && (info->fadingInControls & SC_SliderHandle ||
+                   info->fadingOutControls & SC_SliderHandle)) ?
+                  info->steps.value(SC_SliderHandle) : 0;
             // shadow
             QPoint xy = handle.topLeft();
             painter->drawPixmap(sunken?xy+QPoint(dpi.$1,dpi.$1):xy, shadows.radio[sunken][1]);
             // gradient
             xy += QPoint(dpi.$2,dpi.$1);
             fillWithMask(painter, xy,
-                         gradient(btnBgColor(PAL, isEnabled, hover||hasFocus), handle.height()-dpi.$4, Qt::Vertical, config.gradBtn),
+                         gradient(btnBgColor(PAL, isEnabled, hover||hasFocus, step), handle.height()-dpi.$4, Qt::Vertical, config.gradBtn),
                          masks.radio);
          }
       }
@@ -464,8 +486,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             tool.rect = menuarea; tool.state = mflags;
             drawPrimitive(PE_IndicatorButtonDropDown, &tool, painter, widget);
             painter->setPen(oldPen);
-            if (hover)
-            {
+            if (hover) {
                menuarea.setLeft(button.right()-shadows.line[1][Sunken].thickness()/2);
                shadows.line[1][Sunken].render(menuarea, painter);
             }
@@ -602,7 +623,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          painter->drawEllipse(rect);
          rect.adjust(dpi.$2,dpi.$1,-dpi.$2,-dpi.$2);
          painter->setBrushOrigin(rect.topLeft());
-         painter->setBrush(gradient(hasFocus?COLOR(Highlight):PAL.foreground().color(), rect.height(), Qt::Vertical, GradRadialGloss));
+         painter->setBrush(gradient(btnBgColor(PAL, isEnabled, hover || hasFocus), rect.height(), Qt::Vertical, GradRadialGloss));
          painter->drawEllipse(rect);
          painter->restore();
       }

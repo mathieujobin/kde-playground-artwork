@@ -48,8 +48,8 @@ extern Dpi dpi;
 #include "inlinehelp.cpp"
 #include "makros.h"
 
-void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * option, QPainter * painter, const QWidget * widget) const
-{
+
+void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * option, QPainter * painter, const QWidget * widget) const {
    Q_ASSERT(option);
    Q_ASSERT(painter);
    
@@ -60,8 +60,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
    bool up = false;
    
    
-   switch ( pe )
-   {
+   switch ( pe ) {
    case PE_FrameDefaultButton: // This frame around a default button, e.g. in a dialog.
       // we swap colors instead, frame only on focus!
       break;
@@ -71,7 +70,11 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       bool isOn = option->state & State_On;
       const QStyleOptionButton* opt = qstyleoption_cast<const QStyleOptionButton*>(option);
       bool isDefault = opt && (opt->features & QStyleOptionButton::DefaultButton);
-      QColor c = btnBgColor(PAL, isEnabled, hover || hasFocus);
+      
+      int step = hoverStep(widget);
+
+      QColor c = btnBgColor(PAL, isEnabled, hover || hasFocus, step);
+      
       QRect r = RECT;
       
       // shadow
@@ -267,8 +270,8 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       if (isOn) sunken = false;
       hover = hover && !isOn;
       const int $2 = dpi.$2, $1 = dpi.$1;
-      
-      QColor c = btnBgColor(PAL, isEnabled, hover||hasFocus);
+      int step = isOn ? 0 : hoverStep(widget);
+      QColor c = btnBgColor(PAL, isEnabled, hover||hasFocus, step);
       QPoint xy = RECT.topLeft();
       
       // shadow
