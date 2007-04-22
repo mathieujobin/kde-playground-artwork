@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006-2007 by Thomas Lübking                             *
+ *   Copyright (C) 2006-2007 by Thomas Lï¿½bking                             *
  *   thomas.luebking@web.de                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -88,9 +88,15 @@ public:
 
 enum Orientation3D {Sunken = 0, Relief, Raised};
 enum GradientType {
-   GradSimple = 0, GradSunken,
-   GradGloss, GradGlass, GradRadialGloss,
-   GradButton, GradButtonHover, GradButtonDisabled,
+   GradSimple = 0,
+   GradSunken,
+   GradGloss,
+   GradRadialNonGloss,
+   GradGlass,
+   GradRadialGloss,
+   GradButton,
+   GradButtonHover,
+   GradButtonDisabled,
    GradGroup,
    NumGrads
 };

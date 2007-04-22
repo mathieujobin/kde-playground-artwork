@@ -1029,7 +1029,7 @@ bool OxygenStyle::eventFilter( QObject *object, QEvent *ev ) {
          QPalette::ColorRole role = menu->backgroundRole();
          QColor c = menu->palette().color(QPalette::Active, role);
          int size = ((QResizeEvent*)ev)->size().height();
-         const QPixmap &glass = gradient(c, size, Qt::Vertical, config.gradient);
+         const QPixmap &glass = gradient(c, size, Qt::Vertical, GradRadialNonGloss);
          QBrush brush(c, glass);
          QPalette pal = menu->palette();
          pal.setBrush(QPalette::Active, role, brush);

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006-2007 by Thomas Lübking                             *
+ *   Copyright (C) 2006-2007 by Thomas Lï¿½bking                             *
  *   thomas.luebking@web.de                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -99,7 +99,7 @@ const QPixmap &OxygenStyle::gradient(const QColor &c, int size, Qt::Orientation 
       }
    }
    
-   if (type == GradGloss || type == GradRadialGloss || type == GradGlass) {
+   if (type == GradGloss || type == GradRadialGloss || type == GradGlass || type == GradRadialNonGloss) {
    // many XRender implementations cannot do this... FUCK!
       // calculate the determining colors
       QColor d,dd,b,bb;
@@ -133,8 +133,14 @@ const QPixmap &OxygenStyle::gradient(const QColor &c, int size, Qt::Orientation 
          rg.setColorAt(0,d); rg.setColorAt(0.8,dd);
          rg.setColorAt(0.8, b); rg.setColorAt(1, bb);
          QPainter p(pix); p.fillRect(pix->rect(), rg); p.end();
-      }
-      else {
+      } else if (type == GradRadialNonGloss) {
+      #warning Thomas: check!
+         QLinearGradient lg(QPointF(start.x(), -15), stop);
+         lg.setColorAt(0, b);
+         lg.setColorAt(0.3, dd);
+         lg.setColorAt(0.7, b);
+         QPainter p(pix); p.fillRect(pix->rect(), lg); p.end();
+      } else {
          QLinearGradient lg(start, stop);
          lg.setColorAt(0,bb); lg.setColorAt(0.5,b);
          lg.setColorAt(0.5, dd);
