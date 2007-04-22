@@ -138,7 +138,7 @@ const QPixmap &OxygenStyle::gradient(const QColor &c, int size, Qt::Orientation 
          QLinearGradient lg(QPointF(start.x(), -15), stop);
          lg.setColorAt(0, b);
          lg.setColorAt(0.3, dd);
-         lg.setColorAt(0.7, b);
+         lg.setColorAt(0.8, b);
          QPainter p(pix); p.fillRect(pix->rect(), lg); p.end();
       } else {
          QLinearGradient lg(start, stop);
