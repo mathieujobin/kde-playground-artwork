@@ -19,10 +19,9 @@
  ***************************************************************************/
 
 #include "oxrender.h"
-// #include <private/qwidget_p.h>
 
 #define ANIMATIONS (activeTabs + progressbars.count() + \
-hoverWidgets.count() + complexHoverWidgets.count())
+hoverWidgets.count() + complexHoverWidgets.count() + indexedHoverWidgets.count())
 
 #define startTimer if (!timer->isActive()) timer->start(50)
 
@@ -97,9 +96,11 @@ QPixmap grabWidget(QWidget * root) {
 
 static QHash<QWidget*, uint> progressbars;
 typedef QHash<QWidget*, HoverFadeInfo> HoverFades;
-HoverFades hoverWidgets;
+static HoverFades hoverWidgets;
 typedef QHash<QWidget*, ComplexHoverFadeInfo> ComplexHoverFades;
-ComplexHoverFades complexHoverWidgets;
+static ComplexHoverFades complexHoverWidgets;
+typedef QHash<QWidget*, IndexedFadeInfo> IndexedFades;
+static IndexedFades indexedHoverWidgets;
 static QHash<QTabWidget*, TabAnimInfo*> tabwidgets;
 static int activeTabs = 0;
 
@@ -465,6 +466,8 @@ void OxygenStyle::tabDestroyed(QObject* obj) {
    if (!ANIMATIONS) timer->stop();
 }
 
+
+// -- Buttons etc. -------------------------------
 void OxygenStyle::updateFades() {
    if (hoverWidgets.isEmpty())
       return;
@@ -490,6 +493,42 @@ void OxygenStyle::updateFades() {
    }
    if (!ANIMATIONS) timer->stop();
 }
+
+void OxygenStyle::fadeIn(QWidget *widget) {
+   HoverFades::iterator it = hoverWidgets.find(widget);
+   if (it == hoverWidgets.end()) {
+      it = hoverWidgets.insert(widget, HoverFadeInfo(1, true));
+   }
+   it.value().fadeIn = true;
+   connect(widget, SIGNAL(destroyed(QObject*)), this, SLOT(fadeDestroyed(QObject*)));
+   startTimer;
+}
+
+void OxygenStyle::fadeOut(QWidget *widget) {
+   HoverFades::iterator it = hoverWidgets.find(widget);
+   if (it == hoverWidgets.end()) {
+      it = hoverWidgets.insert(widget, HoverFadeInfo(6, false));
+   }
+   it.value().fadeIn = false;
+   connect(widget, SIGNAL(destroyed(QObject*)), this, SLOT(fadeDestroyed(QObject*)));
+   startTimer;
+}
+
+void OxygenStyle::fadeDestroyed(QObject* obj) {
+   hoverWidgets.remove(static_cast<QWidget*>(obj));
+   if (!ANIMATIONS) timer->stop();
+}
+
+int OxygenStyle::hoverStep(const QWidget *widget) const {
+   if (!widget)
+      return 0;
+   HoverFades::iterator it = hoverWidgets.find(const_cast<QWidget*>(widget));
+   if (it != hoverWidgets.end())
+      return it.value().step;
+   return 0;
+}
+
+// -- Complex controls ----------------------
 
 void OxygenStyle::updateComplexFades() {
    if (complexHoverWidgets.isEmpty())
@@ -528,40 +567,6 @@ void OxygenStyle::updateComplexFades() {
       complexHoverWidgets.erase(it);
    }
    if (!ANIMATIONS) timer->stop();
-}
-
-void OxygenStyle::fadeIn(QWidget *widget) {
-   HoverFades::iterator it = hoverWidgets.find(widget);
-   if (it == hoverWidgets.end()) {
-      it = hoverWidgets.insert(widget, HoverFadeInfo(1, true));
-   }
-   it.value().fadeIn = true;
-   connect(widget, SIGNAL(destroyed(QObject*)), this, SLOT(fadeDestroyed(QObject*)));
-   startTimer;
-}
-
-void OxygenStyle::fadeOut(QWidget *widget) {
-   HoverFades::iterator it = hoverWidgets.find(widget);
-   if (it == hoverWidgets.end()) {
-      it = hoverWidgets.insert(widget, HoverFadeInfo(6, false));
-   }
-   it.value().fadeIn = false;
-   connect(widget, SIGNAL(destroyed(QObject*)), this, SLOT(fadeDestroyed(QObject*)));
-   startTimer;
-}
-
-void OxygenStyle::fadeDestroyed(QObject* obj) {
-   hoverWidgets.remove(static_cast<QWidget*>(obj));
-   if (!ANIMATIONS) timer->stop();
-}
-
-int OxygenStyle::hoverStep(const QWidget *widget) const {
-   if (!widget)
-      return 0;
-   HoverFades::iterator it = hoverWidgets.find(const_cast<QWidget*>(widget));
-   if (it != hoverWidgets.end())
-      return it.value().step;
-   return 0;
 }
 
 const ComplexHoverFadeInfo *OxygenStyle::complexHoverFadeInfo(const QWidget *widget,
@@ -605,4 +610,86 @@ const ComplexHoverFadeInfo *OxygenStyle::complexHoverFadeInfo(const QWidget *wid
 void OxygenStyle::complexFadeDestroyed(QObject* obj) {
    complexHoverWidgets.remove(static_cast<QWidget*>(obj));
    if (!ANIMATIONS) timer->stop();
+}
+
+// -- Indexed items like menus, tabs ---------------------
+void OxygenStyle::updateIndexedFades() {
+   if (indexedHoverWidgets.isEmpty())
+      return;
+   IndexedFades::iterator it;
+   QList<IndexedFades::iterator> remList2;
+   typedef QHash<QObject*, int> Action2Step;
+   Action2Step::iterator stepIt;
+   QList<Action2Step::iterator> remList;
+   for (it = indexedHoverWidgets.begin(); it != indexedHoverWidgets.end(); it++) {
+      IndexedFadeInfo &info = it.value();
+      if (info.fadingInIndices.isEmpty() && info.fadingOutIndices.isEmpty())
+         continue;
+      for (stepIt = info.fadingInIndices.begin(); stepIt != info.fadingInIndices.end(); stepIt++) {
+         stepIt.value() += 2;
+         if (stepIt.value() > 4)
+            remList.append(stepIt);
+      }
+      foreach(stepIt, remList)
+         info.fadingInIndices.erase(stepIt);
+      remList.clear();
+      for (stepIt = info.fadingOutIndices.begin(); stepIt != info.fadingOutIndices.end(); stepIt++) {
+         --stepIt.value();
+         if (stepIt.value() < 1)
+            remList.append(stepIt);
+      }
+      foreach(stepIt, remList)
+         info.fadingOutIndices.erase(stepIt);
+      it.key()->update();
+      
+      if (info.lastAction == 0L && // nothing actually hovered
+          info.fadingInIndices.isEmpty() && // no fade ins
+          info.fadingOutIndices.isEmpty()) // no fade outs
+         remList2.append(it); // -> remove later
+   }
+   foreach(it, remList2)
+      indexedHoverWidgets.erase(it);
+   if (!ANIMATIONS) timer->stop();
+}
+
+const IndexedFadeInfo *OxygenStyle::indexedFadeInfo(const QWidget *widget,
+   QObject *action) const {
+   QWidget *w = const_cast<QWidget*>(widget);
+   IndexedFades::iterator it = indexedHoverWidgets.find(w);
+   if (it == indexedHoverWidgets.end()) {
+      // we have no entry yet
+      if (action == 0L)
+         return 0L;
+      // ... but we'll need one
+      it = indexedHoverWidgets.insert(w, IndexedFadeInfo(0L));
+      connect(widget, SIGNAL(destroyed(QObject*)),
+               this, SLOT(indexedFadeDestroyed(QObject*)));
+      startTimer;
+   }
+   // we now have an entry - check for validity and update in case
+   IndexedFadeInfo *info = &it.value();
+   if (info->lastAction != action) { // sth. changed
+      info->fadingInIndices[action] = 1;
+      if (info->lastAction)
+         info->fadingOutIndices[info->lastAction] = 6;
+      info->lastAction = action;
+   }
+   return info;
+}
+
+void OxygenStyle::indexedFadeDestroyed(QObject* obj) {
+   indexedHoverWidgets.remove(static_cast<QWidget*>(obj));
+   if (!ANIMATIONS) timer->stop();
+}
+
+int IndexedFadeInfo::step(QObject *action) {
+   typedef QHash<QObject*, int> Action2Step;
+   Action2Step::iterator stepIt;
+   for (stepIt = fadingInIndices.begin(); stepIt != fadingInIndices.end(); stepIt++)
+      if (stepIt.key() == action)
+         return stepIt.value();
+   for (stepIt = fadingOutIndices.begin(); stepIt != fadingOutIndices.end(); stepIt++)
+      if (stepIt.key() == action)
+         return stepIt.value();
+   return 0;
 }

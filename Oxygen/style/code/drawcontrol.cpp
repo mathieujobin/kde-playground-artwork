@@ -706,12 +706,30 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       if (const QStyleOptionMenuItem *mbi =
           qstyleoption_cast<const QStyleOptionMenuItem *>(option)) {
          QPalette::ColorRole cr = QPalette::WindowText;
-         if (option->state & State_Selected) {
-            QRect rect = RECT;
+         IndexedFadeInfo *info = 0;
+         QAction *action = 0, *activeAction = 0;
+         int step = 0;
+         if (widget)
+         if (const QMenuBar* mbar = qobject_cast<const QMenuBar*>(widget)) {
+            action = mbar->actionAt(RECT.topLeft()); // is the action for this item!
+            activeAction = mbar->activeAction();
+            info = const_cast<IndexedFadeInfo *>(indexedFadeInfo(widget, activeAction));
+         }
+         if (info &&
+             (!activeAction || !activeAction->menu() || activeAction->menu()->isHidden()))
+            step = info->step(action);
+         if (step || option->state & State_Selected) {
+            QRect r = RECT;
+            if (step) {
+               step = 6-step;
+               int dx = step*r.width()/18, dy = step*r.height()/18;
+               r.adjust(dx, dy, -dx, -dy);
+            }
+            QRect rect = r;
             if (sunken)
                rect.adjust(dpi.$2, dpi.$1, -dpi.$2, -dpi.$2);
             shadows.button[sunken][true].render(rect, painter);
-            rect = RECT.adjusted(dpi.$3, dpi.$2, -dpi.$3, -dpi.$3);
+            rect = r.adjusted(dpi.$3, dpi.$2, -dpi.$3, -dpi.$3);
             const QPixmap &fill = gradient(CONF_COLOR(role_popup[0]), rect.height(), Qt::Vertical, config.gradient);
             fillWithMask(painter, rect, fill, &masks.button);
             masks.button.outline(rect, painter, Qt::white, true);
@@ -1199,8 +1217,8 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             else if (hover)
                painter->setPen(COLOR(Text));
             else
-               painter->setPen(midColor(COLOR(Base), COLOR(Text), 1, 2));
-            drawItemText(painter, editRect, Qt::AlignCenter, PAL, isEnabled, cb->currentText);
+               painter->setPen(midColor(COLOR(Base), COLOR(Text), isEnabled?1:2, 2));
+            painter->drawText(editRect, Qt::AlignCenter, cb->currentText);
          }
          painter->restore();
       }

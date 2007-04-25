@@ -73,6 +73,14 @@ public:
    QHash<QStyle::SubControl, int> steps;
 };
 
+class IndexedFadeInfo {
+public:
+   IndexedFadeInfo(QObject *action) { lastAction = action; }
+   QObject *lastAction;
+   QHash<QObject *, int> fadingInIndices, fadingOutIndices;
+   int step(QObject *action);
+};
+
 class TabAnimInfo : public QObject {
    Q_OBJECT
 public:
@@ -221,6 +229,9 @@ private slots:
    void updateComplexFades();
    void complexFadeDestroyed(QObject* obj);
    
+   void updateIndexedFades();
+   void indexedFadeDestroyed(QObject* obj);
+   
    //=========================================
 
 private:
@@ -249,6 +260,7 @@ private:
    int hoverStep(const QWidget *widget) const;
    const ComplexHoverFadeInfo *complexHoverFadeInfo(const QWidget *widget,
       SubControls activeSubControls) const;
+   const IndexedFadeInfo *indexedFadeInfo(const QWidget *widget, QObject *action) const;
    
 private:
    typedef QHash<QWidget*, HoverFadeInfo> HoverFades;

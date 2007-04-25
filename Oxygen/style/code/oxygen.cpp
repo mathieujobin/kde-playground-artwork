@@ -497,6 +497,7 @@ OxygenStyle::OxygenStyle() : QCommonStyle(), activeChunk(0), anmiationUpdate(fal
    connect(timer, SIGNAL(timeout()), this, SLOT(updateTabAnimation()));
    connect(timer, SIGNAL(timeout()), this, SLOT(updateFades()));
    connect(timer, SIGNAL(timeout()), this, SLOT(updateComplexFades()));
+   connect(timer, SIGNAL(timeout()), this, SLOT(updateIndexedFades()));
 }
 
 OxygenStyle::~OxygenStyle() {
@@ -1106,7 +1107,7 @@ bool OxygenStyle::eventFilter( QObject *object, QEvent *ev ) {
           qobject_cast<QComboBox*>(object) ||
           qobject_cast<QAbstractSlider*>(object)) {
          QWidget *widget = (QWidget*)object;
-         if (widget->hasFocus()) return false;
+         if (!widget->isEnabled() || widget->hasFocus()) return false;
          fadeIn(widget);
          return false;
       }
@@ -1128,7 +1129,7 @@ bool OxygenStyle::eventFilter( QObject *object, QEvent *ev ) {
           qobject_cast<QComboBox*>(object) ||
           (qobject_cast<QAbstractSlider*>(object) && !static_cast<QAbstractSlider*>(object)->isSliderDown())) {
          QWidget *widget = (QWidget*)object;
-         if (widget->hasFocus()) return false;
+         if (!widget->isEnabled() || widget->hasFocus()) return false;
          fadeOut(widget);
          return false;
       }
@@ -1145,6 +1146,7 @@ bool OxygenStyle::eventFilter( QObject *object, QEvent *ev ) {
       if (qobject_cast<QAbstractButton*>(object) ||
           qobject_cast<QComboBox*>(object)) {
          QWidget *widget = (QWidget*)object;
+         if (!widget->isEnabled()) return false;
          if (widget->testAttribute(Qt::WA_UnderMouse))
             widget->repaint();
          else
@@ -1156,6 +1158,7 @@ bool OxygenStyle::eventFilter( QObject *object, QEvent *ev ) {
       if (qobject_cast<QAbstractButton*>(object) || 
           qobject_cast<QComboBox*>(object)) {
          QWidget *widget = (QWidget*)object;
+         if (!widget->isEnabled()) return false;
          if (widget->testAttribute(Qt::WA_UnderMouse))
             widget->repaint();
          else
