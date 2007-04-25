@@ -22,16 +22,9 @@
 #include <QPainter>
 #include <QRegion>
 #include <QWidget>
+#include <QtCore/QVarLengthArray>
 #include <cmath>
 #include "oxrender.h"
-
-#ifndef MIN
-#define MIN(x,y) ((x) < (y) ? (x) : (y))
-#endif
-
-#ifndef MAX
-#define MAX(x,y) ((x) > (y) ? (x) : (y))
-#endif
 
 static Display *dpy = QX11Info::display();
 static Window root = RootWindow (dpy, DefaultScreen (dpy));
@@ -81,7 +74,7 @@ void OXRender::composite(const QPixmap &src, OXPicture mask, const QPixmap &dst,
 
 bool OXRender::blend(const QPixmap &upper, QPixmap &lower, double opacity)
 {
-   XRenderColor c = {0,0,0, (short uint)(opacity * 0xffff) };
+   XRenderColor c = {0,0,0, (ushort)(opacity * 0xffff) };
    OXPicture alpha = createFill (dpy, &c);
    if (alpha == X::None)
       return false;
@@ -111,7 +104,7 @@ QPixmap OXRender::applyAlpha(const QPixmap &toThisPix, const OXPicture &fromThis
    else
    {
       ax = alphaRect.x(); ay = alphaRect.y();
-      w = MIN(alphaRect.width(),w); h = MIN(alphaRect.height(),h);
+      w = qMin(alphaRect.width(),w); h = qMin(alphaRect.height(),h);
    }
 
    QPixmap pix(w,h);
@@ -140,10 +133,10 @@ QPixmap OXRender::fade(const QPixmap &pix, double percent)
 
 void OXRender::setColor(XRenderColor &xc, double r, double g, double b, double a)
 {
-   xc.red = ((short uint)(r*0xffff)) & 0xffff;
-   xc.green = ((short uint)(g*0xffff)) & 0xffff;
-   xc.blue = ((short uint)(b*0xffff)) & 0xffff;
-   xc.alpha = ((short uint)(a*0xffff)) & 0xffff;
+   xc.red = ushort(r * 0xffff);
+   xc.green = ushort(g * 0xffff);
+   xc.blue = ushort(b * 0xffff);
+   xc.alpha = ushort(a * 0xffff);
 }
 
 void OXRender::setColor(XRenderColor &xc, QColor qc)
@@ -169,7 +162,7 @@ OXPicture OXRender::gradient(const QPoint start, const QPoint stop, const ColorA
    XLinearGradient lg = {
       { start.x() << 16, start.y() << 16 },
       { stop.x() << 16, stop.y() << 16} };
-   XRenderColor cs[colors.size()];
+   QVarLengthArray<XRenderColor> cs(colors.size());
    for (int i = 0; i < colors.size(); ++i)
       setColor(cs[i], colors.at(i));
    XFixed *stps;
@@ -190,7 +183,7 @@ OXPicture OXRender::gradient(const QPoint start, const QPoint stop, const ColorA
       }
    }
    XFlush (dpy);
-   OXPicture lgp = XRenderCreateLinearGradient(dpy, &lg, stps, cs, MIN(MAX(stops.size(),2),colors.size()));
+   OXPicture lgp = XRenderCreateLinearGradient(dpy, &lg, stps, &cs[0], qMin(qMax(stops.size(),2),colors.size()));
    delete[] stps;
    return lgp;
 }
@@ -200,7 +193,7 @@ OXPicture OXRender::gradient(const QPoint c1, int r1, const QPoint c2, int r2, c
    XRadialGradient rg = {
       { c1.x() << 16, c1.y() << 16, r1 << 16 },
       { c2.x() << 16, c2.y() << 16, r2 << 16 } };
-   XRenderColor cs[colors.size()];
+   QVarLengthArray<XRenderColor> cs(colors.size());
    for (int i = 0; i < colors.size(); ++i)
       setColor(cs[i], colors.at(i));
    XFixed *stps;
@@ -221,7 +214,7 @@ OXPicture OXRender::gradient(const QPoint c1, int r1, const QPoint c2, int r2, c
       }
    }
    XFlush (dpy);
-   OXPicture lgp = XRenderCreateRadialGradient(dpy, &rg, stps, cs, MIN(MAX(stops.size(),2),colors.size()));
+   OXPicture lgp = XRenderCreateRadialGradient(dpy, &rg, stps, &cs[0], qMin(qMax(stops.size(),2),colors.size()));
    delete stps;
    return lgp;
 }
