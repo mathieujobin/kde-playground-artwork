@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>499</width>
-    <height>424</height>
+    <height>473</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -68,6 +68,9 @@
       </property>
      </item>
     </widget>
+   </item>
+   <item rowspan="8" row="0" column="2" >
+    <widget class="QTextBrowser" name="info" />
    </item>
    <item row="1" column="0" >
     <widget class="QLabel" name="label_2" >
@@ -207,6 +210,13 @@
     </widget>
    </item>
    <item row="6" column="0" colspan="2" >
+    <widget class="QCheckBox" name="showMenuIcons" >
+     <property name="text" >
+      <string>Show icons on popup menus</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0" colspan="2" >
     <widget class="QGroupBox" name="groupBox" >
      <property name="title" >
       <string>Color Roles</string>
@@ -275,7 +285,7 @@
      </layout>
     </widget>
    </item>
-   <item row="7" column="0" colspan="3" >
+   <item row="8" column="0" colspan="3" >
     <widget class="QDialogButtonBox" name="buttonBox" >
      <property name="orientation" >
       <enum>Qt::Horizontal</enum>
@@ -284,9 +294,6 @@
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok|QDialogButtonBox::Reset|QDialogButtonBox::RestoreDefaults|QDialogButtonBox::Save</set>
      </property>
     </widget>
-   </item>
-   <item rowspan="7" row="0" column="2" >
-    <widget class="QTextBrowser" name="info" />
    </item>
   </layout>
  </widget>

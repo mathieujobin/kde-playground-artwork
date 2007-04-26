@@ -81,7 +81,8 @@ typedef struct Values {
       tabTransition, // 1
       checkMark; // 1
    bool inverseButtons, // false
-      useGlass; // true
+      useGlass, // true
+      showMenuIcons; // false!
    QPalette::ColorRole crProgressBar, // Window
       crProgressBarGroove, // WindowText
       crTabBar, // WindowText
@@ -90,7 +91,7 @@ typedef struct Values {
       crPopup; // Window
 } Values;
 static const Values defaultValues = {
-   3, 2, 1, 1, false, true, QPalette::Window, QPalette::WindowText,
+   3, 2, 1, 1, false, true, false, QPalette::Window, QPalette::WindowText,
       QPalette::WindowText, QPalette::Window, QPalette::Button, QPalette::Window };
 
 static Values initValues;
@@ -168,6 +169,7 @@ void Config::resetValues() {
 #define SET(_ELEMENT_) ui._ELEMENT_->setChecked( initValues._ELEMENT_ )
    SET(inverseButtons);
    SET(useGlass);
+   SET(showMenuIcons);
 #undef SET
 }
 
@@ -189,6 +191,7 @@ void Config::setDefaults() {
 #define SET(_ELEMENT_) ui._ELEMENT_->setChecked( defaultValues._ELEMENT_ )
    SET(inverseButtons);
    SET(useGlass);
+   SET(showMenuIcons);
 #undef SET
 }
 
@@ -229,6 +232,7 @@ void Config::loadSettings() {
    ui._ELEMENT_->setChecked( initValues._ELEMENT_ )
    readBool("InverseButtons", inverseButtons);
    readBool("Aqua", useGlass);
+   readBool("ShowMenuIcons", showMenuIcons);
 
 #define readColor(_ENTRY_, _ELEMENT_)\
    initValues._ELEMENT_ = (QPalette::ColorRole)settings.value( _ENTRY_, defaultValues._ELEMENT_).toInt();\
@@ -251,6 +255,7 @@ void Config::save() {
    
    settings.setValue("InverseButtons", ui.inverseButtons->isChecked());
    settings.setValue("Aqua", ui.useGlass->isChecked());
+   settings.setValue("ShowMenuIcons", ui.showMenuIcons->isChecked());
    
 #define saveColor(_ENTRY_, _ELEMENT_) settings.setValue(_ENTRY_,\
                      ui._ELEMENT_->itemData(ui._ELEMENT_->currentIndex()))
