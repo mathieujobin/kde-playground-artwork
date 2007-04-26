@@ -99,7 +99,6 @@ enum GradientType {
    GradSimple = 0,
    GradSunken,
    GradGloss,
-   GradRadialNonGloss,
    GradGlass,
    GradRadialGloss,
    GradButton,

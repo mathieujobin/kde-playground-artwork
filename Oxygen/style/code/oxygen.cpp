@@ -1029,13 +1029,24 @@ bool OxygenStyle::eventFilter( QObject *object, QEvent *ev ) {
       if (QMenu *menu = qobject_cast<QMenu*>(object)) {
          QPalette::ColorRole role = menu->backgroundRole();
          QColor c = menu->palette().color(QPalette::Active, role);
+         int v = colorValue(c);
+         if (v < 80) {
+            int h,s; c.getHsv(&h,&s,&v); v = 80; c.setHsv(h,s,v);
+         }
          int size = ((QResizeEvent*)ev)->size().height();
-         const QPixmap &glass = gradient(c, size, Qt::Vertical, GradRadialNonGloss);
-         QBrush brush(c, glass);
+         
+//          const QPixmap &glass = gradient(c, size, Qt::Vertical, config.gradient);
+         
+         QPixmap pix(32,size);
+         QLinearGradient lg(QPoint(0, 0), QPoint(0, size));
+         lg.setColorAt(0, c);
+         lg.setColorAt(0.2, c.dark(100+3000/v));
+         lg.setColorAt(0.75, c);
+         QPainter p(&pix); p.fillRect(pix.rect(), lg); p.end();
+        
+         QBrush brush(c, pix);
          QPalette pal = menu->palette();
-         pal.setBrush(QPalette::Active, role, brush);
-         pal.setBrush(QPalette::Inactive, role, brush);
-         pal.setBrush(QPalette::Disabled, role, brush);
+         pal.setBrush(role, brush);
          menu->setPalette(pal);
          return false;
       }

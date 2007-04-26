@@ -99,7 +99,7 @@ const QPixmap &OxygenStyle::gradient(const QColor &c, int size, Qt::Orientation 
       }
    }
    
-   if (type == GradGloss || type == GradRadialGloss || type == GradGlass || type == GradRadialNonGloss) {
+   if (type == GradGloss || type == GradRadialGloss || type == GradGlass) {
    // many XRender implementations cannot do this... FUCK!
       // calculate the determining colors
       QColor d,dd,b,bb;
@@ -133,14 +133,8 @@ const QPixmap &OxygenStyle::gradient(const QColor &c, int size, Qt::Orientation 
          rg.setColorAt(0,d); rg.setColorAt(0.8,dd);
          rg.setColorAt(0.8, b); rg.setColorAt(1, bb);
          QPainter p(pix); p.fillRect(pix->rect(), rg); p.end();
-      } else if (type == GradRadialNonGloss) {
-      #warning Thomas: check!
-         QLinearGradient lg(QPointF(start.x(), -15), stop);
-         lg.setColorAt(0, b);
-         lg.setColorAt(0.3, dd);
-         lg.setColorAt(0.8, b);
-         QPainter p(pix); p.fillRect(pix->rect(), lg); p.end();
-      } else {
+      }
+      else {
          QLinearGradient lg(start, stop);
          lg.setColorAt(0,bb); lg.setColorAt(0.5,b);
          lg.setColorAt(0.5, dd);
