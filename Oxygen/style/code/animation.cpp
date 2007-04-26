@@ -471,25 +471,24 @@ void OxygenStyle::tabDestroyed(QObject* obj) {
 void OxygenStyle::updateFades() {
    if (hoverWidgets.isEmpty())
       return;
-   QList<HoverFades::iterator> remList;
-   HoverFades::iterator it;
-   for (it = hoverWidgets.begin(); it != hoverWidgets.end(); it++) {
+   HoverFades::iterator it = hoverWidgets.begin();
+   while (it != hoverWidgets.end()) {
       if (it.value().fadeIn) {
          it.value().step += 2;
          it.key()->update();
          if (it.value().step > 4)
-            remList.append(it);
+            it = hoverWidgets.erase(it);
+         else
+            ++it;
       }
       else { // fade out
          --it.value().step;
          it.key()->update();
          if (it.value().step < 1)
-            remList.append(it);
+            it = hoverWidgets.erase(it);
+         else
+            ++it;
       }
-   }
-   foreach(it, remList) {
-      disconnect(it.key(), SIGNAL(destroyed(QObject*)), this, SLOT(fadeDestroyed(QObject*)));
-      hoverWidgets.erase(it);
    }
    if (!ANIMATIONS) timer->stop();
 }
@@ -533,9 +532,9 @@ int OxygenStyle::hoverStep(const QWidget *widget) const {
 void OxygenStyle::updateComplexFades() {
    if (complexHoverWidgets.isEmpty())
       return;
-   QList<ComplexHoverFades::iterator> remList;
-   ComplexHoverFades::iterator it; bool update;
-   for (it = complexHoverWidgets.begin(); it != complexHoverWidgets.end(); it++) {
+   bool update;
+   ComplexHoverFades::iterator it = complexHoverWidgets.begin();
+   while (it != complexHoverWidgets.end()) {
       ComplexHoverFadeInfo &info = it.value();
       update = false;
       for (SubControl control = (SubControl)0x01;
@@ -559,12 +558,9 @@ void OxygenStyle::updateComplexFades() {
       if (info.activeSubControls == SC_None && // needed to detect changes!
           info.fadingOutControls == SC_None &&
           info.fadingInControls == SC_None)
-         remList.append(it);
-   }
-   foreach(it, remList) {
-      disconnect(it.key(), SIGNAL(destroyed(QObject*)), this,
-                 SLOT(complexFadeDestroyed(QObject*)));
-      complexHoverWidgets.erase(it);
+         it = complexHoverWidgets.erase(it);
+      else
+         ++it;
    }
    if (!ANIMATIONS) timer->stop();
 }
@@ -617,38 +613,42 @@ void OxygenStyle::updateIndexedFades() {
    if (indexedHoverWidgets.isEmpty())
       return;
    IndexedFades::iterator it;
-   QList<IndexedFades::iterator> remList2;
-   typedef QHash<int, int> Index2Step;
-   Index2Step::iterator stepIt;
-   QList<Index2Step::iterator> remList;
-   for (it = indexedHoverWidgets.begin(); it != indexedHoverWidgets.end(); it++) {
+   QHash<int, int>::iterator stepIt;
+   it = indexedHoverWidgets.begin();
+   while (it != indexedHoverWidgets.end()) {
       IndexedFadeInfo &info = it.value();
-      if (info.fadingInIndices.isEmpty() && info.fadingOutIndices.isEmpty())
+      if (info.fadingInIndices.isEmpty() && info.fadingOutIndices.isEmpty()) {
+         ++it;
          continue;
-      for (stepIt = info.fadingInIndices.begin(); stepIt != info.fadingInIndices.end(); stepIt++) {
+      }
+      
+      stepIt = info.fadingInIndices.begin();
+      while (stepIt != info.fadingInIndices.end()) {
          stepIt.value() += 2;
          if (stepIt.value() > 4)
-            remList.append(stepIt);
+            stepIt = info.fadingInIndices.erase(stepIt);
+         else
+            ++stepIt;
       }
-      foreach(stepIt, remList)
-         info.fadingInIndices.erase(stepIt);
-      remList.clear();
-      for (stepIt = info.fadingOutIndices.begin(); stepIt != info.fadingOutIndices.end(); stepIt++) {
+      
+      stepIt = info.fadingOutIndices.begin();
+      while (stepIt != info.fadingOutIndices.end()) {
          --stepIt.value();
          if (stepIt.value() < 1)
-            remList.append(stepIt);
+            stepIt = info.fadingOutIndices.erase(stepIt);
+         else
+            ++stepIt;
       }
-      foreach(stepIt, remList)
-         info.fadingOutIndices.erase(stepIt);
+      
       it.key()->update();
       
       if (info.index == 0L && // nothing actually hovered
           info.fadingInIndices.isEmpty() && // no fade ins
           info.fadingOutIndices.isEmpty()) // no fade outs
-         remList2.append(it); // -> remove later
+         it = indexedHoverWidgets.erase(it);
+      else
+         ++it;
    }
-   foreach(it, remList2)
-      indexedHoverWidgets.erase(it);
    if (!ANIMATIONS) timer->stop();
 }
 
