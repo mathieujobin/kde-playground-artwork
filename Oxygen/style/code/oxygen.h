@@ -75,10 +75,10 @@ public:
 
 class IndexedFadeInfo {
 public:
-   IndexedFadeInfo(QObject *action) { lastAction = action; }
-   QObject *lastAction;
-   QHash<QObject *, int> fadingInIndices, fadingOutIndices;
-   int step(QObject *action);
+   IndexedFadeInfo(int index) { this->index = index; }
+   int index;
+   QHash<int, int> fadingInIndices, fadingOutIndices;
+   int step(int index);
 };
 
 class TabAnimInfo : public QObject {
@@ -260,7 +260,7 @@ private:
    int hoverStep(const QWidget *widget) const;
    const ComplexHoverFadeInfo *complexHoverFadeInfo(const QWidget *widget,
       SubControls activeSubControls) const;
-   const IndexedFadeInfo *indexedFadeInfo(const QWidget *widget, QObject *action) const;
+   const IndexedFadeInfo *indexedFadeInfo(const QWidget *widget, int index) const;
    
 private:
    typedef QHash<QWidget*, HoverFadeInfo> HoverFades;

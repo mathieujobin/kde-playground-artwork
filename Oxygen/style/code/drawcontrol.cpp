@@ -295,9 +295,19 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       if (const QStyleOptionTab *tab =
           qstyleoption_cast<const QStyleOptionTab *>(option)) {
          bool selected = option->state & State_Selected;
-             int $2 = dpi.$2, $4 = dpi.$4;
+         int $2 = dpi.$2, $4 = dpi.$4;
          QPoint off;
-         if (!(hover || selected || sunken))
+         IndexedFadeInfo *info = 0;
+         int index = -1, hoveredIndex = -1, step = 0;
+         if (widget)
+         if (const QTabBar* tbar = qobject_cast<const QTabBar*>(widget)) {
+            index = tbar->tabAt(RECT.topLeft()); // is the action for this item!
+            hoveredIndex = hover ? index : tbar->tabAt(tbar->mapFromGlobal(QCursor::pos()));
+            info = const_cast<IndexedFadeInfo *>(indexedFadeInfo(widget, hoveredIndex));
+         }
+         if (info)
+            step = info->step(index);
+         if (!(step || hover || selected || sunken))
             break;
          Tile::PosFlags pf = 0; int size = 0; Qt::Orientation o = Qt::Vertical;
          QRect rect = RECT, fillRect = RECT;
@@ -362,7 +372,13 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             break;
          }
          else {
-            fillWithMask(painter, rect, gradient(PAL.color(config.role_tab[1]), size, o, sunken?GradSunken:config.gradientStrong), &masks.button, Tile::Full, false, off);
+            QColor c = step ? midColor(PAL.color(config.role_tab[0]),
+                                       PAL.color(config.role_tab[1]),
+                                       6-step, step) :
+                  PAL.color(config.role_tab[1]);
+            fillWithMask(painter, rect,
+                         gradient(c, size, o, sunken ? GradSunken : config.gradientStrong),
+                         &masks.button, Tile::Full, false, off);
          }
       }
       break;
@@ -713,11 +729,11 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          if (const QMenuBar* mbar = qobject_cast<const QMenuBar*>(widget)) {
             action = mbar->actionAt(RECT.topLeft()); // is the action for this item!
             activeAction = mbar->activeAction();
-            info = const_cast<IndexedFadeInfo *>(indexedFadeInfo(widget, activeAction));
+            info = const_cast<IndexedFadeInfo *>(indexedFadeInfo(widget, (int)activeAction));
          }
          if (info &&
              (!activeAction || !activeAction->menu() || activeAction->menu()->isHidden()))
-            step = info->step(action);
+            step = info->step((int)action);
          if (step || option->state & State_Selected) {
             QRect r = RECT;
             if (step) {

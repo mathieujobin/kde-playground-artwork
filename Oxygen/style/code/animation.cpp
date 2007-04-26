@@ -618,9 +618,9 @@ void OxygenStyle::updateIndexedFades() {
       return;
    IndexedFades::iterator it;
    QList<IndexedFades::iterator> remList2;
-   typedef QHash<QObject*, int> Action2Step;
-   Action2Step::iterator stepIt;
-   QList<Action2Step::iterator> remList;
+   typedef QHash<int, int> Index2Step;
+   Index2Step::iterator stepIt;
+   QList<Index2Step::iterator> remList;
    for (it = indexedHoverWidgets.begin(); it != indexedHoverWidgets.end(); it++) {
       IndexedFadeInfo &info = it.value();
       if (info.fadingInIndices.isEmpty() && info.fadingOutIndices.isEmpty())
@@ -642,7 +642,7 @@ void OxygenStyle::updateIndexedFades() {
          info.fadingOutIndices.erase(stepIt);
       it.key()->update();
       
-      if (info.lastAction == 0L && // nothing actually hovered
+      if (info.index == 0L && // nothing actually hovered
           info.fadingInIndices.isEmpty() && // no fade ins
           info.fadingOutIndices.isEmpty()) // no fade outs
          remList2.append(it); // -> remove later
@@ -653,12 +653,12 @@ void OxygenStyle::updateIndexedFades() {
 }
 
 const IndexedFadeInfo *OxygenStyle::indexedFadeInfo(const QWidget *widget,
-   QObject *action) const {
+   int index) const {
    QWidget *w = const_cast<QWidget*>(widget);
    IndexedFades::iterator it = indexedHoverWidgets.find(w);
    if (it == indexedHoverWidgets.end()) {
       // we have no entry yet
-      if (action == 0L)
+      if (index == 0L)
          return 0L;
       // ... but we'll need one
       it = indexedHoverWidgets.insert(w, IndexedFadeInfo(0L));
@@ -668,11 +668,11 @@ const IndexedFadeInfo *OxygenStyle::indexedFadeInfo(const QWidget *widget,
    }
    // we now have an entry - check for validity and update in case
    IndexedFadeInfo *info = &it.value();
-   if (info->lastAction != action) { // sth. changed
-      info->fadingInIndices[action] = 1;
-      if (info->lastAction)
-         info->fadingOutIndices[info->lastAction] = 6;
-      info->lastAction = action;
+   if (info->index != index) { // sth. changed
+      info->fadingInIndices[index] = 1;
+      if (info->index)
+         info->fadingOutIndices[info->index] = 6;
+      info->index = index;
    }
    return info;
 }
@@ -682,14 +682,14 @@ void OxygenStyle::indexedFadeDestroyed(QObject* obj) {
    if (!ANIMATIONS) timer->stop();
 }
 
-int IndexedFadeInfo::step(QObject *action) {
-   typedef QHash<QObject*, int> Action2Step;
-   Action2Step::iterator stepIt;
+int IndexedFadeInfo::step(int index) {
+   typedef QHash<int, int> Index2Step;
+   Index2Step::iterator stepIt;
    for (stepIt = fadingInIndices.begin(); stepIt != fadingInIndices.end(); stepIt++)
-      if (stepIt.key() == action)
+      if (stepIt.key() == index)
          return stepIt.value();
    for (stepIt = fadingOutIndices.begin(); stepIt != fadingOutIndices.end(); stepIt++)
-      if (stepIt.key() == action)
+      if (stepIt.key() == index)
          return stepIt.value();
    return 0;
 }

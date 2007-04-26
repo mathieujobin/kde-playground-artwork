@@ -28,7 +28,6 @@ using namespace Oxygen;
 int OxygenStyle::styleHint ( StyleHint hint, const QStyleOption * option, const QWidget * widget, QStyleHintReturn * returnData ) const {
    switch (hint) {
    case SH_EtchDisabledText: // Disabled text is "etched" as it is on Windows.
-      return true;
    case SH_DitherDisabledText: //  
       return false;
 //    case SH_GUIStyle: // The GUI style to use.
