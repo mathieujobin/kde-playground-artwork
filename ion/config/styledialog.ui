@@ -17,13 +17,7 @@
     </property>
     <layout class="QHBoxLayout" >
       <item>
-        <widget class="Q3GroupBox" name="stylebox" >
-          <property name="frameShape" >
-            <enum>Q3GroupBox::GroupBoxPanel</enum>
-          </property>
-          <property name="frameShadow" >
-            <enum>Q3GroupBox::Sunken</enum>
-          </property>
+        <widget class="QGroupBox" name="stylebox" >
           <property name="title" >
             <string>Style Settings</string>
           </property>

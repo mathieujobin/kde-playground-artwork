@@ -17,6 +17,8 @@
 
 #include "ionstyleconfig.h"
 
+using namespace Qt;
+
 //////////////////////////////////////////////////////////////////////////////
 // IonStyleConfig Class                                                     //
 //////////////////////////////////////////////////////////////////////////////
@@ -26,37 +28,37 @@
 // ----------------
 // Constructor
 
-IonStyleConfig::IonStyleConfig(QWidget* parent) : Ui::StyleDialog()
+IonStyleConfig::IonStyleConfig(QWidget* parent) : QObject(parent)
 {
-    setupUi(parent);
+    ui.setupUi(parent);
 
     KGlobal::locale()->insertCatalog("kstyle_ion_config");
 
     QSettings settings;
     oldhlfocus =
         settings.value("/ionstyle/Settings/hlfocus", true).toBool();
-    hlfocus->setChecked(oldhlfocus);
+    ui.hlfocus->setChecked(oldhlfocus);
 
     oldembossed =
         settings.value("/ionstyle/Settings/embossed", true).toBool();
-    embossed->setChecked(oldembossed);
+    ui.embossed->setChecked(oldembossed);
 
     oldgradients =
         settings.value("/ionstyle/Settings/gradients", true).toBool();
-    gradients->setChecked(oldgradients);
+    ui.gradients->setChecked(oldgradients);
 
     oldhighlights =
         settings.value("/ionstyle/Settings/highlights", true).toInt();
-    highlights->setValue(oldhighlights);
+    ui.highlights->setValue(oldhighlights);
 
     // connections
-    connect(hlfocus, SIGNAL(toggled(bool)),
+    connect(ui.hlfocus, SIGNAL(toggled(bool)),
             this, SLOT(updateChanged()));
-    connect(embossed, SIGNAL(toggled(bool)),
+    connect(ui.embossed, SIGNAL(toggled(bool)),
             this, SLOT(updateChanged()));
-    connect(gradients, SIGNAL(toggled(bool)),
+    connect(ui.gradients, SIGNAL(toggled(bool)),
             this, SLOT(updateChanged()));
-    connect(highlights, SIGNAL(valueChanged(int)),
+    connect(ui.highlights, SIGNAL(valueChanged(int)),
             this, SLOT(updateChanged()));
 }
 
@@ -79,10 +81,10 @@ void IonStyleConfig::updateChanged()
 {
     bool update = false;
 
-    if ((hlfocus->isChecked() != oldhlfocus) ||
-        (embossed->isChecked() != oldembossed) ||
-        (gradients->isChecked() != oldgradients) ||
-        (highlights->value() != oldhighlights)) {
+    if ((ui.hlfocus->isChecked() != oldhlfocus) ||
+        (ui.embossed->isChecked() != oldembossed) ||
+        (ui.gradients->isChecked() != oldgradients) ||
+        (ui.highlights->value() != oldhighlights)) {
         update = true;
     }
 
@@ -97,10 +99,10 @@ void IonStyleConfig::updateChanged()
 void IonStyleConfig::save()
 {
     QSettings settings;
-    settings.setValue("/ionstyle/Settings/hlfocuss", hlfocus->isChecked());
-    settings.setValue("/ionstyle/Settings/embossed", embossed->isChecked());
-    settings.setValue("/ionstyle/Settings/gradients", gradients->isChecked());
-    settings.setValue("/ionstyle/Settings/highlights", highlights->value());
+    settings.setValue("/ionstyle/Settings/hlfocuss", ui.hlfocus->isChecked());
+    settings.setValue("/ionstyle/Settings/embossed", ui.embossed->isChecked());
+    settings.setValue("/ionstyle/Settings/gradients", ui.gradients->isChecked());
+    settings.setValue("/ionstyle/Settings/highlights", ui.highlights->value());
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -110,10 +112,10 @@ void IonStyleConfig::save()
 
 void IonStyleConfig::defaults()
 {
-    hlfocus->setChecked(true);
-    embossed->setChecked(true);
-    gradients->setChecked(true);
-    highlights->setValue(2);
+    ui.hlfocus->setChecked(true);
+    ui.embossed->setChecked(true);
+    ui.gradients->setChecked(true);
+    ui.highlights->setValue(2);
 }
 
 //////////////////////////////////////////////////////////////////////////////

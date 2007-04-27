@@ -34,7 +34,7 @@
 
 class KConfig;
 
-class IonStyleConfig : public Ui::StyleDialog
+class IonStyleConfig : public QObject
 {
     Q_OBJECT
 public:
@@ -52,6 +52,7 @@ protected slots:
     void updateChanged();
 
 private:
+    Ui::StyleDialog ui;
     bool oldhlfocus;
     bool oldembossed;
     bool oldgradients;
