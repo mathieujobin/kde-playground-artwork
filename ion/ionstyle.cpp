@@ -48,20 +48,20 @@
 #include <kdrawutil.h>
 
 #include <qapplication.h>
-#include <qintdict.h>
+#include <q3intdict.h>
 #include <qpainter.h>
-#include <qpointarray.h>
+#include <q3pointarray.h>
 #include <qsettings.h>
 #include <qstyleplugin.h>
 
 #include <qcheckbox.h>
 #include <qcombobox.h>
-#include <qheader.h>
+#include <q3header.h>
 #include <qlineedit.h>
-#include <qmainwindow.h>
+#include <q3mainwindow.h>
 #include <qmenubar.h>
-#include <qpopupmenu.h>
-#include <qprogressbar.h>
+#include <q3popupmenu.h>
+#include <q3progressbar.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
 #include <qscrollbar.h>
@@ -69,9 +69,14 @@
 #include <qsplitter.h>
 #include <qtabbar.h>
 #include <qtabwidget.h>
-#include <qtoolbar.h>
+#include <q3toolbar.h>
 #include <qtoolbox.h>
 #include <qtoolbutton.h>
+//Added by qt3to4:
+#include <QPixmap>
+#include <QMouseEvent>
+#include <QEvent>
+#include <Q3Frame>
 
 #include "ionstyle.h"
 #include "bitmaps.h"
@@ -92,8 +97,8 @@ static const int MAXGRADIENTSIZE = 64;
 
 static unsigned contrast = 110;
 
-QMap<unsigned int, QIntDict<GradientSet> > gradients; // gradients[color][size]
-                   QIntDict<PixmapSet>     pixmaps;   //   pixmaps[color]
+QMap<unsigned int, Q3IntDict<GradientSet> > gradients; // gradients[color][size]
+                   Q3IntDict<PixmapSet>     pixmaps;   //   pixmaps[color]
 
 //////////////////////////////////////////////////////////////////////////////
 // Construction, Destruction, Initialization                                //
@@ -183,9 +188,9 @@ void IonStyle::polish(QApplication* app)
 void IonStyle::polish(QWidget *widget)
 {
     if (::qt_cast<QMenuBar*>(widget) ||
-        ::qt_cast<QPopupMenu*>(widget)) {
+        ::qt_cast<Q3PopupMenu*>(widget)) {
         // anti-flicker optimization
-        widget->setBackgroundMode(NoBackground);
+        widget->setBackgroundMode(Qt::NoBackground);
     } else if (::qt_cast<QLineEdit*>(widget) ||
                widget->inherits(QTOOLBAREXTENSION) ||
                (!qstrcmp(widget->name(), KTOOLBARWIDGET))) {
@@ -195,7 +200,7 @@ void IonStyle::polish(QWidget *widget)
                (::qt_cast<QToolButton*>(widget) ||
                 ::qt_cast<QPushButton*>(widget) ||
                 ::qt_cast<QComboBox*>(widget) ||
-                ::qt_cast<QSpinWidget*>(widget) ||
+                ::qt_cast<Q3SpinWidget*>(widget) ||
                 ::qt_cast<QCheckBox*>(widget) ||
                 ::qt_cast<QRadioButton*>(widget) ||
                 ::qt_cast<QSlider*>(widget) ||
@@ -244,16 +249,16 @@ void IonStyle::polish(QPalette &pal)
 void IonStyle::unPolish(QWidget *widget)
 {
     if (::qt_cast<QMenuBar*>(widget) ||
-        ::qt_cast<QPopupMenu*>(widget)) {
+        ::qt_cast<Q3PopupMenu*>(widget)) {
         widget->setBackgroundMode(PaletteBackground);
-    } else if (::qt_cast<QFrame*>(widget) ||
+    } else if (::qt_cast<Q3Frame*>(widget) ||
                widget->inherits(QTOOLBAREXTENSION) ||
                (!qstrcmp(widget->name(), KTOOLBARWIDGET))) {
         widget->removeEventFilter(this);
     } else if (highlights_ && // highlighting
                (::qt_cast<QPushButton*>(widget) ||
                 ::qt_cast<QComboBox*>(widget) ||
-                ::qt_cast<QSpinWidget*>(widget) ||
+                ::qt_cast<Q3SpinWidget*>(widget) ||
                 ::qt_cast<QCheckBox*>(widget) ||
                 ::qt_cast<QRadioButton*>(widget) ||
                 ::qt_cast<QSlider*>(widget) ||
@@ -707,13 +712,13 @@ void IonStyle::drawIonTab(
     edge |= (bar->indexOf(option.tab()->identifier()) == 0);
 
     switch (QTabBar::Shape(bar->shape())) {
-        case QTabBar::RoundedAbove:
-        case QTabBar::TriangularAbove: {
+        case QTabBar::RoundedNorth:
+        case QTabBar::TriangularNorth: {
             // is there a corner widget?
             tabwidget = ::qt_cast<QTabWidget*>(bar->parent());
             if (edge && tabwidget
-                && tabwidget->cornerWidget(reverse_ ? Qt::TopRight
-                                                    : Qt::TopLeft))
+                && tabwidget->cornerWidget(reverse_ ? Qt::TopRightCorner
+                                                    : Qt::TopLeftCorner))
                 edge = false;
 
             if (!selected) // shorten
@@ -788,13 +793,13 @@ void IonStyle::drawIonTab(
             break;
         }
 
-        case QTabBar::RoundedBelow:
-        case QTabBar::TriangularBelow: {
+        case QTabBar:: RoundedSouth:
+        case QTabBar:: TriangularSouth: {
             // is there a corner widget?
             tabwidget = ::qt_cast<QTabWidget*>(bar->parent());
             if (edge && tabwidget
                 && tabwidget->cornerWidget(reverse_ ?
-                                           Qt::BottomRight : Qt::BottomLeft)) {
+                                           Qt::BottomRightCorner : Qt::BottomLeftCorner)) {
                 edge = false;
             }
 
@@ -875,7 +880,7 @@ void IonStyle::drawPrimitive(
     bool horiz     = flags & Style_Horizontal;
     bool mouseover = highlights_ && (flags & Style_MouseOver);
     int x, y, w, h, x2, y2, n, cx, cy;
-    QPointArray parray;
+    Q3PointArray parray;
     QWidget* widget;
 
     rect.rect(&x, &y, &w, &h);
@@ -917,7 +922,7 @@ void IonStyle::drawPrimitive(
 
         case PE_HeaderSection: {
           // covers kicker taskbar buttons and menu titles
-          QHeader* header = dynamic_cast<QHeader*>(painter->device());
+          Q3Header* header = dynamic_cast<Q3Header*>(painter->device());
           widget = dynamic_cast<QWidget*>(painter->device());
 
           if (header) {
@@ -1226,7 +1231,7 @@ void IonStyle::drawPrimitive(
 
             if (widget && widget->parent() &&
                 widget->parent()->inherits("QToolBar")) {
-                QToolBar *toolbar = ::qt_cast<QToolBar*>(widget->parent());
+                Q3ToolBar *toolbar = ::qt_cast<Q3ToolBar*>(widget->parent());
                 if (toolbar) {
                     // toolbar not floating or in a QMainWindow
                     flat = flatToolbar(toolbar);
@@ -1470,8 +1475,8 @@ void IonStyle::drawControl(ControlElement element,
     bool active, enabled, depress;
     int x, y, w, h, x2, y2, dx;
     QMenuItem *mi;
-    QIconSet::Mode mode;
-    QIconSet::State state;
+    QIcon::Mode mode;
+    QIcon::State state;
     QPixmap pixmap;
 
     rect.rect(&x, &y, &w, &h);
@@ -1607,21 +1612,21 @@ void IonStyle::drawControl(ControlElement element,
             if (button->iconSet() && !button->iconSet()->isNull()) { // draw icon
                 if (button->isEnabled()) {
                     if (button->hasFocus()) {
-                        mode = QIconSet::Active;
+                        mode = QIcon::Active;
                     } else {
-                        mode = QIconSet::Normal;
+                        mode = QIcon::Normal;
                     }
                 } else {
-                    mode = QIconSet::Disabled;
+                    mode = QIcon::Disabled;
                 }
 
                 if (button->isToggleButton() && button->isOn()) {
-                    state = QIconSet::On;
+                    state = QIcon::On;
                 } else {
-                    state = QIconSet::Off;
+                    state = QIcon::Off;
                 }
 
-                pixmap = button->iconSet()->pixmap(QIconSet::Small, mode, state);
+                pixmap = button->iconSet()->pixmap(QIcon::Small, mode, state);
                 if (button->text().isEmpty() && !button->pixmap()) {
                     painter->drawPixmap(x+w/2 - pixmap.width()/2,
                                         y+h/2 - pixmap.height()/2, pixmap);
@@ -1696,7 +1701,7 @@ void IonStyle::drawControl(ControlElement element,
         }
 
       case CE_DockWindowEmptyArea:  {
-          const QToolBar *tb = ::qt_cast<const QToolBar*>(widget);
+          const Q3ToolBar *tb = ::qt_cast<const Q3ToolBar*>(widget);
           if (tb) {
               // toolbar not floating or in a QMainWindow
               if (flatToolbar(tb)) {
@@ -1753,7 +1758,7 @@ void IonStyle::drawControl(ControlElement element,
         }
 
         case CE_PopupMenuItem: {
-            const QPopupMenu *popup = ::qt_cast<const QPopupMenu*>(widget);
+            const Q3PopupMenu *popup = ::qt_cast<const Q3PopupMenu*>(widget);
             if (!popup) {
                 KStyle::drawControl(element, painter, widget, rect, group,
                                     flags, option);
@@ -1798,11 +1803,11 @@ void IonStyle::drawControl(ControlElement element,
             // draw icon
             if (mi->iconSet() && !mi->isChecked()) {
                 if (active)
-                    mode = enabled ? QIconSet::Active : QIconSet::Disabled;
+                    mode = enabled ? QIcon::Active : QIcon::Disabled;
                 else
-                    mode = enabled ? QIconSet::Normal : QIconSet::Disabled;
+                    mode = enabled ? QIcon::Normal : QIcon::Disabled;
 
-                pixmap = mi->iconSet()->pixmap(QIconSet::Small, mode);
+                pixmap = mi->iconSet()->pixmap(QIcon::Small, mode);
                 QRect pmrect(0, 0, pixmap.width(), pixmap.height());
                 vrect = visualRect(QRect(x, y, checkwidth, h), rect);
                 pmrect.moveCenter(vrect.center());
@@ -1931,7 +1936,7 @@ void IonStyle::drawControl(ControlElement element,
 
         case CE_ProgressBarLabel:
         case CE_ProgressBarContents: {
-            const QProgressBar* pbar = ::qt_cast<const QProgressBar*>(widget);
+            const Q3ProgressBar* pbar = ::qt_cast<const Q3ProgressBar*>(widget);
             if (!pbar) {
                 KStyle::drawControl(element, painter, widget, rect, group,
                                     flags, option);
@@ -2008,7 +2013,7 @@ void IonStyle::drawControl(ControlElement element,
           const int rx = x2 - 20;
           const int cx = rx - h + 1;
 
-          QPointArray parray(6);
+          Q3PointArray parray(6);
           parray.putPoints(0, 6,
                            x-1,y, cx,y, rx-2,y2-2, x2+1,y2-2,
                            x2+1,y2+2, x-1,y2+2);
@@ -2017,7 +2022,7 @@ void IonStyle::drawControl(ControlElement element,
               painter->setPen(group.dark());
               painter->setBrush(box->currentItem()->paletteBackgroundColor());
               painter->drawConvexPolygon(parray, 0, 6);
-              painter->setBrush(NoBrush);
+              painter->setBrush(Qt::NoBrush);
           } else {
               painter->setClipRegion(parray, QPainter::CoordPainter);
               drawIonGradient(painter, rect,
@@ -2299,7 +2304,7 @@ void IonStyle::drawComplexControl(ComplexControl control,
         }
 
         case CC_SpinWidget: {
-            const QSpinWidget *spin = ::qt_cast<const QSpinWidget*>(widget);
+            const Q3SpinWidget *spin = ::qt_cast<const Q3SpinWidget*>(widget);
             if (!spin) {
                 KStyle::drawComplexControl(control, painter, widget, rect, group,
                                             flags, controls, active, option);
@@ -2333,7 +2338,7 @@ void IonStyle::drawComplexControl(ComplexControl control,
                                  group.button(), group.button(), sunken);
                 }
 
-                if (spin->buttonSymbols() == QSpinWidget::PlusMinus)
+                if (spin->buttonSymbols() == Q3SpinWidget::PlusMinus)
                     element = PE_SpinWidgetPlus;
                 else
                     element = PE_SpinWidgetUp;
@@ -2362,7 +2367,7 @@ void IonStyle::drawComplexControl(ComplexControl control,
                                  group.button(), group.button(), sunken);
                 }
 
-                if (spin->buttonSymbols() == QSpinWidget::PlusMinus)
+                if (spin->buttonSymbols() == Q3SpinWidget::PlusMinus)
                     element = PE_SpinWidgetMinus;
                 else
                     element = PE_SpinWidgetDown;
@@ -2383,7 +2388,7 @@ void IonStyle::drawComplexControl(ComplexControl control,
                 return;
             }
 
-            QToolBar *toolbar;
+            Q3ToolBar *toolbar;
             bool horiz = true;
             bool normal = !(down || on || raised); // normal button state
 
@@ -2392,7 +2397,7 @@ void IonStyle::drawComplexControl(ComplexControl control,
 
             // check for QToolBar parent
             if (btn->parent() && btn->parent()->inherits("QToolBar")) {
-                toolbar = ::qt_cast<QToolBar*>(btn->parent());
+                toolbar = ::qt_cast<Q3ToolBar*>(btn->parent());
                 if (toolbar) {
                     horiz = (toolbar->orientation() == Qt::Horizontal);
                     if (normal) { // draw background
@@ -2415,7 +2420,7 @@ void IonStyle::drawComplexControl(ComplexControl control,
                     btn->parent()->inherits(QTOOLBAREXTENSION)) {
                 QWidget *extension;
                 if ((extension = ::qt_cast<QWidget*>(btn->parent()))) {
-                    toolbar = ::qt_cast<QToolBar*>(extension->parent());
+                    toolbar = ::qt_cast<Q3ToolBar*>(extension->parent());
                     if (toolbar) {
                         horiz = (toolbar->orientation() == Qt::Horizontal);
                         if (normal) { // draw background
@@ -2732,7 +2737,7 @@ QSize IonStyle::sizeFromContents(ContentsType contents,
 
       case CT_PopupMenuItem: {
           if (!widget || option.isDefault()) return contentsize;
-          const QPopupMenu *popup = ::qt_cast<const QPopupMenu*>(widget);
+          const Q3PopupMenu *popup = ::qt_cast<const Q3PopupMenu*>(widget);
           if (!popup) {
               return KStyle::sizeFromContents(contents, widget, contentsize,
                                               option);
@@ -2761,7 +2766,7 @@ QSize IonStyle::sizeFromContents(ContentsType contents,
               }
               if (item->iconSet())
                   h = QMAX(h, item->iconSet()->
-                           pixmap(QIconSet::Small, QIconSet::Normal).height()
+                           pixmap(QIcon::Small, QIcon::Normal).height()
                            + ITEMVMARGIN*2 + ITEMFRAME*2);
           }
 
@@ -2772,7 +2777,7 @@ QSize IonStyle::sizeFromContents(ContentsType contents,
 
           if (option.maxIconWidth() || popup->isCheckable()) {
               w += QMAX(option.maxIconWidth(),
-                        QIconSet::iconSize(QIconSet::Small).width())
+                        QIcon::iconSize(QIcon::Small).width())
                   + ITEMHMARGIN*2;
           }
           w += RIGHTBORDER;
@@ -2794,12 +2799,12 @@ QSize IonStyle::sizeFromContents(ContentsType contents,
 // -------------
 // Is the toolbar "flat"
 
-bool IonStyle::flatToolbar(const QToolBar *toolbar) const
+bool IonStyle::flatToolbar(const Q3ToolBar *toolbar) const
 {
     if (!toolbar) return true; // not on a toolbar
     if (!toolbar->isMovingEnabled()) return true; // immobile toolbars are flat
     if (!toolbar->area()) return true; // not docked
-    if (toolbar->place() == QDockWindow::OutsideDock) return true; // ditto
+    if (toolbar->place() == Q3DockWindow::OutsideDock) return true; // ditto
     if (!toolbar->mainWindow()) return true; // not in a main window
     return false;
 }
@@ -2817,7 +2822,7 @@ bool IonStyle::eventFilter(QObject *object, QEvent *event)
 
     bool horiz;
     int x, y, w, h;
-    QToolBar *toolbar;
+    Q3ToolBar *toolbar;
     QWidget *widget;
 
     // painting events
@@ -2832,7 +2837,7 @@ bool IonStyle::eventFilter(QObject *object, QEvent *event)
             int px = widget->x(), py = widget->y();
             // find the toolbar
             while (parent && parent->parent()
-                   && !::qt_cast<QToolBar*>(parent)) {
+                   && !::qt_cast<Q3ToolBar*>(parent)) {
                 px += parent->x();
                 py += parent->y();
                 parent = ::qt_cast<QWidget*>(parent->parent());
@@ -2841,7 +2846,7 @@ bool IonStyle::eventFilter(QObject *object, QEvent *event)
             widget->rect().rect(&x, &y, &w, &h);
             QRect prect = parent->rect();
 
-            toolbar = ::qt_cast<QToolBar*>(parent);
+            toolbar = ::qt_cast<Q3ToolBar*>(parent);
             horiz = (toolbar) ? (toolbar->orientation() == Qt::Horizontal)
                 : (prect.height() < prect.width());
             QPainter painter(widget);
@@ -2859,7 +2864,7 @@ bool IonStyle::eventFilter(QObject *object, QEvent *event)
 
         // QToolBarExtensionWidget
         else if (object && object->isWidgetType() && object->parent() &&
-                 (toolbar = ::qt_cast<QToolBar*>(object->parent()))) {
+                 (toolbar = ::qt_cast<Q3ToolBar*>(object->parent()))) {
             if (0 == (widget = ::qt_cast<QWidget*>(object))) return false;
             horiz = (toolbar->orientation() == Qt::Horizontal);
             QPainter painter(widget);
@@ -2895,14 +2900,14 @@ bool IonStyle::eventFilter(QObject *object, QEvent *event)
                event->type() == QEvent::FocusOut)) {
         if (0 != (widget = ::qt_cast<QLineEdit*>(object))) {
             widget->repaint(false);
-            if (0 != (widget = ::qt_cast<QSpinWidget*>(widget->parent())))
+            if (0 != (widget = ::qt_cast<Q3SpinWidget*>(widget->parent())))
                 widget->repaint(false);
         }
     } else if (highlights_) { // "mouseover" events
         if (::qt_cast<QToolButton*>(object) ||
             ::qt_cast<QPushButton*>(object) ||
             ::qt_cast<QComboBox*>(object) ||
-            ::qt_cast<QSpinWidget*>(object) ||
+            ::qt_cast<Q3SpinWidget*>(object) ||
             ::qt_cast<QCheckBox*>(object) ||
             ::qt_cast<QRadioButton*>(object) ||
             ::qt_cast<QSlider*>(object) ||

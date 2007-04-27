@@ -36,7 +36,8 @@
 #include <qimage.h>
 
 #include <qtabbar.h>
-#include <qtoolbar.h>
+#include <q3toolbar.h>
+#include <QEvent>
 
 extern QImage *
 genImage(
@@ -225,7 +226,7 @@ private:
             const QColor &color,
             int x, int y) const;
 
-    bool flatToolbar(const QToolBar *toolbar) const;
+    bool flatToolbar(const Q3ToolBar *toolbar) const;
 
     bool eventFilter(QObject *object, QEvent *event);
 
