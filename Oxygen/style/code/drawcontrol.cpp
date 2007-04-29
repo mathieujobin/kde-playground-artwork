@@ -39,8 +39,7 @@ using namespace Oxygen;
 
 extern Config config;
 extern Dpi dpi;
-typedef QHash<QWidget*, HoverFadeInfo> HoverFades;
-extern HoverFades hoverWidgets;
+// extern HoverFades hoverWidgets;q
 extern int complexStep;
 
 #include "inlinehelp.cpp"
@@ -78,29 +77,27 @@ static void drawArrow(const QStyle *style, const QStyleOptionToolButton *toolbut
    style->drawPrimitive(pe, &arrowOpt, painter, widget);
 }
 
-static bool scrollAreaHovered(const QWidget* slider)
-{
+bool scrollAreaHovered(const QWidget* slider) {
 //    bool scrollerActive = false;
    QWidget *scrollWidget = const_cast<QWidget*>(slider);
    if (!scrollWidget->isEnabled())
       return false;
-   while (scrollWidget && !(qobject_cast<QAbstractScrollArea*>(scrollWidget) || qobject_cast<Q3ScrollView*>(scrollWidget)))
+   while (scrollWidget &&
+          !(qobject_cast<QAbstractScrollArea*>(scrollWidget) ||
+          qobject_cast<Q3ScrollView*>(scrollWidget)))
       scrollWidget = const_cast<QWidget*>(scrollWidget->parentWidget());
    bool isActive = true;
-   if (scrollWidget)
-   {
+   if (scrollWidget) {
 //       QAbstractScrollArea* scrollWidget = (QAbstractScrollArea*)daddy;
       QPoint tl = scrollWidget->mapToGlobal(QPoint(0,0));
       QRegion scrollArea(tl.x(),tl.y(),scrollWidget->width(),scrollWidget->height());
       QList<QAbstractScrollArea*> scrollChilds = scrollWidget->findChildren<QAbstractScrollArea*>();
-      for (int i = 0; i < scrollChilds.size(); ++i)
-      {
+      for (int i = 0; i < scrollChilds.size(); ++i) {
          QPoint tl = scrollChilds[i]->mapToGlobal(QPoint(0,0));
          scrollArea -= QRegion(tl.x(), tl.y(), scrollChilds[i]->width(), scrollChilds[i]->height());
       }
       QList<Q3ScrollView*> scrollChilds2 = scrollWidget->findChildren<Q3ScrollView*>();
-      for (int i = 0; i < scrollChilds2.size(); ++i)
-      {
+      for (int i = 0; i < scrollChilds2.size(); ++i) {
          QPoint tl = scrollChilds[i]->mapToGlobal(QPoint(0,0));
          scrollArea -= QRegion(tl.x(), tl.y(), scrollChilds2[i]->width(), scrollChilds2[i]->height());
       }
@@ -1167,7 +1164,10 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
 	 masks.button.outline(r, painter, Qt::white, true);
          
          // and maybe a "scrollarea hovered indicator"
-         if ((!hover || complexStep) && scrollAreaHovered(widget)) {
+         if (hover && !complexStep)
+            break;
+         int step = hoverStep(widget);
+         if (step || scrollAreaHovered(widget)) {
             int dx, dy, off = sunken?dpi.$1:0;
             if (option->state & QStyle::State_Horizontal) {
                dx = r.width()/10+dpi.$1; dy = r.height()/3;
@@ -1179,7 +1179,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
                r.adjust(dx+off,dy,-dx+off,-dy);
                size = r.width();
             }
-            painter->drawTiledPixmap(r, gradient(btnBgColor(PAL, isEnabled, true),
+            painter->drawTiledPixmap(r, gradient(btnBgColor(PAL, isEnabled, true, step),
                                                  size, direction, config.gradBtn));
          }
       }

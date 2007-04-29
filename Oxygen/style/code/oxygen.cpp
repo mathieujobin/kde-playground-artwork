@@ -1107,16 +1107,15 @@ bool OxygenStyle::eventFilter( QObject *object, QEvent *ev ) {
       }
       return false;
    }
+      
 #define HANDLE_SCROLL_AREA_EVENT \
          if (area->horizontalScrollBar()->isVisible())\
-            area->horizontalScrollBar()->repaint();\
+            fadeIn(area->horizontalScrollBar());\
          if (area->verticalScrollBar()->isVisible())\
-            area->verticalScrollBar()->repaint();\
-
+            fadeIn(area->verticalScrollBar());
    case QEvent::Enter:
       if (qobject_cast<QAbstractButton*>(object) ||
-          qobject_cast<QComboBox*>(object) ||
-          qobject_cast<QAbstractSlider*>(object)) {
+          qobject_cast<QComboBox*>(object)) {
          QWidget *widget = (QWidget*)object;
          if (!widget->isEnabled() || widget->hasFocus()) return false;
          fadeIn(widget);
@@ -1135,10 +1134,16 @@ bool OxygenStyle::eventFilter( QObject *object, QEvent *ev ) {
          return false;
       }
       return false;
+
+#undef HANDLE_SCROLL_AREA_EVENT
+#define HANDLE_SCROLL_AREA_EVENT \
+         if (area->horizontalScrollBar()->isVisible())\
+            fadeOut(area->horizontalScrollBar());\
+         if (area->verticalScrollBar()->isVisible())\
+            fadeOut(area->verticalScrollBar());
    case QEvent::Leave:
       if (qobject_cast<QAbstractButton*>(object) || 
-          qobject_cast<QComboBox*>(object) ||
-          (qobject_cast<QAbstractSlider*>(object) && !static_cast<QAbstractSlider*>(object)->isSliderDown())) {
+          qobject_cast<QComboBox*>(object)) {
          QWidget *widget = (QWidget*)object;
          if (!widget->isEnabled() || widget->hasFocus()) return false;
          fadeOut(widget);
@@ -1146,13 +1151,18 @@ bool OxygenStyle::eventFilter( QObject *object, QEvent *ev ) {
       }
       else if (QAbstractScrollArea* area =
           qobject_cast<QAbstractScrollArea*>(object)) {
-         HANDLE_SCROLL_AREA_EVENT return false;
+         if (!area->isEnabled()) return false;
+         HANDLE_SCROLL_AREA_EVENT
+         return false;
       }
       else if (Q3ScrollView* area =
                qobject_cast<Q3ScrollView*>(object)) {
-         HANDLE_SCROLL_AREA_EVENT return false;
+         HANDLE_SCROLL_AREA_EVENT
+         return false;
       }
       return false;
+#undef HANDLE_SCROLL_AREA_EVENT
+      
    case QEvent::FocusIn:
       if (qobject_cast<QAbstractButton*>(object) ||
           qobject_cast<QComboBox*>(object)) {

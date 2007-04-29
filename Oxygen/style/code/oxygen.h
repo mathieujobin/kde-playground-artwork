@@ -59,7 +59,7 @@ class OxygenStyle;
 
 class HoverFadeInfo {
 public:
-   HoverFadeInfo(int s = 0, bool fI = true) {step = s; fadeIn = fI;}
+   HoverFadeInfo(int s = 0, bool fI = true) {step = s; fadeIn = fI; }
    int step;
    bool fadeIn;
 };
@@ -248,8 +248,8 @@ private:
    void fillWithMask(QPainter *painter, const QPoint &xy, const QBrush &brush,
                      const QPixmap &mask, QPoint offset = QPoint()) const;
    QColor mapFadeColor(const QColor &color, int index) const;
-   void fadeIn(QWidget *button);
-   void fadeOut(QWidget *button);
+   void fadeIn(QWidget *widget);
+   void fadeOut(QWidget *widget );
    QPixmap *tint(const QImage &img, const QColor& c) const;
    const Tile::Set &glow(const QColor & c, bool round = false) const;
    void readSettings();
