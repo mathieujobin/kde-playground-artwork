@@ -504,60 +504,88 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          // contents
          subopt.rect = subElementRect(SE_ProgressBarContents, pb, widget);
          drawControl(CE_ProgressBarContents, &subopt, painter, widget);
+#if 0
          // label?
          if (false && pb->textVisible) {
             subopt.rect = subElementRect(SE_ProgressBarLabel, pb, widget);
             drawControl(CE_ProgressBarLabel, &subopt, painter, widget);
          }
+#endif
       }
       break;
    case CE_ProgressBarGroove: // The groove where the progress indicator is drawn in a QProgressBar
-      if (const QStyleOptionProgressBarV2 *progress =
+      if (const QStyleOptionProgressBarV2 *pb =
             qstyleoption_cast<const QStyleOptionProgressBarV2*>(option)) {
-         QRect r = RECT.adjusted(0,0,0,-dpi.$2);
-         Qt::Orientation o = Qt::Vertical; int s = RECT.height();
-         if (progress->orientation == Qt::Vertical) {
-            o = Qt::Horizontal; s = RECT.width();
+         int size = RECT.height();
+         Qt::Orientation o = Qt::Vertical;
+         if (pb->orientation == Qt::Vertical) {
+            size = RECT.width();
+            o = Qt::Horizontal;
          }
-         fillWithMask(painter, r, gradient(PAL.color(config.role_progress[0]), s, o, GradGlass), &masks.button, Tile::Full);
-         shadows.lineEdit[isEnabled].render(RECT, painter);
+         const QPixmap &groove = gradient(PAL.color(config.role_progress[0]), size,
+                                          o, config.glassProgress ? GradGlass : GradSunken);
+         fillWithMask(painter, RECT, groove, &masks.button, Tile::Full);
+         if (!animationUpdate)
+            shadows.lineEdit[isEnabled].render(RECT, painter);
       }
       break;
    case CE_ProgressBarContents: // The progress indicator of a QProgressBar
-      if (const QStyleOptionProgressBarV2 *progress =
-          qstyleoption_cast<const QStyleOptionProgressBarV2*>(option)) {
+      if (const QStyleOptionProgressBarV2 *pb =
+            qstyleoption_cast<const QStyleOptionProgressBarV2*>(option)) {
+         double val = pb->progress; val /= (pb->maximum - pb->minimum);
+         if (val == 0.0)
+            break;
+         QRect r = RECT; int size = r.height();
+         Qt::Orientation o = Qt::Vertical;
          bool reverse = option->direction == Qt::RightToLeft;
-         if (progress->invertedAppearance) reverse = !reverse;
-         double val = progress->progress;
-         val = val / (progress->maximum - progress->minimum);
-         if (val > 0.0) {
-            int chunks, $8 = dpi.$8; QRect r = RECT;
-            QColor dark = (progress->progress == progress->maximum) ?
-               PAL.color(config.role_progress[1]) :
-               midColor(PAL.color(config.role_progress[0]), PAL.color(config.role_progress[1]));
-#define _COLOR_ (i==activeChunk) ? PAL.color(config.role_progress[1]) : dark
-            // vertical progressbar, shake it baby ;P
-            if (progress->orientation == Qt::Vertical) {
-               chunks = val * r.height() / $8;
-               r.setBottom(r.bottom() - (r.height() % $8)/2 - $8 + dpi.$1);
-               for (int i = 0; i < chunks; ++i)
-                  painter->fillRect(r.x(), r.bottom()-i*$8, r.width(), dpi.$5, gradient(_COLOR_, r.width(), Qt::Horizontal, GradButton));
-            }
-            else {
-               chunks = val * RECT.width() / $8;
-               if (reverse) {
-                  r.setRight(r.right() - (r.width() % $8)/2 - $8 + dpi.$1);
-                  for (int i = 0; i < chunks; ++i)
-                     painter->fillRect(r.right()-i*$8, r.y(), dpi.$5, r.height(), gradient(_COLOR_, r.height(), Qt::Horizontal, GradButton));
-               }
-               else {
-                  r.setLeft(r.left() + (r.width() % $8)/2 + dpi.$1);
-                  for (int i = 0; i < chunks; ++i)
-                     painter->fillRect(r.x()+i*$8, r.y(), dpi.$5, r.height(), gradient(_COLOR_, r.height(), Qt::Horizontal, GradButton));
-               }
-            }
-#undef _COLOR_
+         if (pb->invertedAppearance)
+            reverse = !reverse;
+         Tile::PosFlags pf = Tile::Full;
+         int step = progressStep(widget);
+         QPoint off(-step, 0);
+         if (pb->orientation == Qt::Vertical) {
+            size = r.width();
+            o = Qt::Horizontal;
+            off = QPoint(0, step);
+            pf &= ~Tile::Top;
+            r.setTop(r.bottom() -
+                  (int)(val*RECT.height()));
          }
+         else if (reverse) {
+            pf &= ~Tile::Left;
+            off = QPoint(step, 0);
+            r.setLeft(r.right() -
+                  (int)(val*RECT.width()));
+         }
+         else {
+            pf &= ~Tile::Right;
+            r.setRight(r.left() +
+                     (int)(val*RECT.width()));
+         }
+         const QPixmap &chunk1 = gradient(PAL.color(config.role_progress[1]), size,
+                                          o, config.gradientStrong);
+         if (val == 1.0) {
+            fillWithMask(painter, r, chunk1, &masks.button, Tile::Full);
+            break;
+         }
+         const QPixmap &chunk2 = config.glassProgress ?
+               gradient(PAL.color(config.role_progress[1]), size, o, GradSimple):
+               gradient(PAL.color(config.role_progress[0]), size, o, GradSunken);
+         QPixmap pix; QPainter p;
+         if (o == Qt::Horizontal) {
+            pix = QPixmap(size, 2*size);
+            p.begin(&pix);
+            p.fillRect(0,0,size,size, chunk1);
+            p.fillRect(0,size,size,size, chunk2);
+         }
+         else {
+            pix = QPixmap(2*size, size);
+            p.begin(&pix);
+            p.fillRect(0,0,size,size, chunk1);
+            p.fillRect(size,0,size,size, chunk2);
+         }
+         p.end();
+         fillWithMask(painter, r, pix, &masks.button, Tile::Full, false, off);
       }
       break;
    case CE_ProgressBarLabel: // The text label of a QProgressBar
@@ -565,7 +593,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       if (const QStyleOptionProgressBarV2 *progress =
           qstyleoption_cast<const QStyleOptionProgressBarV2*>(option))
       {
-         if (!anmiationUpdate)
+         if (!animationUpdate)
             painter->save();
          QFont fnt = painter->font();
          fnt.setBold(true);
@@ -634,7 +662,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             painter->resetMatrix();
             painter->setClipRegion(QRegion(RECT).subtract(cr));
          }
-         if (anmiationUpdate)
+         if (animationUpdate)
             break;
          painter->setMatrix(m);
 #if 1
@@ -775,9 +803,11 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             bgr = widget->backgroundRole();
             fgr = widget->foregroundRole();
          }
+         
          if (selected && isEnabled) {
             QPalette::ColorRole hlp = bgr; bgr = fgr; fgr = hlp;
          }
+
          QColor bg = PAL.color(bgr);
          QColor fg = isEnabled ? PAL.color(fgr) : midColor(PAL.color(bgr),PAL.color(fgr),2,1);
 
@@ -795,16 +825,11 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
                 (menuItem->checkType != QStyleOptionMenuItem::NotCheckable);
          bool checked = checkable && menuItem->checked;
          
-         if (selected && isEnabled) {
-            painter->setRenderHint ( QPainter::Antialiasing );
-            painter->setPen ( Qt::NoPen );
-            painter->setBrush ( bg );
-            if (RECT.width() > RECT.height())
-               painter->drawRoundRect(RECT, 35*RECT.height()/RECT.width(), 35);
-            else
-               painter->drawRoundRect(RECT, 35, 35*RECT.width()/RECT.height());
-         }
-             
+         if (selected && isEnabled)
+            fillWithMask(painter, RECT,
+                         gradient(bg, RECT.height(), Qt::Vertical, config.gradient),
+                         &masks.button, Tile::Full);
+
          // Text and icon, ripped from windows style
          const QStyleOptionMenuItem *menuitem = menuItem;
          int iconCol = config.showMenuIcons*menuitem->maxIconWidth;
@@ -1009,11 +1034,13 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       }
       if (subopt.sortIndicator != QStyleOptionHeader::None) {
          subopt.rect = subElementRect(SE_HeaderArrow, option, widget);
-         painter->save(); painter->setPen(Qt::NoPen);
-         const QPixmap &fill = gradient(hover?COLOR(Base):midColor(COLOR(Text),COLOR(Base)), RECT.height(), Qt::Vertical, sunken?GradSunken:config.gradient);
-         painter->setBrush(fill);
+         painter->save();
          if (hover)
             painter->setPen(COLOR(Text));
+         else
+            painter->setPen(Qt::NoPen);
+         const QPixmap &fill = gradient(hover?COLOR(Base):midColor(COLOR(Text),COLOR(Base)), RECT.height(), Qt::Vertical, sunken?GradSunken:config.gradient);
+         painter->setBrush(fill);
          drawPrimitive(PE_IndicatorHeaderArrow, &subopt, painter, widget);
          painter->restore();
       }

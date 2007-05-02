@@ -392,6 +392,8 @@ void OxygenStyle::readSettings()
    
    config.showMenuIcons = settings.value("ShowMenuIcons", false).toBool();
    
+   config.glassProgress = settings.value("GlassProgress", true).toBool();
+   
    // color roles
    config.role_progress[0] =
       (QPalette::ColorRole) settings.value("role_progressGroove", QPalette::WindowText).toInt();
@@ -447,8 +449,9 @@ void OxygenStyle::initMetrics()
 #undef SCALE
 
 /**THE STYLE ITSELF*/
-OxygenStyle::OxygenStyle() : QCommonStyle(), activeChunk(0), anmiationUpdate(false), mouseButtonPressed_(false), internalEvent_(false), _bgBrush(0L), popupPix(0L), timer(0L)
-{
+OxygenStyle::OxygenStyle() : QCommonStyle(), animationUpdate(false),
+mouseButtonPressed_(false), internalEvent_(false), _bgBrush(0L), popupPix(0L),
+timer(0L) {
    _scanlines[0] = _scanlines[1] = 0L;
    readSettings();
    initMetrics();
@@ -1035,16 +1038,16 @@ bool OxygenStyle::eventFilter( QObject *object, QEvent *ev ) {
          }
          int size = ((QResizeEvent*)ev)->size().height();
          
-//          const QPixmap &glass = gradient(c, size, Qt::Vertical, config.gradient);
+         const QPixmap &glass = gradient(c, size, Qt::Vertical, config.gradient);
          
-         QPixmap pix(32,size);
-         QLinearGradient lg(QPoint(0, 0), QPoint(0, size));
-         lg.setColorAt(0, c);
-         lg.setColorAt(0.2, c.dark(100+3000/v));
-         lg.setColorAt(0.75, c);
-         QPainter p(&pix); p.fillRect(pix.rect(), lg); p.end();
+//          QPixmap pix(size,32);
+//          QLinearGradient lg(QPoint(0, 0), QPoint(size, 0));
+//          QColor dark = c.dark(100+3000/v);
+//          lg.setColorAt(0, dark); lg.setColorAt(0.2, c);
+//          lg.setColorAt(0.8, c); lg.setColorAt(1, dark);
+//          QPainter p(&pix); p.fillRect(pix.rect(), lg); p.end();
         
-         QBrush brush(c, pix);
+         QBrush brush(c, glass/*pix*/);
          QPalette pal = menu->palette();
          pal.setBrush(role, brush);
          menu->setPalette(pal);

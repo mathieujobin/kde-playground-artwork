@@ -126,7 +126,7 @@ typedef struct Config {
    int structure;
    TabTransition tabTransition;
    int gradientIntensity;
-   bool aqua, showMenuIcons;
+   bool aqua, showMenuIcons, glassProgress;
    double scale;
    int checkType;
    QPalette::ColorRole role_progress[2], role_tab[2],
@@ -260,6 +260,7 @@ private:
    const ComplexHoverFadeInfo *complexHoverFadeInfo(const QWidget *widget,
       SubControls activeSubControls) const;
    const IndexedFadeInfo *indexedFadeInfo(const QWidget *widget, int index) const;
+   int progressStep(const QWidget *w) const;
    
 private:
    typedef QHash<QWidget*, HoverFadeInfo> HoverFades;
@@ -294,8 +295,7 @@ private:
 
    
    //anmiated progressbars
-   uint activeChunk;
-   bool anmiationUpdate;
+   bool animationUpdate;
    int complexStep;
    
 //    QPalette tooltipPalette;
