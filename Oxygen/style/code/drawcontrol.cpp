@@ -754,11 +754,11 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          if (const QMenuBar* mbar = qobject_cast<const QMenuBar*>(widget)) {
             action = mbar->actionAt(RECT.topLeft()); // is the action for this item!
             activeAction = mbar->activeAction();
-            info = const_cast<IndexedFadeInfo *>(indexedFadeInfo(widget, (int)activeAction));
+            info = const_cast<IndexedFadeInfo *>(indexedFadeInfo(widget, (long int)activeAction));
          }
          if (info &&
              (!activeAction || !activeAction->menu() || activeAction->menu()->isHidden()))
-            step = info->step((int)action);
+            step = info->step((long int)action);
          if (step || option->state & State_Selected) {
             QRect r = RECT;
             if (step) {

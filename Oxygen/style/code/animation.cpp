@@ -568,7 +568,7 @@ void OxygenStyle::updateIndexedFades() {
    if (indexedHoverWidgets.isEmpty())
       return;
    IndexedFades::iterator it;
-   QHash<int, int>::iterator stepIt;
+   QHash<long int, int>::iterator stepIt;
    it = indexedHoverWidgets.begin();
    while (it != indexedHoverWidgets.end()) {
       IndexedFadeInfo &info = it.value();
@@ -608,7 +608,7 @@ void OxygenStyle::updateIndexedFades() {
 }
 
 const IndexedFadeInfo *OxygenStyle::indexedFadeInfo(const QWidget *widget,
-   int index) const {
+   long int index) const {
    QWidget *w = const_cast<QWidget*>(widget);
    IndexedFades::iterator it = indexedHoverWidgets.find(w);
    if (it == indexedHoverWidgets.end()) {
@@ -637,8 +637,8 @@ void OxygenStyle::indexedFadeDestroyed(QObject* obj) {
    if (!ANIMATIONS) timer->stop();
 }
 
-int IndexedFadeInfo::step(int index) {
-   typedef QHash<int, int> Index2Step;
+int IndexedFadeInfo::step(long int index) {
+   typedef QHash<long int, int> Index2Step;
    Index2Step::iterator stepIt;
    for (stepIt = fadingInIndices.begin(); stepIt != fadingInIndices.end(); stepIt++)
       if (stepIt.key() == index)
