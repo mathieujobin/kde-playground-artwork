@@ -454,8 +454,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
       // --------------------------------------------------------------------
       
       if (const QStyleOptionToolButton *toolbutton
-          = qstyleoption_cast<const QStyleOptionToolButton *>(option))
-      {
+          = qstyleoption_cast<const QStyleOptionToolButton *>(option)) {
          QRect menuarea = subControlRect(control, toolbutton, SC_ToolButtonMenu, widget);
          QRect button = subControlRect(control, toolbutton, SC_ToolButton, widget);
          State bflags = toolbutton->state;
@@ -478,9 +477,9 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             drawPrimitive(PE_PanelButtonTool, &tool, painter, widget);
          }
          
-         if (!(bflags & State_Sunken) &&  // don't paint a dropdown arrow iff the button's really pressed
-             (toolbutton->subControls & SC_ToolButtonMenu))
-         {
+         // don't paint a dropdown arrow iff the button's really pressed
+         if (!(bflags & State_Sunken) &&
+             (toolbutton->subControls & SC_ToolButtonMenu)) {
             if (toolbutton->activeSubControls & SC_ToolButtonMenu)
                painter->drawTiledPixmap(menuarea, gradient(COLOR(Window), menuarea.height(), Qt::Vertical, GradSunken));
             QPen oldPen = painter->pen();

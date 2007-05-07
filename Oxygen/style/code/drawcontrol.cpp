@@ -50,6 +50,8 @@ static const int windowsItemHMargin	= 3; // menu item hor text margin
 static const int windowsItemVMargin	= 1; // menu item ver text margin
 static const int windowsRightBorder	= 12; // right border on windows
 
+enum ControlElement {CE_Category = 0xf0000001};
+
 static void drawArrow(const QStyle *style, const QStyleOptionToolButton *toolbutton,
                       const QRect &rect, QPainter *painter, const QWidget *widget = 0)
 {
@@ -488,7 +490,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
                QStyleOptionTab::PreviousIsSelected;
             if (tab->selectedPosition == selPos) {
                if (bottom) tr.adjust(0,dpi.$2,0,0);
-               painter->drawPixmap(tr.x()-dpi.$2, tr.y(), tabShadow(tr.height()-dpi.$2, bottom));
+               painter->drawPixmap(RECT.x()-dpi.$2, RECT.y(), tabShadow(RECT.height()-dpi.$2, bottom));
             }
          }
          painter->restore();
@@ -677,21 +679,17 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       break;
    case CE_ToolButtonLabel: // A tool button's label
       if (const QStyleOptionToolButton *toolbutton
-          = qstyleoption_cast<const QStyleOptionToolButton *>(option))
-      {
+          = qstyleoption_cast<const QStyleOptionToolButton *>(option)) {
          // Arrow type always overrules and is always shown
          bool hasArrow = toolbutton->features & QStyleOptionToolButton::Arrow;
          if ((!hasArrow && toolbutton->icon.isNull()) && !toolbutton->text.isEmpty() ||
-             toolbutton->toolButtonStyle == Qt::ToolButtonTextOnly)
-         {
+             toolbutton->toolButtonStyle == Qt::ToolButtonTextOnly) {
             drawItemText(painter, RECT, Qt::AlignCenter | Qt::TextShowMnemonic, PAL, isEnabled, toolbutton->text, QPalette::WindowText);
          }
-         else
-         {
+         else {
             QPixmap pm;
             QSize pmSize = toolbutton->iconSize;
-            if (!toolbutton->icon.isNull())
-            {
+            if (!toolbutton->icon.isNull()) {
                QIcon::State state = toolbutton->state & State_On ? QIcon::On : QIcon::Off;
                QIcon::Mode mode;
                if (!isEnabled)
@@ -704,26 +702,24 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
                pmSize = pm.size();
             }
                     
-            if (toolbutton->toolButtonStyle != Qt::ToolButtonIconOnly)
-            {
+            if (toolbutton->toolButtonStyle != Qt::ToolButtonIconOnly) {
                painter->setFont(toolbutton->font);
                QRect pr = RECT, tr = RECT;
                int alignment = Qt::TextShowMnemonic;
                
-               if (toolbutton->toolButtonStyle == Qt::ToolButtonTextUnderIcon)
-               {
+               if (toolbutton->toolButtonStyle == Qt::ToolButtonTextUnderIcon) {
+                  int $3 = dpi.$3;
                   int fh = painter->fontMetrics().height();
-                  pr.adjust(0, 3, 0, -fh - 3);
-                  tr.adjust(0, pr.bottom(), 0, -3);
+                  pr.adjust(0, $3, 0, -fh - $3);
+                  tr.adjust(0, pr.bottom(), 0, -$3);
                   if (!hasArrow)
                      drawItemPixmap(painter, pr, Qt::AlignCenter, pm);
                   else
                      drawArrow(this, toolbutton, pr, painter, widget);
                   alignment |= Qt::AlignCenter;
                }
-               else
-               {
-                  pr.setWidth(pmSize.width() + 8);
+               else {
+                  pr.setWidth(pmSize.width() + dpi.$8);
                   tr.adjust(pr.right(), 0, 0, 0);
                   if (!hasArrow)
                      drawItemPixmap(painter, pr, Qt::AlignCenter, pm);
@@ -733,8 +729,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
                }
                drawItemText(painter, tr, alignment, PAL, isEnabled, toolbutton->text, QPalette::WindowText);
             }
-            else
-            {
+            else {
                if (hasArrow)
                   drawArrow(this, toolbutton, RECT.adjusted(dpi.$5,dpi.$5,-dpi.$5,-dpi.$5), painter, widget);
                else
@@ -1267,6 +1262,8 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       }
       break;
    case CE_ToolBar:
+      break;
+   case CE_Category:
       break;
    default:
          QCommonStyle::drawControl( element, option, painter, widget );

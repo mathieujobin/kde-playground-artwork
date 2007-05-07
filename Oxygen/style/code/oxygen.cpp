@@ -855,8 +855,8 @@ void OxygenStyle::polish( QWidget * widget) {
          widget->setAttribute(Qt::WA_Hover);
    
    if (qobject_cast<QAbstractButton*>(widget)) {
-      widget->setBackgroundRole ( config.role_btn[0] );
-      widget->setForegroundRole ( config.role_btn[1] );
+         widget->setBackgroundRole ( config.role_btn[0] );
+         widget->setForegroundRole ( config.role_btn[1] );
       widget->installEventFilter(this);
    }
    if (qobject_cast<QComboBox *>(widget)) {
@@ -906,8 +906,7 @@ void OxygenStyle::polish( QWidget * widget) {
        || qobject_cast<QToolBar *>(widget)
        || (widget && qobject_cast<QToolBar *>(widget->parent()))
 #endif
-      )
-   {
+      ) {
       widget->setBackgroundRole(QPalette::Window);
       if (config.bgMode == Scanlines) {
          widget->setAutoFillBackground ( true );

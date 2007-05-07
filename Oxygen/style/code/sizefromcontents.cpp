@@ -129,14 +129,18 @@ QSize OxygenStyle::sizeFromContents ( ContentsType ct, const QStyleOption * opti
       return contentsSize + QSize(dpi.$12,0);
    case CT_TabWidget: // A tab widget, like QTabWidget
       return contentsSize + QSize(dpi.$8,dpi.$10);
-   case CT_ToolButton: // A tool button, like QToolButton
-   {
+   case CT_ToolButton: { // A tool button, like QToolButton
+      const QStyleOptionToolButton *toolbutton
+         = qstyleoption_cast<const QStyleOptionToolButton *>(option);
       // get ~goldem mean ratio
-      int w = qMax(contentsSize.width()+dpi.$6, (contentsSize.height()+dpi.$5)*7/5);
-      if (qstyleoption_cast<const QStyleOptionComplex *>(option) &&
-          (static_cast<const QStyleOptionComplex *>(option)->subControls & SC_ToolButtonMenu))
+      int extraH = dpi.$5;
+      if (toolbutton)
+      if (toolbutton->toolButtonStyle == Qt::ToolButtonTextUnderIcon)
+         extraH = dpi.$10;
+      int w = qMax(contentsSize.width()+dpi.$6, (contentsSize.height()+extraH)*7/5);
+      if (toolbutton && (toolbutton->subControls & SC_ToolButtonMenu))
          w += pixelMetric(PM_MenuButtonIndicator, option, widget) + dpi.$8;
-      return QSize(w, contentsSize.height()+dpi.$5);
+      return QSize(w, contentsSize.height()+extraH);
    }
    default: ;
    } // switch

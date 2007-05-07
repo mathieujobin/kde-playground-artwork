@@ -219,6 +219,9 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       RESTORE_ANTIALIAS;
       break;
    }
+   case PE_IndicatorViewItemCheck: // On/off indicator for a view item
+      // TODO: this is sh. ambivalent
+      // partially a PE_IndicatorMenuCheckMark would look better, find a choice
    case PE_IndicatorCheckBox: // On/off indicator, for example, a QCheckBox.
    {
       drawPrimitive(PE_PanelButtonBevel, option, painter, widget);
@@ -534,7 +537,6 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       break;
    case PE_Q3CheckListIndicator: // Qt 3 compatible Checkbox part of a list view item.
    case PE_IndicatorMenuCheckMark: // Check mark used in a menu.
-   case PE_IndicatorViewItemCheck: // On/off indicator for a view item
    {
       QRect rect;
       if (RECT.width() > RECT.height())
@@ -713,6 +715,8 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       break;
 //    case PE_PanelTipLabel: // The panel for a tip label.
    case PE_FrameTabBarBase: // The frame that is drawn for a tabbar, ususally drawn for a tabbar that isn't part of a tab widget
+      break; // TODO: seems KDE misuses this on tabwidgets?
+      // as i don't know for other use cases - we skip it for the moment...
       if (const QStyleOptionTabBarBase *tbb
             = qstyleoption_cast<const QStyleOptionTabBarBase *>(option)) {
          QRegion region(tbb->rect);
@@ -720,8 +724,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          painter->save();
          painter->setClipRegion(region);
          int size; Qt::Orientation o;
-         switch (tbb->shape)
-         {
+         switch (tbb->shape) {
          case QTabBar::RoundedNorth:
          case QTabBar::TriangularNorth:
          case QTabBar::RoundedSouth:
@@ -734,11 +737,12 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          case QTabBar::RoundedEast:
          case QTabBar::TriangularEast:
             o = Qt::Horizontal;
-            size = RECT.height();
+            size = RECT.width();
             break;
          }
-         fillWithMask(painter, RECT, gradient(COLOR(WindowText), size, o, config.gradientStrong), &masks.tab);
-         shadows.tab.render(RECT, painter);
+         fillWithMask(painter, RECT, gradient(CONF_COLOR(role_tab[0]), size, o, config.gradientStrong), &masks.tab);
+         masks.tab.outline(RECT, painter, CONF_COLOR(role_tab[0]).dark(110), true);
+         shadows.tab.render(RECT, painter, Tile::Ring);
          painter->restore();
       }
       break;
