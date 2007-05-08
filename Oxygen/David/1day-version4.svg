@@ -285,18 +285,6 @@
          d="M 72,88 L 40,120 L 32,120 L 32,80 L 72,80 L 72,88 z"
          style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
     </clipPath>
-    <filter
-       id="filter6697"
-       height="1.3839999"
-       y="-0.19199999"
-       width="1.3839999"
-       x="-0.19200002"
-       inkscape:collect="always">
-      <feGaussianBlur
-         id="feGaussianBlur6699"
-         stdDeviation="1.9447689"
-         inkscape:collect="always" />
-    </filter>
     <radialGradient
        gradientUnits="userSpaceOnUse"
        r="139.55859"
@@ -762,8 +750,8 @@
        id="linearGradient7740"
        x1="101.47567"
        y1="8.0376768"
-       x2="102.27944"
-       y2="12.262239"
+       x2="101.47567"
+       y2="12.278503"
        gradientUnits="userSpaceOnUse"
        gradientTransform="matrix(1,0,0,0.9523809,0,0.3827465)" />
     <linearGradient
@@ -787,7 +775,7 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.25"
+     inkscape:zoom="1"
      inkscape:cx="64"
      inkscape:cy="64"
      inkscape:document-units="px"
