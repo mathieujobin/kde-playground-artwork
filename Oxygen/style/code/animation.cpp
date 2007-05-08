@@ -119,11 +119,14 @@ void OxygenStyle::updateProgressbars() {
       if (pb->paintingActive() || !pb->isVisible() ||
           !(pb->value() > pb->minimum()) || !(pb->value() < pb->maximum()))
          continue;
+      int mod = (pb->orientation() == Qt::Horizontal) ?
+         (pb->height()-dpi.$8)*2 :
+         (pb->width()-dpi.$6)*2;
+      if (!mod)
+         continue;
       ++iter.value();
-      if (pb->orientation() == Qt::Horizontal)
-         iter.value() %= ((pb->height()-dpi.$8)*2);
-      else
-         iter.value() %= ((pb->width()-dpi.$6)*2);
+      if (mod)
+         iter.value() %= mod;
       pb->repaint(pb->rect().adjusted(dpi.$3,dpi.$4,-dpi.$3,-dpi.$4));
    }
    animationUpdate = false;

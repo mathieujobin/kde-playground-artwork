@@ -451,8 +451,16 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
    case PE_FrameTabWidget: // Frame for tab widgets.
       if (const QStyleOptionTabWidgetFrame *twf =
           qstyleoption_cast<const QStyleOptionTabWidgetFrame *>(option)) {
+         
+         int baseHeight = twf->tabBarSize.height();
+         if (baseHeight < 0)
+            baseHeight = pixelMetric( PM_TabBarBaseHeight, option, widget )-dpi.$2;
+         if (!baseHeight) {
+            shadows.tab.render(RECT, painter);
+            break;
+         }
+             
          QRect rect(RECT), tabRect(RECT), fillRect;
-         int baseHeight = pixelMetric( PM_TabBarBaseHeight, option, widget )-dpi.$2;
          int offset = 8;
          Qt::Orientation o = Qt::Vertical;
          Tile::PosFlags pf = 0;
@@ -496,8 +504,9 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
             baseHeight = fillRect.width();
             break;
          }
+         
          shadows.tab.render(rect, painter, pf);
-             fillWithMask(painter, fillRect, gradient(CONF_COLOR(role_tab[0]), baseHeight, o, config.gradientStrong), &masks.tab, pf | Tile::Center);
+         fillWithMask(painter, fillRect, gradient(CONF_COLOR(role_tab[0]), baseHeight, o, config.gradientStrong), &masks.tab, pf | Tile::Center);
          masks.tab.outline(fillRect, painter, CONF_COLOR(role_tab[0]).dark(110), true, pf);
          shadows.tab.render(tabRect, painter, Tile::Ring);
       }
