@@ -275,29 +275,21 @@ const QPixmap &Tile::Mask::corner(PosFlags pf, bool inverse) const
 QRegion Tile::Mask::clipRegion(const QRect &rect, PosFlags pf) const
 {
    QRegion ret(rect.adjusted(_dx[0], _dy[0], _dx[1], _dy[1]));
-   QRect cRect; int w,h;
-   if (matches(Top | Left, pf))
-   {
-      cRect = QRect(rect.x(), rect.y(), width(TopLeft), height(TopLeft));
-      ret -= cRect;
+   int w,h;
+   if (matches(Top | Left, pf)) {
+      ret -= QRect(rect.x(), rect.y(), width(TopLeft), height(TopLeft));
    }
-   if (matches(Top | Right, pf))
-   {
+   if (matches(Top | Right, pf)) {
       w = width(TopRight);
-      cRect = QRect(rect.right()-w+1, rect.y(), w, height(TopRight));
-      ret -= cRect;
+      ret -= QRect(rect.right()-w+1, rect.y(), w, height(TopRight));
    }
-   if (matches(Bottom | Left, pf))
-   {
+   if (matches(Bottom | Left, pf)) {
       h = height(BtmLeft);
-      cRect = QRect(rect.x(), rect.bottom()-h+1, width(BtmLeft), h);
-      ret -= cRect;
+      ret -= QRect(rect.x(), rect.bottom()-h+1, width(BtmLeft), h);
    }
-   if (matches(Bottom | Right, pf))
-   {
+   if (matches(Bottom | Right, pf)) {
       w = width(BtmRight); h = height(BtmRight);
-      cRect = QRect(rect.right()-w+1, rect.bottom()-h+1, w, h);
-      ret -= cRect;
+      ret -= QRect(rect.right()-w+1, rect.bottom()-h+1, w, h);
    }
    return ret;
 }

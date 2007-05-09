@@ -415,34 +415,25 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       painter->drawLine(RECT.right(), RECT.top(), RECT.right(), RECT.bottom());
       RESTORE_PEN;
 #endif
-      painter->fillRect(RECT, Qt::white);
-      break;
-      painter->save();
-      painter->setPen(QPen(Qt::white, dpi.$1));
-      if (widget)
-      if (const QMenu* menu = qobject_cast<const QMenu*>(widget))
-      if (menu->menuAction()) {
-         QList<QWidget *> list = menu->menuAction()->associatedWidgets();
-         QMenuBar* mbar = 0;
-         for (int i = 0; i < list.size(); ++i)
-            if ((mbar = qobject_cast<QMenuBar*>(list.at(i)))) {
-            if (mbar->activeAction() == menu->menuAction())
-               break;
-            else
-               mbar = 0;
-            }
-         if (mbar) {
-            QRect actionRect = mbar->actionGeometry(mbar->activeAction());
-            QPoint off = menu->mapFromGlobal(mbar->mapToGlobal(actionRect.topLeft()));
-            actionRect.moveTopLeft(off);
-            int $3 = dpi.$3;
-            actionRect.adjust($3,-$3,-$3,$3);
-            QRegion cr = RECT; cr -= actionRect;
-            painter->setClipRegion(cr, Qt::IntersectClip);
-         }
+      if (config.glassMenus) {
+         painter->save();
+         painter->setPen(Qt::white);
+         painter->setBrush(Qt::NoBrush);
+         painter->drawRect(RECT.adjusted(0,0,-1,-1));
+         painter->restore();
+//          painter->fillRect(RECT, Qt::white);
       }
-      painter->fillRect(RECT, Qt::white);
-      painter->restore();
+      if (config.menuShadow) {
+         QRect rect = RECT.adjusted(0,0, // don't ask...
+                                    shadows.line[true][Sunken].thickness()+1,
+                                    shadows.line[false][Sunken].thickness()+1);
+         //horizontal
+         shadows.line[false][Sunken].render(rect, painter, Tile::Full, false);
+         shadows.line[false][Sunken].render(rect, painter, Tile::Full, true);
+         //vertical
+         shadows.line[true][Sunken].render(rect, painter, Tile::Full, false);
+         shadows.line[true][Sunken].render(rect, painter, Tile::Full, true);
+      }
       break;
    }
    case PE_PanelMenuBar: // Panel for menu bars.
@@ -463,7 +454,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          QRect rect(RECT), tabRect(RECT), fillRect;
          int offset = 8;
          Qt::Orientation o = Qt::Vertical;
-         Tile::PosFlags pf = 0;
+         Tile::PosFlags pf = Tile::Ring;
          switch (twf->shape) {
          case QTabBar::RoundedNorth:
          case QTabBar::TriangularNorth:
@@ -479,7 +470,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
             rect.adjust(offset,0,-offset,0);
             rect.setTop(rect.bottom()-baseHeight);
             fillRect = rect.adjusted(dpi.$3, 0, -dpi.$3, -dpi.$3);
-            pf = Tile::Ring & ~ Tile::Top;
+            pf &= ~Tile::Top;
             tabRect.setBottom(tabRect.bottom()-(baseHeight-dpi.$3));
             baseHeight = fillRect.height();
             break;
@@ -488,7 +479,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
             rect.adjust(0,offset,0,-offset);
             rect.setLeft(rect.right()-baseHeight);
             fillRect = rect.adjusted(0, dpi.$2, -dpi.$3, -dpi.$3);
-            pf = Tile::Ring & ~ Tile::Left;
+            pf &= ~Tile::Left;
             o = Qt::Horizontal;
             tabRect.setRight(tabRect.right()-(baseHeight-dpi.$2));
             baseHeight = fillRect.width();
@@ -498,7 +489,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
             rect.adjust(0,offset,0,-offset);
             rect.setWidth(baseHeight);
             fillRect = rect.adjusted(dpi.$3, dpi.$2, 0, -dpi.$3);
-            pf = Tile::Ring & ~ Tile::Right;
+            pf &= ~Tile::Right;
             o = Qt::Horizontal;
             tabRect.setLeft(tabRect.left()+(baseHeight-dpi.$2));
             baseHeight = fillRect.width();
@@ -724,35 +715,48 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       break;
 //    case PE_PanelTipLabel: // The panel for a tip label.
    case PE_FrameTabBarBase: // The frame that is drawn for a tabbar, ususally drawn for a tabbar that isn't part of a tab widget
-      break; // TODO: seems KDE misuses this on tabwidgets?
-      // as i don't know for other use cases - we skip it for the moment...
+      if (widget &&
+          (qobject_cast<const QTabBar*>(widget) || // we alter the paintevent
+          (widget->parentWidget() &&
+           qobject_cast<QTabWidget*>(widget->parentWidget())))) // KDE abuse, allready has a nice base
+         break;
+      
       if (const QStyleOptionTabBarBase *tbb
             = qstyleoption_cast<const QStyleOptionTabBarBase *>(option)) {
-         QRegion region(tbb->rect);
-         region -= tbb->selectedTabRect;
-         painter->save();
-         painter->setClipRegion(region);
-         int size; Qt::Orientation o;
+         int size; Qt::Orientation o = Qt::Vertical;
+         Tile::PosFlags pf = Tile::Ring;
+         QRect fillRect;
          switch (tbb->shape) {
          case QTabBar::RoundedNorth:
          case QTabBar::TriangularNorth:
+            fillRect = RECT.adjusted(dpi.$3, dpi.$2, -dpi.$3, 0);
+            pf &= ~Tile::Bottom;
+            size = fillRect.height();
+            break;
          case QTabBar::RoundedSouth:
          case QTabBar::TriangularSouth:
-            o = Qt::Vertical;
-            size = RECT.height();
+            fillRect = RECT.adjusted(dpi.$3, 0, -dpi.$3, -dpi.$3);
+            pf &= ~Tile::Top;
+            size = fillRect.height();
+            break;
+         case QTabBar::RoundedEast:
+         case QTabBar::TriangularEast:
+            fillRect = RECT.adjusted(0, dpi.$2, -dpi.$3, -dpi.$3);
+            pf &= ~Tile::Left;
+            o = Qt::Horizontal;
+            size = fillRect.width();
             break;
          case QTabBar::RoundedWest:
          case QTabBar::TriangularWest:
-         case QTabBar::RoundedEast:
-         case QTabBar::TriangularEast:
+            fillRect = RECT.adjusted(dpi.$3, dpi.$2, 0, -dpi.$3);
+            pf &= ~Tile::Right;
             o = Qt::Horizontal;
-            size = RECT.width();
+            size = fillRect.width();
             break;
          }
-         fillWithMask(painter, RECT, gradient(CONF_COLOR(role_tab[0]), size, o, config.gradientStrong), &masks.tab);
-         masks.tab.outline(RECT, painter, CONF_COLOR(role_tab[0]).dark(110), true);
-         shadows.tab.render(RECT, painter, Tile::Ring);
-         painter->restore();
+         shadows.tab.render(RECT, painter, pf);
+         fillWithMask(painter, fillRect, gradient(CONF_COLOR(role_tab[0]), size, o, config.gradientStrong), &masks.tab, pf | Tile::Center);
+         masks.tab.outline(fillRect, painter, CONF_COLOR(role_tab[0]).dark(110), true, pf);
       }
       break;
    case PE_IndicatorTabTear: // An indicator that a tab is partially scrolled out of the visible tab bar when there are many tabs.

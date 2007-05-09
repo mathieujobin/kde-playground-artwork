@@ -219,8 +219,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       break;
    case CE_DockWidgetTitle: // Dock window title.
       if (const QStyleOptionDockWidget *dwOpt =
-          qstyleoption_cast<const QStyleOptionDockWidget *>(option))
-      {
+          qstyleoption_cast<const QStyleOptionDockWidget *>(option)) {
          QRect textRect;
          int x3 = RECT.right()-7;
          if (dwOpt->floatable)
@@ -228,8 +227,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          if (dwOpt->closable)
             x3 -= 18;
          int x2 = x3;
-         if (!dwOpt->title.isEmpty())
-         {
+         if (!dwOpt->title.isEmpty()) {
             drawItemText(painter, RECT, Qt::AlignCenter, PAL, isEnabled, dwOpt->title, QPalette::WindowText);
             textRect = painter->boundingRect ( RECT, Qt::AlignCenter, dwOpt->title );
             x2 = textRect.x()-8;
@@ -253,18 +251,15 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
    case CE_RadioButton: // A QRadioButton, draws a PE_ExclusiveRadioButton, a case CE_RadioButtonLabel
    case CE_CheckBox: // A QCheckBox, draws a PE_IndicatorCheckBox, a case CE_CheckBoxLabel
       if (const QStyleOptionButton *btn =
-          qstyleoption_cast<const QStyleOptionButton *>(option))
-      {
+          qstyleoption_cast<const QStyleOptionButton *>(option)) {
          QStyleOptionButton subopt = *btn;
-         if (element == CE_RadioButton)
-         {
+         if (element == CE_RadioButton) {
             subopt.rect = subElementRect(SE_RadioButtonIndicator, btn, widget);
             drawPrimitive(PE_IndicatorRadioButton, &subopt, painter, widget);
             subopt.rect = subElementRect(SE_RadioButtonContents, btn, widget);
             drawControl(CE_RadioButtonLabel, &subopt, painter, widget);
          }
-         else
-         {
+         else {
             subopt.rect = subElementRect(SE_CheckBoxIndicator, btn, widget);
             drawPrimitive(PE_IndicatorCheckBox, &subopt, painter, widget);
             subopt.rect = subElementRect(SE_CheckBoxContents, btn, widget);
@@ -277,13 +272,17 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
    case CE_TabBarTab: // The tab and label within a QTabBar
       if (const QStyleOptionTab *tab =
           qstyleoption_cast<const QStyleOptionTab *>(option)) {
+         // do we have to exclude the scrollers?
          bool needRestore = false;
          if (widget && (RECT.right() > widget->width())) {
-            needRestore = true;
             painter->save();
-            QRect r = RECT; r.setRight(widget->width()-2*pixelMetric(PM_TabBarScrollButtonWidth,option,widget));
+            needRestore = true;
+            QRect r = RECT;
+            r.setRight(widget->width() -
+                  2*pixelMetric(PM_TabBarScrollButtonWidth,option,widget));
             painter->setClipRect(r);
          }
+         // paint shape and label
          drawControl(CE_TabBarTabShape, tab, painter, widget);
          drawControl(CE_TabBarTabLabel, tab, painter, widget);
          if (needRestore)
@@ -293,11 +292,11 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
    case CE_TabBarTabShape: // The tab shape within a tab bar
       if (const QStyleOptionTab *tab =
           qstyleoption_cast<const QStyleOptionTab *>(option)) {
-         bool selected = option->state & State_Selected;
-         int $2 = dpi.$2, $4 = dpi.$4;
-         QPoint off;
+         const bool selected = option->state & State_Selected;
          IndexedFadeInfo *info = 0;
          int index = -1, hoveredIndex = -1, step = 0;
+
+         // fade animation stuff
          if (widget)
          if (const QTabBar* tbar = qobject_cast<const QTabBar*>(widget)) {
             index = tbar->tabAt(RECT.topLeft()); // is the action for this item!
@@ -306,15 +305,22 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          }
          if (info)
             step = info->step(index);
+         
+         // maybe we're done here?!
          if (!(step || hover || selected || sunken))
             break;
-         Tile::PosFlags pf = 0; int size = 0; Qt::Orientation o = Qt::Vertical;
+         
+         int size = 0;
+         const int $2 = dpi.$2, $4 = dpi.$4;
+         Tile::PosFlags pf = Tile::Ring;
+         Qt::Orientation o = Qt::Vertical;
+         QPoint off;
          QRect rect = RECT, fillRect = RECT;
          switch (tab->shape) {
          case QTabBar::RoundedNorth:
          case QTabBar::TriangularNorth:
-            pf = Tile::Ring & ~Tile::Bottom;
             if (selected) {
+               pf &= ~Tile::Bottom;
                fillRect.adjust($2, $4, -$2, 0);
                rect.adjust(0, $2, 0, 0);
             }
@@ -325,8 +331,8 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             break;
          case QTabBar::RoundedSouth:
          case QTabBar::TriangularSouth:
-            pf = Tile::Ring & ~Tile::Top;
             if (selected) {
+               pf &= ~Tile::Top;
                fillRect.adjust($2, 0, -$2, -dpi.$6);
                rect.adjust(0, 0, 0, -$2);
             }
@@ -337,26 +343,26 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             break;
          case QTabBar::RoundedEast:
          case QTabBar::TriangularEast:
-            o = Qt::Horizontal;
-            pf = Tile::Ring & ~Tile::Left;
             if (selected) {
+               pf &= ~Tile::Left;
                fillRect.adjust(0, $2, -dpi.$6, -$4);
                rect.adjust(0, 0, -$4, 0);
             }
             else {
+               o = Qt::Horizontal;
                rect = RECT.adjusted($4,$4,-dpi.$6, -$4);
                size = RECT.width()-$4; off.setX(dpi.$3);
             }
             break;
          case QTabBar::RoundedWest:
          case QTabBar::TriangularWest:
-            o = Qt::Horizontal;
-            pf = Tile::Ring & ~Tile::Right;
             if (selected) {
+               pf &= ~Tile::Right;
                fillRect.adjust(dpi.$6, $2, 0, -$4);
                rect.adjust($4, 0, 0, 0);
             }
             else {
+               o = Qt::Horizontal;
                rect = RECT.adjusted(dpi.$6,$4,-$4, -$4);
                size = RECT.width()-$4; off.setX(dpi.$3);
             }
@@ -366,7 +372,8 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             QPoint zero = fillRect.topLeft();
             if (widget)
                zero = widget->mapTo(widget->topLevelWidget(), zero);
-            fillWithMask(painter, fillRect, PAL.brush(QPalette::Window), &masks.tab, pf | Tile::Center, false, zero);
+            fillWithMask(painter, fillRect, PAL.brush(QPalette::Window),
+                         &masks.tab, pf | Tile::Center, false, zero);
             shadows.tab.render(rect, painter, pf);
             break;
          }

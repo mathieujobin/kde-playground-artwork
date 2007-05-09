@@ -126,7 +126,7 @@ typedef struct Config {
    int structure;
    TabTransition tabTransition;
    int gradientIntensity;
-   bool aqua, showMenuIcons, glassProgress;
+   bool aqua, showMenuIcons, glassProgress, glassMenus, menuShadow;
    double scale;
    int checkType;
    QPalette::ColorRole role_progress[2], role_tab[2],

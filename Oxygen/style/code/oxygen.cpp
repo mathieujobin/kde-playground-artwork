@@ -391,6 +391,8 @@ void OxygenStyle::readSettings()
       config.gradBtn = config.gradient;
    
    config.showMenuIcons = settings.value("ShowMenuIcons", false).toBool();
+   config.glassMenus = !settings.value("RuphysMenu", false).toBool();
+   config.menuShadow = settings.value("MenuShadow", false).toBool();
    
    config.glassProgress = settings.value("GlassProgress", true).toBool();
    
@@ -855,8 +857,8 @@ void OxygenStyle::polish( QWidget * widget) {
          widget->setAttribute(Qt::WA_Hover);
    
    if (qobject_cast<QAbstractButton*>(widget)) {
-         widget->setBackgroundRole ( config.role_btn[0] );
-         widget->setForegroundRole ( config.role_btn[1] );
+      widget->setBackgroundRole ( config.role_btn[0] );
+      widget->setForegroundRole ( config.role_btn[1] );
       widget->installEventFilter(this);
    }
    if (qobject_cast<QComboBox *>(widget)) {
@@ -884,6 +886,11 @@ void OxygenStyle::polish( QWidget * widget) {
    if (qobject_cast<QTabWidget*>(widget)) {
       connect((QTabWidget*)widget, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
       connect(widget, SIGNAL(destroyed(QObject*)), this, SLOT(tabDestroyed(QObject*)));
+   }
+   if (qobject_cast<QTabBar *>(widget)) {
+      widget->setBackgroundRole ( config.role_tab[0] );
+      widget->setForegroundRole ( config.role_tab[1] );
+      widget->installEventFilter(this);
    }
    
    
@@ -1013,8 +1020,7 @@ void OxygenStyle::polish( QWidget * widget) {
 bool OxygenStyle::eventFilter( QObject *object, QEvent *ev ) {
    switch (ev->type()) {
    case QEvent::Paint: {
-      QFrame *frame = qobject_cast<QFrame*>(object);
-      if (frame) {
+      if (QFrame *frame = qobject_cast<QFrame*>(object)) {
          if (frame->frameShape() == QFrame::HLine ||
              frame->frameShape() == QFrame::VLine) {
             QPainter p(frame);
@@ -1025,28 +1031,43 @@ bool OxygenStyle::eventFilter( QObject *object, QEvent *ev ) {
             return true;
          }
       }
+      else if (QTabBar *tabBar = qobject_cast<QTabBar*>(object)) {
+         if (tabBar->parentWidget() &&
+             qobject_cast<QTabWidget*>(tabBar->parentWidget()))
+            return false; // no extra tabbar here please...
+         QPainter p(tabBar);
+         QStyleOptionTabBarBase opt;
+         opt.initFrom(tabBar);
+         drawPrimitive ( PE_FrameTabBarBase, &opt, &p);
+         p.end();
+      }
       return false;
    }
    case QEvent::Resize: {
       if (QMenu *menu = qobject_cast<QMenu*>(object)) {
          QPalette::ColorRole role = menu->backgroundRole();
          QColor c = menu->palette().color(QPalette::Active, role);
-         int v = colorValue(c);
-         if (v < 80) {
-            int h,s; c.getHsv(&h,&s,&v); v = 80; c.setHsv(h,s,v);
-         }
          int size = ((QResizeEvent*)ev)->size().height();
+         QBrush brush;
          
-         const QPixmap &glass = gradient(c, size, Qt::Vertical, config.gradient);
+         if (config.glassMenus) {
+            const QPixmap &glass = gradient(c, size, Qt::Vertical, config.gradient);
+            brush = QBrush(c, glass);
+         }
+         else {
+            int v = colorValue(c);
+            if (v < 80) {
+               int h,s; c.getHsv(&h,&s,&v); v = 80; c.setHsv(h,s,v);
+            }
+            QPixmap pix(32,size);
+            QLinearGradient lg(QPoint(0, 0), QPoint(0, size));
+            QColor dark = c.dark(100+3000/v);
+            lg.setColorAt(0, c); lg.setColorAt(0.2, dark);
+            lg.setColorAt(0.8, c);
+            QPainter p(&pix); p.fillRect(pix.rect(), lg); p.end();
+            brush = QBrush(c, pix);
+         }
          
-//          QPixmap pix(size,32);
-//          QLinearGradient lg(QPoint(0, 0), QPoint(size, 0));
-//          QColor dark = c.dark(100+3000/v);
-//          lg.setColorAt(0, dark); lg.setColorAt(0.2, c);
-//          lg.setColorAt(0.8, c); lg.setColorAt(1, dark);
-//          QPainter p(&pix); p.fillRect(pix.rect(), lg); p.end();
-        
-         QBrush brush(c, glass/*pix*/);
          QPalette pal = menu->palette();
          pal.setBrush(role, brush);
          menu->setPalette(pal);
