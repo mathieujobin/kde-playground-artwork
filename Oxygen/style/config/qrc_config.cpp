@@ -1,8 +1,8 @@
 /****************************************************************************
 ** Resource object code
 **
-** Created: Sun Apr 22 20:04:34 2007
-**      by: The Resource Compiler for Qt version 4.3.0beta
+** Created: Wed May 9 18:37:39 2007
+**      by: The Resource Compiler for Qt version 4.3.0-snapshot-20070423
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -10,7 +10,7 @@
 #include <QtCore/qglobal.h>
 
 static const unsigned char qt_resource_data[] = {
-  // /svn/Oxygen/style/config/oxygen.png
+  // /usr/src/svn/Oxygen/style/config/oxygen.png
   0x0,0x0,0x57,0xdc,
   0x89,
   0x50,0x4e,0x47,0xd,0xa,0x1a,0xa,0x0,0x0,0x0,0xd,0x49,0x48,0x44,0x52,0x0,

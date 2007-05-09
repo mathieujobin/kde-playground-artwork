@@ -82,7 +82,10 @@ typedef struct Values {
       checkMark; // 1
    bool inverseButtons, // false
       useGlass, // true
-      showMenuIcons; // false!
+      showMenuIcons, // false!
+      glassProgress, //false
+      menuRuphy, //true ;)
+      menuShadow; // false - i have a compmgr running :P
    QPalette::ColorRole crProgressBar, // Window
       crProgressBarGroove, // WindowText
       crTabBar, // WindowText
@@ -91,8 +94,11 @@ typedef struct Values {
       crPopup; // Window
 } Values;
 static const Values defaultValues = {
-   3, 2, 1, 1, false, true, false, QPalette::Window, QPalette::WindowText,
-      QPalette::WindowText, QPalette::Window, QPalette::Button, QPalette::Window };
+   3, 2, 1, 1,
+   false, true, false, false, true, false,
+   QPalette::Window,QPalette::WindowText, QPalette::WindowText,
+      QPalette::Window, QPalette::Button, QPalette::Window
+};
 
 static Values initValues;
 
@@ -170,6 +176,9 @@ void Config::resetValues() {
    SET(inverseButtons);
    SET(useGlass);
    SET(showMenuIcons);
+   SET(glassProgress);
+   SET(menuRuphy);
+   SET(menuShadow);
 #undef SET
 }
 
@@ -192,6 +201,9 @@ void Config::setDefaults() {
    SET(inverseButtons);
    SET(useGlass);
    SET(showMenuIcons);
+   SET(glassProgress);
+   SET(menuRuphy);
+   SET(menuShadow);
 #undef SET
 }
 
@@ -233,6 +245,9 @@ void Config::loadSettings() {
    readBool("InverseButtons", inverseButtons);
    readBool("Aqua", useGlass);
    readBool("ShowMenuIcons", showMenuIcons);
+   readBool("GlassProgress", glassProgress);
+   readBool("RuphysMenu", menuRuphy);
+   readBool("MenuShadow", menuShadow);
 
 #define readColor(_ENTRY_, _ELEMENT_)\
    initValues._ELEMENT_ = (QPalette::ColorRole)settings.value( _ENTRY_, defaultValues._ELEMENT_).toInt();\
@@ -253,9 +268,13 @@ void Config::save() {
    settings.setValue("Acceleration", ui.acceleration->currentIndex());
    settings.setValue("TabTransition", ui.tabTransition->currentIndex());
    
-   settings.setValue("InverseButtons", ui.inverseButtons->isChecked());
-   settings.setValue("Aqua", ui.useGlass->isChecked());
-   settings.setValue("ShowMenuIcons", ui.showMenuIcons->isChecked());
+#define saveBool(_ENTRY_, _ELEMENT_) settings.setValue(_ENTRY_, ui._ELEMENT_->isChecked());
+   saveBool("InverseButtons", inverseButtons);
+   saveBool("Aqua", useGlass);
+   saveBool("ShowMenuIcons", showMenuIcons);
+   saveBool("GlassProgress", glassProgress);
+   saveBool("RuphysMenu", menuRuphy);
+   saveBool("MenuShadow", menuShadow);
    
 #define saveColor(_ENTRY_, _ELEMENT_) settings.setValue(_ENTRY_,\
                      ui._ELEMENT_->itemData(ui._ELEMENT_->currentIndex()))
