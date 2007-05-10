@@ -866,19 +866,23 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          int x, y, w, h;
          RECT.getRect(&x, &y, &w, &h);
          int tab = menuitem->tabWidth;
-             
+         int cDim = 2*(RECT.height() - dpi.$4)/3;
          int xm = windowsItemFrame + iconCol + windowsItemHMargin;
          int xpos = RECT.x() + xm;
-         QRect textRect(xpos, y + windowsItemVMargin, w - xm - checkable*dpi.$20 - windowsRightBorder - tab + 1, h - 2 * windowsItemVMargin);
+         QRect textRect(xpos,
+                        y + windowsItemVMargin,
+                        w - xm - menuItem->menuHasCheckableItems*(cDim+dpi.$7) - windowsRightBorder - tab + 1,
+                        h - 2 * windowsItemVMargin);
          QRect vTextRect = visualRect(option->direction, RECT, textRect);
          QString s = menuitem->text;
          if (!s.isEmpty()) {
             // draw text
             int t = s.indexOf('\t');
-#define text_flags Qt::AlignVCenter | Qt::TextShowMnemonic | Qt::TextDontClip | Qt::TextSingleLine
+            const int text_flags = Qt::AlignVCenter | Qt::TextShowMnemonic | Qt::TextDontClip | Qt::TextSingleLine;
             if (t >= 0) {
-               QRect vShortcutRect = visualRect(option->direction, RECT, QRect(textRect.topRight(), RECT.bottomRight()));
-               painter->drawText(vShortcutRect, text_flags /*| Qt::AlignRight*/, s.mid(t + 1));
+               QRect vShortcutRect = visualRect(option->direction, RECT,
+                     QRect(textRect.topRight(), QPoint(textRect.right()+tab, textRect.bottom())));
+               painter->drawText(vShortcutRect, text_flags | Qt::AlignLeft, s.mid(t + 1));
                s = s.left(t);
             }
             if (menuitem->menuItemType == QStyleOptionMenuItem::DefaultItem) {
@@ -888,15 +892,14 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             }
             painter->drawText(vTextRect, text_flags | Qt::AlignLeft, s.left(t));
          }
-#undef text_flags
          // Arrow
          if (menuItem->menuItemType == QStyleOptionMenuItem::SubMenu) {
             // draw sub menu arrow
             PrimitiveElement arrow =
                (option->direction == Qt::RightToLeft) ? PE_IndicatorArrowLeft : PE_IndicatorArrowRight;
             
-            int dim = (RECT.height() - 4) / 2;
-            int xpos = RECT.x() + RECT.width() - 7 - dim;
+            int dim = (RECT.height() - dpi.$4)/2;
+            xpos = RECT.x() + RECT.width() - dpi.$7 - dim;
             
             QStyleOptionMenuItem tmpOpt = *menuItem;
             tmpOpt.rect = visualRect(option->direction, RECT, QRect(xpos, RECT.y() + (RECT.height() - dim)/2, dim, dim));
@@ -904,7 +907,8 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             drawPrimitive(arrow, &tmpOpt, painter, widget);
          }
          else if (!isCombo && checkable) { // Checkmark
-            QRect checkRect(RECT.right() - dpi.$20, option->rect.center().y() - dpi.$6, dpi.$13, dpi.$13);
+            xpos = RECT.right() - dpi.$7 - cDim;
+            QRect checkRect(xpos, RECT.y() + (RECT.height() - cDim)/2, cDim, cDim);
             checkRect = visualRect(menuItem->direction, menuItem->rect, checkRect);
             if (menuItem->checkType & QStyleOptionMenuItem::Exclusive) {
                // Radio button

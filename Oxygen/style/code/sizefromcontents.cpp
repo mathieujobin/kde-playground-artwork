@@ -71,18 +71,20 @@ QSize OxygenStyle::sizeFromContents ( ContentsType ct, const QStyleOption * opti
          int w = contentsSize.width(), h = contentsSize.height();
          QSize sz;
          if (menuItem->menuItemType == QStyleOptionMenuItem::Separator)
-            sz = QSize (10, menuItem->text.isEmpty() ? 6 : menuItem->fontMetrics.lineSpacing());
+            sz = QSize (10, menuItem->text.isEmpty() ? dpi.$6 :
+                        menuItem->fontMetrics.lineSpacing());
          else {
             h = qMax(h, menuItem->fontMetrics.lineSpacing());
-            if (!menuItem->icon.isNull())
-               h = qMax(h, menuItem->icon.pixmap(pixelMetric(PM_SmallIconSize), QIcon::Normal).height() + 4);
-         
+            if (config.showMenuIcons && !menuItem->icon.isNull())
+               h = qMax(h,
+                        menuItem->icon.pixmap(pixelMetric(PM_SmallIconSize),
+                                              QIcon::Normal).height() + dpi.$4);
             if (menuItem->text.contains('\t'))
-               w += 12;
+               w += dpi.$12;
             if (maxpmw > 0)
                w += maxpmw + dpi.$6;
             if (checkable)
-               w += dpi.$20;
+               w += 2*(h - dpi.$4)/3 + dpi.$7;
             w += (checkable + (maxpmw > 0))*dpi.$2;
             w += dpi.$12;
             if (menuItem->menuItemType == QStyleOptionMenuItem::SubMenu)
