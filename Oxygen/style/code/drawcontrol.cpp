@@ -316,7 +316,13 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          Qt::Orientation o = Qt::Vertical;
          QPoint off;
          QRect rect = RECT, fillRect = RECT;
-         switch (tab->shape) {
+         int shape = tab->shape;
+         if (widget && !(widget->parentWidget() &&
+             qobject_cast<QTabWidget*>(widget->parentWidget()))) {
+            //NOTICE: this is elegant but NOT invariant against enum changes!!!
+            shape%2 ? --shape : ++shape;
+         }
+         switch ((QTabBar::Shape)shape) {
          case QTabBar::RoundedNorth:
          case QTabBar::TriangularNorth:
             if (selected) {
@@ -401,7 +407,13 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          bool bottom = false;
          bool reverse = (option->direction == Qt::RightToLeft);
          
-         switch(tabV2.shape) {
+         int shape = tab->shape;
+         if (widget && !(widget->parentWidget() &&
+             qobject_cast<QTabWidget*>(widget->parentWidget()))) {
+            //NOTICE: this is elegant but NOT invariant against enum changes!!!
+            shape%2 ? --shape : ++shape;
+         }
+         switch((QTabBar::Shape)shape) {
          case QTabBar::RoundedNorth:
          case QTabBar::TriangularNorth:
             if (selected) tr.setTop(tr.top()+2);

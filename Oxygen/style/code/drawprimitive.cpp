@@ -726,37 +726,44 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          int size; Qt::Orientation o = Qt::Vertical;
          Tile::PosFlags pf = Tile::Ring;
          QRect fillRect;
+         bool north = false;
          switch (tbb->shape) {
-         case QTabBar::RoundedNorth:
-         case QTabBar::TriangularNorth:
-            fillRect = RECT.adjusted(dpi.$3, dpi.$2, -dpi.$3, 0);
-            pf &= ~Tile::Bottom;
-            size = fillRect.height();
-            break;
          case QTabBar::RoundedSouth:
          case QTabBar::TriangularSouth:
-            fillRect = RECT.adjusted(dpi.$3, 0, -dpi.$3, -dpi.$3);
+//             fillRect = RECT.adjusted(dpi.$3, dpi.$2, -dpi.$3, 0);
             pf &= ~Tile::Top;
-            size = fillRect.height();
+            size = /*fillRect*/RECT.height();
             break;
-         case QTabBar::RoundedEast:
-         case QTabBar::TriangularEast:
-            fillRect = RECT.adjusted(0, dpi.$2, -dpi.$3, -dpi.$3);
-            pf &= ~Tile::Left;
-            o = Qt::Horizontal;
-            size = fillRect.width();
+         case QTabBar::RoundedNorth:
+         case QTabBar::TriangularNorth:
+            north = true;
+//             fillRect = RECT.adjusted(dpi.$3, 0, -dpi.$3, -dpi.$3);
+            pf &= ~Tile::Bottom;
+            size = /*fillRect*/RECT.height();
             break;
          case QTabBar::RoundedWest:
          case QTabBar::TriangularWest:
-            fillRect = RECT.adjusted(dpi.$3, dpi.$2, 0, -dpi.$3);
+//             fillRect = RECT.adjusted(0, dpi.$2, -dpi.$3, -dpi.$3);
             pf &= ~Tile::Right;
             o = Qt::Horizontal;
-            size = fillRect.width();
+            size = /*fillRect*/RECT.width();
+            break;
+         case QTabBar::RoundedEast:
+         case QTabBar::TriangularEast:
+//             fillRect = RECT.adjusted(dpi.$3, dpi.$2, 0, -dpi.$3);
+            pf &= ~Tile::Left;
+            o = Qt::Horizontal;
+            size = /*fillRect*/RECT.width();
             break;
          }
-         shadows.tab.render(RECT, painter, pf);
-         fillWithMask(painter, fillRect, gradient(CONF_COLOR(role_tab[0]), size, o, config.gradientStrong), &masks.tab, pf | Tile::Center);
-         masks.tab.outline(fillRect, painter, CONF_COLOR(role_tab[0]).dark(110), true, pf);
+         fillWithMask(painter, RECT,
+                      gradient(CONF_COLOR(role_tab[0]), size, o, config.gradientStrong),
+                      &masks.button, pf | Tile::Center);
+         if (north)
+            shadows.lineEdit[0].render(RECT, painter, Tile::Ring & ~Tile::Bottom);
+         else
+            shadows.tab.render(RECT, painter, pf);
+//          masks.tab.outline(fillRect, painter, CONF_COLOR(role_tab[0]).dark(110), true, pf);
       }
       break;
    case PE_IndicatorTabTear: // An indicator that a tab is partially scrolled out of the visible tab bar when there are many tabs.
