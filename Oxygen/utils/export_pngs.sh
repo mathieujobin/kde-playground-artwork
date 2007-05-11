@@ -28,8 +28,11 @@ for size in $sizes; do
   # ====== shall we use a small icon if available?
   if [ $size -le $min_small ]; then
      smallicon="$iconDir/small/${size}x${size}/$iconName"
-     if [ -e "$smallicon" ]; then
+     if [ -e $smallicon ]; then
         inkscape --without-gui --export-png="../"${size}x${size}"/"$iconDir"/"$iconPngName --export-dpi=72 --export-background-opacity=0 --export-width=$size --export-height=$size $smallicon > /dev/null
+     
+     else
+        convert -filter Sinc -resize ${size}x${size} $iconPngName "../"${size}x${size}"/"$iconDir"/"$iconPngName
      fi
   else
      convert -filter Sinc -resize ${size}x${size} $iconPngName "../"${size}x${size}"/"$iconDir"/"$iconPngName
