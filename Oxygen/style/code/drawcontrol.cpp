@@ -299,8 +299,9 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          // fade animation stuff
          if (widget)
          if (const QTabBar* tbar = qobject_cast<const QTabBar*>(widget)) {
-            index = tbar->tabAt(RECT.topLeft()); // is the action for this item!
-            hoveredIndex = hover ? index : tbar->tabAt(tbar->mapFromGlobal(QCursor::pos()));
+            // NOTICE: the index increment is IMPORTANT to make sure it's no "0"
+            index = tbar->tabAt(RECT.topLeft()) + 1; // is the action for this item!
+            hoveredIndex = hover ? index : tbar->tabAt(tbar->mapFromGlobal(QCursor::pos())) + 1;
             info = const_cast<IndexedFadeInfo *>(indexedFadeInfo(widget, hoveredIndex));
          }
          if (info)
