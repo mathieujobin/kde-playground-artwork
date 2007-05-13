@@ -18,220 +18,263 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-const QPixmap &OxygenStyle::gradient(const QColor &c, int size, Qt::Orientation o, GradientType type) const
-{
-   if (size <= 0)
-   {
+
+/* ========= MAGIC NUMBERS ARE COOL ;) =================
+Ok, we want to cache the gradients, but unfortunately we have no idea about
+what kind of gradients will be demanded in the future
+Thus creating a 2 component map (uint for color and uint for size)
+would be some overhead and cause a lot of unused space in the dictionaries -
+while hashing by a string is stupid slow ;)
+
+So we store all the gradients by a uint index
+Therefore we substitute the alpha component (byte << 24) of the demanded color
+with the demanded size
+As this would limit the size to 255/256 pixels we'll be a bit sloppy,
+depending on the users resolution (e.g. use 0 to store a gradient with 2px,
+usefull for demand of 1px or 2px) and shift the index
+(e.g. gradients from 0 to 6 px size will hardly be needed -
+maybe add statistics on this)
+So the handled size is actually demandedSize + (demandedSize % sizeSloppyness),
+beeing at least demanded size and the next sloppy size above at max
+====================================================== */
+static inline uint
+hash(int size, const QColor &c, int *sloppyAdd) {
+   
+   uint magicNumber = 0;
+   int sizeSloppyness = 1, frameBase = 0, frameSize = 20;
+   while ((frameBase += frameSize) < size) {
+      ++sizeSloppyness;
+      frameSize += 20;
+   }
+      
+   frameBase -=frameSize; frameSize -= 20;
+   
+   *sloppyAdd = size % sizeSloppyness;
+   if (!*sloppyAdd)
+      *sloppyAdd = sizeSloppyness;
+
+   // first 11 bits to store the size, remaining 21 bits for the color (7bpc)
+   magicNumber =  (((frameSize + (size - frameBase)/sizeSloppyness) & 0xff) << 21) |
+      (((c.red() >> 1) & 0x7f) << 14) |
+      (((c.green() >> 1) & 0x7f) << 7 ) |
+      ((c.blue() >> 1) & 0x7f);
+   
+   return magicNumber;
+}
+
+static QPixmap*
+newPix(int size, Qt::Orientation o, QPoint *start, QPoint *stop) {
+   QPixmap *pix;
+   if (o == Qt::Horizontal) {
+      pix = new QPixmap(size, 32);
+      *start = QPoint(0,32); *stop = QPoint(pix->width(),32);
+   }
+   else {
+      pix = new QPixmap(32, size);
+      *start = QPoint(32, 0); *stop = QPoint(32, pix->height());
+   }
+   return pix;
+}
+
+#define PREPARE_OXRENDER_GRADIENT QPoint start, stop; ColorArray colors; PointArray stops;\
+QPixmap *pix = newPix(size, o, &start, &stop)
+
+#define MAKE_OXRENDER_GRADIENT OXPicture grad = OXRender::gradient(start, stop, colors, stops);\
+OXRender::composite (grad, X::None, *pix, 0, 0, 0, 0, 0, 0, pix->width(), pix->height());\
+OXRender::freePicture(grad)
+
+static inline QPixmap*
+simpleGradient(const QColor &c, int size, Qt::Orientation o) {
+   PREPARE_OXRENDER_GRADIENT;
+   colors << c.light(100+config.gradientIntensity*60/100)
+      << c.dark(100+config.gradientIntensity*20/100);
+   MAKE_OXRENDER_GRADIENT;
+   return pix;
+}
+
+static inline QPixmap *
+sunkenGradient(const QColor &c, int size, Qt::Orientation o) {
+   PREPARE_OXRENDER_GRADIENT;
+   colors << c.dark(100+config.gradientIntensity*20/100)
+      << c.light(100+config.gradientIntensity*60/100);
+   MAKE_OXRENDER_GRADIENT;
+   return pix;
+}
+
+static inline QPixmap *
+buttonGradient(const QColor &c, int size, Qt::Orientation o) {
+   
+   PREPARE_OXRENDER_GRADIENT;
+   
+   int h,s,v, inc, dec;
+   c.getHsv(&h,&s,&v);
+   
+   // calc difference
+   inc = 15; dec = 6;
+   if (v+15 > 255) {
+      inc = 255-v; dec += (15-inc);
+   }
+   
+   // make colors
+   QColor ic;
+   ic.setHsv(h,s,v+inc); colors << ic;
+   ic.setHsv(h,s,v-dec); colors << ic;
+   stops << 0 << 0.75;
+   
+   MAKE_OXRENDER_GRADIENT;
+   return pix;
+}
+
+static inline QPixmap *
+groupGradient(const QColor &c, int size, Qt::Orientation o) {
+   QPixmap *pix = new QPixmap(32, size);
+   QPoint start = QPoint(32, 0);
+   QPoint stop = QPoint(32, pix->height());
+   ColorArray colors; PointArray stops;
+   if (o == Qt::Horizontal) {
+      QColor ic = c; ic.setAlpha(0);
+      colors << c << ic;
+   }
+   else
+      colors << c.light(100+(qMin(3,size/15))) << c;
+   
+   MAKE_OXRENDER_GRADIENT;
+   return pix;
+}
+
+inline static void
+gl_ssColors(const QColor &c, QColor *bb, QColor *dd, bool glass = false) {
+   
+   int h,s,v, ch,cs,cv, delta, add;
+   
+   c.getHsv(&h,&s,&v);
+
+   // calculate the variation
+   add = ((180-qGray(c.rgb()))>>1);
+   if (add < 0) add = -add/2;
+   if (glass)
+      add = add>>4;
+
+   // the brightest color (top)
+   cv = v+27+add;
+   if (cv > 255) {
+      delta = cv-255; cv = 255;
+      cs = s - delta; if (cs < 0) cs = 0;
+      ch = h - delta/6; if (ch < 0) ch = 360+ch;
+   }
+   else {
+      ch = h; cs = s;
+   }
+   bb->setHsv(ch,cs,cv);
+   
+   // the darkest color (lower center)
+   cv = v - 14-add; if (cv < 0) cv = 0;
+   cs = s*13/7; if (cs > 255) cs = 255;
+   dd->setHsv(h,cs,cv);
+}
+
+static inline QPixmap *
+gl_ssGradient(const QColor &c, int size, Qt::Orientation o, bool glass = false) {
+   QColor bb,dd; // b = d = c;
+   gl_ssColors(c, &bb, &dd, glass);
+   QPoint start, stop;
+   QPixmap *pix = newPix(size, o, &start, &stop);
+   
+#if 0
+   ColorArray colors; PointArray stops;
+   colors << bb << b << dd << d;
+   stops << 0 <<  0.5 << 0.5 << 1;
+#else
+   // many xrender imps are unable to create gradients with #stops > 2
+   // so we "fall back" to the qt software solution here - for the moment...
+   QLinearGradient lg(start, stop);
+   lg.setColorAt(0,bb); lg.setColorAt(0.5,c);
+   lg.setColorAt(0.5, dd); lg.setColorAt(glass ? 1 : .90, bb);
+   QPainter p(pix); p.fillRect(pix->rect(), lg); p.end();
+#endif
+   return pix;
+}
+
+static inline QPixmap *
+rGlossGradient(const QColor &c, int size) {
+   QColor bb,dd; // b = d = c;
+   gl_ssColors(c, &bb, &dd);
+   QPixmap *pix = new QPixmap(size, size);
+   
+#if 0
+   ColorArray colors; PointArray stops;
+   colors << bb << b << dd << d;
+   stops << 0 <<  0.5 << 0.5 << 1;
+#else
+   // many xrender imps are unable to create gradients with #stops > 2
+   // so we "fall back" to the qt software solution here - for the moment...
+      QRadialGradient rg(2*pix->width()/3, pix->height(), pix->height());
+      rg.setColorAt(0,c); rg.setColorAt(0.8,dd);
+      rg.setColorAt(0.8, c); rg.setColorAt(1, bb);
+      QPainter p(pix); p.fillRect(pix->rect(), rg); p.end();
+#endif
+   return pix;
+}
+
+const QPixmap&
+OxygenStyle::gradient(const QColor &c, int size, Qt::Orientation o, GradientType type) const {
+   // validity check
+   if (size <= 0) {
       qWarning("NULL Pixmap requested, size was %d",size);
       return nullPix;
    }
-   
-   QColor iC = c;
-   
-   PixmapCache *cache = &(const_cast<OxygenStyle*>( this )->gradients[o == Qt::Horizontal][type]);
-   int v = colorValue(c);
-   if (v < 80) // very dark colors won't make nice buttons ;)
-   {
-      int h,s;
-      c.getHsv(&h,&s,&v);
-      iC.setHsv(h,s,80);
-   }
-   
-   /* ==================================================
-   Ok, we want to cache the gradients, but unfortunately we have no idea about
-   what kind of gradients will be demanded in the future
-   Thus creating a 2 component map (uint for color and uint for size)
-   would be some overhead and cause a lot of unused space in the dictionaries
-   So we store all the gradients by a uint index
-   Therefore we substitute the alpha component (byte << 24) of the demanded color with the demanded size
-   As this would limit the size to 255/256 pixels we'll be a bit sloppy,
-   depending on the users resolution (e.g. use 0 to store a gradient with 2px,
-   usefull for demand of 1px or 2px) and shift the index
-   (e.g. gradients from 0 to 6 px size will hardly be needed - maybe add statistics on this)
-   So the handled size is actually demandedSize + (demandedSize % sizeSloppyness),
-   beeing at least demanded size and the next sloppy size above at max
-   ====================================================== */
-   
-   int sizeSloppyness = 1; uint magicNumber = 0;
-   QPixmap *pix = 0;
-   if (size < 105884) {
-   // this is where our dictionary reaches - should be enough for the moment ;)
-      int frameBase = 0, frameSize = 20;
-
-      while ((frameBase += frameSize) < size) {
-         sizeSloppyness++;
-         frameSize += 20;
-      }
-      
-      frameBase -=frameSize; frameSize -= 20;
-
-      // The mapping is done by the "magicNumber"
-      // basically we use the first 11 bits to store the size and the remaining 21 bits for the color (7bpc)
-      magicNumber =  (((frameSize + (size - frameBase)/sizeSloppyness) & 0xff) << 21) |
-         (((iC.red() >> 1) & 0x7f) << 14) |
-         (((iC.green() >> 1) & 0x7f) << 7 ) |
-         ((iC.blue() >> 1) & 0x7f);
-      
-      pix = cache->object(magicNumber);
-      if (pix)
-         return *pix;
-   }
-   else {
+   else if (size > 105883) { // this is where our dictionary reaches - should be enough for the moment ;)
       qWarning("gradient with more than 105883 steps requested, returning NULL pixmap");
       return nullPix;
    }
    
-   // no cache entry found, so let's create one =)
-   int add = size % sizeSloppyness; if (!add) add = sizeSloppyness;
-   size += add;
-   
-   QPoint start, stop;
-   if (type == GradRadialGloss)
-      pix = new QPixmap(size, size);
-   else {
-      if (o == Qt::Horizontal) {
-         pix = new QPixmap(size, 32);
-         start = QPoint(0,32); stop = QPoint(pix->width(),32);
-      }
-      else {
-         pix = new QPixmap(32, size);
-         start = QPoint(32, 0); stop = QPoint(32, pix->height());
-      }
+   // very dark colors won't make nice buttons =)
+   QColor iC = c;
+   int v = colorValue(c);
+   if (v < 80) {
+      int h,s;
+      c.getHsv(&h,&s,&v);
+      iC.setHsv(h,s,80);
    }
-   
-   if (type == GradGloss || type == GradRadialGloss || type == GradGlass) {
-   // many XRender implementations cannot do this... FUCK!
-      // calculate the determining colors
-      QColor d,dd,b,bb;
-      int h,s, ch,cs,cv, delta, add;
-      b = iC; d = b;
-      
-      iC.getHsv(&h,&s,&v);
-      
-      add = ((180-qGray(b.rgb()))>>1);
-      if (add < 0) add = -add/2;
-      if (type == GradGlass)
-         add = add>>4;
 
-      cv = v+27+add;
-      if (cv > 255) {
-         delta = cv-255; cv = 255;
-         cs = s - delta; if (cs < 0) cs = 0;
-         ch = h - delta/6; if (ch < 0) ch = 360+ch;
-      }
-      else {
-         ch = h; cs = s;
-      }
-      bb.setHsv(ch,cs,cv);
-      
-      cv = v - 14-add; if (cv < 0) cv = 0;
-      cs = s*13/7; if (cs > 255) cs = 255;
-      dd.setHsv(h,cs,cv);
-      
-      if (type == GradRadialGloss) {
-         QRadialGradient rg(2*pix->width()/3, pix->height(), pix->height());
-         rg.setColorAt(0,d); rg.setColorAt(0.8,dd);
-         rg.setColorAt(0.8, b); rg.setColorAt(1, bb);
-         QPainter p(pix); p.fillRect(pix->rect(), rg); p.end();
-      }
-      else {
-         QLinearGradient lg(start, stop);
-         lg.setColorAt(0,bb); lg.setColorAt(0.5,b);
-         lg.setColorAt(0.5, dd);
-         (type == GradGlass) ? lg.setColorAt(1, b) : lg.setColorAt(.90, bb);
-         QPainter p(pix); p.fillRect(pix->rect(), lg); p.end();
-      }
+   // hash 
+   int sloppyAdd = 1;
+   uint magicNumber = hash(size, iC, &sloppyAdd);
+
+   PixmapCache *cache =
+      &(const_cast<OxygenStyle*>( this )->gradients[o == Qt::Horizontal][type]);
+   QPixmap *pix = cache->object(magicNumber);
+   if (pix)
+      return *pix;
+   
+   // no cache entry found, so let's create one
+   size += sloppyAdd; // rather to big than to small ;)
+   switch (type) {
+   case GradButton:
+      pix = buttonGradient(iC, size, o);
+      break;
+   case GradGlass:
+      pix = gl_ssGradient(iC, size, o, true);
+      break;
+   case GradSimple:
+   default:
+      pix = simpleGradient(iC, size, o);
+      break;
+   case GradSunken:
+      pix = sunkenGradient(iC, size, o);
+      break;
+   case GradGloss:
+      pix = gl_ssGradient(iC, size, o);
+      break;
+   case GradGroup:
+      pix = groupGradient(iC, size, o);
+      break;
+   case GradRadialGloss:
+      pix = rGlossGradient(iC, size);
+      break;
    }
-   else {
-      ColorArray colors; PointArray stops;
-      switch (type) {
-      case GradButton:
-      case GradButtonHover:
-      case GradButtonDisabled: {
-         int h,s, inc, dec;
-         iC.getHsv(&h,&s,&v);
-         QColor tc;
-         if (type == GradButtonDisabled) {
-            inc = 5; dec = 2;
-            if (v+5 > 255) {
-               inc = 255-v; dec += (5-inc);
-            }
-         }
-         else {
-            inc = 15; dec = 6;
-            if (v+15 > 255) {
-               inc = 255-v; dec += (15-inc);
-            }
-         }
-         tc.setHsv(h,s,v+inc);
-         iC.setHsv(h,s,v-dec);
-         colors << tc << iC;
-         if (type == GradButtonHover)
-            stops << 0.30 << 0.75;
-         else
-            stops << 0 << 0.75;
-         break;
-      }
-      case GradGloss:
-      case GradRadialGloss: {
-         // calculate the determining colors
-         QColor d,dd,b,bb;
-         int h,s, ch,cs,cv, delta, add;
-         b = iC; d = b;
-         
-         iC.getHsv(&h,&s,&v);
-         
-         add = ((180-qGray(b.rgb()))>>1);
-         if (add < 0) add = -add/2;
-   
-         cv = v+27+add;
-         if (cv > 255) {
-            delta = cv-255; cv = 255;
-            cs = s - delta; if (cs < 0) cs = 0;
-            ch = h - delta/6; if (ch < 0) ch = 360+ch;
-         }
-         else {
-            ch = h; cs = s;
-         }
-         bb.setHsv(ch,cs,cv);
-         
-         cv = v - 14-add; if (cv < 0) cv = 0;
-         cs = s*13/7; if (cs > 255) cs = 255;
-         dd.setHsv(h,cs,cv);
-   
-         colors << bb << b << dd << d;
-         stops << 0 <<  0.5 << 0.5 << 1;
-         
-         break;
-      }
-      case GradSunken:
-         colors << iC.dark(100+config.gradientIntensity*20/100)
-            << iC.light(100+config.gradientIntensity*60/100);
-         break;
-      case GradGroup: {
-         if (o == Qt::Horizontal) {
-            pix = new QPixmap(32, size);
-            pix->fill(Qt::transparent);
-            start = QPoint(32, 0); stop = QPoint(32, pix->height());
-            iC = c; iC.setAlpha(0);
-            colors << c << iC;
-            break;
-         }
-         colors << c.light(100+(qMin(3,size/15))) << c;
-         break;
-      }
-      case GradSimple:
-      default:
-         colors << iC.light(100+config.gradientIntensity*60/100)
-            << iC.dark(100+config.gradientIntensity*20/100);
-      }
-      
-      OXPicture grad = OXRender::gradient(start, stop, colors, stops);
-      OXRender::composite (grad, None, *pix, 0, 0, 0, 0, 0, 0, pix->width(), pix->height());
-      OXRender::freePicture(grad);
-   }
-   
-   // cache for later ;)
+
+   // cache for later
    cache->insert(magicNumber, pix);
    return *pix;
 }

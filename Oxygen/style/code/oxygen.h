@@ -30,6 +30,7 @@ class QTabBar;
 class DynamicBrush;
 class QPaintEvent;
 class QFrame;
+// class GradientCache;
 
 #include <QCache>
 #include <QHash>
@@ -102,8 +103,6 @@ enum GradientType {
    GradGlass,
    GradRadialGloss,
    GradButton,
-   GradButtonHover,
-   GradButtonDisabled,
    GradGroup,
    NumGrads
 };
@@ -162,47 +161,82 @@ public:
    enum WidgetState{Basic = 0, Hovered, Focused, Active};
    
    OxygenStyle();
-   virtual ~OxygenStyle();
+   ~OxygenStyle();
 
    //inheritance from QStyle
-   virtual void drawComplexControl ( ComplexControl control, const QStyleOptionComplex * option, QPainter * painter, const QWidget * widget = 0 ) const;
+   void drawComplexControl ( ComplexControl control,
+                             const QStyleOptionComplex * option,
+                             QPainter * painter,
+                             const QWidget * widget = 0 ) const;
   
-   virtual void drawControl ( ControlElement element, const QStyleOption * option, QPainter * painter, const QWidget * widget = 0 ) const;
+   void drawControl ( ControlElement element,
+                      const QStyleOption * option,
+                      QPainter * painter,
+                      const QWidget * widget = 0 ) const;
    
    /**what do they do?
    virtual void drawItemPixmap ( QPainter * painter, const QRect & rect, int alignment, const QPixmap & pixmap ) const;
    virtual void drawItemText ( QPainter * painter, const QRect & rect, int alignment, const QPalette & pal, bool enabled, const QString & text, QPalette::ColorRole textRole = QPalette::NoRole ) const;
    */
    
-   virtual void drawPrimitive ( PrimitiveElement elem, const QStyleOption * option, QPainter * painter, const QWidget * widget = 0 ) const;
+   void drawPrimitive ( PrimitiveElement elem,
+                                const QStyleOption * option,
+                                QPainter * painter,
+                                const QWidget * widget = 0 ) const;
    
-   virtual QPixmap standardPixmap ( StandardPixmap standardPixmap, const QStyleOption * option = 0, const QWidget * widget = 0 ) const;
+   QPixmap standardPixmap ( StandardPixmap standardPixmap,
+                                    const QStyleOption * option = 0,
+                                    const QWidget * widget = 0 ) const;
    
-   /**what do they do?
-   virtual QPixmap generatedIconPixmap ( QIcon::Mode iconMode, const QPixmap & pixmap, const QStyleOption * option ) const;
-   virtual SubControl hitTestComplexControl ( ComplexControl control, const QStyleOptionComplex * option, const QPoint & pos, const QWidget * widget = 0 ) const;
-   virtual QRect itemPixmapRect ( const QRect & rect, int alignment, const QPixmap & pixmap ) const;
-   virtual QRect itemTextRect ( const QFontMetrics & metrics, const QRect & rect, int alignment, bool enabled, const QString & text ) const;
-   */
+//    what do they do? ========================================
+//    QPixmap generatedIconPixmap ( QIcon::Mode iconMode,
+//                                  const QPixmap & pixmap,
+//                                  const QStyleOption * option ) const;
+//    SubControl hitTestComplexControl ( ComplexControl control,
+//                                       const QStyleOptionComplex * option,
+//                                       const QPoint & pos,
+//                                       const QWidget * widget = 0 ) const;
+//    QRect itemPixmapRect ( const QRect & rect,
+//                           int alignment,
+//                           const QPixmap & pixmap ) const;
+//    QRect itemTextRect ( const QFontMetrics & metrics,
+//                         const QRect & rect,
+//                         int alignment,
+//                         bool enabled,
+//                         const QString & text ) const;
+//=============================================================
    
-   virtual int pixelMetric ( PixelMetric metric, const QStyleOption * option = 0, const QWidget * widget = 0 ) const;
+   int pixelMetric ( PixelMetric metric,
+                             const QStyleOption * option = 0,
+                             const QWidget * widget = 0 ) const;
    
-   virtual void polish( QWidget *w );
-   virtual void polish( QApplication * );
-   virtual void polish( QPalette &pal );
+   void polish( QWidget *w );
+   void polish( QApplication * );
+   void polish( QPalette &pal );
    
-   virtual QSize sizeFromContents ( ContentsType type, const QStyleOption * option, const QSize & contentsSize, const QWidget * widget = 0 ) const;
+   QSize sizeFromContents ( ContentsType type,
+                            const QStyleOption * option,
+                            const QSize & contentsSize,
+                            const QWidget * widget = 0 ) const;
       
-   virtual int styleHint ( StyleHint hint, const QStyleOption * option = 0, const QWidget * widget = 0, QStyleHintReturn * returnData = 0 ) const;
+   int styleHint ( StyleHint hint,
+                   const QStyleOption * option = 0,
+                   const QWidget * widget = 0,
+                   QStyleHintReturn * returnData = 0 ) const;
    
-   virtual QRect subControlRect ( ComplexControl control, const QStyleOptionComplex * option, SubControl subControl, const QWidget * widget = 0 ) const;
+   QRect subControlRect ( ComplexControl control,
+                          const QStyleOptionComplex * option,
+                          SubControl subControl,
+                          const QWidget * widget = 0 ) const;
    
-   virtual QRect subElementRect ( SubElement element, const QStyleOption * option, const QWidget * widget = 0 ) const;
+   QRect subElementRect ( SubElement element,
+                                  const QStyleOption * option,
+                                  const QWidget * widget = 0 ) const;
    
-   virtual QPalette standardPalette () const;
+   QPalette standardPalette () const;
    
-   virtual void unPolish( QWidget *w );
-   virtual void unPolish( QApplication *a );
+   void unPolish( QWidget *w );
+   void unPolish( QApplication *a );
    
    // from QObject
    bool eventFilter( QObject *object, QEvent *event );
@@ -236,17 +270,28 @@ private slots:
 private:
    OxygenStyle( const OxygenStyle & );
    OxygenStyle& operator=( const OxygenStyle & );
-   const QPixmap &gradient(const QColor &c, int size, Qt::Orientation o,
+   const QPixmap &gradient(const QColor &c,
+                           int size,
+                           Qt::Orientation o,
                            GradientType type = GradSimple) const;
    const QPixmap &btnAmbient(int height) const;
    const QPixmap &tabShadow(int height, bool bottom = false) const;
-   void fillWithMask(QPainter *painter, const QRect &rect, const QBrush &brush,
-                     const Tile::Mask *mask, Tile::PosFlags pf = Tile::Full,
+   
+   void fillWithMask(QPainter *painter,
+                     const QRect &rect,
+                     const QBrush &brush,
+                     const Tile::Mask *mask,
+                     Tile::PosFlags pf = Tile::Full,
                      bool justClip = false,
-                     QPoint offset = QPoint(), bool inverse = false,
+                     QPoint offset = QPoint(),
+                     bool inverse = false,
                      const QRect *outerRect = 0L) const;
-   void fillWithMask(QPainter *painter, const QPoint &xy, const QBrush &brush,
-                     const QPixmap &mask, QPoint offset = QPoint()) const;
+   void fillWithMask(QPainter *painter,
+                     const QPoint &xy,
+                     const QBrush &brush,
+                     const QPixmap &mask,
+                     QPoint offset = QPoint()) const;
+   
    QColor mapFadeColor(const QColor &color, int index) const;
    void fadeIn(QWidget *widget);
    void fadeOut(QWidget *widget );
@@ -288,6 +333,7 @@ private:
    // pixmaps
    QPixmap *_scanlines[2];
    // cache
+//    GradientCache *gradients[2][NumGrads];
    PixmapCache gradients[2][NumGrads];
    PixmapCache _btnAmbient, _tabShadow;
    TileCache glowCache;
