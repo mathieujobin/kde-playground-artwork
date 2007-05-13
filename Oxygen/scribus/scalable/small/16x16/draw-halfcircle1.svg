@@ -16,9 +16,9 @@
    inkscape:version="0.45.1"
    version="1.0"
    sodipodi:docbase="/home/pinheiro/artwork/Oxygen/scribus/scalable/small/16x16"
-   sodipodi:docname="draw-circle.svg"
+   sodipodi:docname="draw-halfcircle1.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   inkscape:export-filename="/home/pinheiro/artwork/Oxygen/scribus/scalable/small/16x16/draw-circle.png"
+   inkscape:export-filename="/home/pinheiro/artwork/Oxygen/scribus/scalable/small/16x16/draw-halfcircle1.png"
    inkscape:export-xdpi="11.25"
    inkscape:export-ydpi="11.25">
   <defs
@@ -1057,24 +1057,32 @@
        y2="549.06134" />
     <linearGradient
        inkscape:collect="always"
-       xlink:href="#linearGradient3369"
-       id="linearGradient2459"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1.1666667,0,0,1.5555557,-10.666665,-35.555551)"
-       x1="15.999998"
-       y1="106.75"
-       x2="98.714287"
-       y2="36.035713" />
-    <linearGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient3310"
        id="linearGradient2461"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1.4864046,0.6019652,-0.7331387,1.8103052,-28.186347,-65.602258)"
+       gradientTransform="matrix(1.4864046,0.6019652,-0.7331387,1.8103052,-27.186346,-66.133508)"
        x1="144.78481"
        y1="-56.087624"
        x2="63.089115"
        y2="62.056267" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2431"
+       id="linearGradient3315"
+       x1="-12.562499"
+       y1="155.125"
+       x2="115.49998"
+       y2="13.250007"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2443"
+       id="linearGradient3319"
+       x1="54.499989"
+       y1="150.75668"
+       x2="54.499989"
+       y2="-17.749992"
+       gradientUnits="userSpaceOnUse" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -1083,9 +1091,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.0000001"
-     inkscape:cx="132.89074"
-     inkscape:cy="99.271268"
+     inkscape:zoom="2.8284273"
+     inkscape:cx="53.641905"
+     inkscape:cy="38.116748"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      height="128px"
@@ -1117,33 +1125,22 @@
      inkscape:label="Livello 1"
      inkscape:groupmode="layer"
      id="layer1">
-    <rect
-       inkscape:export-ydpi="90"
-       inkscape:export-xdpi="90"
-       inkscape:export-filename="/home/pinheiro/Desktop/mock2.png"
-       style="fill:url(#linearGradient2457);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:4;stroke-opacity:1"
-       id="rect2324"
-       width="128"
-       height="128.5"
-       x="-1.3290503e-14"
-       y="-5.0767475e-15"
-       inkscape:r_cx="true"
-       inkscape:r_cy="true"
-       ry="64.25"
-       rx="64.25" />
-    <rect
-       ry="56"
-       rx="56"
-       y="8"
-       x="8"
-       height="112"
-       width="112"
-       id="rect2326"
-       style="fill:url(#linearGradient2459);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <path
+       sodipodi:type="arc"
+       style="opacity:0.89138579;fill:url(#linearGradient3315);fill-opacity:1;stroke:url(#linearGradient3319);stroke-width:8.49999905;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:1.08779998;stroke-opacity:1"
+       id="path3298"
+       sodipodi:cx="63.749996"
+       sodipodi:cy="63.750004"
+       sodipodi:rx="63.749996"
+       sodipodi:ry="63.749996"
+       d="M 63.749998,127.5 A 63.749996,63.749996 0 1 1 63.749997,7.6293945e-06 L 63.749996,63.750004 z"
+       transform="matrix(0.9411765,0,0,0.9411765,32,3.9999925)"
+       sodipodi:start="1.5707963"
+       sodipodi:end="4.712389" />
     <path
        style="fill:url(#linearGradient2461);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 96.09375,18.4375 C 70.801561,21.074069 38.439683,42.510548 20.09375,80.15625 L 74.0625,108.53125 C 73.739625,82.125338 90.536264,45.161346 109.3125,31.03125 C 105.95513,26.414772 101.9321,22.330769 97.34375,18.9375 L 96.09375,18.4375 z "
+       d="M 87.961166,19.59919 C 64.421925,25.779948 52.043561,34.883124 35.843751,68.125001 L 75.062501,108 C 74.882202,93.254459 80.040295,75.216583 87.900437,59.700983 L 87.961166,19.59919 z "
        id="path3318"
-       sodipodi:nodetypes="cccccc" />
+       sodipodi:nodetypes="ccccc" />
   </g>
 </svg>
