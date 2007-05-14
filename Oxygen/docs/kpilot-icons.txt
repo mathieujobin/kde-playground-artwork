@@ -1,0 +1,28 @@
+The icons for KPilot -- an application to synchronize the data on PalmOS
+based handhelds and the KDE desktop -- have been a bit of a mess for quite
+some time. You can see in the two graphics collections 
+          kpilot-actions.png
+          kpilot-states.png
+that the icons are a mix of Crystal, Kristof Borrey's iKons and my own
+crude drawings.
+
+KPilot consists of two applications, which can share an icon: the daemon
+and the viewer application.
+
+The daemon has three states which it indicates in the system tray:
+not ready, normal mode and busy (which blinks, alternating with the
+normal mode icon).
+
+There are five actions that can be done (selected in KPilot, performed
+by the daemon, so they show up in app toolbars, app menus and the
+context menu of the daemon's tray icon):
+
+hotsync (synchronize data normally). There is a trademarked and highly
+	recognizable icon for this in the same colours. The recycle icon
+	was once used for this, but that doesn't make much sense.
+
+backup / restore -- binary files copied from or to the handheld.
+
+hhtopc / pctohh -- copy the handheld or PC (KDE) data overtop of the other.
+
+
