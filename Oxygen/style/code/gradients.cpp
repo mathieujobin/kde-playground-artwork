@@ -128,6 +128,7 @@ buttonGradient(const QColor &c, int size, Qt::Orientation o) {
 static inline QPixmap *
 groupGradient(const QColor &c, int size, Qt::Orientation o) {
    QPixmap *pix = new QPixmap(32, size);
+   pix->fill(Qt::transparent);
    QPoint start = QPoint(32, 0);
    QPoint stop = QPoint(32, pix->height());
    ColorArray colors; PointArray stops;

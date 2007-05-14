@@ -50,8 +50,6 @@ static const int windowsItemHMargin	= 3; // menu item hor text margin
 static const int windowsItemVMargin	= 1; // menu item ver text margin
 static const int windowsRightBorder	= 12; // right border on windows
 
-enum ControlElement {CE_Category = 0xf0000001};
-
 static void drawArrow(const QStyle *style, const QStyleOptionToolButton *toolbutton,
                       const QRect &rect, QPainter *painter, const QWidget *widget = 0)
 {
@@ -1286,8 +1284,6 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       }
       break;
    case CE_ToolBar:
-      break;
-   case CE_Category:
       break;
    default:
          QCommonStyle::drawControl( element, option, painter, widget );

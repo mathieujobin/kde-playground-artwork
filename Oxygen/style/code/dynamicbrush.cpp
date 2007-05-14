@@ -114,38 +114,32 @@ DynamicBrush::DynamicBrush(Mode mode, QObject *parent) : QObject(parent), _mode(
    }
 }
 
-DynamicBrush::DynamicBrush(OXPixmap pixmap, OXPixmap shadow, int bgYoffset, QObject *parent) : QObject(parent), _pixmap(pixmap), _shadow(shadow), _bgYoffset(bgYoffset), _mode(Tiled), _glContext(0)
-{
+DynamicBrush::DynamicBrush(OXPixmap pixmap, OXPixmap shadow, int bgYoffset, QObject *parent) : QObject(parent), _pixmap(pixmap), _shadow(shadow), _bgYoffset(bgYoffset), _mode(Tiled), _glContext(0) {
    _timerBgWipe = new QTimer(this);
    connect (_timerBgWipe, SIGNAL(timeout()), this, SLOT(wipeBackground()));
    updateBrush = &DynamicBrush::updateBrushTiled;
 }
 
-DynamicBrush::~DynamicBrush()
-{
+DynamicBrush::~DynamicBrush() {
    glDeleteLists( _background, 1 );
 //    QObject::~QObject();
 }
 
-void DynamicBrush::setMode(Mode mode)
-{
+void DynamicBrush::setMode(Mode mode) {
    if (mode == _mode) return;
-   if (_mode == OpenGL)
-   {
+   if (_mode == OpenGL) {
       glDeleteLists( _background, 1 );
       delete _glContext;
       _glContext = 0L;
    }
    _mode = mode;
-   switch (_mode)
-   {
+   switch (_mode) {
    case Tiled: updateBrush = &DynamicBrush::updateBrushTiled; break;
    case XRender: updateBrush = &DynamicBrush::updateBrushRender; break;
    case QtGradient: updateBrush = &DynamicBrush::updateBrushQt; break;
    case OpenGL:
       updateBrush = &DynamicBrush::updateBrushGL;
-      if (!_glContext)
-      {
+      if (!_glContext) {
          _glContext = new QGLWidget( QGLFormat::defaultFormat(), 0 );
          initGL();
       }
@@ -158,8 +152,7 @@ void DynamicBrush::setMode(Mode mode)
    }
 }
 
-void DynamicBrush::generateTiles(Mode mode)
-{
+void DynamicBrush::generateTiles(Mode mode) {
    QLinearGradient lg1, lg2;
    QPainter p;
    for (int i = 0; i < 2; ++i)
@@ -302,8 +295,7 @@ void DynamicBrush::wipeBackground()
    tlwbacks.clear();
 }
 
-BgPixCache::iterator DynamicBrush::checkCache(bool &found)
-{
+BgPixCache::iterator DynamicBrush::checkCache(bool &found) {
    found = false;
    BgPixCache::iterator i, tlw = tlwbacks.end(), sm = tlwbacks.end();
    for (i = tlwbacks.begin(); i != tlwbacks.end(); ++i) {
@@ -643,8 +635,7 @@ void DynamicBrush::updateBrushGL()
    SETBACKGROUND(qPix);
 }
 
-void DynamicBrush::updateBrushRender()
-{
+void DynamicBrush::updateBrushRender() {
    bool found;
    BgPixCache::iterator tlw = checkCache(found);
    if (found) return;
