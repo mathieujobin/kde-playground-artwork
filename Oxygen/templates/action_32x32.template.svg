@@ -13,10 +13,11 @@
    height="128"
    id="svg16209"
    sodipodi:version="0.32"
-   inkscape:version="0.44"
+   inkscape:version="0.45.1"
    version="1.0"
-   sodipodi:docbase="/home/david/Progetti/oxygen-svn/Oxygen/templates"
-   sodipodi:docname="action_32x32.template.svg">
+   sodipodi:docbase="/home/david/svn/Oxygen/templates"
+   sodipodi:docname="action_32x32.template.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
      id="defs16211">
     <linearGradient
@@ -263,16 +264,5 @@
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     id="layer1">
-    <path
-       sodipodi:type="arc"
-       style="opacity:0.38139535;fill:url(#radialGradient3336);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:4;stroke-opacity:1"
-       id="path1563"
-       sodipodi:cx="63.912209"
-       sodipodi:cy="115.70919"
-       sodipodi:rx="63.912209"
-       sodipodi:ry="12.641975"
-       d="M 127.82442 115.70919 A 63.912209 12.641975 0 1 1  0,115.70919 A 63.912209 12.641975 0 1 1  127.82442 115.70919 z"
-       transform="matrix(1.001374,0,0,0.410363,-2.393169e-5,75.32943)" />
-  </g>
+     id="layer1" />
 </svg>
