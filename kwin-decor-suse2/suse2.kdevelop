@@ -3,7 +3,7 @@
   <general>
     <author>Gerd Fleischer</author>
     <email>gerdfleischer@web.de</email>
-    <version>0.4.1rc1</version>
+    <version>0.4.1rc2</version>
     <projectmanagement>KDevKDEAutoProject</projectmanagement>
     <primarylanguage>C++</primarylanguage>
     <keywords>
@@ -12,12 +12,12 @@
     </keywords>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description/>
+    <description></description>
     <ignoreparts/>
     <secondaryLanguages/>
     <versioncontrol/>
     <projectname>suse2</projectname>
-    <defaultencoding/>
+    <defaultencoding></defaultencoding>
   </general>
   <kdevfileview>
     <groups>
@@ -76,10 +76,10 @@
     <general>
       <dbgshell>libtool</dbgshell>
       <programargs/>
-      <gdbpath/>
-      <configGdbScript/>
-      <runShellScript/>
-      <runGdbScript/>
+      <gdbpath></gdbpath>
+      <configGdbScript></configGdbScript>
+      <runShellScript></runShellScript>
+      <runGdbScript></runGdbScript>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
@@ -163,7 +163,7 @@
       <includePaths>.;</includePaths>
     </codecompletion>
     <creategettersetter>
-      <prefixGet/>
+      <prefixGet></prefixGet>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>

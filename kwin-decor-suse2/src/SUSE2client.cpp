@@ -66,7 +66,7 @@ SUSE2Client::~SUSE2Client()
 // pure virtual methods from KCommonDecoration
 QString SUSE2Client::visibleName() const
 {
-    return i18n("SUSE2 (Version %1)").arg("0.4.1rc1");
+    return i18n("SUSE2 (Version %1)").arg("0.4.1rc2");
 }
 
 QString SUSE2Client::defaultButtonsLeft() const
@@ -420,7 +420,7 @@ void SUSE2Client::paintEvent(QPaintEvent *e)
 
     // titleSpacer
     QPixmap *titleBfrPtr = active ? aCaptionBuffer : iCaptionBuffer;
-    if(Rtitle.width() > 0 && titleBfrPtr != 0) {
+    if (Rtitle.width() > 0 && titleBfrPtr != 0) {
 
         int tX, tW;
         switch (Handler()->titleAlign()) {
@@ -469,7 +469,6 @@ void SUSE2Client::paintEvent(QPaintEvent *e)
             }
         }
     }
-    titleBfrPtr = 0;
 
      // leftSpacer
      if (borderLeft > 0 && sideHeight > 0) {

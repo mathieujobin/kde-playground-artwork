@@ -63,7 +63,7 @@ public:
 
 protected:
     virtual void paintEvent(QPaintEvent *e);
-    virtual void reset( unsigned long changed );
+    virtual void reset(unsigned long changed);
 
 private:
     QPixmap *aCaptionBuffer, *iCaptionBuffer;
