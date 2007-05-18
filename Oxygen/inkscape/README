@@ -1,10 +1,6 @@
 === Oxygen Icon Theme for Inkscape ===
 
-1) Copy icons.svg to ~/.inkscape/icons
+1) Copy icons.svg to ~/.inkscape/icons/
 2) Restart Inkscape
 
----
-
-At the moment all i've done is embeded png images, but if this causes problems, i'll use svgs.
-
-Draw zoom and draw star have already shown posible problems -- try changing the opacity to 100% and you'll see what I mean...
+If you want to help out, instructions are provided with inkscape. On most systems the instructions are provided in /usr/share/inkscape/icons/README.icon_themes
