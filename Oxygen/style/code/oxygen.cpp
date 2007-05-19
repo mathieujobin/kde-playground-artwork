@@ -458,6 +458,11 @@ timer(0L) {
    readSettings();
    initMetrics();
    generatePixmaps();
+   // init the caches
+   for (int i = 0; i < 2; ++i)
+      for (int j = 0; j < NumGrads; ++j)
+         gradients[i][j].setMaxCost( 1024<<10 );
+         
    //====== TOOLTIP ======================
 //    tooltipPalette = qApp->palette();
 //    tooltipPalette.setBrush( QPalette::Background, QColor( 255, 255, 220 ) );

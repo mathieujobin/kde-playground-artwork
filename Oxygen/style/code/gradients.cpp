@@ -276,7 +276,7 @@ OxygenStyle::gradient(const QColor &c, int size, Qt::Orientation o, GradientType
    }
 
    // cache for later
-   cache->insert(magicNumber, pix);
+   cache->insert(magicNumber, pix, (pix->width()*pix->height()*pix->depth())>>3);
    return *pix;
 }
 

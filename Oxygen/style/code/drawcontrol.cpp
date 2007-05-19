@@ -544,7 +544,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          }
          const QPixmap &groove = gradient(PAL.color(config.role_progress[0]), size,
                                           o, config.glassProgress ? GradGlass : GradSunken);
-         fillWithMask(painter, RECT, groove, &masks.button, Tile::Full);
+         fillWithMask(painter, RECT.adjusted(0,0,0,-dpi.$2), groove, &masks.button, Tile::Full);
          if (!animationUpdate)
             shadows.lineEdit[isEnabled].render(RECT, painter);
       }
@@ -560,52 +560,53 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          bool reverse = option->direction == Qt::RightToLeft;
          if (pb->invertedAppearance)
             reverse = !reverse;
-         Tile::PosFlags pf = Tile::Full;
+//          Tile::PosFlags pf = Tile::Full;
          int step = progressStep(widget);
-         QPoint off(-step, 0);
+//          QPoint off(-step, 0);
          if (pb->orientation == Qt::Vertical) {
             size = r.width();
             o = Qt::Horizontal;
-            off = QPoint(0, step);
-            pf &= ~Tile::Top;
+//             off = QPoint(0, step);
+//             pf &= ~Tile::Top;
             r.setTop(r.bottom() -
                   (int)(val*RECT.height()));
          }
          else if (reverse) {
-            pf &= ~Tile::Left;
-            off = QPoint(step, 0);
+//             pf &= ~Tile::Left;
+//             off = QPoint(step, 0);
             r.setLeft(r.right() -
                   (int)(val*RECT.width()));
          }
          else {
-            pf &= ~Tile::Right;
+//             pf &= ~Tile::Right;
             r.setRight(r.left() +
                      (int)(val*RECT.width()));
          }
-         const QPixmap &chunk1 = gradient(PAL.color(config.role_progress[1]), size,
-                                          o, config.gradientStrong);
-         if (val == 1.0) {
-            fillWithMask(painter, r, chunk1, &masks.button, Tile::Full);
-            break;
-         }
-         const QPixmap &chunk2 = config.glassProgress ?
-               gradient(PAL.color(config.role_progress[1]), size, o, GradSimple):
-               gradient(PAL.color(config.role_progress[0]), size, o, GradSunken);
+         const QColor c1 = (pb->progress == pb->maximum) ?
+               PAL.color(config.role_progress[1]) :
+               midColor( PAL.color(config.role_progress[0]),
+                         PAL.color(config.role_progress[1]), 10, 10+step/2);
+         const QColor c2 = midColor( PAL.color(config.role_progress[0]),
+                                     PAL.color(config.role_progress[1]), 1, 2);
+         const QPixmap &chunk1 = gradient(c1, size, o, config.gradientStrong);
+         const QPixmap &chunk2 = gradient(c2, size, o, config.gradientStrong);
+         
          QPixmap pix; QPainter p;
-         if (o == Qt::Horizontal) {
-            pix = QPixmap(size, 2*size);
-            p.begin(&pix);
-            p.fillRect(0,0,size,size, chunk1);
-            p.fillRect(0,size,size,size, chunk2);
-         }
-         else {
+         if (pb->orientation == Qt::Horizontal) {
             pix = QPixmap(2*size, size);
             p.begin(&pix);
             p.fillRect(0,0,size,size, chunk1);
             p.fillRect(size,0,size,size, chunk2);
          }
+         else {
+            pix = QPixmap(size, 2*size);
+            p.begin(&pix);
+            p.fillRect(0,0,size,size, chunk1);
+            p.fillRect(0,size,size,size, chunk2);
+         }
          p.end();
-         fillWithMask(painter, r, pix, &masks.button, Tile::Full, false, off);
+         
+         fillWithMask(painter, r, pix, &masks.button/*, Tile::Full, false, off*/);
       }
       break;
    case CE_ProgressBarLabel: // The text label of a QProgressBar
@@ -1171,7 +1172,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          painter->fillRect(RECT.adjusted(dpi.$2,0,-dpi.$2,0), (hover||sunken)?COLOR(Text):midColor(COLOR(Base),COLOR(Text),8,1));
          break;
       }
-      if (const QStyleOptionSlider *opt =
+      if (/*const QStyleOptionSlider *opt =*/
           qstyleoption_cast<const QStyleOptionSlider *>(option)) {
          Qt::Orientation direction; int size; QRect r;
    

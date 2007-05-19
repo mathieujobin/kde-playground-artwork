@@ -119,15 +119,29 @@ void OxygenStyle::updateProgressbars() {
       if (pb->paintingActive() || !pb->isVisible() ||
           !(pb->value() > pb->minimum()) || !(pb->value() < pb->maximum()))
          continue;
-      int mod = (pb->orientation() == Qt::Horizontal) ?
-         (pb->height()-dpi.$8)*2 :
-         (pb->width()-dpi.$6)*2;
-      if (!mod)
-         continue;
-      ++iter.value();
-      if (mod)
-         iter.value() %= mod;
-      pb->repaint(pb->rect().adjusted(dpi.$3,dpi.$4,-dpi.$3,-dpi.$4));
+//       int mod = (pb->orientation() == Qt::Horizontal) ?
+//          (pb->height()-dpi.$8)*2 :
+//          (pb->width()-dpi.$6)*2;
+//       if (!mod)
+//          continue;
+//       ++iter.value();
+//       if (mod)
+//          iter.value() %= mod;
+      if (iter.value() % 2) { // odd - fade out
+         iter.value() -= 2;
+         if (iter.value() < 4) // == 3
+            ++iter.value(); // 4
+         if ((iter.value()+1) % 4) // save some cycles...
+            continue;
+      }
+      else { //fade in
+         iter.value() += 2;
+         if (iter.value() > 39) // == 40
+            ++iter.value(); // 41
+         if (iter.value() % 4) // save some cycles...
+            continue;
+      }
+      pb->repaint(pb->rect().adjusted(dpi.$3,dpi.$4,-dpi.$3,-dpi.$5));
    }
    animationUpdate = false;
 }
