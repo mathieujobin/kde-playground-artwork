@@ -33,28 +33,24 @@ extern Dpi dpi;
 QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionComplex * option, SubControl subControl, const QWidget * widget) const
 {
    QRect ret;
-   switch (control)
-   {
+   switch (control) {
    case CC_SpinBox: // A spinbox, like QSpinBox
       if (const QStyleOptionSpinBox *spinbox =
-          qstyleoption_cast<const QStyleOptionSpinBox *>(option))
-      {
+          qstyleoption_cast<const QStyleOptionSpinBox *>(option)) {
          QSize bs = spinbox->rect.size();
          bs.setHeight(bs.height()/2);
             // 1.6 -approximate golden mean
          bs.setWidth(qMax(dpi.$18, qMin(bs.height(), bs.width() / 4)));
 //          bs = bs.expandedTo(QApplication::globalStrut());
          int x = spinbox->rect.width() - bs.width();
-         switch (subControl)
-         {
+         switch (subControl) {
          case SC_SpinBoxUp:
             ret = QRect(x, 0, bs.width(), bs.height());
             break;
          case SC_SpinBoxDown:
             ret = QRect(x, bs.height(), bs.width(), spinbox->rect.height()-bs.height());
             break;
-         case SC_SpinBoxEditField:
-         {
+         case SC_SpinBoxEditField: {
             int hfw = 0, vfw = 0;
             if (spinbox->frame) {
                hfw = dpi.$4; vfw = dpi.$1;
@@ -125,13 +121,11 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
          }
          case SC_GroupBoxCheckBox: {
             int cbsz = pixelMetric(PM_IndicatorWidth, groupBox, widget);
-            if (groupBox->direction == Qt::LeftToRight)
-            {
+            if (groupBox->direction == Qt::LeftToRight) {
                ret = groupBox->rect.adjusted(dpi.$5,dpi.$5,0,0);
                ret.setWidth(cbsz);
             }
-            else
-            {
+            else {
                ret = groupBox->rect.adjusted(0,dpi.$5,-dpi.$5,0);
                ret.setLeft(ret.right()-cbsz);
             }
@@ -235,13 +229,11 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
 //    case CC_Slider: // A slider, like QSlider
    case CC_ToolButton: // A tool button, like QToolButton
       if (const QStyleOptionToolButton *tb =
-          qstyleoption_cast<const QStyleOptionToolButton *>(option))
-      {
+          qstyleoption_cast<const QStyleOptionToolButton *>(option)) {
          int mbi = pixelMetric(PM_MenuButtonIndicator, tb, widget);
          int fw = pixelMetric(PM_DefaultFrameWidth, tb, widget);
          QRect ret = tb->rect.adjusted(fw,fw,-fw,-fw);
-         switch (subControl)
-         {
+         switch (subControl) {
          case SC_ToolButton:
             if ((tb->features
                & (QStyleOptionToolButton::Menu | QStyleOptionToolButton::PopupDelay))
@@ -262,8 +254,7 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
         break;
    case CC_TitleBar: // A Title bar, like what is used in Q3Workspace
       if (const QStyleOptionTitleBar *tb =
-          qstyleoption_cast<const QStyleOptionTitleBar *>(option))
-      {
+          qstyleoption_cast<const QStyleOptionTitleBar *>(option)) {
          const int controlMargin = 0;
          const int controlHeight = tb->rect.height()/* - controlMargin *2*/;
          const int delta = 8*controlHeight/5;
@@ -272,11 +263,10 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
          bool isMinimized = tb->titleBarState & Qt::WindowMinimized;
          bool isMaximized = tb->titleBarState & Qt::WindowMaximized;
          
-         switch (subControl)
-         {
+         switch (subControl) {
          case SC_TitleBarLabel:
-            if (tb->titleBarFlags & (Qt::WindowTitleHint | Qt::WindowSystemMenuHint))
-            {
+            if (tb->titleBarFlags &
+                (Qt::WindowTitleHint | Qt::WindowSystemMenuHint)) {
                ret = tb->rect;
                ret.adjust(delta, 0, 0, 0);
                if (tb->titleBarFlags & Qt::WindowSystemMenuHint)
@@ -352,8 +342,7 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
 
 QRect OxygenStyle::subElementRect ( SubElement element, const QStyleOption * option, const QWidget * widget) const
 {
-   switch (element)
-   {
+   switch (element) {
    case SE_PushButtonContents: // Area containing the label (icon with text or pixmap)
       return visualRect(option->direction, option->rect, option->rect.adjusted(dpi.$4,dpi.$4,-dpi.$4,-dpi.$4));
 //    case SE_PushButtonFocusRect: // Area for the focus rect (usually larger than the contents rect)
@@ -399,12 +388,10 @@ QRect OxygenStyle::subElementRect ( SubElement element, const QStyleOption * opt
 //    case SE_TabWidgetRightCorner: //  
    case SE_TabWidgetTabBar: //  
       if (const QStyleOptionTabWidgetFrame *twf
-          = qstyleoption_cast<const QStyleOptionTabWidgetFrame *>(option))
-      {
+          = qstyleoption_cast<const QStyleOptionTabWidgetFrame *>(option)) {
          QRect r(QPoint(0,0),twf->tabBarSize);
          int off = dpi.$10;
-         switch (twf->shape)
-         {
+         switch (twf->shape) {
          case QTabBar::RoundedNorth:
          case QTabBar::TriangularNorth:
                // Constrain the size now, otherwise, center could get off the page
@@ -412,8 +399,7 @@ QRect OxygenStyle::subElementRect ( SubElement element, const QStyleOption * opt
                r.setWidth(qMin(r.width(), twf->rect.width() - 2*off
                                           - twf->leftCornerWidgetSize.width()
                                           - twf->rightCornerWidgetSize.width()));
-               switch (styleHint(SH_TabBar_Alignment, twf, widget))
-               {
+               switch (styleHint(SH_TabBar_Alignment, twf, widget)) {
                default:
                case Qt::AlignLeft:
                   r.moveTopLeft(QPoint(twf->leftCornerWidgetSize.width()+off, 0));
@@ -497,30 +483,28 @@ QRect OxygenStyle::subElementRect ( SubElement element, const QStyleOption * opt
       }
    case SE_TabWidgetTabContents: //  
       if (const QStyleOptionTabWidgetFrame *twf =
-          qstyleoption_cast<const QStyleOptionTabWidgetFrame *>(option))
-      {
-         QRect r = subElementRect ( SE_TabWidgetTabPane, option, widget);
-         QStyleOptionTab tabopt;
-         tabopt.shape = twf->shape;
+          qstyleoption_cast<const QStyleOptionTabWidgetFrame *>(option)) {
+         QRect r = option->rect; //subElementRect ( SE_TabWidgetTabPane, option, widget);
+//          QStyleOptionTab tabopt;
+//          tabopt.shape = twf->shape;
          const int margin = dpi.$4;
-         int baseHeight = pixelMetric(PM_TabBarBaseHeight, &tabopt, widget);
-         switch (twf->shape)
-         {
+//          int baseHeight = pixelMetric(PM_TabBarBaseHeight, &tabopt, widget);
+         switch (twf->shape) {
          case QTabBar::RoundedNorth:
          case QTabBar::TriangularNorth:
-            r.adjust(margin, margin+baseHeight, -margin, -margin);
+            r.adjust(margin, margin+twf->tabBarSize.height(), -margin, -margin);
             break;
          case QTabBar::RoundedSouth:
          case QTabBar::TriangularSouth:
-            r.adjust(margin, margin, -margin, -margin-baseHeight);
+            r.adjust(margin, margin, -margin, -margin-twf->tabBarSize.height());
             break;
          case QTabBar::RoundedEast:
          case QTabBar::TriangularEast:
-            r.adjust(margin, margin, -margin-baseHeight, -margin);
+            r.adjust(margin, margin, -margin-twf->tabBarSize.width(), -margin);
             break;
          case QTabBar::RoundedWest:
          case QTabBar::TriangularWest:
-            r.adjust(margin+baseHeight, margin, -margin, -margin);
+            r.adjust(margin+twf->tabBarSize.width(), margin, -margin, -margin);
          }
          return r;
       }

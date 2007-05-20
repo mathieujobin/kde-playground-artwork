@@ -224,6 +224,8 @@ bool DynamicBrush::eventFilter ( QObject * object, QEvent * ev )
    
    // we're not interested in hidden elements
    if (!widget->isVisible()) return false;
+   // or in "opaque" ones - like e.g. a textinput, scrollview etc.
+   if (widget->autoFillBackground()) return false;
       
    // Test for the currently demanded bg size
    QSize size;

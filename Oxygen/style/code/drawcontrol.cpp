@@ -612,8 +612,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
    case CE_ProgressBarLabel: // The text label of a QProgressBar
       break;
       if (const QStyleOptionProgressBarV2 *progress =
-          qstyleoption_cast<const QStyleOptionProgressBarV2*>(option))
-      {
+          qstyleoption_cast<const QStyleOptionProgressBarV2*>(option)) {
          if (!animationUpdate)
             painter->save();
          QFont fnt = painter->font();
@@ -625,8 +624,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          if (progress->invertedAppearance) reverse = !reverse;
          val = val / (progress->maximum - progress->minimum);
          QMatrix m; QPalette::ColorRole role;
-         if (progress->orientation == Qt::Vertical)
-         {
+         if (progress->orientation == Qt::Vertical) {
             rect.setRect(RECT.x(), RECT.y(), RECT.height(), RECT.width());
             if (progress->bottomToTop) {
                m.translate(0.0, RECT.height()); m.rotate(-90);
@@ -635,25 +633,20 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
                m.translate(RECT.width(), 0.0); m.rotate(90);
             }
          }
-         if ( val > 0.0 )
-         {
+         if ( val > 0.0 ) {
             int s;
             QRect cr;
-            if (progress->orientation == Qt::Vertical)
-            {
+            if (progress->orientation == Qt::Vertical) {
                s = qMin( RECT.height(), ( int ) (val * RECT.height() ) );
                if ( s > 1 )
                   cr = QRect(RECT.x(), RECT.bottom()-s+1, RECT.width(), s);
             }
-            else
-            {
+            else {
                s = qMin( RECT.width(), ( int ) (val * RECT.width() ) );
-               if ( s > 1 )
-               {
+               if ( s > 1 ) {
 //                   QRect progressRect = RECT;
                   cr = RECT;
-                  if (reverse)
-                  {
+                  if (reverse) {
                      cr.setLeft(RECT.right()-s+1);
                      cr.setWidth(s);
 //                      int left = progressRect.x()-progressRect.height();

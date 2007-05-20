@@ -443,7 +443,20 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       if (const QStyleOptionTabWidgetFrame *twf =
           qstyleoption_cast<const QStyleOptionTabWidgetFrame *>(option)) {
          
-         int baseHeight = twf->tabBarSize.height();
+         bool mirror = false, vertical = false;
+         switch (twf->shape) {
+         case QTabBar::RoundedNorth: case QTabBar::TriangularNorth:
+            break;
+         case QTabBar::RoundedSouth: case QTabBar::TriangularSouth:
+            mirror = true; break;
+         case QTabBar::RoundedEast: case QTabBar::TriangularEast:
+            mirror = true;
+         case QTabBar::RoundedWest: case QTabBar::TriangularWest:
+            vertical = true; break;
+         }
+             
+         int baseHeight =
+                vertical ? twf->tabBarSize.width() : twf->tabBarSize.height();
          if (baseHeight < 0)
             baseHeight = pixelMetric( PM_TabBarBaseHeight, option, widget )-dpi.$2;
          if (!baseHeight) {
@@ -455,45 +468,40 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          int offset = 8;
          Qt::Orientation o = Qt::Vertical;
          Tile::PosFlags pf = Tile::Ring;
-         switch (twf->shape) {
-         case QTabBar::RoundedNorth:
-         case QTabBar::TriangularNorth:
-            rect.adjust(offset,0,-offset,0);
-            rect.setHeight(baseHeight);
-            fillRect = rect.adjusted(dpi.$3, dpi.$2, -dpi.$3, 0);
-            pf = Tile::Ring & ~ Tile::Bottom;
-            tabRect.setTop(tabRect.top()+baseHeight);
-            baseHeight = fillRect.height();
-            break;
-         case QTabBar::RoundedSouth:
-         case QTabBar::TriangularSouth:
-            rect.adjust(offset,0,-offset,0);
-            rect.setTop(rect.bottom()-baseHeight);
-            fillRect = rect.adjusted(dpi.$3, 0, -dpi.$3, -dpi.$3);
-            pf &= ~Tile::Top;
-            tabRect.setBottom(tabRect.bottom()-(baseHeight-dpi.$3));
-            baseHeight = fillRect.height();
-            break;
-         case QTabBar::RoundedEast:
-         case QTabBar::TriangularEast:
-            rect.adjust(0,offset,0,-offset);
-            rect.setLeft(rect.right()-baseHeight);
-            fillRect = rect.adjusted(0, dpi.$2, -dpi.$3, -dpi.$3);
-            pf &= ~Tile::Left;
+         if (vertical) { // east or west
             o = Qt::Horizontal;
-            tabRect.setRight(tabRect.right()-(baseHeight-dpi.$2));
-            baseHeight = fillRect.width();
-            break;
-         case QTabBar::RoundedWest:
-         case QTabBar::TriangularWest:
             rect.adjust(0,offset,0,-offset);
-            rect.setWidth(baseHeight);
-            fillRect = rect.adjusted(dpi.$3, dpi.$2, 0, -dpi.$3);
-            pf &= ~Tile::Right;
-            o = Qt::Horizontal;
-            tabRect.setLeft(tabRect.left()+(baseHeight-dpi.$2));
+            if (mirror) { // east
+               rect.setLeft(rect.right()-baseHeight);
+               fillRect = rect.adjusted(0, dpi.$2, -dpi.$3, -dpi.$3);
+               pf &= ~Tile::Left;
+               o = Qt::Horizontal;
+               tabRect.setRight(tabRect.right()-(baseHeight-dpi.$2));
+            }
+            else {
+               rect.setWidth(baseHeight);
+               fillRect = rect.adjusted(dpi.$3, dpi.$2, 0, -dpi.$3);
+               pf &= ~Tile::Right;
+               o = Qt::Horizontal;
+               tabRect.setLeft(tabRect.left()+(baseHeight-dpi.$2));
+            }
             baseHeight = fillRect.width();
-            break;
+         }
+         else { // north or south
+            rect.adjust(offset,0,-offset,0);
+            if (mirror) { //south
+               rect.setTop(rect.bottom()-baseHeight);
+               fillRect = rect.adjusted(dpi.$3, 0, -dpi.$3, -dpi.$3);
+               pf &= ~Tile::Top;
+               tabRect.setBottom(tabRect.bottom()-(baseHeight-dpi.$3));
+            }
+            else { // north
+               rect.setHeight(baseHeight);
+               fillRect = rect.adjusted(dpi.$3, dpi.$2, -dpi.$3, 0);
+               pf &= ~Tile::Bottom;
+               tabRect.setTop(tabRect.top()+baseHeight);
+            }
+            baseHeight = fillRect.height();
          }
          
          shadows.tab.render(rect, painter, pf);

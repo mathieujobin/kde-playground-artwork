@@ -22,6 +22,8 @@
 #include <QStyleOptionMenuItem>
 #include "oxygen.h"
 
+#include <QtDebug>
+
 using namespace Oxygen;
 extern Dpi dpi;
 
@@ -128,7 +130,18 @@ QSize OxygenStyle::sizeFromContents ( ContentsType ct, const QStyleOption * opti
       return contentsSize;
 //    case CT_Splitter: // A splitter, like QSplitter
    case CT_TabBarTab: // A tab on a tab bar, like QTabBar
-      return contentsSize + QSize(dpi.$12,0);
+      if (const QStyleOptionTab *tab =
+          qstyleoption_cast<const QStyleOptionTab *>(option)) {
+         switch (tab->shape) {
+         case QTabBar::RoundedNorth: case QTabBar::TriangularNorth:
+         case QTabBar::RoundedSouth: case QTabBar::TriangularSouth:
+            return contentsSize + QSize(dpi.$12, 0);
+         case QTabBar::RoundedEast: case QTabBar::TriangularEast:
+         case QTabBar::RoundedWest: case QTabBar::TriangularWest:
+            return contentsSize + QSize(0, dpi.$12);
+         }
+      }
+      return contentsSize + QSize(dpi.$6, dpi.$6);
    case CT_TabWidget: // A tab widget, like QTabWidget
       return contentsSize + QSize(dpi.$8,dpi.$10);
    case CT_ToolButton: { // A tool button, like QToolButton
