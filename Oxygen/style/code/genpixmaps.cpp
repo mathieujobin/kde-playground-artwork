@@ -283,8 +283,7 @@ void OxygenStyle::generatePixmaps()
    p.setRenderHint(QPainter::Antialiasing, false);
 //    p.setCompositionMode( QPainter::CompositionMode_DestinationIn );
    int $33 = SCALE(33);
-   for (int i = 1; i < $33; ++i)
-   {
+   for (int i = 1; i < $33; ++i) {
       p.setPen(QColor(0,0,0,CLAMP(i*lround(255.0/dpi.$32),0,255)));
       p.drawLine(0, $49-i, $49, $49-i);
    }
@@ -307,21 +306,17 @@ void OxygenStyle::generatePixmaps()
    
    // shadow line
    int w,h,c1,c2;
-   for (int i = 0; i < 2; ++i) // orientarion
-   {
-      if (i)
-      {
+   for (int i = 0; i < 2; ++i) { // orientarion
+      if (i) {
          w = $2; h = $49;
          lg = QLinearGradient(0,0,0,$49);
       }
-      else
-      {
+      else {
          w = $49; h = $2;
          lg = QLinearGradient(0,0,$49,0);
       }
       tmp = QPixmap(w,h);
-      for (int j = 0; j < 3; ++j) // direction
-      {
+      for (int j = 0; j < 3; ++j) { // direction
          c1 = (j > 0) ? 255 : 111; c2 = (j > 0) ? 111 : 255;
          tmp.fill(Qt::transparent);
          p.begin(&tmp);
@@ -348,9 +343,60 @@ void OxygenStyle::generatePixmaps()
          }
          stops.clear();
          p.end();
-         shadows.line[i][j] = Tile::Line(tmp,i?Qt::Vertical:Qt::Horizontal,$49_2,-$49_2);
+         shadows.line[i][j] =
+            Tile::Line(tmp, i ? Qt::Vertical : Qt::Horizontal, $49_2, -$49_2);
       }
    }
+   
+   // slider handles =================================================
+   QPoint triangle[3] = { QPoint(0, 100), QPoint(-100, -100), QPoint(100, -100) };
+   int size;
+   for (int i = 0; i < 4; ++i) { // direction
+      size = dpi.SliderControl;
+      for (int j = 0; j < 2; ++j) { // sunken?
+         if (j) size -= $2;
+         for (int k = 0; k < 2; ++k) { // opaque?
+            shadows.slider[i][j][k] = QPixmap(size, size);
+            shadows.slider[i][j][k].fill(Qt::transparent);
+            p.begin(&shadows.slider[i][j][k]);
+            p.setRenderHint(QPainter::Antialiasing);
+            p.setPen(Qt::NoPen);
+            p.setBrush(QColor(0,0,0, (1+j+k)*18));
+            p.translate(size/2, size/2);
+            p.scale(size/200.0, size/200.0);
+            p.rotate(-i*90.0);
+            p.drawPolygon(triangle, 3);
+            if (!j) {
+               p.scale(0.78, 0.78);
+               p.setBrush(QColor(0,0,0, (k+1)*12));
+               p.drawPolygon(triangle, 3);
+            }
+            p.end();
+         }
+      }
+      size = dpi.SliderControl - $4;
+      masks.slider[i] = QPixmap(size, size);
+      masks.slider[i].fill(Qt::transparent);
+      p.begin(&masks.slider[i]);
+      p.setRenderHint(QPainter::Antialiasing);
+      p.setPen(Qt::NoPen);
+      p.setBrush(Qt::black);
+      p.translate(size/2, size/2); p.scale(size/200.0, size/200.0);
+      p.rotate(-i*90.0);
+      p.drawPolygon(triangle, 3);
+      p.end();
+      lights.slider[i] = QPixmap(size, size);
+      lights.slider[i].fill(Qt::transparent);
+      p.begin(&lights.slider[i]);
+      p.setRenderHint(QPainter::Antialiasing);
+      p.setPen(Qt::white);
+      p.setBrush(Qt::NoBrush);
+      p.translate(size/2, size/2); p.scale(size/200.0, size/200.0);
+      p.rotate(-i*90.0);
+      p.drawPolygon(triangle, 3);
+      p.end();
+   }
+   // ================================================================
    // ================================================================
    // Popup corners - not really pxmaps, though ;) ===================
 //    masks.popupCorner[0] = QRegion(0,0,$9,$9);
@@ -384,7 +430,7 @@ void OxygenStyle::generatePixmaps()
    p.drawPolygon(triangle, 3)
    
    // Window Buttons ===================================
-   QPoint triangle[3];
+//    QPoint triangle[3];
    int $14 = SCALE(14);// $15 = SCALE(15), $16 = dpi.$16;
    _INITPIX_(masks.winClose, $14,$14);
    p.setBrush(Qt::black);

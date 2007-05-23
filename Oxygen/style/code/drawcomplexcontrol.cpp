@@ -359,78 +359,62 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          hover = hover && (slider->activeSubControls & SC_SliderHandle);
          sunken = sunken && (slider->activeSubControls & SC_SliderHandle);
          
+         int direction = 0;
+         if (slider->orientation == Qt::Horizontal)
+            ++direction;
+         if (slider->upsideDown)
+            direction += 2;
+         
          if ((slider->subControls & SC_SliderGroove) && groove.isValid()) {
             QRect r; Tile::PosFlags pf = 0;
             QColor c = btnBgColor(PAL, isEnabled, hasFocus);
             if ( slider->orientation == Qt::Horizontal ) {
                groove.adjust(0,handle.height()/3,0,-handle.height()/3);
-               r = groove;
-               r.setRight(handle.left()+3);
-               pf = Tile::Full & ~Tile::Right;
-               if (slider->upsideDown)
-                  fillWithMask(painter, r, gradient(COLOR(Window), r.height(), Qt::Vertical, GradSunken), &masks.button, pf);
-               else {
-                  shadows.button[0][1].render(r, painter);
-                  r.adjust(2,1,-2,-2);
-                  fillWithMask(painter, r, gradient(c, r.height(), Qt::Vertical, GradGlass), &masks.button, pf);
-               }
-               r = groove;
-               r.setLeft(handle.right()-3);
-               pf = Tile::Full & ~Tile::Left;
-               if (slider->upsideDown) {
-                  shadows.button[0][1].render(r, painter);
-                  r.adjust(2,1,-2,-2);
-                  fillWithMask(painter, r, gradient(c, r.height(), Qt::Vertical, GradGlass), &masks.button, pf);
-               }
-               else
-                  fillWithMask(painter, r, gradient(COLOR(Window), r.height(), Qt::Vertical, GradSunken), &masks.button, pf);
+               fillWithMask(painter, groove, gradient(COLOR(Window),
+                            groove.height(), Qt::Vertical, GradSunken),
+                            &masks.button, pf);
+               handle.translate(0,dpi.$1);
             }
             else { // Vertical
-               handle.translate(-dpi.$1,0);
                groove.adjust(handle.width()/3,0,-handle.width()/3,0);
-               r = groove;
-               r.setBottom(handle.top()+3);
-               pf = Tile::Full & ~Tile::Bottom;
-               if (slider->upsideDown)
-                  fillWithMask(painter, r, gradient(COLOR(Window), r.width(), Qt::Horizontal, GradSunken), &masks.button, pf);
-               else {
-                  shadows.button[0][1].render(r, painter);
-                  r.adjust(2,1,-2,-2);
-                  fillWithMask(painter, r, gradient(c, r.width(), Qt::Horizontal, GradGlass), &masks.button, pf);
-               }
-               r = groove;
-               r.setTop(handle.bottom()-3);
-               pf = Tile::Full & ~Tile::Top;
-               if (slider->upsideDown) {
-                  shadows.button[0][1].render(r, painter);
-                  r.adjust(2,1,-2,-2);
-                  fillWithMask(painter, r, gradient(c, r.width(), Qt::Horizontal, GradGlass), &masks.button, pf);
-               }
-               else
-                  fillWithMask(painter, r, gradient(COLOR(Window), r.width(), Qt::Horizontal, GradSunken), &masks.button, pf);
+               fillWithMask(painter, groove, gradient(COLOR(Window),
+                            groove.width(), Qt::Horizontal, GradSunken),
+                            &masks.button, pf);
             }
          }
          
+         // ticks - TODO: paint our own ones?
          if (slider->subControls & SC_SliderTickmarks) {
             QStyleOptionSlider tmpSlider = *slider;
             tmpSlider.subControls = SC_SliderTickmarks;
             QCommonStyle::drawComplexControl(control, &tmpSlider, painter, widget);
          }
          
+         // handle
          if (slider->subControls & SC_SliderHandle) {
-            const ComplexHoverFadeInfo *info =
-                  complexHoverFadeInfo(widget, slider->activeSubControls & SC_SliderHandle);
-            int step = (info && (info->fadingInControls & SC_SliderHandle ||
-                   info->fadingOutControls & SC_SliderHandle)) ?
-                  info->steps.value(SC_SliderHandle) : 0;
+            int step = 0;
+            if (!hasFocus) {
+               const ComplexHoverFadeInfo *info =
+                     complexHoverFadeInfo(widget, slider->activeSubControls & SC_SliderHandle);
+               if (info && (info->fadingInControls & SC_SliderHandle ||
+                   info->fadingOutControls & SC_SliderHandle))
+                  step = info->steps.value(SC_SliderHandle);
+            }
             // shadow
             QPoint xy = handle.topLeft();
-            painter->drawPixmap(sunken?xy+QPoint(dpi.$1,dpi.$1):xy, shadows.radio[sunken][1]);
+            painter->drawPixmap(sunken ? xy + QPoint(dpi.$1,dpi.$1) : xy,
+                                shadows.slider[direction][sunken][hover]);
             // gradient
-            xy += QPoint(dpi.$2,dpi.$1);
+            xy += QPoint(dpi.$2, direction == 2 ? dpi.$1 : 0);
             fillWithMask(painter, xy,
-                         gradient(btnBgColor(PAL, isEnabled, hover||hasFocus, step), handle.height()-dpi.$4, Qt::Vertical, config.gradBtn),
-                         masks.radio);
+                         gradient(btnBgColor(PAL, isEnabled, hover || hasFocus, step),
+                                  dpi.SliderControl-dpi.$4, Qt::Vertical, config.gradBtn),
+                         masks.slider[direction]);
+            painter->drawPixmap(xy, lights.slider[direction]);
+//             SAVE_PEN;
+//             painter->setPen(btnFgColor(PAL, isEnabled, hover || hasFocus, step));
+//             painter->drawPoint(handle.center());
+//             RESTORE_PEN;
          }
       }
       break;

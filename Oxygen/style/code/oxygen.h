@@ -313,7 +313,7 @@ private:
    typedef QHash<uint, Tile::Set> TileCache;
    struct {
       Tile::Mask rect[3], round[3], button, tab, group;
-      QPixmap radio, radioIndicator, radioGroove, notch;
+      QPixmap radio, radioIndicator, radioGroove, notch, slider[4];
       QPixmap winClose, winMin, winMax;
       QRegion popupCorner[4];
    } masks;
@@ -322,12 +322,14 @@ private:
       QPixmap radio[2][2];
       QPixmap winClose[2], winMin[2], winMax[2];
       Tile::Line line[2][3];
+      QPixmap slider[4][2][2];
    } shadows;
    struct {
       Tile::Set rect[3], round[3], button[2];
    } frames;
    struct {
       Tile::Line top;
+      QPixmap slider[4];
    } lights;
    
    // pixmaps
