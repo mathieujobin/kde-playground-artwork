@@ -560,33 +560,29 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          bool reverse = option->direction == Qt::RightToLeft;
          if (pb->invertedAppearance)
             reverse = !reverse;
-//          Tile::PosFlags pf = Tile::Full;
          int step = progressStep(widget);
-//          QPoint off(-step, 0);
          if (pb->orientation == Qt::Vertical) {
             size = r.width();
             o = Qt::Horizontal;
-//             off = QPoint(0, step);
-//             pf &= ~Tile::Top;
             r.setTop(r.bottom() -
                   (int)(val*RECT.height()));
          }
          else if (reverse) {
-//             pf &= ~Tile::Left;
-//             off = QPoint(step, 0);
             r.setLeft(r.right() -
                   (int)(val*RECT.width()));
          }
          else {
-//             pf &= ~Tile::Right;
             r.setRight(r.left() +
                      (int)(val*RECT.width()));
          }
-         const QColor c1 = (pb->progress == pb->maximum) ?
-               PAL.color(config.role_progress[1]) :
+         const bool unicolor = config.role_progress[0] == config.role_progress[1];
+         const QColor c1 = (pb->progress == pb->maximum || unicolor ) ?
+               PAL.color(config.role_progress[0]) :
                midColor( PAL.color(config.role_progress[0]),
                          PAL.color(config.role_progress[1]), 10, 10+step/2);
-         const QColor c2 = midColor( PAL.color(config.role_progress[0]),
+         const QColor c2 = unicolor ?
+               PAL.color(config.role_progress[0]).light(85+step) :
+               midColor( PAL.color(config.role_progress[0]),
                                      PAL.color(config.role_progress[1]), 1, 2);
          const QPixmap &chunk1 = gradient(c1, size, o, config.gradientStrong);
          const QPixmap &chunk2 = gradient(c2, size, o, config.gradientStrong);
