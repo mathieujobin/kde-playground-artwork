@@ -359,32 +359,95 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          hover = hover && (slider->activeSubControls & SC_SliderHandle);
          sunken = sunken && (slider->activeSubControls & SC_SliderHandle);
          
-         int direction = 0;
-         if (slider->orientation == Qt::Horizontal)
-            ++direction;
-         if (slider->upsideDown)
-            direction += 2;
+         const int ground = 0;
          
          if ((slider->subControls & SC_SliderGroove) && groove.isValid()) {
-            QRect r; Tile::PosFlags pf = 0;
+            QRect r;
             QColor c = btnBgColor(PAL, isEnabled, hasFocus);
             if ( slider->orientation == Qt::Horizontal ) {
+               // the groove
                groove.adjust(0,handle.height()/3,0,-handle.height()/3);
                fillWithMask(painter, groove, gradient(COLOR(Window),
                             groove.height(), Qt::Vertical, GradSunken),
-                            &masks.button, pf);
-               handle.translate(0,dpi.$1);
+                            &masks.button);
+               // the "temperature"
+               if (slider->sliderPosition != ground) {
+                  groove.adjust(0,dpi.$1,0,-dpi.$1);
+                  int groundX = groove.width() * (ground - slider->minimum) /
+                        (slider->maximum - slider->minimum);
+                  bool rightSide = slider->sliderPosition > ground;
+                  if (slider->upsideDown) {
+                     rightSide = !rightSide;
+                     groundX = groove.right() - groundX;
+                  }
+                  else
+                     groundX += groove.left();
+                  
+                  if (rightSide) {
+                     groove.setLeft(groundX);
+                     groove.setRight(handle.center().x());
+                  }
+                  else {
+                     groove.setLeft(handle.center().x());
+                     groove.setRight(groundX);
+                  }
+                  fillWithMask(painter, groove, gradient(COLOR(Window),
+                               groove.height(), Qt::Vertical, config.gradient),
+                               &masks.button);
+               }
+               // for later (cosmetic)
+               handle.translate(0,dpi.$3);
             }
             else { // Vertical
+               // the groove
                groove.adjust(handle.width()/3,0,-handle.width()/3,0);
                fillWithMask(painter, groove, gradient(COLOR(Window),
                             groove.width(), Qt::Horizontal, GradSunken),
-                            &masks.button, pf);
+                            &masks.button);
+               // the "temperature"
+               if (slider->sliderPosition != ground) {
+                  groove.adjust(dpi.$1,0,-dpi.$1,0);
+                  int groundY = groove.height() * (ground - slider->minimum) /
+                        (slider->maximum - slider->minimum);
+                  bool upside = slider->sliderPosition > ground;
+                  if (slider->upsideDown) {
+                     upside = !upside;
+                     groundY = groove.bottom() - groundY;
+                  }
+                  else
+                     groundY += groove.top();
+                  
+                  if (upside) {
+                     groove.setBottom(handle.center().y());
+                     groove.setTop(groundY);
+                  }
+                  else {
+                     groove.setBottom(groundY);
+                     groove.setTop(handle.center().y());
+                  }
+                  fillWithMask(painter, groove, gradient(COLOR(Window),
+                               groove.width(), Qt::Horizontal, config.gradient),
+                               &masks.button);
+               }
+               // for later (cosmetic)
+               handle.translate(dpi.$3,0);
             }
          }
          
+         int direction = 0;
+         if (slider->orientation == Qt::Vertical)
+            ++direction;
+         
          // ticks - TODO: paint our own ones?
-         if (slider->subControls & SC_SliderTickmarks) {
+         if ((slider->subControls & SC_SliderTickmarks) &&
+              (slider->tickPosition != QSlider::NoTicks) ) {
+            if (slider->tickPosition == QSlider::TicksAbove) {
+               direction += 2;
+               if (slider->orientation == Qt::Horizontal)
+                  handle.translate(0,-dpi.$6);
+               else
+                  handle.translate(-dpi.$6,0);
+            }
             QStyleOptionSlider tmpSlider = *slider;
             tmpSlider.subControls = SC_SliderTickmarks;
             QCommonStyle::drawComplexControl(control, &tmpSlider, painter, widget);
@@ -405,7 +468,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             painter->drawPixmap(sunken ? xy + QPoint(dpi.$1,dpi.$1) : xy,
                                 shadows.slider[direction][sunken][hover]);
             // gradient
-            xy += QPoint(dpi.$2, direction == 2 ? dpi.$1 : 0);
+            xy += QPoint(dpi.$2, direction?dpi.$1:0);
             fillWithMask(painter, xy,
                          gradient(btnBgColor(PAL, isEnabled, hover || hasFocus, step),
                                   dpi.SliderControl-dpi.$4, Qt::Vertical, config.gradBtn),
