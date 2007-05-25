@@ -954,21 +954,36 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          QPalette::ColorRole role = QPalette::WindowText, bgRole = QPalette::Window;
          if (isEnabled) {
             if (option->state & State_Selected) {
-               painter->drawTiledPixmap(RECT, gradient(COLOR(WindowText), RECT.height(), Qt::Vertical, config.gradientStrong));
+               const QPixmap &fill = gradient(COLOR(WindowText),
+                                              RECT.height(), Qt::Vertical,
+                                              config.gradientStrong);
+               painter->drawTiledPixmap(RECT, fill);
                QFont f(painter->font());
                f.setBold(true);
                painter->setFont(f);
                bgRole = QPalette::WindowText;
                role = QPalette::Window;
             }
-            else
-               painter->drawTiledPixmap(RECT, gradient(COLOR(Window), RECT.height(), Qt::Vertical, sunken ? GradSunken : hover?config.gradientStrong:config.gradient));
+            else {
+               painter->drawTiledPixmap(RECT, gradient(COLOR(Window),
+                                        RECT.height(), Qt::Vertical, sunken ?
+                                              GradSunken : hover ?
+                                                    config.gradientStrong :
+                                                    config.gradient) );
+            }
          }
-         /**i WANT (read this TrottelTech: WANT!) this to be color swapped on select (and centered as sugar on top)
-         now as the toolboxbutton is a private class and it's selected member is as well, i cannot overwrite the paint event
-         so instead i repeat a null rect for selected tabs contents (from subElementRect query), what makes the widget abort the content painting
-         then i paint it instead... works ;)  */
-         QPixmap pm = tbt->icon.pixmap(pixelMetric(QStyle::PM_SmallIconSize), isEnabled ? QIcon::Normal : QIcon::Disabled);
+/*========================================================================
+         i WANT (read this TrottelTech: WANT!) this to be color swapped on
+         select (and centered as sugar on top)
+         now as the toolboxbutton is a private class and it's selected member is
+         as well, i cannot overwrite the paint event
+         so instead i respond a null rect for selected tabs contents
+         (from subElementRect query), what makes the widget abort the content
+         painting - then i paint it instead... works ;)
+========================================================================*/
+         const QPixmap &pm =
+               tbt->icon.pixmap(pixelMetric(QStyle::PM_SmallIconSize),
+                                isEnabled ? QIcon::Normal : QIcon::Disabled);
          
          QRect cr = option->rect.adjusted(0, 0, -30, 0);
          QRect tr, ir;
@@ -997,16 +1012,19 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          if (ih)
             painter->drawPixmap(ir.left(), (RECT.height() - ih) / 2, pm);
 
-             if (qGray(PAL.color(bgRole).rgb()) < 128) { // dark background, let's paint an emboss
+         // dark background, let's paint an emboss
+         if (qGray(PAL.color(bgRole).rgb()) < 128) {
             painter->save();
             painter->setPen(PAL.color(bgRole).dark(120));
             tr.moveTop(tr.top()-1);
-            drawItemText(painter, tr, Qt::AlignCenter | Qt::TextShowMnemonic, PAL, isEnabled, txt);
+            drawItemText(painter, tr, Qt::AlignCenter | Qt::TextShowMnemonic,
+                         PAL, isEnabled, txt);
             tr.moveTop(tr.top()+1);
             painter->restore();
          }
 
-         drawItemText(painter, tr, Qt::AlignCenter | Qt::TextShowMnemonic, PAL, isEnabled, txt, role);
+         drawItemText(painter, tr, Qt::AlignCenter | Qt::TextShowMnemonic,
+                      PAL, isEnabled, txt, role);
       }
       break;
 //    case CE_SizeGrip: // Window resize handle; see also QSizeGrip.

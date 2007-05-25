@@ -861,7 +861,8 @@ void OxygenStyle::polish( QWidget * widget) {
       )
          widget->setAttribute(Qt::WA_Hover);
    
-   if (qobject_cast<QAbstractButton*>(widget)) {
+   if (qobject_cast<QAbstractButton*>(widget) &&
+       !widget->inherits("QToolBoxButton")) {
       widget->setBackgroundRole ( config.role_btn[0] );
       widget->setForegroundRole ( config.role_btn[1] );
       widget->installEventFilter(this);
@@ -947,9 +948,13 @@ void OxygenStyle::polish( QWidget * widget) {
          widget->installEventFilter(this);
       
       // toolbox handling - a shame they look that crap by default!
-      else if (widget->inherits("QToolBox") && widget->layout()) {
-         widget->layout()->setMargin ( 0 );
-         widget->layout()->setSpacing ( 0 );
+      else if (widget->inherits("QToolBox")) {
+         widget->setBackgroundRole(QPalette::Window);
+         widget->setForegroundRole(QPalette::WindowText);
+         if (widget->layout()) {
+            widget->layout()->setMargin ( 0 );
+            widget->layout()->setSpacing ( 0 );
+         }
       }
 
 //        && !(

@@ -356,12 +356,14 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          QRect groove = QCommonStyle::subControlRect(CC_Slider, slider, SC_SliderGroove, widget);
          QRect handle = QCommonStyle::subControlRect(CC_Slider, slider, SC_SliderHandle, widget);
 
-         hover = hover && (slider->activeSubControls & SC_SliderHandle);
+         isEnabled = isEnabled && (slider->maximum > slider->minimum);
+         hover = isEnabled && hover && (slider->activeSubControls & SC_SliderHandle);
          sunken = sunken && (slider->activeSubControls & SC_SliderHandle);
          
          const int ground = 0;
          
-         if ((slider->subControls & SC_SliderGroove) && groove.isValid()) {
+         if ((slider->subControls & SC_SliderGroove) &&
+             groove.isValid()) {
             QRect r;
             QColor c = btnBgColor(PAL, isEnabled, hasFocus);
             if ( slider->orientation == Qt::Horizontal ) {
@@ -371,7 +373,8 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                             groove.height(), Qt::Vertical, GradSunken),
                             &masks.button);
                // the "temperature"
-               if (slider->sliderPosition != ground) {
+               if (slider->sliderPosition != ground &&
+                   slider->maximum > slider->minimum) {
                   groove.adjust(0,dpi.$1,0,-dpi.$1);
                   int groundX = groove.width() * (ground - slider->minimum) /
                         (slider->maximum - slider->minimum);
@@ -405,7 +408,8 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                             groove.width(), Qt::Horizontal, GradSunken),
                             &masks.button);
                // the "temperature"
-               if (slider->sliderPosition != ground) {
+               if (slider->sliderPosition != ground &&
+                   slider->maximum > slider->minimum) {
                   groove.adjust(dpi.$1,0,-dpi.$1,0);
                   int groundY = groove.height() * (ground - slider->minimum) /
                         (slider->maximum - slider->minimum);
@@ -469,10 +473,9 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                                 shadows.slider[direction][sunken][hover]);
             // gradient
             xy += QPoint(dpi.$2, direction?dpi.$1:0);
-            fillWithMask(painter, xy,
-                         gradient(btnBgColor(PAL, isEnabled, hover || hasFocus, step),
-                                  dpi.SliderControl-dpi.$4, Qt::Vertical, config.gradBtn),
-                         masks.slider[direction]);
+            fillWithMask(painter, xy, gradient(btnBgColor(PAL, isEnabled,
+                         hover || hasFocus, step), dpi.SliderControl-dpi.$4,
+                         Qt::Vertical, config.gradBtn), masks.slider[direction]);
             painter->drawPixmap(xy, lights.slider[direction]);
 //             SAVE_PEN;
 //             painter->setPen(btnFgColor(PAL, isEnabled, hover || hasFocus, step));
