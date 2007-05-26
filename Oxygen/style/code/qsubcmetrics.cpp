@@ -344,7 +344,8 @@ QRect OxygenStyle::subElementRect ( SubElement element, const QStyleOption * opt
 {
    switch (element) {
    case SE_PushButtonContents: // Area containing the label (icon with text or pixmap)
-      return visualRect(option->direction, option->rect, option->rect.adjusted(dpi.$4,dpi.$4,-dpi.$4,-dpi.$4));
+      return visualRect(option->direction, option->rect,
+                        option->rect.adjusted(dpi.$4,dpi.$4,-dpi.$4,-dpi.$4));
 //    case SE_PushButtonFocusRect: // Area for the focus rect (usually larger than the contents rect)
 //    case SE_CheckBoxIndicator: // Area for the state indicator (e.g., check mark)
 //    case SE_CheckBoxContents: // Area for the label (text or pixmap)

@@ -219,9 +219,6 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       RESTORE_ANTIALIAS;
       break;
    }
-   case PE_IndicatorViewItemCheck: // On/off indicator for a view item
-      // TODO: this is sh. ambivalent
-      // partially a PE_IndicatorMenuCheckMark would look better, find a choice
    case PE_IndicatorCheckBox: // On/off indicator, for example, a QCheckBox.
    {
       drawPrimitive(PE_PanelButtonBevel, option, painter, widget);
@@ -543,23 +540,23 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
    }
    case PE_Q3Separator: // Qt 3 compatible generic separator.
       break;
+   case PE_IndicatorViewItemCheck: // On/off indicator for a view item
    case PE_Q3CheckListIndicator: // Qt 3 compatible Checkbox part of a list view item.
-   case PE_IndicatorMenuCheckMark: // Check mark used in a menu.
-   {
+   case PE_IndicatorMenuCheckMark: { // Check mark used in a menu.
       QRect rect;
       if (RECT.width() > RECT.height())
-         rect.setRect(RECT.x()+(RECT.width()-RECT.height())/2, RECT.y(), RECT.height(), RECT.height());
+         rect.setRect(RECT.x()+(RECT.width()-RECT.height())/2, RECT.y(),
+                      RECT.height()-1, RECT.height()-1);
       else
-         rect.setRect(RECT.x(), RECT.y()+(RECT.height()-RECT.width())/2, RECT.width(), RECT.width());
+         rect.setRect(RECT.x(), RECT.y()+(RECT.height()-RECT.width())/2,
+                      RECT.width()-1, RECT.width()-1);
       int off = rect.width()/4;
       painter->drawRect(rect.adjusted(0, off, -off, 0));
-      if (option->state & State_On)
-      {
+      if (option->state & State_On) {
          SAVE_ANTIALIAS; SAVE_BRUSH;
          painter->setRenderHint(QPainter::Antialiasing);
          painter->setBrush(painter->pen().brush());
-         const QPoint points[4] = 
-         {
+         const QPoint points[4] = {
             QPoint(rect.right(), rect.top()),
             QPoint(rect.x()+rect.width()/3, rect.bottom()),
             QPoint(rect.x(), rect.bottom()-rect.height()/3),
@@ -575,8 +572,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       painter->setRenderHint ( QPainter::Antialiasing );
       painter->drawEllipse ( RECT );
       _PRINTFLAGS_;
-      if (option->state & State_On)
-      {
+      if (option->state & State_On) {
          painter->setBrush ( painter->pen().color() );
          painter->drawEllipse ( RECT.adjusted(RECT.width()/4, RECT.height()/4, -RECT.width()/4, -RECT.height()/4) );
       }

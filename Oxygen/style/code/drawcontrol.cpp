@@ -1243,14 +1243,13 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       break;
 //    case CE_ScrollBarFirst: // Scroll bar first line indicator (i.e., home).
 //    case CE_ScrollBarLast: // Scroll bar last line indicator (i.e., end).
-   case CE_RubberBand: // Rubber band used in such things as iconview.
-   {
+   case CE_RubberBand: {// Rubber band used in such things as iconview.
       painter->save();
       QColor c = COLOR(Highlight);
       painter->setPen(c);
       c.setAlpha(100);
       painter->setBrush(c);
-      painter->drawRect(RECT);
+      painter->drawRect(RECT.adjusted(0,0,-1,-1));
       painter->restore();
       break;
    }

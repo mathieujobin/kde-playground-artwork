@@ -32,8 +32,7 @@ static const int windowsArrowHMargin = 6; // arrow horizontal margin
 
 QSize OxygenStyle::sizeFromContents ( ContentsType ct, const QStyleOption * option, const QSize & contentsSize, const QWidget * widget ) const
 {
-   switch ( ct )
-   {
+   switch ( ct ) {
 //    case CT_CheckBox: // A check box, like QCheckBox
    case CT_ComboBox: // A combo box, like QComboBox
       if (const QStyleOptionComboBox *cb =
@@ -48,17 +47,17 @@ QSize OxygenStyle::sizeFromContents ( ContentsType ct, const QStyleOption * opti
 //    case CT_Q3DockWindow: //  
    case CT_HeaderSection: // A header section, like QHeader
       if (const QStyleOptionHeader *hdr =
-          qstyleoption_cast<const QStyleOptionHeader *>(option))
-      {
+          qstyleoption_cast<const QStyleOptionHeader *>(option)) {
          QSize sz;
          int margin = dpi.$2;
-         int iconSize = hdr->icon.isNull() ? 0 : pixelMetric(QStyle::PM_SmallIconSize, hdr, widget);
+         int iconSize = hdr->icon.isNull() ? 0 :
+                pixelMetric(QStyle::PM_SmallIconSize, hdr, widget);
          QSize txt = hdr->fontMetrics.size(0, hdr->text);
          sz.setHeight(qMax(iconSize, txt.height()) + dpi.$4);
          sz.setWidth((iconSize?margin+iconSize:0) +
                      (hdr->text.isNull()?0:margin+txt.width()) +
-                     ((hdr->sortIndicator == QStyleOptionHeader::None)?0:margin+8*option->rect.height()/5) +
-                     margin);
+                     ((hdr->sortIndicator == QStyleOptionHeader::None) ? 0 :
+                      margin+8*option->rect.height()/5) + margin);
          return sz;
       }
    case CT_LineEdit: // A line edit, like QLineEdit

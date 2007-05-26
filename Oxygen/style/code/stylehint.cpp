@@ -144,6 +144,8 @@ int OxygenStyle::styleHint ( StyleHint hint, const QStyleOption * option, const 
 ///    case SH_ItemView_ShowDecorationSelected: // When an item in an item view is selected, also highlight the branch or other decoration.
    case SH_ItemView_ActivateItemOnSingleClick: // Emit the activated signal when the user single clicks on an item in an item in an item view. Otherwise the signal is emitted when the user double clicks on an item.
       return true;
+   case SH_WizardStyle:
+      return 2;//QWizard::MacStyle;
    default:
       return QCommonStyle::styleHint(hint, option, widget, returnData);
    } // switch
