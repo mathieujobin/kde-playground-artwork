@@ -36,6 +36,7 @@ bool TabAnimInfo::eventFilter( QObject* object, QEvent* event ) {
 
 // QPixmap::grabWidget(.) currently fails on the background offset,
 // so we use our own implementation
+//TODO: fix scrollareas (the scrollbars aren't painted, so check for availability and usage...)
 QPixmap grabWidget(QWidget * root) {
     if (!root)
         return QPixmap();

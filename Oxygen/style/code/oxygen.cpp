@@ -861,11 +861,14 @@ void OxygenStyle::polish( QWidget * widget) {
       )
          widget->setAttribute(Qt::WA_Hover);
    
-   if (qobject_cast<QAbstractButton*>(widget) &&
-       !widget->inherits("QToolBoxButton")) {
-      widget->setBackgroundRole ( config.role_btn[0] );
-      widget->setForegroundRole ( config.role_btn[1] );
-      widget->installEventFilter(this);
+   if (qobject_cast<QAbstractButton*>(widget)) {
+      if (widget->inherits("QToolBoxButton"))
+         widget->setForegroundRole ( QPalette::WindowText );
+      else {
+         widget->setBackgroundRole ( config.role_btn[0] );
+         widget->setForegroundRole ( config.role_btn[1] );
+         widget->installEventFilter(this);
+      }
    }
    if (qobject_cast<QComboBox *>(widget)) {
       widget->setBackgroundRole ( QPalette::Base );
@@ -1025,6 +1028,7 @@ void OxygenStyle::polish( QWidget * widget) {
    }
    
    //========================
+
 }
 
 bool OxygenStyle::eventFilter( QObject *object, QEvent *ev ) {

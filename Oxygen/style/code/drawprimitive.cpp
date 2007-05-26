@@ -233,7 +233,6 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          QRect r = RECT.adjusted(dpi.$6,dpi.$5,-dpi.$6,-dpi.$7);
          const QPixmap &fill = gradient(c, r.height(), Qt::Vertical, config.gradBtn);
          switch (config.checkType) {
-         default:
          case 0: {
             QPen pen(fill, r.width()/5, Qt::SolidLine, Qt::RoundCap, Qt::BevelJoin);
             painter->setPen(pen);
@@ -242,6 +241,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
                painter->drawLine(r.x(),r.y(),r.right(),r.bottom());
             break;
          }
+         default:
          case 1: {
             QPen pen(fill, r.width()/5, Qt::SolidLine, Qt::RoundCap, Qt::BevelJoin);
             painter->setPen(pen);

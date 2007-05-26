@@ -951,10 +951,15 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
    case CE_ToolBoxTab: // The toolbox's tab area
       if (const QStyleOptionToolBox* tbt =
           qstyleoption_cast<const QStyleOptionToolBox*>(option)) {
+         
+         // Qt does some funky color updates on the toolboxbutton palette, leading to button color on init display, so i just skip it and use daddies palette...
+         const QPalette &pal = (widget && widget->parentWidget()) ?
+               widget->parentWidget()->palette() : PAL;
+         
          QPalette::ColorRole role = QPalette::WindowText, bgRole = QPalette::Window;
          if (isEnabled) {
             if (option->state & State_Selected) {
-               const QPixmap &fill = gradient(COLOR(WindowText),
+               const QPixmap &fill = gradient(pal.color(QPalette::WindowText),
                                               RECT.height(), Qt::Vertical,
                                               config.gradientStrong);
                painter->drawTiledPixmap(RECT, fill);
@@ -965,7 +970,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
                role = QPalette::Window;
             }
             else {
-               painter->drawTiledPixmap(RECT, gradient(COLOR(Window),
+               painter->drawTiledPixmap(RECT, gradient(pal.color(QPalette::Window),
                                         RECT.height(), Qt::Vertical, sunken ?
                                               GradSunken : hover ?
                                                     config.gradientStrong :
@@ -1013,18 +1018,18 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             painter->drawPixmap(ir.left(), (RECT.height() - ih) / 2, pm);
 
          // dark background, let's paint an emboss
-         if (qGray(PAL.color(bgRole).rgb()) < 128) {
+         if (qGray(pal.color(bgRole).rgb()) < 128) {
             painter->save();
-            painter->setPen(PAL.color(bgRole).dark(120));
+            painter->setPen(pal.color(bgRole).dark(120));
             tr.moveTop(tr.top()-1);
             drawItemText(painter, tr, Qt::AlignCenter | Qt::TextShowMnemonic,
-                         PAL, isEnabled, txt);
+                         pal, isEnabled, txt);
             tr.moveTop(tr.top()+1);
             painter->restore();
          }
 
          drawItemText(painter, tr, Qt::AlignCenter | Qt::TextShowMnemonic,
-                      PAL, isEnabled, txt, role);
+                      pal, isEnabled, txt, role);
       }
       break;
 //    case CE_SizeGrip: // Window resize handle; see also QSizeGrip.
