@@ -259,23 +259,25 @@ bool DynamicBrush::eventFilter ( QObject * object, QEvent * ev )
    else
       return false;
    
-   // the timer will wipe the background, if it's not updated since 7.777 secs
-   // (maybe the window is completely covered)
-   _timerBgWipe->start(7777);
-
    // we don't need a bg pix for the moment, let's save some RAM
    if (size.isNull()) {
       wipeBackground();
       tlwbacks.remove(_topLevelWidget);
       return false;
    }
-
+   
+   // the timer will wipe the background, if it's not updated since 7.777 secs
+   // (maybe the window is completely covered)
+   _timerBgWipe->start(7777);
+   
    // In case the demanded size differs from the one we have: make an update ;)
    bool needNewPix = true;
    if (_mode == VGradient1 || _mode == VGradient2 || _mode == Glass)
       needNewPix = (_size.height() != size.height());
    else if (_mode == HGradient1 || _mode == HGradient2)
       needNewPix = (_size.width() != size.width());
+   else // complex etc.
+      needNewPix = (_size != size);
    if (needNewPix) {
       _size = size;
        (this->*updateBrush)();

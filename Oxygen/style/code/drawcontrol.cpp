@@ -1149,6 +1149,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
                                      opt->sliderValue < opt->maximum) ||
                                     (element == CE_ScrollBarSubLine &&
                                      opt->sliderValue > opt->minimum));
+         hover = hover && alive;
          QPoint xy = RECT.topLeft();
          if (sunken || !alive)
             painter->drawPixmap(xy+QPoint(dpi.$1,dpi.$1), shadows.radio[1][hover]);
@@ -1289,7 +1290,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             else if (hover)
                painter->setPen(COLOR(Text));
             else
-               painter->setPen(midColor(COLOR(Base), COLOR(Text), isEnabled?1:2, 2));
+               painter->setPen(midColor(COLOR(Base), COLOR(Text), isEnabled?4:5, 5));
             painter->drawText(editRect, Qt::AlignCenter, cb->currentText);
          }
          painter->restore();
