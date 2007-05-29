@@ -103,7 +103,6 @@ enum GradientType {
    GradGlass,
    GradRadialGloss,
    GradButton,
-   GradGroup,
    NumGrads
 };
 
@@ -276,6 +275,7 @@ private:
                            GradientType type = GradSimple) const;
    const QPixmap &btnAmbient(int height) const;
    const QPixmap &tabShadow(int height, bool bottom = false) const;
+   const QPixmap &groupLight(int height) const;
    
    void fillWithMask(QPainter *painter,
                      const QRect &rect,
@@ -337,7 +337,7 @@ private:
    // cache
 //    GradientCache *gradients[2][NumGrads];
    PixmapCache gradients[2][NumGrads];
-   PixmapCache _btnAmbient, _tabShadow;
+   PixmapCache _btnAmbient, _tabShadow, _groupLight;
    TileCache glowCache;
    TileCache roundGlowCache;
 

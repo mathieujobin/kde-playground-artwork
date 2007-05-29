@@ -18,8 +18,7 @@ void OxygenStyle::generatePixmaps()
          p.setRenderHint(QPainter::Antialiasing);
          p.setBrush(QColor(0,0,0,((j?10:1)+i)*6));
          p.drawRoundRect(0,0,$9,$9,90,90);
-         if (!j)
-         {
+         if (!j) {
             p.setBrush(QColor(0,0,0,(1+i)*10));
             p.drawRoundRect($1,$1,$9-2*$1,$9-2*$1,75,75);
             p.setBrush(QColor(0,0,0,(1+i)*14));
@@ -29,6 +28,17 @@ void OxygenStyle::generatePixmaps()
          shadows.button[j][i] = Tile::Set(tmp,$9_2,$9_2,$9-2*$9_2,$9-2*$9_2);
       }
    }
+   
+   // mask
+   tmp = QPixmap($9,$9);
+   tmp.fill(Qt::transparent);
+   p.begin(&tmp);
+   p.setPen(Qt::NoPen);
+   p.setRenderHint(QPainter::Antialiasing);
+   p.setBrush(QColor(0,0,0,255));
+   p.drawRoundRect(0,0,$9,$9,60,60);
+   p.end();
+   masks.button = Tile::Mask(tmp,$9_2,$9_2,$9-2*$9_2,$9-2*$9_2,0,0,0,0,60,60);
    
    // -> sunken
    QLinearGradient lg; QGradientStops stops;
@@ -86,8 +96,7 @@ void OxygenStyle::generatePixmaps()
    
    // outlines
    tmp = QPixmap($9,$9);
-   for (int i = 0; i < 2; ++i)
-   {
+   for (int i = 0; i < 2; ++i) {
       tmp.fill(Qt::transparent);
       p.begin(&tmp);
       p.setRenderHint(QPainter::Antialiasing);
@@ -99,17 +108,6 @@ void OxygenStyle::generatePixmaps()
    }
 //    frames.button[0] = Tile::Nuno(100);
 //    frames.button[1] = Tile::Nuno(160);
-   
-   // mask
-   tmp = QPixmap($9,$9);
-   tmp.fill(Qt::transparent);
-   p.begin(&tmp);
-   p.setPen(Qt::NoPen);
-   p.setRenderHint(QPainter::Antialiasing);
-   p.setBrush(QColor(0,0,0,255));
-   p.drawRoundRect(0,0,$9,$9,60,60);
-   p.end();
-   masks.button = Tile::Mask(tmp,$9_2,$9_2,$9-2*$9_2,$9-2*$9_2,0,0,0,0,60,60);
    
    // toplight
    int $49 = SCALE(49);

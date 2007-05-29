@@ -115,7 +115,9 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
             ret = groupBox->rect;
             break;
          case SC_GroupBoxContents: {
-            int top = groupBox->text.isEmpty() ? dpi.$6 : qMax(dpi.$6, groupBox->fontMetrics.height()+dpi.$2);
+            int top = dpi.$6;
+            if (!groupBox->text.isEmpty())
+               top += groupBox->fontMetrics.height();
             ret = groupBox->rect.adjusted(dpi.$3,top,-dpi.$3,-dpi.$7);
             break;
          }
@@ -134,11 +136,11 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
          }
          case SC_GroupBoxLabel: {
             QFontMetrics fontMetrics = groupBox->fontMetrics;
-            int h = fontMetrics.height()+dpi.$2;
+            int h = fontMetrics.height()+dpi.$4;
             int tw = fontMetrics.size(Qt::TextShowMnemonic, groupBox->text + QLatin1Char(' ')).width();
             int marg = (groupBox->features & QStyleOptionFrameV2::Flat) ? 0 : dpi.$4;
 
-            ret = groupBox->rect.adjusted(marg, dpi.$2, -marg, 0);
+            ret = groupBox->rect.adjusted(marg, dpi.$4, -marg, 0);
             ret.setHeight(h);
 
             // Adjusted rect for label + indicatorWidth + indicatorSpace
@@ -232,7 +234,7 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
           qstyleoption_cast<const QStyleOptionToolButton *>(option)) {
          int mbi = pixelMetric(PM_MenuButtonIndicator, tb, widget);
          int fw = pixelMetric(PM_DefaultFrameWidth, tb, widget);
-         QRect ret = tb->rect.adjusted(fw,fw,-fw,-fw);
+         QRect ret = tb->rect.adjusted(fw,fw,-fw,0);
          switch (subControl) {
          case SC_ToolButton:
             if ((tb->features

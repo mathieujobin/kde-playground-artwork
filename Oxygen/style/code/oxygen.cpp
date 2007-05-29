@@ -658,16 +658,14 @@ void OxygenStyle::fillWithMask(QPainter *painter, const QPoint &xy, const QBrush
 void OxygenStyle::fillWithMask(QPainter *painter, const QRect &rect, const QBrush &brush, const Tile::Mask *mask, Tile::PosFlags pf, bool justClip, QPoint offset, bool inverse, const QRect *outerRect) const
 {
    bool pixmode = !brush.texture().isNull();
-   if (!mask)
-   {
+   if (!mask) {
       if (pixmode)
          painter->drawTiledPixmap(rect, brush.texture(), offset);
       else
          painter->fillRect(rect, brush.color());
       return;
    }
-   if (justClip)
-   {
+   if (justClip) {
       painter->save();
       painter->setClipRegion(mask->clipRegion(rect, pf));
       if (pixmode)
@@ -679,11 +677,9 @@ void OxygenStyle::fillWithMask(QPainter *painter, const QRect &rect, const QBrus
    }
    // first the inner region
    //NOTE: using full alphablend can become enourmously slow due to VRAM size - even on HW that has Render acceleration!
-   if (!inverse || outerRect)
-   {
+   if (!inverse || outerRect) {
       painter->save();
-      if (inverse)
-      {
+      if (inverse) {
          QRegion cr = *outerRect; cr -= rect;
          painter->setClipRegion(cr, Qt::IntersectClip);
       }
@@ -705,6 +701,7 @@ void OxygenStyle::fillWithMask(QPainter *painter, const QRect &rect, const QBrus
    h = rect.height()/2;\
    h = qMin(corner.height(), ((_CORNER_) & Tile::Top) ? h : rect.height()-h);\
    if (pixmode) {\
+      fill.fill(Qt::transparent);\
       p.begin(&fill);\
       p.drawTiledPixmap(fill.rect(),brush.texture(),QPoint(_OX_,_OY_)+offset);\
       p.end();\
@@ -715,28 +712,24 @@ void OxygenStyle::fillWithMask(QPainter *painter, const QRect &rect, const QBrus
    // the corners ========
    int w,h;
    // top/left
-   if (Tile::matches(Tile::Top | Tile::Left, pf))
-   {
+   if (Tile::matches(Tile::Top | Tile::Left, pf)) {
       MAKE_CORNER(Tile::Top | Tile::Left, 0,0);
       painter->drawPixmap(rect.topLeft(), corner, QRect(0,0,w,h));
    }
    // top/right
-   if (Tile::matches(Tile::Top | Tile::Right, pf))
-   {
+   if (Tile::matches(Tile::Top | Tile::Right, pf)) {
       MAKE_CORNER(Tile::Top | Tile::Right, rect.width()-w, 0);
       painter->drawPixmap(rect.right()-w+1, rect.top(), corner,
                           corner.width()-w,0, w,h );
    }
    // bottom/right
-   if (Tile::matches(Tile::Bottom | Tile::Right, pf))
-   {
+   if (Tile::matches(Tile::Bottom | Tile::Right, pf)) {
       MAKE_CORNER(Tile::Bottom | Tile::Right, rect.width()-w, rect.height()-h);
       painter->drawPixmap(rect.right()-w+1, rect.bottom()-h+1, corner,
                           corner.width()-w,corner.height()-h, w,h );
    }
    // bottom/left
-   if (Tile::matches(Tile::Bottom | Tile::Left, pf))
-   {
+   if (Tile::matches(Tile::Bottom | Tile::Left, pf)) {
       MAKE_CORNER(Tile::Bottom | Tile::Left, 0, rect.height()-h);
       painter->drawPixmap(rect.x(), rect.bottom()-h+1, corner,
                           0,corner.height()-h, w,h);

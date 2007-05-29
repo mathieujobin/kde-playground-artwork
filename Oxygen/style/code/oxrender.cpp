@@ -83,26 +83,21 @@ bool OXRender::blend(const QPixmap &upper, QPixmap &lower, double opacity)
    return true;
 }
 
-QPixmap OXRender::applyAlpha(const QPixmap &toThisPix, const QPixmap &fromThisPix, const QRect &rect, const QRect &alphaRect)
-{
+QPixmap OXRender::applyAlpha(const QPixmap &toThisPix, const QPixmap &fromThisPix, const QRect &rect, const QRect &alphaRect) {
    return applyAlpha(toThisPix, fromThisPix.x11PictureHandle(), rect, alphaRect);
 }
 
-QPixmap OXRender::applyAlpha(const QPixmap &toThisPix, const OXPicture &fromThisPict, const QRect &rect, const QRect &alphaRect)
-{
+QPixmap OXRender::applyAlpha(const QPixmap &toThisPix, const OXPicture &fromThisPict, const QRect &rect, const QRect &alphaRect) {
    int sx,sy,ax,ay,w,h;
-   if (rect.isNull())
-   {
+   if (rect.isNull()) {
       sx = sy = 0; w = toThisPix.width(); h = toThisPix.height();
    }
    else
       rect.getRect(&sx,&sy,&w,&h);
-   if (alphaRect.isNull())
-   {
+   if (alphaRect.isNull()) {
       ax = ay = 0;
    }
-   else
-   {
+   else {
       ax = alphaRect.x(); ay = alphaRect.y();
       w = qMin(alphaRect.width(),w); h = qMin(alphaRect.height(),h);
    }

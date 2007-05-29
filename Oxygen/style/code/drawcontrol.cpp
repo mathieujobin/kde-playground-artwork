@@ -129,7 +129,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          else
             drawControl(CE_PushButtonBevel, &tmpBtn, painter, widget);
 //          tmpBtn.rect = subElementRect(SE_PushButtonContents, btn, widget);
-         tmpBtn.rect = btn->rect.adjusted(dpi.$4,dpi.$2,-dpi.$4,-dpi.$4);
+         tmpBtn.rect = btn->rect.adjusted(dpi.$4,dpi.$3,-dpi.$4,-dpi.$4);
          drawControl(CE_PushButtonLabel, &tmpBtn, painter, widget);
       }
       break;
@@ -316,6 +316,8 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          QPoint off;
          QRect rect = RECT, fillRect = RECT;
          int shape = tab->shape;
+         // invert the shape alignment if we're not on a tabwidget
+         // (safari style tabs)
          if (widget && !(widget->parentWidget() &&
              qobject_cast<QTabWidget*>(widget->parentWidget()))) {
             //NOTICE: this is elegant but NOT invariant against enum changes!!!
@@ -415,7 +417,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          switch((QTabBar::Shape)shape) {
          case QTabBar::RoundedNorth:
          case QTabBar::TriangularNorth:
-            if (selected) tr.setTop(tr.top()+2);
+            if (selected) tr.setTop(tr.top()+dpi.$2);
             break;
          case QTabBar::RoundedSouth:
          case QTabBar::TriangularSouth:
@@ -494,8 +496,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             drawItemPixmap(painter, tr, alignment, pixmap);
          }
          else {
-            if (qGray(cB.rgb()) < 148) // dark background, let's paint an emboss
-            {
+            if (qGray(cB.rgb()) < 148) { // dark background, let's paint an emboss
                painter->setPen(cB.dark(120));
                tr.moveTop(tr.top()-1);
                drawItemText(painter, tr, alignment, PAL, isEnabled, tab->text);
@@ -507,8 +508,12 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
                QStyleOptionTab::NextIsSelected :
                QStyleOptionTab::PreviousIsSelected;
             if (tab->selectedPosition == selPos) {
-               if (bottom) tr.adjust(0,dpi.$2,0,0);
-               painter->drawPixmap(RECT.x()-dpi.$2, RECT.y(), tabShadow(RECT.height()-dpi.$2, bottom));
+               if (bottom)
+                  tr.adjust(0,-dpi.$2,0,-dpi.$6);
+               else
+                  tr.adjust(0,dpi.$4,0,0);
+               painter->drawPixmap(tr.x()-dpi.$2, tr.y(),
+                                   tabShadow(tr.height(), bottom));
             }
          }
          painter->restore();
@@ -692,7 +697,9 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          bool hasArrow = toolbutton->features & QStyleOptionToolButton::Arrow;
          if ((!hasArrow && toolbutton->icon.isNull()) && !toolbutton->text.isEmpty() ||
              toolbutton->toolButtonStyle == Qt::ToolButtonTextOnly) {
-            drawItemText(painter, RECT, Qt::AlignCenter | Qt::TextShowMnemonic, PAL, isEnabled, toolbutton->text, QPalette::WindowText);
+            drawItemText(painter, RECT,
+                         Qt::AlignCenter | Qt::TextShowMnemonic, PAL,
+                         isEnabled, toolbutton->text, QPalette::WindowText);
          }
          else {
             QPixmap pm;
@@ -716,10 +723,9 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
                int alignment = Qt::TextShowMnemonic;
                
                if (toolbutton->toolButtonStyle == Qt::ToolButtonTextUnderIcon) {
-                  int $3 = dpi.$3;
                   int fh = painter->fontMetrics().height();
-                  pr.adjust(0, $3, 0, -fh - $3);
-                  tr.adjust(0, pr.bottom(), 0, -$3);
+                  pr.adjust(0, dpi.$3, 0, -fh - dpi.$5);
+                  tr.adjust(0, pr.bottom(), 0, -dpi.$3);
                   if (!hasArrow)
                      drawItemPixmap(painter, pr, Qt::AlignCenter, pm);
                   else
@@ -759,8 +765,8 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             activeAction = mbar->activeAction();
             info = const_cast<IndexedFadeInfo *>(indexedFadeInfo(widget, (long int)activeAction));
          }
-         if (info &&
-             (!activeAction || !activeAction->menu() || activeAction->menu()->isHidden()))
+         if (info && (!activeAction || !activeAction->menu() ||
+             activeAction->menu()->isHidden()))
             step = info->step((long int)action);
          if (step || option->state & State_Selected) {
             QRect r = RECT;
@@ -1281,14 +1287,15 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          }
          // text
          if (!cb->currentText.isEmpty() && !cb->editable) {
-            editRect.adjust(3,0, -3, 0);
+            int $3 = dpi.$3;
+            editRect.adjust($3,$3, -$3, 0);
             const QComboBox* combo = widget ?
                qobject_cast<const QComboBox*>(widget) : 0;
             if (combo && combo->view() && ((QWidget*)(combo->view()))->isVisible())
                painter->setPen(config.role_popup[0] != QPalette::Window ?
                                CONF_COLOR(role_popup[1]) : COLOR(Text));
-            else if (hover)
-               painter->setPen(COLOR(Text));
+//             else if (hover)
+//                painter->setPen(COLOR(Text));
             else
                painter->setPen(midColor(COLOR(Base), COLOR(Text), isEnabled?4:5, 5));
             painter->drawText(editRect, Qt::AlignCenter, cb->currentText);

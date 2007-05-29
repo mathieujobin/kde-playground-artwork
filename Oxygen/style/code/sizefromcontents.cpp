@@ -63,45 +63,46 @@ QSize OxygenStyle::sizeFromContents ( ContentsType ct, const QStyleOption * opti
    case CT_LineEdit: // A line edit, like QLineEdit
       return contentsSize + QSize(dpi.$4,dpi.$5);
    case CT_MenuBarItem: // A menu bar item, like the buttons in a QMenuBar
-      return QSize(qMax(contentsSize.width()+dpi.$18, (contentsSize.height()+dpi.$4)*8/5), contentsSize.height()+dpi.$6);
+      return QSize(qMax(contentsSize.width()+dpi.$18, (contentsSize.height()+dpi.$8)*8/5), contentsSize.height()+dpi.$8);
    case CT_MenuItem: // A menu item, like QMenuItem
       if (const QStyleOptionMenuItem *menuItem =
           qstyleoption_cast<const QStyleOptionMenuItem *>(option)) {
+         
+         if (menuItem->menuItemType == QStyleOptionMenuItem::Separator)
+            return QSize(10, menuItem->text.isEmpty() ?
+                         dpi.$6 : menuItem->fontMetrics.lineSpacing());
+             
          bool checkable = menuItem->menuHasCheckableItems;
          int maxpmw = config.showMenuIcons*menuItem->maxIconWidth;
-         int w = contentsSize.width(), h = contentsSize.height();
-         QSize sz;
-         if (menuItem->menuItemType == QStyleOptionMenuItem::Separator)
-            sz = QSize (10, menuItem->text.isEmpty() ? dpi.$6 :
-                        menuItem->fontMetrics.lineSpacing());
-         else {
-            h = qMax(h, menuItem->fontMetrics.lineSpacing());
-            if (config.showMenuIcons && !menuItem->icon.isNull())
-               h = qMax(h,
-                        menuItem->icon.pixmap(pixelMetric(PM_SmallIconSize),
-                                              QIcon::Normal).height() + dpi.$4);
-            if (menuItem->text.contains('\t'))
-               w += dpi.$12;
-            if (maxpmw > 0)
-               w += maxpmw + dpi.$6;
-            if (checkable)
-               w += 2*(h - dpi.$4)/3 + dpi.$7;
-            w += (checkable + (maxpmw > 0))*dpi.$2;
+         int w = contentsSize.width();
+         int h = qMax(contentsSize.height()+dpi.$2,
+                      menuItem->fontMetrics.lineSpacing());
+         
+         if (config.showMenuIcons && !menuItem->icon.isNull())
+            h = qMax(h,
+                     menuItem->icon.pixmap(pixelMetric(PM_SmallIconSize),
+                                             QIcon::Normal).height() + dpi.$4);
+         if (menuItem->text.contains('\t'))
             w += dpi.$12;
-            if (menuItem->menuItemType == QStyleOptionMenuItem::SubMenu)
-               w += 2 * windowsArrowHMargin;
-            if (menuItem->menuItemType == QStyleOptionMenuItem::DefaultItem) {
-                // adjust the font and add the difference in size.
-                // it would be better if the font could be adjusted in the getStyleOptions qmenu func!!
-               QFontMetrics fm(menuItem->font);
-               QFont fontBold = menuItem->font;
-               fontBold.setBold(true);
-               QFontMetrics fmBold(fontBold);
-               w += fmBold.width(menuItem->text) - fm.width(menuItem->text);
-            }
-            sz = QSize(w, h);
+         if (maxpmw > 0)
+            w += maxpmw + dpi.$6;
+         if (checkable)
+            w += 2*(h - dpi.$4)/3 + dpi.$7;
+         w += (checkable + (maxpmw > 0))*dpi.$2;
+         w += dpi.$12;
+         if (menuItem->menuItemType == QStyleOptionMenuItem::SubMenu)
+            w += 2 * windowsArrowHMargin;
+         if (menuItem->menuItemType == QStyleOptionMenuItem::DefaultItem) {
+            // adjust the font and add the difference in size.
+            // it would be better if the font could be adjusted in the
+            // getStyleOptions qmenu func!!
+            QFontMetrics fm(menuItem->font);
+            QFont fontBold = menuItem->font;
+            fontBold.setBold(true);
+            QFontMetrics fmBold(fontBold);
+            w += fmBold.width(menuItem->text) - fm.width(menuItem->text);
          }
-         return sz;
+         return QSize(w, h);
       }
       break;
    case CT_PushButton: // A push button, like QPushButton
@@ -113,7 +114,7 @@ QSize OxygenStyle::sizeFromContents ( ContentsType ct, const QStyleOption * opti
          else {
             QSize sz = contentsSize;
             return QSize((sz.width()+dpi.$20 < dpi.$80) ? dpi.$80 : contentsSize.width()+dpi.$20,
-                         contentsSize.height()+dpi.$6);
+                         contentsSize.height()+dpi.$8);
          }
       }
 //    case CT_RadioButton: // A radio button, like QRadioButton
@@ -147,9 +148,9 @@ QSize OxygenStyle::sizeFromContents ( ContentsType ct, const QStyleOption * opti
       const QStyleOptionToolButton *toolbutton
          = qstyleoption_cast<const QStyleOptionToolButton *>(option);
       // get ~goldem mean ratio
-      int extraH = dpi.$5;
-      if (toolbutton)
-      if (toolbutton->toolButtonStyle == Qt::ToolButtonTextUnderIcon)
+      int extraH = dpi.$8;
+      if (toolbutton &&
+          toolbutton->toolButtonStyle == Qt::ToolButtonTextUnderIcon)
          extraH = dpi.$10;
       int w = qMax(contentsSize.width()+dpi.$6, (contentsSize.height()+extraH)*7/5);
       if (toolbutton && (toolbutton->subControls & SC_ToolButtonMenu))

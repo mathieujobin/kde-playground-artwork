@@ -219,8 +219,8 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       RESTORE_ANTIALIAS;
       break;
    }
-   case PE_IndicatorCheckBox: // On/off indicator, for example, a QCheckBox.
-   {
+   case PE_IndicatorCheckBox: { // On/off indicator, for example, a QCheckBox.
+      
       drawPrimitive(PE_PanelButtonBevel, option, painter, widget);
       
       if (!(sunken || (option->state & State_Off))) {
@@ -509,21 +509,16 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       break;
    case PE_FrameLineEdit: // Panel frame for line edits.
       shadows.lineEdit[isEnabled].render(RECT.adjusted(0,0,0,-dpi.$2),painter);
+      break;
    case PE_FrameGroupBox: { // Panel frame around group boxes.
-      int lite = 3; // compromise ;) - shouldn't happen anyway
-      if (widget) {
-         // 0% -> lite = 5, 100% -> lite = 0
-         QWidget *tlw = widget->topLevelWidget();
-         QPoint zero(0,0); zero = widget->mapTo(tlw, zero);
-         lite = 5-(5*(zero.y()+widget->height()))/tlw->height();
-      }
-      QRect rect = RECT.adjusted(dpi.$4,dpi.$2,-dpi.$4,-dpi.$32);
-      QColor c = COLOR(Window).light(100+lite);
-      fillWithMask(painter, rect, gradient(c, rect.height(), Qt::Vertical, GradGroup), &masks.button, Tile::Full&~Tile::Bottom);
-      rect = RECT.adjusted(dpi.$4,0,-dpi.$4,0); rect.setTop(rect.bottom()-dpi.$32+dpi.$1);
-      painter->drawTiledPixmap(rect, gradient(c, rect.height(), Qt::Horizontal, GradGroup));
+      QRect rect = RECT.adjusted(dpi.$4,dpi.$2,-dpi.$4,0);
+      rect.setHeight(qMax(dpi.$32, RECT.height()));
+      fillWithMask(painter, rect, groupLight(rect.height()), &masks.button,
+                   Tile::Full&~Tile::Bottom);
+      rect.setBottom(RECT.bottom()-dpi.$32);
       shadows.group.render(RECT, painter, Tile::Ring);
-      masks.button.outline(RECT.adjusted(dpi.$4,dpi.$2,-dpi.$4,-dpi.$32), painter, COLOR(Window).light(120), true, Tile::Full&~Tile::Bottom);
+      masks.button.outline(rect, painter, COLOR(Window).light(120), true,
+                           Tile::Full&~Tile::Bottom);
       break;
    }
 //    case PE_FrameButtonBevel: // Panel frame for a button bevel

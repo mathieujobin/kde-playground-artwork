@@ -125,24 +125,6 @@ buttonGradient(const QColor &c, int size, Qt::Orientation o) {
    return pix;
 }
 
-static inline QPixmap *
-groupGradient(const QColor &c, int size, Qt::Orientation o) {
-   QPixmap *pix = new QPixmap(32, size);
-   pix->fill(Qt::transparent);
-   QPoint start = QPoint(32, 0);
-   QPoint stop = QPoint(32, pix->height());
-   ColorArray colors; PointArray stops;
-   if (o == Qt::Horizontal) {
-      QColor ic = c; ic.setAlpha(0);
-      colors << c << ic;
-   }
-   else
-      colors << c.light(100+(qMin(3,size/15))) << c;
-   
-   MAKE_OXRENDER_GRADIENT;
-   return pix;
-}
-
 inline static void
 gl_ssColors(const QColor &c, QColor *bb, QColor *dd, bool glass = false) {
    
@@ -267,9 +249,6 @@ OxygenStyle::gradient(const QColor &c, int size, Qt::Orientation o, GradientType
    case GradGloss:
       pix = gl_ssGradient(iC, size, o);
       break;
-   case GradGroup:
-      pix = groupGradient(iC, size, o);
-      break;
    case GradRadialGloss:
       pix = rGlossGradient(iC, size);
       break;
@@ -277,6 +256,28 @@ OxygenStyle::gradient(const QColor &c, int size, Qt::Orientation o, GradientType
 
    // cache for later
    cache->insert(magicNumber, pix, (pix->width()*pix->height()*pix->depth())>>3);
+   return *pix;
+}
+
+const QPixmap &OxygenStyle::groupLight(int height) const {
+   if (height <= 0) {
+      qWarning("NULL Pixmap requested, height was %d",height);
+      return nullPix;
+   }
+   QPixmap *pix = _groupLight.object(height);
+   if (pix)
+      return *pix;
+      
+   pix = new QPixmap(32, height); //golden mean relations
+   pix->fill(Qt::transparent);
+   QPoint start(0,0), stop(0,height);
+   PointArray stops;
+   ColorArray colors = ColorArray() << QColor(255,255,255,134) << QColor(255,255,255,0);
+   MAKE_OXRENDER_GRADIENT;
+   
+   // cache for later ;)
+   PixmapCache *cache = &(const_cast<OxygenStyle*>( this )->_groupLight);
+   cache->insert(height, pix);
    return *pix;
 }
 

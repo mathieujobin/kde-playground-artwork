@@ -210,7 +210,8 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                drawPrimitive(PE_PanelLineEdit, option, painter, widget);
             else {
                const QPixmap &fill = gradient(listShown ? PAL.color(crB) :
-                     COLOR(Base), r.height(), Qt::Vertical, GradGlass);
+                     COLOR(Base), r.height(), Qt::Vertical, GradButton);
+//                const QColor &fill = listShown ? PAL.color(crB) : COLOR(Base);
                
                int step = hoverStep(widget);
                hover = hover || step || hasFocus;
@@ -238,8 +239,9 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                   QColor c = step ?
                         midColor(COLOR(Base), PAL.color(crB), 6-step, step) :
                         PAL.color(crB);
-                  fillWithMask(painter, r, gradient(c, r.height(), Qt::Vertical,
-                                  sunken ? GradSunken : GradGlass), &masks.button, pf);
+                  fillWithMask(painter, r, gradient(c, r.height(),
+                               Qt::Vertical, sunken ? GradSunken : GradGloss),
+                               &masks.button, pf);
                }
                shadows.lineEdit[1].render(RECT, painter);
             }
@@ -250,7 +252,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             ar.adjust((2*ar.width())/7,(2*ar.height())/7,-(2*ar.width())/7,-(2*ar.height())/7);
             QStyleOptionComboBox tmpOpt = *cmb;
             PrimitiveElement arrow;
-            if (listShown)
+            if (!listShown)
                arrow = PE_IndicatorArrowDown;
             else if (reverse)
                arrow = PE_IndicatorArrowRight;
@@ -496,7 +498,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             painter->drawTiledPixmap(r, gradient(c, r.height(), Qt::Vertical, GradSunken));
          }
          painter->save();
-         painter->setPen(isEnabled?c2:midColor(c, c2));
+         painter->setPen( isEnabled ? c2 : midColor(c, c2) );
          drawControl(CE_ToolButtonLabel, option, painter, widget);
          painter->restore();
          break;
