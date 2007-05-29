@@ -82,12 +82,9 @@ int OxygenStyle::styleHint ( StyleHint hint, const QStyleOption * option, const 
    case SH_TabBar_PreferNoArrows: // Whether a tabbar should suggest a size to prevent scoll arrows.
       return false;
    case SH_ComboBox_Popup: // Allows popups as a combobox drop-down menu.
-      if (const QStyleOptionComboBox *cmb =
-          qstyleoption_cast<const QStyleOptionComboBox *>(option))
-         return !cmb->editable;
       return false;
    case SH_ComboBox_PopupFrameStyle:
-      return QFrame::StyledPanel | QFrame::Plain;
+      return QFrame::NoFrame; //QFrame::StyledPanel | QFrame::Plain;
 //    case SH_Workspace_FillSpaceOnMaximize: // The workspace should maximize the client area.
 //    case SH_TitleBar_NoBorder: // The title bar has no border.
    case SH_ScrollBar_StopMouseOverSlider: // Stops auto-repeat when the slider reaches the mouse position.

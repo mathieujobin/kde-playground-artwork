@@ -985,23 +985,6 @@ void OxygenStyle::polish( QWidget * widget) {
       widget->setAutoFillBackground(false);
    }
    
-   //======================
-   
-   // swap noneditable viewport color as well...
-   if (widget->autoFillBackground()) // just for performance...
-   if ( widget->objectName() == "qt_scrollarea_viewport" )
-   if (widget->parentWidget())
-   if (widget->parentWidget()->inherits("QComboBoxListView"))
-   if (widget->parentWidget()->parentWidget())
-   if (widget->parentWidget()->parentWidget()->parentWidget())
-   if (QComboBox* cmb  =
-      qobject_cast<QComboBox*>(widget->parentWidget()->parentWidget()->parentWidget()))
-      if (!(cmb->isEditable() ||
-            config.role_popup[0] == QPalette::Window)) {
-      widget->setBackgroundRole ( config.role_popup[0] );
-      widget->setForegroundRole ( config.role_popup[1] );
-   }
-   
    // swap qmenu colors
    if (qobject_cast<QMenu *>(widget)) {
       // this should tell beryl et. al this is a popup - doesn't work... yet

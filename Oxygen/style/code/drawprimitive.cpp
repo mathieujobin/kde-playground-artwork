@@ -98,11 +98,15 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
    case PE_PanelButtonTool: { // Panel for a Tool button, used with QToolButton.
       if (sunken || (option->state & State_On)) {
          if (sunken) hover = false;
-         fillWithMask(painter, RECT, gradient(COLOR(Window),RECT.height(),Qt::Vertical, hover ? GradButton : GradSunken), &masks.button);
+         fillWithMask(painter, RECT,
+                      gradient(COLOR(Window), RECT.height(), Qt::Vertical,
+                               hover ? GradButton : GradSunken), &masks.button);
          shadows.lineEdit[1].render(RECT, painter);
       }
       else if (hover) {
-         fillWithMask(painter, RECT.adjusted(dpi.$2,dpi.$1,-dpi.$2,0), gradient(COLOR(Window), RECT.height(), Qt::Vertical, GradButton), &masks.button);
+         fillWithMask(painter, RECT.adjusted(dpi.$2,dpi.$1,-dpi.$2,0),
+                      gradient(COLOR(Window), RECT.height(), Qt::Vertical,
+                               GradButton), &masks.button);
          shadows.group.render(RECT, painter, Tile::Ring);
       }
       break;
@@ -117,12 +121,16 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
           static_cast<const QStyleOptionFrame *>(option)->lineWidth < 1) {
          painter->fillRect(RECT, COLOR(Base)); break;
       }
-      fillWithMask(painter, RECT.adjusted(0,0,0,-dpi.$2), COLOR(Base), &masks.button);
-      if (hasFocus) {
-         painter->save();
-         painter->setPen(QPen(COLOR(Highlight), dpi.$2));
-         painter->drawLine(RECT.left()+dpi.$4, RECT.bottom(), RECT.right()-dpi.$3, RECT.bottom());
-         painter->restore();
+      if (isEnabled) {
+         fillWithMask(painter, RECT.adjusted(0,0,0,-dpi.$2), COLOR(Base),
+                      &masks.button);
+         if (hasFocus) {
+            painter->save();
+            painter->setPen(QPen(COLOR(Highlight), dpi.$2));
+            painter->drawLine(RECT.left()+dpi.$4, RECT.bottom(),
+                              RECT.right()-dpi.$3, RECT.bottom());
+            painter->restore();
+         }
       }
       shadows.lineEdit[isEnabled].render(RECT, painter);
       break;
@@ -307,12 +315,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          // handle the
          if (widget->inherits("QComboBoxPrivateContainer")) {
             SAVE_PEN;
-            bool isEditable = widget->parentWidget() && qobject_cast<const QComboBox*>(widget->parentWidget()) && ((QComboBox*)widget->parentWidget())->isEditable();
-            
-            if (isEditable)
-               painter->setPen(COLOR(Base));
-            else
-               painter->setPen(Qt::white);
+            painter->setPen(COLOR(Base));
             painter->drawRect(RECT.adjusted(0,0,-1,-1));
             RESTORE_PEN;
             break;

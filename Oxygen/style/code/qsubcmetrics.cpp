@@ -88,17 +88,9 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
             break;
          case SC_ComboBoxListBoxPopup:
             ret = cb->rect;
-            if (!cb->editable) {
-               // shorten for the arrow
-               ret.setWidth(ret.width()-(int)((he - 2*margin)/1.1) + 3*margin);
-               margin = 0;
-               if (const QComboBox *combo =
-                   qobject_cast<const QComboBox *>(widget)) {
-                     const QRect currentItemRect = combo->view()->visualRect(combo->view()->currentIndex());
-                     margin = currentItemRect.top() - ret.top();
-                  }
-               // correct qts wish to center the current item vertically...
-               ret.translate(0, (ret.height()+margin)/2);
+            if (!cb->editable) { // shorten for the arrow
+               wi -= (int)((he - 2*margin)/1.1) + 3*margin;
+               ret.setRect(x+margin, y, wi, he);
             }
             break;
          default:
@@ -200,21 +192,25 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
             break;
          case SC_ScrollBarSubPage:            // between top/left button and slider
             if (scrollbar->orientation == Qt::Horizontal)
-               ret.setRect(0, 0, sliderstart + dpi.$2, sbextent);
+               ret.setRect(dpi.$2, 0, sliderstart, sbextent);
             else
-               ret.setRect(0, 0, sbextent, sliderstart + dpi.$2);
+               ret.setRect(0, dpi.$2, sbextent, sliderstart);
             break;
          case SC_ScrollBarAddPage:            // between bottom/right button and slider
             if (scrollbar->orientation == Qt::Horizontal)
-               ret.setRect(sliderstart + sliderlen - dpi.$2, 0, maxlen - sliderstart - sliderlen + dpi.$2, sbextent);
+               ret.setRect(sliderstart + sliderlen - dpi.$2, 0,
+                           maxlen - sliderstart - sliderlen, sbextent);
             else
-               ret.setRect(0, sliderstart + sliderlen - dpi.$3, sbextent, maxlen - sliderstart - sliderlen + dpi.$3);
+               ret.setRect(0, sliderstart + sliderlen - dpi.$3,
+                           sbextent, maxlen - sliderstart - sliderlen);
             break;
          case SC_ScrollBarGroove:
             if (scrollbar->orientation == Qt::Horizontal)
-               ret.setRect(0, 0, scrollbar->rect.width() - sbextent * 2, scrollbar->rect.height());
+               ret.setRect(0, 0, scrollbar->rect.width() - sbextent * 2,
+                           scrollbar->rect.height());
             else
-               ret.setRect(0, 0, scrollbar->rect.width(), scrollbar->rect.height() - sbextent * 2);
+               ret.setRect(0, 0, scrollbar->rect.width(),
+                           scrollbar->rect.height() - sbextent * 2);
             break;
          case SC_ScrollBarSlider:
             if (scrollbar->orientation == Qt::Horizontal)

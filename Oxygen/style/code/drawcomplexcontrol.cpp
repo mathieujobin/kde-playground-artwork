@@ -189,16 +189,9 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          QRect ar, r = RECT.adjusted(0,0,0,-dpi.$2);
          const QComboBox* combo = widget ?
                 qobject_cast<const QComboBox*>(widget) : 0;
-         bool listShown, reverse = (option->direction == Qt::RightToLeft);
-         // color settings
-         QPalette::ColorRole crB = config.role_popup[0], crF = config.role_popup[1];
-         if (crB == QPalette::Window) { // often close to base, use btn and splitted
-            crB = QPalette::Button; crF = QPalette::ButtonText;
-            listShown = false;
-         }
-         else
-            listShown = combo && combo->view() &&
-                ((QWidget*)(combo->view()))->isVisible();
+         const bool listShown = combo && combo->view() &&
+               ((QWidget*)(combo->view()))->isVisible();
+         const bool reverse = (option->direction == Qt::RightToLeft);
          
          // do we have an arrow?
          if ((cmb->subControls & SC_ComboBoxArrow) && (!combo || combo->count() > 0))
@@ -209,14 +202,14 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             if (cmb->editable)
                drawPrimitive(PE_PanelLineEdit, option, painter, widget);
             else {
-               const QPixmap &fill = gradient(listShown ? PAL.color(crB) :
-                     COLOR(Base), r.height(), Qt::Vertical, GradButton);
-//                const QColor &fill = listShown ? PAL.color(crB) : COLOR(Base);
+               const QPixmap &fill =
+                     gradient(COLOR(Base), 2*r.height(), Qt::Vertical, sunken ?
+                     GradSunken : GradSimple);
                
-               int step = hoverStep(widget);
-               hover = hover || step || hasFocus;
+               int step = listShown ? 0 : hoverStep(widget);
+               hover = hover || step || hasFocus || listShown;
                
-               if (!hover || ar.isNull() || listShown) // unique color
+               if (!hover || ar.isNull()) // unique color
                   fillWithMask(painter,  r, fill, &masks.button);
                else { // splitted view
                   Tile::PosFlags pf;
@@ -236,11 +229,10 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                      r.setLeft(ar.left()); r.setRight(RECT.right());
                      pf = Tile::Full&~Tile::Left;
                   }
-                  QColor c = step ?
-                        midColor(COLOR(Base), PAL.color(crB), 6-step, step) :
-                        PAL.color(crB);
+                  const QColor c = step ? midColor(COLOR(Base), COLOR(Text),
+                        6-step, step) : COLOR(Text);
                   fillWithMask(painter, r, gradient(c, r.height(),
-                               Qt::Vertical, sunken ? GradSunken : GradGloss),
+                               Qt::Vertical, sunken ? GradSunken : GradButton),
                                &masks.button, pf);
                }
                shadows.lineEdit[1].render(RECT, painter);
@@ -272,10 +264,8 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             if (hover || listShown) {
                if (cmb->editable)
                   painter->setPen(COLOR(Highlight));
-               else {
-                  painter->setPen(Qt::NoPen);
-                  painter->setBrush(gradient(PAL.color(crF), r.height(), Qt::Vertical, GradGlass));
-               }
+               else
+                  painter->setPen(COLOR(Base));
             }
             else
                painter->setPen( midColor(COLOR(Base), COLOR(Text)) );
@@ -328,8 +318,8 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          PAINT_ELEMENT(SC_ScrollBarAddLine, CE_ScrollBarAddLine);
          PAINT_ELEMENT(SC_ScrollBarSubPage, CE_ScrollBarSubPage);
          PAINT_ELEMENT(SC_ScrollBarAddPage, CE_ScrollBarAddPage);
-         PAINT_ELEMENT(SC_ScrollBarFirst, CE_ScrollBarFirst);
-         PAINT_ELEMENT(SC_ScrollBarLast, CE_ScrollBarLast);
+//          PAINT_ELEMENT(SC_ScrollBarFirst, CE_ScrollBarFirst);
+//          PAINT_ELEMENT(SC_ScrollBarLast, CE_ScrollBarLast);
          
          if (scrollbar->subControls & SC_ScrollBarSlider) {
             newScrollbar.rect = scrollbar->rect;

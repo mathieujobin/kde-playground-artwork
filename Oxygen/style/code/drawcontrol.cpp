@@ -389,9 +389,9 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
                                        PAL.color(config.role_tab[1]),
                                        6-step, step) :
                   PAL.color(config.role_tab[1]);
-            fillWithMask(painter, rect,
-                         gradient(c, size, o, sunken ? GradSunken : config.gradientStrong),
-                         &masks.button, Tile::Full, false, off);
+            fillWithMask(painter, rect, gradient(c, size, o, sunken ?
+                  GradSunken : config.gradientStrong), &masks.button,
+                  Tile::Full, false, off);
          }
       }
       break;
@@ -464,9 +464,9 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          QColor cF, cB;
 
          if (selected) {
-            QFont tmpFnt = painter->font();
-            tmpFnt.setBold(true);
-            painter->setFont(tmpFnt);
+//             QFont tmpFnt = painter->font();
+//             tmpFnt.setBold(true);
+//             painter->setFont(tmpFnt);
             cF = COLOR(WindowText); cB = COLOR(Window);
          }
          else if (hover) {
@@ -799,16 +799,10 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
         // Draws one item in a popup menu.
       if (const QStyleOptionMenuItem *menuItem =
           qstyleoption_cast<const QStyleOptionMenuItem *>(option)) {
-         bool isCombo = widget && widget->inherits("QComboBox");
          bool selected = menuItem->state & State_Selected;
          QPalette::ColorRole fgr = QPalette::WindowText;
          QPalette::ColorRole bgr = QPalette::Window;
-         if (isCombo) {
-         //combos send the combo, not the listview as widget, thus we must force this here
-            bgr = config.role_popup[0];
-            fgr = config.role_popup[1];
-         }
-         else if (widget) {
+         if (widget) {
             bgr = widget->backgroundRole();
             fgr = widget->foregroundRole();
          }
@@ -830,8 +824,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             break;
          }
          painter->save();
-         bool checkable = !isCombo && 
-                (menuItem->checkType != QStyleOptionMenuItem::NotCheckable);
+         bool checkable = (menuItem->checkType != QStyleOptionMenuItem::NotCheckable);
          bool checked = checkable && menuItem->checked;
          
          if (selected && isEnabled)
@@ -901,7 +894,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             
             drawPrimitive(arrow, &tmpOpt, painter, widget);
          }
-         else if (!isCombo && checkable) { // Checkmark
+         else if (checkable) { // Checkmark
             xpos = RECT.right() - dpi.$7 - cDim;
             QRect checkRect(xpos, RECT.y() + (RECT.height() - cDim)/2, cDim, cDim);
             checkRect = visualRect(menuItem->direction, menuItem->rect, checkRect);
@@ -1123,12 +1116,13 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
       painter->restore();
       break;
    }
-   case CE_ScrollBarAddLine: // Scroll bar line increase indicator. (i.e., scroll down); see also QScrollBar.
+   case CE_ScrollBarAddLine: // ======= scroll down
       if (option->state & State_Item) { // combobox scroller
          painter->save();
          painter->setPen(hover?COLOR(Text):midColor(COLOR(Base),COLOR(Text)));
          QStyleOption opt = *option;
-         opt.rect = RECT.adjusted(RECT.width()/4,RECT.height()/4,-RECT.width()/4,-RECT.height()/4);
+         opt.rect = RECT.adjusted(RECT.width()/4, RECT.height()/4,
+                                  -RECT.width()/4, -RECT.height()/4);
          if (option->state & QStyle::State_Horizontal)
             drawPrimitive (PE_IndicatorArrowRight, &opt, painter, widget);
          else
@@ -1136,12 +1130,13 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          painter->restore();
          break;
       }
-   case CE_ScrollBarSubLine: // Scroll bar line decrease indicator (i.e., scroll up).
+   case CE_ScrollBarSubLine: // ======= scroll up
       if (option->state & State_Item) { // combobox scroller
          painter->save();
          painter->setPen(hover?COLOR(Text):midColor(COLOR(Base),COLOR(Text)));
          QStyleOption opt = *option;
-         opt.rect = RECT.adjusted(RECT.width()/4,RECT.height()/4,-RECT.width()/4,-RECT.height()/4);
+         opt.rect = RECT.adjusted(RECT.width()/4, RECT.height()/4,
+                                  -RECT.width()/4, -RECT.height()/4);
          if (option->state & QStyle::State_Horizontal)
             drawPrimitive (PE_IndicatorArrowLeft, &opt, painter, widget);
          else
@@ -1172,46 +1167,50 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
    case CE_ScrollBarAddPage: {// Scolllbar page increase indicator (i.e., page down).
       if (option->state & State_Item) // combobox scroller
          break;
-      Qt::Orientation direction; int size, c; QRect r;
+      
+      SAVE_PEN;
+      painter->setPen(QPen(COLOR(Window).dark(120), dpi.$2));
       if (option->state & QStyle::State_Horizontal) {
-         r = RECT.adjusted(0,RECT.height()/3,0,-RECT.height()/3);
-         size = r.height(); direction = Qt::Vertical;
-         c = r.y()+r.height()/2;
+         const int y = RECT.center().y();
+         painter->drawLine(RECT.x(), y, RECT.right(), y);
       }
       else {
-         r = RECT.adjusted(RECT.width()/3,0,-RECT.width()/3,0);
-         size = r.width(); direction = Qt::Horizontal;
-         c = r.x()+r.width()/2;
+         const int x = RECT.center().x();
+         painter->drawLine(x, RECT.y(), x, RECT.bottom());
       }
-      painter->drawTiledPixmap(r, gradient(COLOR(Window), size, direction, GradSunken));
+      RESTORE_PEN;
       break;
    }
    case CE_ScrollBarSlider: // Scroll bar slider.
       if (option->state & State_Item) {
-         painter->fillRect(RECT.adjusted(dpi.$2,0,-dpi.$2,0), (hover||sunken)?COLOR(Text):midColor(COLOR(Base),COLOR(Text),8,1));
+         painter->fillRect(RECT.adjusted(dpi.$2, 0, -dpi.$2, 0),
+                           (hover || sunken) ? COLOR(Text) :
+                                 midColor(COLOR(Base), COLOR(Text), 8, 1));
          break;
       }
       if (/*const QStyleOptionSlider *opt =*/
           qstyleoption_cast<const QStyleOptionSlider *>(option)) {
-         Qt::Orientation direction; int size; QRect r;
-   
-         // the groove (add or sub page or if min == max, i.e. no slide usefull)
-         if (!isEnabled/*(opt->minimum < opt->maximum)*/) {
+  
+         // the groove (if min == max, i.e. no slide usefull)
+         if (!isEnabled) {
+            SAVE_PEN;
+            painter->setPen(QPen(COLOR(Window).dark(120), dpi.$2));
             if (option->state & QStyle::State_Horizontal) {
-               r = RECT.adjusted(0,RECT.height()/3,0,-RECT.height()/3);
-               size = r.height(); direction = Qt::Vertical;
+               const int y = RECT.center().y();
+               painter->drawLine(RECT.x(), y, RECT.right(), y);
             }
             else {
-               r = RECT.adjusted(RECT.width()/3,0,-RECT.width()/3,0);
-               size = r.width(); direction = Qt::Horizontal;
+               const int x = RECT.center().x();
+               painter->drawLine(x, RECT.y(), x, RECT.bottom());
             }
-            fillWithMask(painter, r, gradient(COLOR(Window), size, direction, GradSunken), &masks.button);
+            RESTORE_PEN;
             break;
          }
          
          // we need to paint a slider
+         int size; Qt::Orientation direction;
          hover = hover || sunken;
-         r = RECT;
+         QRect r = RECT;
          if (sunken) r.adjust(dpi.$1,dpi.$1,-dpi.$1,-dpi.$2);
          shadows.button[sunken][hover].render(r, painter);
          r = RECT.adjusted(dpi.$2,dpi.$1,-dpi.$2,-dpi.$3);
@@ -1288,16 +1287,8 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          // text
          if (!cb->currentText.isEmpty() && !cb->editable) {
             int $3 = dpi.$3;
-            editRect.adjust($3,$3, -$3, 0);
-            const QComboBox* combo = widget ?
-               qobject_cast<const QComboBox*>(widget) : 0;
-            if (combo && combo->view() && ((QWidget*)(combo->view()))->isVisible())
-               painter->setPen(config.role_popup[0] != QPalette::Window ?
-                               CONF_COLOR(role_popup[1]) : COLOR(Text));
-//             else if (hover)
-//                painter->setPen(COLOR(Text));
-            else
-               painter->setPen(midColor(COLOR(Base), COLOR(Text), isEnabled?4:5, 5));
+            editRect.adjust($3,0, -$3, 0);
+            painter->setPen(COLOR(Text));
             painter->drawText(editRect, Qt::AlignCenter, cb->currentText);
          }
          painter->restore();
