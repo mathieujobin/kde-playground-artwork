@@ -299,7 +299,8 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          if (const QTabBar* tbar = qobject_cast<const QTabBar*>(widget)) {
             // NOTICE: the index increment is IMPORTANT to make sure it's no "0"
             index = tbar->tabAt(RECT.topLeft()) + 1; // is the action for this item!
-            hoveredIndex = hover ? index : tbar->tabAt(tbar->mapFromGlobal(QCursor::pos())) + 1;
+            hoveredIndex = hover ? index :
+                  tbar->tabAt(tbar->mapFromGlobal(QCursor::pos())) + 1;
             info = const_cast<IndexedFadeInfo *>(indexedFadeInfo(widget, hoveredIndex));
          }
          if (info)
@@ -313,85 +314,127 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          const int $2 = dpi.$2, $4 = dpi.$4;
          Tile::PosFlags pf = Tile::Ring;
          Qt::Orientation o = Qt::Vertical;
-         QPoint off;
-         QRect rect = RECT, fillRect = RECT;
-         int shape = tab->shape;
+         QRect rect = RECT;
+         
          // invert the shape alignment if we're not on a tabwidget
          // (safari style tabs)
+         int shape = tab->shape;
          if (widget && !(widget->parentWidget() &&
              qobject_cast<QTabWidget*>(widget->parentWidget()))) {
             //NOTICE: this is elegant but NOT invariant against enum changes!!!
             shape%2 ? --shape : ++shape;
          }
-         switch ((QTabBar::Shape)shape) {
-         case QTabBar::RoundedNorth:
-         case QTabBar::TriangularNorth:
-            if (selected) {
+         
+         if (selected) {
+            QRect fillRect = RECT;
+            switch ((QTabBar::Shape)shape) {
+            case QTabBar::RoundedNorth:
+            case QTabBar::TriangularNorth: {
                pf &= ~Tile::Bottom;
-               fillRect.adjust($2, $4, -$2, 0);
-               rect.adjust(0, $2, 0, 0);
+               const QPixmap &shadow = tabShadow(fillRect.height()-$4);
+               size = shadow.width();
+               rect.adjust(size, $2, -size, 0);
+               fillRect = rect.adjusted($2, $2, -$2, 0);
+               painter->drawPixmap(fillRect.topRight(), shadow);
+               break;
             }
-            else {
-               rect = RECT.adjusted($4,$4,-$4,-$4);
-               size = RECT.height()-$2; off.setY($2);
-            }
-            break;
-         case QTabBar::RoundedSouth:
-         case QTabBar::TriangularSouth:
-            if (selected) {
+            case QTabBar::RoundedSouth:
+            case QTabBar::TriangularSouth: {
                pf &= ~Tile::Top;
-               fillRect.adjust($2, 0, -$2, -dpi.$6);
-               rect.adjust(0, 0, 0, -$2);
+               const QPixmap &shadow = tabShadow(fillRect.height()-$4, true);
+               size = shadow.width();
+               rect.adjust(size, 0, -size, -$2);
+               fillRect = rect.adjusted($2, 0, -$2, -$4);
+               painter->drawPixmap(fillRect.topRight(), shadow);
+               break;
             }
-            else {
-               rect = RECT.adjusted($4,$4,-$4,-dpi.$6);
-               size = RECT.height()-$4; off.setY(dpi.$3);
-            }
-            break;
-         case QTabBar::RoundedEast:
-         case QTabBar::TriangularEast:
-            if (selected) {
+            case QTabBar::RoundedEast:
+            case QTabBar::TriangularEast:
                pf &= ~Tile::Left;
                fillRect.adjust(0, $2, -dpi.$6, -$4);
                rect.adjust(0, 0, -$4, 0);
-            }
-            else {
-               o = Qt::Horizontal;
-               rect = RECT.adjusted($4,$4,-dpi.$6, -$4);
-               size = RECT.width()-$4; off.setX(dpi.$3);
-            }
-            break;
-         case QTabBar::RoundedWest:
-         case QTabBar::TriangularWest:
-            if (selected) {
+               break;
+            case QTabBar::RoundedWest:
+            case QTabBar::TriangularWest:
                pf &= ~Tile::Right;
                fillRect.adjust(dpi.$6, $2, 0, -$4);
                rect.adjust($4, 0, 0, 0);
+               break;
             }
-            else {
-               o = Qt::Horizontal;
-               rect = RECT.adjusted(dpi.$6,$4,-$4, -$4);
-               size = RECT.width()-$4; off.setX(dpi.$3);
-            }
-            break;
-         }
-         if (selected) {
             QPoint zero = fillRect.topLeft();
             if (widget)
                zero = widget->mapTo(widget->topLevelWidget(), zero);
             fillWithMask(painter, fillRect, PAL.brush(QPalette::Window),
                          &masks.tab, pf | Tile::Center, false, zero);
             shadows.tab.render(rect, painter, pf);
-            break;
          }
-         else {
-            QColor c = step ? midColor(PAL.color(config.role_tab[0]),
-                                       PAL.color(config.role_tab[1]),
-                                       6-step, step) :
-                  PAL.color(config.role_tab[1]);
-            fillWithMask(painter, rect, gradient(c, size, o, sunken ?
-                  GradSunken : config.gradientStrong), &masks.button,
-                  Tile::Full, false, off);
+         else if (sunken) {
+            switch ((QTabBar::Shape)shape) {
+            case QTabBar::RoundedNorth:
+            case QTabBar::TriangularNorth:
+               rect = RECT.adjusted($4,$4,-$4,-$4);
+               size = rect.height();
+               break;
+            case QTabBar::RoundedSouth:
+            case QTabBar::TriangularSouth:
+               rect = RECT.adjusted($4,$4,-$4,-dpi.$6);
+               size = rect.height();
+               break;
+            case QTabBar::RoundedEast:
+            case QTabBar::TriangularEast:
+               o = Qt::Horizontal;
+               rect = RECT.adjusted($4,$4,-dpi.$6, -$4);
+               size = rect.width();
+               break;
+            case QTabBar::RoundedWest:
+            case QTabBar::TriangularWest:
+               o = Qt::Horizontal;
+               rect = RECT.adjusted(dpi.$6,$4,-$4, -$4);
+               size = RECT.width()-$4;
+               break;
+            }
+            fillWithMask(painter, rect, gradient(PAL.color(config.role_tab[0]),
+                         size, o, GradSunken), &masks.button );
+         }
+         else { // hover
+            painter->save();
+            if (!step) step = 6;
+            painter->setPen( midColor(PAL.color(config.role_tab[0]),
+                             PAL.color(config.role_tab[1]), 8-step, step) );
+            painter->setRenderHint(QPainter::Antialiasing);
+            bool horizontal = !verticalTabs(tab->shape);
+            QPoint points[3]; int add, x, y;
+            if (horizontal) {
+               rect.adjust(0, $2, 0, -$2);
+               x = rect.x(); y = rect.y();
+               add = rect.height()/2;
+               points[0] = QPoint(x + add, y + add/2);
+               points[1] = QPoint(x + add/2, y + add);
+               points[2] = QPoint(x + add, y + 3*add/2);
+            }
+            else {
+               rect.adjust($2, 0, -$2, 0);
+               x = rect.x(); y = rect.y();
+               add = rect.width()/2;
+               points[0] = QPoint(x + add/2, y + add);
+               points[1] = QPoint(x + add, y + add/2);
+               points[2] = QPoint(x + 3*add/2, y + add);
+            }
+            painter->drawPolyline(points, 3);
+            if (horizontal) {
+               x = rect.right()+1; y = rect.bottom();
+               points[0] = QPoint(x - add, y - add/2);
+               points[1] = QPoint(x - add/2, y - add);
+               points[2] = QPoint(x - add, y - 3*add/2);
+            }
+            else {
+               x = rect.right(); y = rect.bottom()+1;
+               points[0] = QPoint(x - add/2, y - add);
+               points[1] = QPoint(x - add, y - add/2);
+               points[2] = QPoint(x - 3*add/2, y - add);
+            }
+            painter->drawPolyline(points, 3);
+            painter->restore();
          }
       }
       break;
@@ -406,7 +449,6 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          if (selected) hover = false;
          int alignment = Qt::AlignCenter | Qt::TextShowMnemonic;
          bool bottom = false;
-         bool reverse = (option->direction == Qt::RightToLeft);
          
          int shape = tab->shape;
          if (widget && !(widget->parentWidget() &&
@@ -414,6 +456,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             //NOTICE: this is elegant but NOT invariant against enum changes!!!
             shape%2 ? --shape : ++shape;
          }
+         
          switch((QTabBar::Shape)shape) {
          case QTabBar::RoundedNorth:
          case QTabBar::TriangularNorth:
@@ -456,66 +499,32 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
                int iconExtent = pixelMetric(PM_SmallIconSize);
                iconSize = QSize(iconExtent, iconExtent);
             }
-            QPixmap tabIcon = tabV2.icon.pixmap(iconSize, (isEnabled) ? QIcon::Normal : QIcon::Disabled);
-            painter->drawPixmap(tr.left() + 6, tr.center().y() - tabIcon.height() / 2, tabIcon);
+            QPixmap tabIcon = tabV2.icon.pixmap(iconSize, (isEnabled) ?
+                  QIcon::Normal : QIcon::Disabled);
+            painter->drawPixmap(tr.left() + 6,
+                                tr.center().y() - tabIcon.height() / 2, tabIcon);
             tr.setLeft(tr.left() + iconSize.width() + 4);
          }
+         
          // color adjustment
          QColor cF, cB;
-
          if (selected) {
-//             QFont tmpFnt = painter->font();
-//             tmpFnt.setBold(true);
-//             painter->setFont(tmpFnt);
             cF = COLOR(WindowText); cB = COLOR(Window);
-         }
-         else if (hover) {
-            cF = PAL.color(config.role_tab[0]);
-            cB = PAL.color(config.role_tab[1]);
          }
          else {
             cF = PAL.color(config.role_tab[1]);
             cB = PAL.color(config.role_tab[0]);
          }
-         if (verticalTabs) {
-            QPixmap pixmap(tr.size());
-            pixmap.fill(Qt::transparent);
-            QPainter pixPainter(&pixmap);
-            if (qGray(cB.rgb()) < 148) { // dark background, let's paint an emboss
-               pixPainter.setPen(cB.dark(120));
-               drawItemText(&pixPainter, pixmap.rect().translated(0,-1), alignment, PAL, isEnabled, tab->text);
-            }
-            pixPainter.setPen( cF);
-            drawItemText(&pixPainter, pixmap.rect(), alignment, PAL, isEnabled, tab->text);
-            QStyleOptionTab::SelectedPosition selPos = east ?
-               QStyleOptionTab::PreviousIsSelected :
-               QStyleOptionTab::NextIsSelected;
-            if (tab->selectedPosition == selPos) {
-               painter->drawPixmap(-dpi.$2, 0, tabShadow(tr.height()-dpi.$2, false));
-            }
-            drawItemPixmap(painter, tr, alignment, pixmap);
-         }
-         else {
-            if (qGray(cB.rgb()) < 148) { // dark background, let's paint an emboss
-               painter->setPen(cB.dark(120));
-               tr.moveTop(tr.top()-1);
-               drawItemText(painter, tr, alignment, PAL, isEnabled, tab->text);
-               tr.moveTop(tr.top()+1);
-            }
-            painter->setPen(cF);
+
+         if (qGray(cB.rgb()) < 148) { // dark background, let's paint an emboss
+            painter->setPen(cB.dark(120));
+            tr.moveTop(tr.top()-1);
             drawItemText(painter, tr, alignment, PAL, isEnabled, tab->text);
-            QStyleOptionTab::SelectedPosition selPos = reverse ?
-               QStyleOptionTab::NextIsSelected :
-               QStyleOptionTab::PreviousIsSelected;
-            if (tab->selectedPosition == selPos) {
-               if (bottom)
-                  tr.adjust(0,-dpi.$2,0,-dpi.$6);
-               else
-                  tr.adjust(0,dpi.$4,0,0);
-               painter->drawPixmap(tr.x()-dpi.$2, tr.y(),
-                                   tabShadow(tr.height(), bottom));
-            }
+            tr.moveTop(tr.top()+1);
          }
+         painter->setPen(cF);
+         drawItemText(painter, tr, alignment, PAL, isEnabled, tab->text);
+         
          painter->restore();
       }
       break;

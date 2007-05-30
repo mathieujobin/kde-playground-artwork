@@ -113,7 +113,7 @@ int OxygenStyle::pixelMetric ( PixelMetric pm, const QStyleOption * option, cons
    case PM_TabBarTabOverlap: // Number of pixels the tabs should overlap
       return 0;
    case PM_TabBarTabHSpace: // Extra space added to the tab width
-      return dpi.$18;
+      return 0;//dpi.$18;
    case PM_TabBarTabVSpace: // Extra space added to the tab height
       return dpi.$10;
    case PM_TabBarBaseHeight: // Height of the area between the tab bar and the tab pages

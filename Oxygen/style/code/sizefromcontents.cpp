@@ -134,10 +134,10 @@ QSize OxygenStyle::sizeFromContents ( ContentsType ct, const QStyleOption * opti
          switch (tab->shape) {
          case QTabBar::RoundedNorth: case QTabBar::TriangularNorth:
          case QTabBar::RoundedSouth: case QTabBar::TriangularSouth:
-            return contentsSize + QSize(dpi.$12, 0);
+            return contentsSize + QSize(2*(contentsSize.height()-dpi.$13), 0);
          case QTabBar::RoundedEast: case QTabBar::TriangularEast:
          case QTabBar::RoundedWest: case QTabBar::TriangularWest:
-            return contentsSize + QSize(0, dpi.$12);
+            return contentsSize + QSize(0, 2*(contentsSize.width()-dpi.$12));
          }
       }
       return contentsSize + QSize(dpi.$6, dpi.$6);

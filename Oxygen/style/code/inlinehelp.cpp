@@ -169,6 +169,13 @@ inline QColor light(const QColor &c, int value)
    return ret;
 }
 
+inline bool verticalTabs(QTabBar::Shape shape) {
+   return shape == QTabBar::RoundedEast ||
+      shape == QTabBar::TriangularEast ||
+      shape == QTabBar::RoundedWest ||
+      shape == QTabBar::TriangularWest;
+}
+
 #if 0
 /**Internal, checks if there's contrast between two colors*/
 static bool thereIsContrastBetween(const QColor &a, const QColor &b)
