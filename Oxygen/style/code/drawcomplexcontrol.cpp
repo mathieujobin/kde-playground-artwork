@@ -203,8 +203,8 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                drawPrimitive(PE_PanelLineEdit, option, painter, widget);
             else {
                const QPixmap &fill =
-                     gradient(COLOR(Base), 2*r.height(), Qt::Vertical, sunken ?
-                     GradSunken : GradSimple);
+                     gradient(COLOR(Base), r.height(), Qt::Vertical, hover ?
+                     GradButton : GradSunken);
                
                int step = listShown ? 0 : hoverStep(widget);
                hover = hover || step || hasFocus || listShown;
@@ -523,7 +523,9 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          if (!(bflags & State_Sunken) &&
              (toolbutton->subControls & SC_ToolButtonMenu)) {
             if (toolbutton->activeSubControls & SC_ToolButtonMenu)
-               painter->drawTiledPixmap(menuarea, gradient(COLOR(Window), menuarea.height(), Qt::Vertical, GradSunken));
+               painter->drawTiledPixmap(menuarea, gradient(COLOR(Window),
+                                        menuarea.height(), Qt::Vertical,
+                                        GradSunken));
             QPen oldPen = painter->pen();
             painter->setPen(midColor(COLOR(Window), COLOR(WindowText), 2, 1));
             tool.rect = menuarea; tool.state = mflags;
@@ -629,8 +631,8 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             rect.setTop(rect.y()+(rect.height()-rect.width())/2); rect.setHeight(rect.width());
          }
          
-         int d = qMax(rect.width()/4,10);
-         int r = rect.width()/2-2*d/3;
+         int d = qMax(rect.width()/6, dpi.$10);
+         int r = (rect.width()-d)/2;
          qreal a;
          if (dial->maximum == dial->minimum)
             a = M_PI / 2;
@@ -645,28 +647,31 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          cp += rect.center();
          
          // the huge ring
-         painter->setBrushOrigin(rect.topLeft());
-         painter->setBrush(gradient(PAL.background().color(), rect.height(), Qt::Vertical, GradSunken));
-         painter->setPen(Qt::NoPen);
+         r = d/2; rect.adjust(r,r,-r,-r);
+         painter->setPen(COLOR(Window).dark(115));
+         painter->setRenderHint( QPainter::Antialiasing );
          painter->drawEllipse(rect);
-         // the inner bevel
-         painter->setBrush(gradient(PAL.background().color(), rect.height(), Qt::Vertical, GradSimple));
-         rect.adjust(d,d,-d,-d);
+         rect.translate(0, 1);
+         painter->setPen(COLOR(Window).light(108));
          painter->drawEllipse(rect);
          // the value
-         QFont fnt = painter->font(); fnt.setPixelSize( 2*rect.height()/3 ); painter->setFont(fnt);
-         painter->setBrush(Qt::NoBrush); painter->setPen(PAL.foreground().color());
-         drawItemText(painter, rect,  Qt::AlignCenter, PAL, isEnabled, QString::number(dial->sliderValue));
+         QFont fnt = painter->font();
+         fnt.setPixelSize( rect.height()/3 );
+         painter->setFont(fnt);
+         painter->setBrush(Qt::NoBrush);
+         painter->setPen(PAL.foreground().color());
+         drawItemText(painter, rect,  Qt::AlignCenter, PAL, isEnabled,
+                      QString::number(dial->sliderValue));
          // the drop
          painter->setPen(Qt::NoPen);
-         painter->setRenderHint( QPainter::Antialiasing );
-         rect = QRect(0,0,3*d/4,3*d/4);
+         rect = QRect(0,0,d,d);
          rect.moveCenter(cp);
          painter->setBrush(QColor(0,0,0,50));
          painter->drawEllipse(rect);
          rect.adjust(dpi.$2,dpi.$1,-dpi.$2,-dpi.$2);
          painter->setBrushOrigin(rect.topLeft());
-         painter->setBrush(gradient(btnBgColor(PAL, isEnabled, hover || hasFocus), rect.height(), Qt::Vertical, GradRadialGloss));
+         painter->setBrush(gradient(btnBgColor(PAL, isEnabled, hover||hasFocus),
+                           rect.height(), Qt::Vertical, GradRadialGloss));
          painter->drawEllipse(rect);
          painter->restore();
       }

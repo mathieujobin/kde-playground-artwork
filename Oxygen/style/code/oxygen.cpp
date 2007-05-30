@@ -1130,7 +1130,11 @@ bool OxygenStyle::eventFilter( QObject *object, QEvent *ev ) {
       if (qobject_cast<QAbstractButton*>(object) ||
           qobject_cast<QComboBox*>(object)) {
          QWidget *widget = (QWidget*)object;
-         if (!widget->isEnabled() || widget->hasFocus()) return false;
+         if (!widget->isEnabled())
+            return false;
+         if (widget->hasFocus()) {
+            widget->update(); return false;
+         }
          fadeIn(widget);
          return false;
       }
@@ -1158,7 +1162,11 @@ bool OxygenStyle::eventFilter( QObject *object, QEvent *ev ) {
       if (qobject_cast<QAbstractButton*>(object) || 
           qobject_cast<QComboBox*>(object)) {
          QWidget *widget = (QWidget*)object;
-         if (!widget->isEnabled() || widget->hasFocus()) return false;
+         if (!widget->isEnabled())
+            return false;
+         if (widget->hasFocus()) {
+            widget->update(); return false;
+         }
          fadeOut(widget);
          return false;
       }
