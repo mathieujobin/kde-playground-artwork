@@ -821,19 +821,23 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          }
 
          QColor bg = PAL.color(bgr);
-         QColor fg = isEnabled ? PAL.color(fgr) : midColor(PAL.color(bgr),PAL.color(fgr),2,1);
+         QColor fg = isEnabled ? PAL.color(fgr) :
+               midColor(PAL.color(bgr),PAL.color(fgr),2,1);
 
          if (menuItem->menuItemType == QStyleOptionMenuItem::Separator) {
-            int dx = RECT.width()/6, dy = (RECT.height()-shadows.line[0][Sunken].thickness())/2;
+            int dx = RECT.width()/6,
+            dy = (RECT.height()-shadows.line[0][Sunken].thickness())/2;
             shadows.line[0][Sunken].render(RECT.adjusted(dx,dy,-dx,-dy), painter);
             if (!menuItem->text.isEmpty()) {
                painter->setFont(menuItem->font);
-               drawItemText(painter, RECT, Qt::AlignCenter, PAL, isEnabled, menuItem->text, fgr);
+               drawItemText(painter, RECT, Qt::AlignCenter, PAL, isEnabled,
+                            menuItem->text, fgr);
             }
             break;
          }
          painter->save();
-         bool checkable = (menuItem->checkType != QStyleOptionMenuItem::NotCheckable);
+         bool checkable =
+               (menuItem->checkType != QStyleOptionMenuItem::NotCheckable);
          bool checked = checkable && menuItem->checked;
          
          if (selected && isEnabled)
@@ -848,8 +852,10 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          if (config.showMenuIcons && !menuItem->icon.isNull()) {
             QRect vCheckRect = visualRect(option->direction, RECT,
                                        QRect(RECT.x(), RECT.y(), iconCol, RECT.height()));
-            QIcon::Mode mode = isEnabled ? (selected ? QIcon::Active : QIcon::Normal) : QIcon::Disabled;
-            QPixmap pixmap = menuItem->icon.pixmap(pixelMetric(PM_SmallIconSize), mode, checked ? QIcon::On : QIcon::Off);
+            QIcon::Mode mode = isEnabled ? (selected ? QIcon::Active :
+                  QIcon::Normal) : QIcon::Disabled;
+            QPixmap pixmap = menuItem->icon.pixmap(pixelMetric(PM_SmallIconSize),
+                  mode, checked ? QIcon::On : QIcon::Off);
             
             QRect pmr(QPoint(0, 0), pixmap.size());
             pmr.moveCenter(vCheckRect.center());
@@ -866,19 +872,21 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          int cDim = 2*(RECT.height() - dpi.$4)/3;
          int xm = windowsItemFrame + iconCol + windowsItemHMargin;
          int xpos = RECT.x() + xm;
-         QRect textRect(xpos,
-                        y + windowsItemVMargin,
-                        w - xm - menuItem->menuHasCheckableItems*(cDim+dpi.$7) - windowsRightBorder - tab + 1,
+         QRect textRect(xpos, y + windowsItemVMargin,
+                        w - xm - menuItem->menuHasCheckableItems*(cDim+dpi.$7) -
+                              windowsRightBorder - tab + 1,
                         h - 2 * windowsItemVMargin);
          QRect vTextRect = visualRect(option->direction, RECT, textRect);
          QString s = menuitem->text;
          if (!s.isEmpty()) {
             // draw text
             int t = s.indexOf('\t');
-            const int text_flags = Qt::AlignVCenter | Qt::TextShowMnemonic | Qt::TextDontClip | Qt::TextSingleLine;
+            const int text_flags = Qt::AlignVCenter | Qt::TextShowMnemonic |
+                  Qt::TextDontClip | Qt::TextSingleLine;
             if (t >= 0) {
                QRect vShortcutRect = visualRect(option->direction, RECT,
-                     QRect(textRect.topRight(), QPoint(textRect.right()+tab, textRect.bottom())));
+                     QRect(textRect.topRight(),
+                           QPoint(textRect.right()+tab, textRect.bottom())));
                painter->drawText(vShortcutRect, text_flags | Qt::AlignLeft, s.mid(t + 1));
                s = s.left(t);
             }
@@ -892,14 +900,16 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          // Arrow
          if (menuItem->menuItemType == QStyleOptionMenuItem::SubMenu) {
             // draw sub menu arrow
-            PrimitiveElement arrow =
-               (option->direction == Qt::RightToLeft) ? PE_IndicatorArrowLeft : PE_IndicatorArrowRight;
+            PrimitiveElement arrow = (option->direction == Qt::RightToLeft) ?
+                  PE_IndicatorArrowLeft : PE_IndicatorArrowRight;
             
             int dim = (RECT.height() - dpi.$4)/2;
             xpos = RECT.x() + RECT.width() - dpi.$7 - dim;
             
             QStyleOptionMenuItem tmpOpt = *menuItem;
-            tmpOpt.rect = visualRect(option->direction, RECT, QRect(xpos, RECT.y() + (RECT.height() - dim)/2, dim, dim));
+            tmpOpt.rect = visualRect(option->direction, RECT,
+                                     QRect(xpos, RECT.y() +
+                                           (RECT.height() - dim)/2, dim, dim));
             
             drawPrimitive(arrow, &tmpOpt, painter, widget);
          }
@@ -913,16 +923,21 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
                painter->drawEllipse ( checkRect );
                if (checked || sunken) {
                   painter->setBrush ( fg );
-                  painter->drawEllipse ( checkRect.adjusted(checkRect.width()/4, checkRect.height()/4, -checkRect.width()/4, -checkRect.height()/4) );
-                  painter->setBrush ( Qt::NoBrush );
+                  painter->drawEllipse ( checkRect.adjusted(checkRect.width()/4,
+                                         checkRect.height()/4, -checkRect.width()/4,
+                                         -checkRect.height()/4) );
+//                   painter->setBrush ( Qt::NoBrush );
                }
             }
             else {
                // Check box
-               painter->setBrush ( Qt::NoBrush );
+//                painter->setBrush ( Qt::NoBrush );
                QStyleOptionMenuItem tmpOpt = *menuItem;
                tmpOpt.rect = checkRect;
-               if (checked) tmpOpt.state |= State_On; else tmpOpt.state &= ~State_On;
+               if (checked)
+                  tmpOpt.state |= State_On;
+               else
+                  tmpOpt.state &= ~State_On;
                drawPrimitive(PE_IndicatorMenuCheckMark, &tmpOpt, painter, widget);
             }
          }

@@ -549,11 +549,30 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          rect.setRect(RECT.x(), RECT.y()+(RECT.height()-RECT.width())/2,
                       RECT.width()-1, RECT.width()-1);
       int off = rect.width()/4;
+      
+      painter->save();
+      const bool selected = option->state & State_Selected && isEnabled;
+      painter->setBrush(Qt::NoBrush);
+      QPalette::ColorRole fgr;
+      if (pe == PE_IndicatorMenuCheckMark) {
+         if (widget)
+            fgr = selected ? widget->backgroundRole() : widget->foregroundRole();
+         else
+            fgr = selected ? QPalette::Window : QPalette::WindowText;
+      }
+      else
+         fgr = selected ? QPalette::HighlightedText : QPalette::Text;
+      
+      painter->setPen(PAL.color(fgr));
       painter->drawRect(rect.adjusted(0, off, -off, 0));
-      if (option->state & State_On) {
-         SAVE_ANTIALIAS; SAVE_BRUSH;
+      
+      if (!(option->state & State_Off)) {
          painter->setRenderHint(QPainter::Antialiasing);
-         painter->setBrush(painter->pen().brush());
+         if (!(pe == PE_IndicatorMenuCheckMark || selected)) {
+            fgr = QPalette::Highlight;
+            painter->setPen(PAL.color(fgr));
+         }
+         painter->setBrush(PAL.color(fgr));
          const QPoint points[4] = {
             QPoint(rect.right(), rect.top()),
             QPoint(rect.x()+rect.width()/3, rect.bottom()),
@@ -561,8 +580,8 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
                QPoint(rect.x()+rect.width()/3, rect.bottom()-rect.height()/5)
          };
          painter->drawPolygon(points, 4);
-         RESTORE_ANTIALIAS; RESTORE_BRUSH;
       }
+      painter->restore();
       break;
    }
    case PE_Q3CheckListExclusiveIndicator: // Qt 3 compatible Radio button part of a list view item.
@@ -674,7 +693,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       if (!(widget && widget->parentWidget()) ||
           widget->parentWidget()->underMouse()) {
          painter->save();
-         QRect rect = RECT; bool line = false; int dx, dy;
+         QRect rect = RECT; bool line = false; int dx(0), dy(0);
          if (RECT.width() > RECT.height()) {
             line = (RECT.width() > 9*RECT.height()/2);
             if (line) {
@@ -725,7 +744,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       
       if (const QStyleOptionTabBarBase *tbb
             = qstyleoption_cast<const QStyleOptionTabBarBase *>(option)) {
-         int size; Qt::Orientation o = Qt::Vertical;
+         int size(0); Qt::Orientation o = Qt::Vertical;
          Tile::PosFlags pf = Tile::Ring;
          QRect fillRect;
          bool north = false;

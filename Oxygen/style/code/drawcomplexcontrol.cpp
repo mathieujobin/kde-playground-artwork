@@ -203,8 +203,8 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                drawPrimitive(PE_PanelLineEdit, option, painter, widget);
             else {
                const QPixmap &fill =
-                     gradient(COLOR(Base), r.height(), Qt::Vertical, hover ?
-                     GradButton : GradSunken);
+                     gradient(COLOR(Window), r.height(), Qt::Vertical, hover ?
+                     config.gradientStrong : GradSunken);
                
                int step = listShown ? 0 : hoverStep(widget);
                hover = hover || step || hasFocus || listShown;
@@ -229,11 +229,11 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                      r.setLeft(ar.left()); r.setRight(RECT.right());
                      pf = Tile::Full&~Tile::Left;
                   }
-                  const QColor c = step ? midColor(COLOR(Base), COLOR(Text),
-                        6-step, step) : COLOR(Text);
+                  const QColor c = step ? midColor(COLOR(Window), COLOR(WindowText),
+                        6-step, step) : COLOR(WindowText);
                   fillWithMask(painter, r, gradient(c, r.height(),
-                               Qt::Vertical, sunken ? GradSunken : GradButton),
-                               &masks.button, pf);
+                               Qt::Vertical, sunken ? GradSunken :
+                                     config.gradientStrong), &masks.button, pf);
                }
                shadows.lineEdit[1].render(RECT, painter);
             }
@@ -241,7 +241,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          
          // the arrow
          if (!ar.isNull()) {
-            ar.adjust((2*ar.width())/7,(2*ar.height())/7,-(2*ar.width())/7,-(2*ar.height())/7);
+            ar.adjust(ar.width()/3,ar.height()/3,-ar.width()/3,-ar.height()/3);
             QStyleOptionComboBox tmpOpt = *cmb;
             PrimitiveElement arrow;
             if (!listShown)
