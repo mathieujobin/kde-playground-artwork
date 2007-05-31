@@ -1,0 +1,8 @@
+this folder contains high-quality files with oxygen artwork to be printed as posters for kde booths etc. please note the following:
+
+1. in the presentation.pdf and presentation_2.pdf, below the header line "art that innovates", it says "Oxgyen" instead of "Oxygen"; maybe the original author can fix this
+
+2. the embedded graphics - although created as scalable vector files - are embedded into the pdf files as bitmap graphics (with alpha channel), which is why these files are so big. this is probably due to the very difficult task to get an svg file with gradients and transparency into a pdf. (TODO: when technically possible, create files with *real* vector graphics in them.)
+presentation.pdf and presentation_2.pdf can be printed on DIN A0 paper with small pixel artifacts, k-logo.pdf (which was created out of kmenu.svg) is printable on DIN A0 without any problems.
+
+-- tpfeiffer, 2007/06/01
