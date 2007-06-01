@@ -272,7 +272,7 @@ const QPixmap &OxygenStyle::groupLight(int height) const {
    pix->fill(Qt::transparent);
    QPoint start(0,0), stop(0,height);
    PointArray stops;
-   ColorArray colors = ColorArray() << QColor(255,255,255,134) << QColor(255,255,255,0);
+   ColorArray colors = ColorArray() << QColor(255,255,255,50) << QColor(255,255,255,0);
    MAKE_OXRENDER_GRADIENT;
    
    // cache for later ;)
