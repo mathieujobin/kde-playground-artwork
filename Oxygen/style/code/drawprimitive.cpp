@@ -686,7 +686,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          fillWithMask(painter, points[num-i], *fill, masks.notch);
       }
       painter->restore();
-      delete points;
+      delete[] points;
       break;
    }
    case PE_IndicatorToolBarHandle: // The handle of a toolbar.
