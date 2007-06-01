@@ -210,7 +210,7 @@ OXPicture OXRender::gradient(const QPoint c1, int r1, const QPoint c2, int r2, c
    }
    XFlush (dpy);
    OXPicture lgp = XRenderCreateRadialGradient(dpy, &rg, stps, &cs[0], qMin(qMax(stops.size(),2),colors.size()));
-   delete stps;
+   delete[] stps;
    return lgp;
 }
 
