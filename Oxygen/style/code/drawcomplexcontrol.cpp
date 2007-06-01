@@ -48,18 +48,19 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
    {
    case CC_SpinBox: // A spinbox, like QSpinBox
       if (const QStyleOptionSpinBox *sb =
-          qstyleoption_cast<const QStyleOptionSpinBox *>(option))
-      {
+          qstyleoption_cast<const QStyleOptionSpinBox *>(option)) {
          QStyleOptionSpinBox copy = *sb;
          int uh = 0;
          
          if (sb->frame && (sb->subControls & SC_SpinBoxFrame))
             drawPrimitive ( PE_PanelLineEdit, sb, painter, widget );
          
+         if (!isEnabled)
+            break; // why bother the user with elements he can't use... ;)
+         
          Tile::PosFlags pf;
          
-         if (sb->subControls & SC_SpinBoxUp)
-         {
+         if (sb->subControls & SC_SpinBoxUp) {
             copy.subControls = SC_SpinBoxUp;
             copy.rect = subControlRect(CC_SpinBox, sb, SC_SpinBoxUp, widget);
             uh = copy.rect.height();
@@ -78,8 +79,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             int dx = copy.rect.width()/4, dy = copy.rect.height()/4;
             copy.rect.adjust(dx, 2*dy,-dx,-dpi.$1);
             
-            if (!sunken)
-            {
+            if (!sunken) {
                painter->setPen(COLOR(Base).dark(105));
                copy.rect.translate(dpi.$2, dpi.$2);
                drawPrimitive(PE_IndicatorArrowUp, &copy, painter, widget);
@@ -98,8 +98,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             drawPrimitive(PE_IndicatorSpinUp, &copy, painter, widget);
          }
          
-         if (sb->subControls & SC_SpinBoxDown)
-         {
+         if (sb->subControls & SC_SpinBoxDown) {
             copy.subControls = SC_SpinBoxDown;
             copy.rect = subControlRect(CC_SpinBox, sb, SC_SpinBoxDown, widget);
             
@@ -118,8 +117,7 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             int dx = copy.rect.width()/4, dy = copy.rect.height()/4;
             copy.rect.adjust(dx, dpi.$1,-dx,-2*dy);
             
-            if (!sunken)
-            {
+            if (!sunken) {
                painter->setPen(COLOR(Base).dark(105));
                copy.rect.translate(dpi.$2, dpi.$2);
                drawPrimitive(PE_IndicatorArrowDown, &copy, painter, widget);
