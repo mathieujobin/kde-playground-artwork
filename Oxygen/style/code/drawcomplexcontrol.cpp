@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006-2007 by Thomas Lübking                             *
+ *   Copyright (C) 2006-2007 by Thomas Lï¿½bking                             *
  *   thomas.luebking@web.de                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -362,32 +362,11 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                fillWithMask(painter, groove, gradient(COLOR(Window),
                             groove.height(), Qt::Vertical, GradSunken),
                             &masks.button);
-               // the "temperature"
-               if (slider->sliderPosition != ground &&
-                   slider->maximum > slider->minimum) {
-                  groove.adjust(0,dpi.$1,0,-dpi.$1);
-                  int groundX = groove.width() * (ground - slider->minimum) /
-                        (slider->maximum - slider->minimum);
-                  bool rightSide = slider->sliderPosition > ground;
-                  if (slider->upsideDown) {
-                     rightSide = !rightSide;
-                     groundX = groove.right() - groundX;
-                  }
-                  else
-                     groundX += groove.left();
-                  
-                  if (rightSide) {
-                     groove.setLeft(groundX);
-                     groove.setRight(handle.center().x());
-                  }
-                  else {
-                     groove.setLeft(handle.center().x());
-                     groove.setRight(groundX);
-                  }
-                  fillWithMask(painter, groove, gradient(COLOR(Window),
-                               groove.height(), Qt::Vertical, config.gradient),
-                               &masks.button);
-               }
+
+               groove.adjust(0,dpi.$1,0,-dpi.$1);
+               fillWithMask(painter, groove, gradient(COLOR(Window),
+                            groove.height(), Qt::Vertical, config.gradient),
+                            &masks.button);
                // for later (cosmetic)
                handle.translate(0,dpi.$3);
             }
@@ -397,32 +376,11 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                fillWithMask(painter, groove, gradient(COLOR(Window),
                             groove.width(), Qt::Horizontal, GradSunken),
                             &masks.button);
-               // the "temperature"
-               if (slider->sliderPosition != ground &&
-                   slider->maximum > slider->minimum) {
-                  groove.adjust(dpi.$1,0,-dpi.$1,0);
-                  int groundY = groove.height() * (ground - slider->minimum) /
-                        (slider->maximum - slider->minimum);
-                  bool upside = slider->sliderPosition > ground;
-                  if (slider->upsideDown) {
-                     upside = !upside;
-                     groundY = groove.bottom() - groundY;
-                  }
-                  else
-                     groundY += groove.top();
-                  
-                  if (upside) {
-                     groove.setBottom(handle.center().y());
-                     groove.setTop(groundY);
-                  }
-                  else {
-                     groove.setBottom(groundY);
-                     groove.setTop(handle.center().y());
-                  }
-                  fillWithMask(painter, groove, gradient(COLOR(Window),
-                               groove.width(), Qt::Horizontal, config.gradient),
-                               &masks.button);
-               }
+
+               groove.adjust(dpi.$1,0,-dpi.$1,0);
+               fillWithMask(painter, groove, gradient(COLOR(Window),
+                            groove.width(), Qt::Horizontal, config.gradient),
+                            &masks.button);
                // for later (cosmetic)
                handle.translate(dpi.$3,0);
             }
