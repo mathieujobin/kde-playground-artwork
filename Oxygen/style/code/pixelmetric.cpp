@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006-2007 by Thomas Lübking                             *
+ *   Copyright (C) 2006-2007 by Thomas Lï¿½bking                             *
  *   thomas.luebking@web.de                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -53,7 +53,7 @@ int OxygenStyle::pixelMetric ( PixelMetric pm, const QStyleOption * option, cons
           static_cast<const QFrame*>(widget)->frameShape() == QFrame::StyledPanel &&
          !widget->inherits("QTextEdit"))
          return 0;
-      return dpi.$4;
+      return dpi.$1;
    case PM_SpinBoxFrameWidth: // Frame width of a spin box, defaults to PM_DefaultFrameWidth
       return dpi.$1;
    case PM_ComboBoxFrameWidth: // Frame width of a combo box, defaults to PM_DefaultFrameWidth.
