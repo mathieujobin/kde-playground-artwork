@@ -86,7 +86,10 @@ static QPixmap mirror(const QPixmap &pix, Qt::Orientation o)
    return mirror;
 }
 
-static Atom oxygen_isQtWindow = XInternAtom(QX11Info::display(), "OXYGEN_IS_QT_WINDOW", False);
+static const Atom oxygen_isQtWindow =
+XInternAtom(QX11Info::display(), "OXYGEN_IS_QT_WINDOW", False);
+static const Atom oxygen_bg_pix =
+XInternAtom(QX11Info::display(), "OXYGEN_BG_PIXMAP", False);
 
 static GLuint _background;
 

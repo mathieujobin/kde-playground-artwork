@@ -34,9 +34,8 @@ namespace Tile
 
    enum Section
    { // DON'T CHANGE THE ORDER FOR NO REASON, i misuse them on the masks...
-      TopLeft = 0, TopMid, TopRight,
-      BtmMid, BtmLeft, MidLeft, BtmRight,
-      MidMid, MidRight
+      TopLeft = 0, TopRight, BtmLeft, BtmRight,
+      TopMid, BtmMid, MidLeft, MidMid, MidRight
    };
    enum Position
    {
@@ -54,7 +53,8 @@ public:
    Set(const QPixmap &pix, int xOff, int yOff, int width, int height, int rx = 0, int ry = 0);
    Set(){}
    void render(const QRect &rect, QPainter *p, PosFlags pf = Ring) const;
-   void outline(const QRect &rect, QPainter *p, QColor c, bool strong = false, PosFlags pf = Ring) const;
+   void outline(const QRect &rect, QPainter *p, QColor c, bool strong = false,
+                PosFlags pf = Ring) const;
    Picture render(int width, int height, PosFlags pf = Ring) const;
    Picture render(const QSize &size, PosFlags pf = Ring) const;
    QRect rect(const QRect &rect, PosFlags pf) const;
@@ -74,12 +74,17 @@ public:
    Mask(const QPixmap &pix, int xOff, int yOff, int width, int height,
                int dx1, int dy1, int dx2, int dy2, int rx = 0, int ry = 0);
    Mask(){_dx[0] = _dx[1] = _dy[0] = _dy[1] = 0; _hasCorners = false;}
+   void render(const QRect &rect, QPainter *p, const QBrush &fill,
+               PosFlags pf = Full, bool justClip = false,
+               QPoint offset = QPoint(), bool inverse = false,
+               const QRect *outerRect = 0L) const;
    QRect bounds(const QRect &rect, PosFlags pf = Full) const;
    const QPixmap &corner(PosFlags pf, bool inverse = false) const;
    QRegion clipRegion(const QRect &rect, PosFlags pf = Ring) const;
    inline bool hasCorners() const {return _hasCorners;}
 private:
    int _dx[2], _dy[2];
+   QPixmap inversePixmap[9];
    bool _hasCorners;
 };
 

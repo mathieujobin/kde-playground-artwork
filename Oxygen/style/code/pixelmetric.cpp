@@ -53,6 +53,7 @@ int OxygenStyle::pixelMetric ( PixelMetric pm, const QStyleOption * option, cons
           static_cast<const QFrame*>(widget)->frameShape() == QFrame::StyledPanel &&
          !widget->inherits("QTextEdit"))
          return 0;
+#warning stupid idea?
       return dpi.$1;
    case PM_SpinBoxFrameWidth: // Frame width of a spin box, defaults to PM_DefaultFrameWidth
       return dpi.$1;
@@ -113,7 +114,7 @@ int OxygenStyle::pixelMetric ( PixelMetric pm, const QStyleOption * option, cons
    case PM_TabBarTabOverlap: // Number of pixels the tabs should overlap
       return 0;
    case PM_TabBarTabHSpace: // Extra space added to the tab width
-      return 0;//dpi.$18;
+      return dpi.$12;
    case PM_TabBarTabVSpace: // Extra space added to the tab height
       return dpi.$10;
    case PM_TabBarBaseHeight: // Height of the area between the tab bar and the tab pages

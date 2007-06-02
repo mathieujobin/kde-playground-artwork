@@ -20,6 +20,7 @@
 
 #include <QPainter>
 #include <cmath>
+#include "oxrender.h"
 #include "tileset.h"
 
 #ifndef MIN
@@ -48,6 +49,7 @@ static bool isEmpty(const QPixmap &pix)
 
 static QPixmap invertAlpha(const QPixmap & pix)
 {
+   if (pix.isNull()) return pix;
    QImage img =  pix.toImage();
    QImage *dst = new QImage(img);
    uint *data = ( uint * ) img.bits();
@@ -155,10 +157,12 @@ QRect Set::rect(const QRect &rect, PosFlags pf) const
 
 void Set::render(const QRect &r, QPainter *p, PosFlags pf) const
 {
+#define PIXMAP(_TILE_) pixmap[_TILE_]
 #define DRAW_PIXMAP p->drawPixmap
 #define DRAW_TILED_PIXMAP p->drawTiledPixmap
 
 #include "t_render1.cpp"
+#undef PIXMAP
 #undef DRAW_PIXMAP
 #undef DRAW_TILED_PIXMAP
 }
@@ -177,25 +181,31 @@ Picture Set::render(int W, int H, PosFlags pf) const
    Pixmap xpix = XCreatePixmap (dpy, root, W, H, 32);
    if (!pixmap)
       return X::None;
-   Picture pict = XRenderCreatePicture (dpy, xpix, XRenderFindStandardFormat (dpy, PictStandardARGB32), 0, 0);
-   if (!pict)
-   {
+   Picture pict =
+      XRenderCreatePicture (dpy, xpix,
+                            XRenderFindStandardFormat(dpy, PictStandardARGB32),
+                            0, 0);
+   if (!pict) {
       XFreePixmap (dpy, xpix); return X::None;
    }
    
+#define PIXMAP(_TILE_) pixmap[_TILE_]
 #define DRAW_PIXMAP(_DX_, _DY_, _PIX_, _SX_, _SY_, _W_, _H_) \
-   XRenderComposite(dpy, PictOpSrc, _PIX_.x11PictureHandle(), X::None, pict, _SX_, _SY_, 0, 0, _DX_, _DY_, _W_, _H_);
+   XRenderComposite(dpy, PictOpSrc, _PIX_.x11PictureHandle(), X::None, pict,\
+      _SX_, _SY_, 0, 0, _DX_, _DY_, _W_, _H_);
 //    XCopyArea( dpy, _PIX_.handle(), pix->handle(), gc, _SX_, _SY_, _W_, _H_, _DX_, _DY_ )
 #define DRAW_TILED_PIXMAP(_DX_, _DY_, _W_, _H_, _PIX_)\
       for (int x = 0; x < _W_; x += _PIX_.width())\
          for (int y = 0; y < _H_; y += _PIX_.height())\
-            XRenderComposite(dpy, PictOpSrc, _PIX_.x11PictureHandle(), X::None, pict,\
-                             0, 0, 0, 0, x+_DX_, y+_DY_,\
-                             MIN(_PIX_.width(), _W_-x), MIN(_PIX_.height(), _H_-y));
+            XRenderComposite(dpy, PictOpSrc, _PIX_.x11PictureHandle(), X::None,\
+                             pict, 0, 0, 0, 0, x+_DX_, y+_DY_,\
+                             MIN(_PIX_.width(), _W_-x),\
+                             MIN(_PIX_.height(), _H_-y));
 
 #include "t_render1.cpp"
    XFreePixmap (dpy, xpix);
    return pict;
+#undef PIXMAP
 #undef DRAW_PIXMAP
 #undef DRAW_TILED_PIXMAP
 }
@@ -232,13 +242,20 @@ void Set::outline(const QRect &r, QPainter *p, QColor c, bool strong, PosFlags p
 }
 
 Tile::Mask::Mask(const QPixmap &pix, int xOff, int yOff, int width, int height,
-          int dx1, int dy1, int dx2, int dy2, int rx, int ry): Set(pix, xOff, yOff, width, height, rx, ry)
-{
+          int dx1, int dy1, int dx2, int dy2, int rx, int ry):
+Set(pix, xOff, yOff, width, height, rx, ry) {
    _dx[0] = dx1; _dx[1] = dx2; _dy[0] = dy1; _dy[1] = dy2;
-   pixmap[TopLeft+1] = invertAlpha(pixmap[TopLeft]);
-   pixmap[TopRight+1] = invertAlpha(pixmap[TopRight]);
-   pixmap[BtmRight+1] = invertAlpha(pixmap[BtmRight]);
-   pixmap[BtmLeft+1] = invertAlpha(pixmap[BtmLeft]);
+   
+   pixmap[MidMid] = QPixmap();
+   if (dx1 < 1) pixmap[MidLeft] = QPixmap();
+   if (dx2 > -1) pixmap[MidRight] = QPixmap();
+   if (dy1 < 1) pixmap[TopMid] = QPixmap();
+   if (dy2 > -1) pixmap[BtmMid] = QPixmap();
+   
+   for (int i = 0; i < 9; ++i)
+      if (i != MidMid)
+      inversePixmap[i] = invertAlpha(pixmap[i]);
+      
    _hasCorners = !pix.isNull();
 }
 
@@ -256,18 +273,18 @@ QRect Tile::Mask::bounds(const QRect &rect, PosFlags pf) const
    return ret;
 }
 
-
 const QPixmap &Tile::Mask::corner(PosFlags pf, bool inverse) const
 {
+   const QPixmap (*pics)[9] = inverse ? &inversePixmap : &pixmap;
    if (pf == (Top | Left))
-      return pixmap[TopLeft+inverse];
+      return (*pics)[TopLeft];
    if (pf == (Top | Right))
-      return pixmap[TopRight+inverse];
+      return (*pics)[TopRight];
    if (pf == (Bottom | Right))
-      return pixmap[BtmRight+inverse];
+      return (*pics)[BtmRight];
    if (pf == (Bottom | Left))
-      return pixmap[BtmLeft+inverse];
-   
+      return (*pics)[BtmLeft];
+
    qWarning("requested impossible corner %d",pf);
    return nullPix;
 }
@@ -292,6 +309,80 @@ QRegion Tile::Mask::clipRegion(const QRect &rect, PosFlags pf) const
       ret -= QRect(rect.right()-w+1, rect.bottom()-h+1, w, h);
    }
    return ret;
+}
+
+void Tile::Mask::render(const QRect &r, QPainter *p, const QBrush &fill,
+                  PosFlags oPf, bool justClip, QPoint offset, bool inverse,
+                  const QRect *outerRect) const
+{
+   bool pixmode = !fill.texture().isNull();
+
+   if (justClip) {
+      p->save();
+      p->setClipRegion(clipRegion(r, oPf));
+      if (pixmode)
+         p->drawTiledPixmap(r, fill.texture(), offset);
+      else
+         p->fillRect(r, fill.color());
+      p->restore();
+      return;
+   }
+   // first the inner region
+   //NOTE: using full alphablend can become enourmously slow due to VRAM size -
+   // even on HW that has Render acceleration!
+   if (!inverse || outerRect) {
+      p->save();
+      if (inverse) {
+         QRegion cr = *outerRect; cr -= r;
+         p->setClipRegion(cr, Qt::IntersectClip);
+      }
+      else
+         p->setClipRegion(clipRegion(r, oPf), Qt::IntersectClip);
+      if (pixmode)
+         p->drawTiledPixmap(outerRect ? *outerRect : r, fill.texture(), offset);
+      else
+         p->fillRect(outerRect ? *outerRect : r, fill.color());
+      p->restore();
+   }
+   if (!_hasCorners)
+      return;
+   
+   QPixmap filledPix;
+   QPainter pixPainter;
+   PosFlags pf = oPf & ~Center;
+   const QPixmap (*pics)[9] = inverse ? &inversePixmap : &pixmap;
+   QPoint off = r.topLeft()-offset;
+   
+#define PIXMAP(_TILE_) (*pics)[_TILE_]
+   
+#define MAKE_FILL(_PIX_, _OFF_)\
+   filledPix = QPixmap(_PIX_.size());\
+   if (pixmode) {\
+      filledPix.fill(Qt::transparent);\
+      pixPainter.begin(&filledPix);\
+      pixPainter.drawTiledPixmap(filledPix.rect(), fill.texture(), _OFF_-off);\
+      pixPainter.end();\
+   }\
+   else\
+      filledPix.fill(fill.color());\
+   filledPix = OXRender::applyAlpha(filledPix, _PIX_)
+   
+#define DRAW_PIXMAP(_DX_, _DY_, _PIX_, _SX_, _SY_, _W_, _H_) {\
+   MAKE_FILL(_PIX_, QPoint(_DX_, _DY_));\
+   p->drawPixmap(_DX_, _DY_, filledPix, _SX_, _SY_, _W_, _H_);\
+}// --skip semicolon
+   
+#define DRAW_TILED_PIXMAP(_DX_, _DY_, _W_, _H_, _PIX_) {\
+   MAKE_FILL(_PIX_, QPoint(_DX_, _DY_));\
+   p->drawTiledPixmap(_DX_, _DY_, _W_, _H_, filledPix);\
+}// --skip semicolon
+
+#include "t_render1.cpp"
+#undef PIXMAP
+#undef MAKE_FILL
+#undef DRAW_PIXMAP
+#undef DRAW_TILED_PIXMAP
+
 }
 
 Line::Line(const QPixmap &pix, Qt::Orientation o, int d1, int d2) {

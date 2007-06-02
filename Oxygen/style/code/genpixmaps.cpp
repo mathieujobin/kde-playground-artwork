@@ -29,6 +29,23 @@ void OxygenStyle::generatePixmaps()
       }
    }
    
+   // light
+   tmp.fill(Qt::transparent);
+   p.begin(&tmp);
+   p.setPen(Qt::NoPen);
+   p.setRenderHint(QPainter::Antialiasing);
+   p.setBrush(QColor(0,0,0,80));
+   p.drawRoundRect(0,0,$9,$9,90,90);
+   p.setBrush(QColor(0,0,0,80));
+   p.drawRoundRect($1,$1,$9-2*$1,$9-2*$1,80,80);
+   p.setBrush(QColor(0,0,0,80));
+   p.drawRoundRect($2,$2,$9-2*$2,$9-2*$2,70,70);
+   p.setBrush(QColor(0,0,0,255));
+   p.drawRoundRect($3,$3,$9-2*$3,$9-2*$3,60,60);
+   p.end();
+   lights.button =
+      Tile::Mask(tmp,$9_2,$9_2,$9-2*$9_2,$9-2*$9_2, $3,$3,-$3,-$3, 75,75);
+   
    // mask
    tmp = QPixmap($9,$9);
    tmp.fill(Qt::transparent);

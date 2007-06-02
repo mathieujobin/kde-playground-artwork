@@ -330,6 +330,7 @@ private:
    struct {
       Tile::Line top;
       QPixmap slider[4];
+      Tile::Mask button;
    } lights;
    
    // pixmaps

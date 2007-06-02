@@ -332,8 +332,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             case QTabBar::TriangularNorth: {
                pf &= ~Tile::Bottom;
                const QPixmap &shadow = tabShadow(fillRect.height()-$4);
-               size = shadow.width();
-               rect.adjust(size, $2, -size, 0);
+               rect.adjust(0, $2, 0, 0);
                fillRect = rect.adjusted($2, $2, -$2, 0);
                painter->drawPixmap(fillRect.topRight(), shadow);
                break;
@@ -342,8 +341,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             case QTabBar::TriangularSouth: {
                pf &= ~Tile::Top;
                const QPixmap &shadow = tabShadow(fillRect.height()-$4, true);
-               size = shadow.width();
-               rect.adjust(size, 0, -size, -$2);
+               rect.adjust(0, 0, 0, -$2);
                fillRect = rect.adjusted($2, 0, -$2, -$4);
                painter->drawPixmap(fillRect.topRight(), shadow);
                break;
@@ -368,73 +366,53 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
                          &masks.tab, pf | Tile::Center, false, zero);
             shadows.tab.render(rect, painter, pf);
          }
-         else if (sunken) {
+         else {
+            QPoint off;
             switch ((QTabBar::Shape)shape) {
             case QTabBar::RoundedNorth:
             case QTabBar::TriangularNorth:
-               rect = RECT.adjusted($4,$4,-$4,-$4);
+               rect = selected ? RECT.adjusted($2,$2,-$2,-$2) :
+                  RECT.adjusted($2,$4,-$2,-dpi.$3);
                size = rect.height();
+//                off = QPoint(0, 0);
                break;
             case QTabBar::RoundedSouth:
             case QTabBar::TriangularSouth:
-               rect = RECT.adjusted($4,$4,-$4,-dpi.$6);
+               rect = RECT.adjusted(0,$4,0,-dpi.$6);
                size = rect.height();
+               off = QPoint(0, -dpi.$1);
                break;
             case QTabBar::RoundedEast:
             case QTabBar::TriangularEast:
                o = Qt::Horizontal;
-               rect = RECT.adjusted($4,$4,-dpi.$6, -$4);
+               rect = RECT.adjusted($4,0,-dpi.$6, 0);
                size = rect.width();
+               off = QPoint(-dpi.$1, 0);
                break;
             case QTabBar::RoundedWest:
             case QTabBar::TriangularWest:
                o = Qt::Horizontal;
-               rect = RECT.adjusted(dpi.$6,$4,-$4, -$4);
+               rect = RECT.adjusted(dpi.$6,0,-$4, 0);
                size = RECT.width()-$4;
+               off = QPoint(-dpi.$1, 0);
                break;
             }
-            fillWithMask(painter, rect, gradient(PAL.color(config.role_tab[0]),
-                         size, o, GradSunken), &masks.button );
-         }
-         else { // hover
-            painter->save();
-            if (!step) step = 6;
-            painter->setPen( midColor(PAL.color(config.role_tab[0]),
-                             PAL.color(config.role_tab[1]), 8-step, step) );
-            painter->setRenderHint(QPainter::Antialiasing);
-            bool horizontal = !verticalTabs(tab->shape);
-            QPoint points[3]; int add, x, y;
-            if (horizontal) {
-               rect.adjust(0, $2, 0, -$2);
-               x = rect.x(); y = rect.y();
-               add = rect.height()/2;
-               points[0] = QPoint(x + add, y + add/2);
-               points[1] = QPoint(x + add/2, y + add);
-               points[2] = QPoint(x + add, y + 3*add/2);
-            }
-            else {
-               rect.adjust($2, 0, -$2, 0);
-               x = rect.x(); y = rect.y();
-               add = rect.width()/2;
-               points[0] = QPoint(x + add/2, y + add);
-               points[1] = QPoint(x + add, y + add/2);
-               points[2] = QPoint(x + 3*add/2, y + add);
-            }
-            painter->drawPolyline(points, 3);
-            if (horizontal) {
-               x = rect.right()+1; y = rect.bottom();
-               points[0] = QPoint(x - add, y - add/2);
-               points[1] = QPoint(x - add/2, y - add);
-               points[2] = QPoint(x - add, y - 3*add/2);
-            }
-            else {
-               x = rect.right(); y = rect.bottom()+1;
-               points[0] = QPoint(x - add/2, y - add);
-               points[1] = QPoint(x - add, y - add/2);
-               points[2] = QPoint(x - 3*add/2, y - add);
-            }
-            painter->drawPolyline(points, 3);
-            painter->restore();
+            
+            if (sunken) step = 12;
+            else if (!step) step = 6;
+#if 0
+            QColor c = midColor(PAL.color(config.role_tab[0]), COLOR(Highlight),
+                                12-step, 8);
+#else
+            QColor c = PAL.color(config.role_tab[0]);
+            int h,s,v; c.getHsv(&h,&s,&v);
+            if (v < 80) v = 80;
+            v = ((100+step*4)*v)/100;
+            c.setHsv(h,s,CLAMP(v,0,255));
+#endif
+            const QPixmap &fill = gradient(c, size, o,
+                                           config.gradientStrong);
+            fillWithMask(painter, rect, fill, &lights.button, Tile::Full, false, off );
          }
       }
       break;
@@ -443,7 +421,8 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
           qstyleoption_cast<const QStyleOptionTab *>(option)) {
          painter->save();
          QStyleOptionTabV2 tabV2(*tab);
-         QRect tr = tabV2.rect; bool verticalTabs = false;
+         QRect tr = tabV2.rect;
+         bool verticalTabs = false;
          bool east = false;
          bool selected = tabV2.state & State_Selected;
          if (selected) hover = false;
@@ -460,12 +439,14 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          switch((QTabBar::Shape)shape) {
          case QTabBar::RoundedNorth:
          case QTabBar::TriangularNorth:
-            if (selected) tr.setTop(tr.top()+dpi.$2);
+            if (selected)
+               tr.setTop(tr.top()+dpi.$2);
             break;
          case QTabBar::RoundedSouth:
          case QTabBar::TriangularSouth:
             bottom = true;
-            if (selected) tr.setBottom(tr.bottom()-2);
+            if (selected)
+               tr.setBottom(tr.bottom()-2);
             break;
          case QTabBar::RoundedEast:
          case QTabBar::TriangularEast:
@@ -903,14 +884,14 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             PrimitiveElement arrow = (option->direction == Qt::RightToLeft) ?
                   PE_IndicatorArrowLeft : PE_IndicatorArrowRight;
             
-            int dim = (RECT.height() - dpi.$4)/2;
+            int dim = RECT.height()/3;
             xpos = RECT.x() + RECT.width() - dpi.$7 - dim;
             
             QStyleOptionMenuItem tmpOpt = *menuItem;
             tmpOpt.rect = visualRect(option->direction, RECT,
                                      QRect(xpos, RECT.y() +
                                            (RECT.height() - dim)/2, dim, dim));
-            
+            painter->setPen(midColor(bg, fg, 1, 3));
             drawPrimitive(arrow, &tmpOpt, painter, widget);
          }
          else if (checkable) { // Checkmark

@@ -657,6 +657,7 @@ void OxygenStyle::fillWithMask(QPainter *painter, const QPoint &xy, const QBrush
 
 void OxygenStyle::fillWithMask(QPainter *painter, const QRect &rect, const QBrush &brush, const Tile::Mask *mask, Tile::PosFlags pf, bool justClip, QPoint offset, bool inverse, const QRect *outerRect) const
 {
+   // TODO: get rid of this?! - masks now render themselves!
    bool pixmode = !brush.texture().isNull();
    if (!mask) {
       if (pixmode)
@@ -665,78 +666,7 @@ void OxygenStyle::fillWithMask(QPainter *painter, const QRect &rect, const QBrus
          painter->fillRect(rect, brush.color());
       return;
    }
-   if (justClip) {
-      painter->save();
-      painter->setClipRegion(mask->clipRegion(rect, pf));
-      if (pixmode)
-         painter->drawTiledPixmap(rect, brush.texture(), offset);
-      else
-         painter->fillRect(rect, brush.color());
-      painter->restore();
-      return;
-   }
-   // first the inner region
-   //NOTE: using full alphablend can become enourmously slow due to VRAM size - even on HW that has Render acceleration!
-   if (!inverse || outerRect) {
-      painter->save();
-      if (inverse) {
-         QRegion cr = *outerRect; cr -= rect;
-         painter->setClipRegion(cr, Qt::IntersectClip);
-      }
-      else
-         painter->setClipRegion(mask->clipRegion(rect, pf), Qt::IntersectClip);
-      if (pixmode)
-         painter->drawTiledPixmap(outerRect?*outerRect:rect, brush.texture(), offset);
-      else
-         painter->fillRect(outerRect?*outerRect:rect, brush.color());
-      painter->restore();
-   }
-   if (!mask->hasCorners()) return;
-   QPixmap corner, fill; QPainter p;
-#define MAKE_CORNER(_CORNER_,_OX_,_OY_)\
-   corner = mask->corner(_CORNER_, inverse);\
-   fill = QPixmap(corner.size());\
-   w = rect.width()/2;\
-   w = qMin(corner.width(), ((_CORNER_) & Tile::Top) ? w : rect.width()-w);\
-   h = rect.height()/2;\
-   h = qMin(corner.height(), ((_CORNER_) & Tile::Top) ? h : rect.height()-h);\
-   if (pixmode) {\
-      fill.fill(Qt::transparent);\
-      p.begin(&fill);\
-      p.drawTiledPixmap(fill.rect(),brush.texture(),QPoint(_OX_,_OY_)+offset);\
-      p.end();\
-   }\
-   else\
-      fill.fill(brush.color());\
-   corner = OXRender::applyAlpha(fill, corner)
-   // the corners ========
-   int w,h;
-   // top/left
-   if (Tile::matches(Tile::Top | Tile::Left, pf)) {
-      MAKE_CORNER(Tile::Top | Tile::Left, 0,0);
-      painter->drawPixmap(rect.topLeft(), corner, QRect(0,0,w,h));
-   }
-   // top/right
-   if (Tile::matches(Tile::Top | Tile::Right, pf)) {
-      MAKE_CORNER(Tile::Top | Tile::Right, rect.width()-w, 0);
-      painter->drawPixmap(rect.right()-w+1, rect.top(), corner,
-                          corner.width()-w,0, w,h );
-   }
-   // bottom/right
-   if (Tile::matches(Tile::Bottom | Tile::Right, pf)) {
-      MAKE_CORNER(Tile::Bottom | Tile::Right, rect.width()-w, rect.height()-h);
-      painter->drawPixmap(rect.right()-w+1, rect.bottom()-h+1, corner,
-                          corner.width()-w,corner.height()-h, w,h );
-   }
-   // bottom/left
-   if (Tile::matches(Tile::Bottom | Tile::Left, pf)) {
-      MAKE_CORNER(Tile::Bottom | Tile::Left, 0, rect.height()-h);
-      painter->drawPixmap(rect.x(), rect.bottom()-h+1, corner,
-                          0,corner.height()-h, w,h);
-   }
-   return;
-
-#undef MAKE_CORNER
+   mask->render(rect, painter, brush, pf, justClip, offset, inverse, outerRect);
 }
 
 /**======================================*/
