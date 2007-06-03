@@ -9,33 +9,44 @@ void OxygenStyle::generatePixmaps()
    // PUSHBUTTON =====================================
    // shadow
    int $1 = dpi.$1, $2 = dpi.$2, $2_2 = lround($2/2.0);
-   int $3 = dpi.$3, $4 = dpi.$4;
+   int $3 = dpi.$3, $4 = dpi.$4, $5 = dpi.$5;
    int $9 = dpi.$9, $9_2 = ($9-1)/2;
    int $7 = dpi.$7, $8 = dpi.$8;
-   int $13 = dpi.$13, $6 = dpi.$6;
-   tmp = QPixmap($13,$13);
+   int $13 = dpi.$13, $15 = $7+$8, $6 = dpi.$6;
+   tmp = QPixmap($15,$15);
    for (int i = 0; i < 2; ++i) { // opaque?
       for (int j = 0; j < 2; ++j) { // sunken?
          tmp.fill(Qt::transparent);
          p.begin(&tmp);
          p.setPen(Qt::NoPen);
          p.setRenderHint(QPainter::Antialiasing);
-         QRadialGradient rg = QRadialGradient($13/2.0, $13/2.0, $13/2.0, $13/2.0, $13/2.0+$2);
-         stops << QGradientStop( 0, QColor(0,0,0, 160) )
-           << QGradientStop( 0.4, QColor(0,0,0, 60) )
-           << QGradientStop( 0.85, QColor(0,0,0, 0) )
-           << QGradientStop( 1, QColor(0,0,0, 0) );
-         rg.setStops(stops);
+         QRadialGradient rg;
+         if (j) {
+            rg = QRadialGradient($15/2.0, $15/2.0, $5, $15/2.0, $15/2.0+$3);
+            stops << QGradientStop( 0, QColor(0,0,0, 150) )
+             << QGradientStop( 0.59, QColor(0,0,0, 70) )
+             << QGradientStop( 1, QColor(0,0,0, 0) );
+            rg.setStops(stops);
+         }
+         else {
+            rg = QRadialGradient($15/2.0, $15/2.0, $15/2.0, $15/2.0, $15/2.0+$2);
+            stops << QGradientStop( 0, QColor(0,0,0, 160) )
+             << QGradientStop( 0.4, QColor(0,0,0, 60) )
+             << QGradientStop( 0.85, QColor(0,0,0, 0) )
+             << QGradientStop( 1, QColor(0,0,0, 0) );
+            rg.setStops(stops);
+         }
+
          p.setBrush(rg);
-         p.drawRoundRect(0,0,$13,$13,90,90);
+         p.drawRoundRect(0,0,$15,$15,90,90);
 
          // erase inner part where button is
          p.setCompositionMode( QPainter::CompositionMode_Clear );
 //p.setBrush(Qt::red);
-         p.drawRoundRect($4,$4,$13-$8,$13-$8,99,99);
+         p.drawRoundRect($5,$5,$5,$6,99,99);
 
          p.end();
-         shadows.button[j][i] = Tile::Set(tmp,$6,$6,$13-2*$6,$13-2*$6);
+         shadows.button[j][i] = Tile::Set(tmp,$7,$7,$15-2*$7,$15-2*$7);
       }
    }
    
