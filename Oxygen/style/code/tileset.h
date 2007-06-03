@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006-2007 by Thomas Lï¿½bking                             *
+ *   Copyright (C) 2006-2007 by Thomas Lübking                             *
  *   thomas.luebking@web.de                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -53,7 +53,7 @@ public:
    Set(const QPixmap &pix, int xOff, int yOff, int width, int height, int rx = 0, int ry = 0);
    Set(){}
    void render(const QRect &rect, QPainter *p, PosFlags pf = Ring) const;
-   void outline(const QRect &rect, QPainter *p, QPen p, bool strong = false,
+   void outline(const QRect &rect, QPainter *p, QColor c, bool strong = false,
                 PosFlags pf = Ring) const;
    Picture render(int width, int height, PosFlags pf = Ring) const;
    Picture render(const QSize &size, PosFlags pf = Ring) const;

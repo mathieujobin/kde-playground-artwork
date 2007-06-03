@@ -372,10 +372,12 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             switch ((QTabBar::Shape)shape) {
             case QTabBar::RoundedNorth:
             case QTabBar::TriangularNorth:
-               rect = selected ? RECT.adjusted($2,$2,-$2,-$2) :
-                  RECT.adjusted($2,$4,-$2,-dpi.$3);
-               size = rect.height();
-//                off = QPoint(0, 0);
+               if (sunken)
+                  rect.adjust(0, rect.height()/4, 0, -rect.height()/4);
+               else
+                  rect.setTop(rect.bottom()-rect.height()/2);
+               size = RECT.height()-dpi.$2;
+               off = QPoint(0, rect.y()-(RECT.y()+dpi.$2));
                break;
             case QTabBar::RoundedSouth:
             case QTabBar::TriangularSouth:
@@ -408,7 +410,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             QColor c = PAL.color(config.role_tab[0]);
             int h,s,v; c.getHsv(&h,&s,&v);
             if (v < 80) v = 80;
-            v = ((100+step*4)*v)/100;
+            v = ((100+step*7)*v)/100;
             c.setHsv(h,s,CLAMP(v,0,255));
 #endif
             const QPixmap &fill = gradient(c, size, o,
@@ -773,7 +775,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             rect = r.adjusted(dpi.$3, dpi.$2, -dpi.$3, -dpi.$3);
             const QPixmap &fill = gradient(CONF_COLOR(role_popup[0]), rect.height(), Qt::Vertical, config.gradient);
             fillWithMask(painter, rect, fill, &masks.button);
-            masks.button.outline(rect, painter, QPen(Qt::white), true);
+            masks.button.outline(rect, painter, Qt::white, true);
             cr = config.role_popup[1];
          }
          QPixmap pix = mbi->icon.pixmap(pixelMetric(PM_SmallIconSize), isEnabled ? QIcon::Normal : QIcon::Disabled);
@@ -1230,7 +1232,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          // slider base
          fillWithMask(painter, r, gradient(btnBgColor(PAL, isEnabled, hover, complexStep),
                                            size, direction, config.gradBtn), &masks.button);
-	 masks.button.outline(r, painter, QPen(Qt::white), true);
+	 masks.button.outline(r, painter, Qt::white, true);
          
          // and maybe a "scrollarea hovered indicator"
          if (hover && !complexStep)
