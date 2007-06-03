@@ -41,6 +41,7 @@
 #include "dynamicbrush.h"
 
 static BgPixCache tlwbacks;
+static BgSet _bgSet;
 
 // #include "endian.h"
 
@@ -88,44 +89,184 @@ static QPixmap mirror(const QPixmap &pix, Qt::Orientation o)
 
 static const Atom oxygen_isQtWindow =
 XInternAtom(QX11Info::display(), "OXYGEN_IS_QT_WINDOW", False);
-static const Atom oxygen_bg_pix =
-XInternAtom(QX11Info::display(), "OXYGEN_BG_PIXMAP", False);
 
 static GLuint _background;
 
-void (DynamicBrush::*updateBrush)();
+const BgSet* (DynamicBrush::*bgSet)(const QSize&, bool);
 
-DynamicBrush::DynamicBrush(Mode mode, QObject *parent) : QObject(parent), _mode(mode), _isActiveWindow(true), _glContext(0)
+BgSet::BgSet() {
+   window = decoTop = decoBottom = decoLeft = decoRight = 0L;
+}
+
+BgSet::BgSet(const QPixmap* pix, int dx, int dy, int w, int h,
+                      bool updateDeco)
 {
+   window = decoTop = decoBottom = decoLeft = decoRight = 0L;
+   setPixmap(pix, dx, dy, w, h, updateDeco);
+}
+
+BgSet::BgSet(const QPixmap* pix, int d, int s, Qt::Orientation o,
+                      bool updateDeco)
+{
+   window = decoTop = decoBottom = decoLeft = decoRight = 0L;
+   setPixmap(pix, d, s, o, updateDeco);
+}
+
+void BgSet::setPixmap(const QPixmap* pix, int dx, int dy, int w, int h,
+                      bool updateDeco)
+{
+   if (window) delete window;
+   window = new QPixmap(w, h);
+   QPainter p(window);
+   p.drawPixmap(0,0, w, h, *pix, dx, dy, w, h);
+   p.end();
+   
+   if (!updateDeco)
+      return;
+   
+   int iW, iH;
+   
+#define NEW_PIX(_PIX_, _W_, _H_) if (_PIX_) delete _PIX_; \
+   _PIX_ = new QPixmap(_W_, _H_); if (!_PIX_->isNull()) { p.begin(_PIX_)
+   
+   NEW_PIX(decoTop, w, dy);
+   p.drawPixmap(0, 0, w, dy, *pix, dx, 0, w, dy); p.end(); }
+   
+   iH = pix->height() - (dy + h);
+   NEW_PIX(decoBottom, w, iH);
+   p.drawPixmap(0, 0, w, iH, *pix, dx, pix->height()-iH, w, iH); p.end(); }
+   
+   iH = pix->height();
+   NEW_PIX(decoLeft, dx, iH);
+   p.drawPixmap(0, 0, dx, iH, *pix, 0, 0, dx, iH); p.end(); }
+   
+   iW = pix->width() - (dx + w);
+   NEW_PIX(decoRight, iW, pix->height());
+   p.drawPixmap(0, 0, iW, iH, *pix, pix->width()-iW, 0, iW, iH); p.end(); }
+   
+}
+
+void BgSet::setPixmap(const QPixmap* pix, int d, int s, Qt::Orientation o,
+                      bool updateDeco)
+{
+   QPainter p; int w,h;
+   if (o == Qt::Vertical) {
+      w = pix->width();
+      NEW_PIX(window, w, s);
+      p.drawPixmap(0,0, w, s, *pix, 0, d, w, s); p.end(); }
+      
+      if (!updateDeco)
+         return;
+      
+      NEW_PIX(decoTop, w, d);
+      p.drawPixmap(0, 0, w, d, *pix, 0, 0, w, d); p.end(); }
+      
+      h = pix->height() - (d + s);
+      NEW_PIX(decoBottom, w, h);
+      p.drawPixmap(0, 0, w, h, *pix, 0, pix->height()-h, w, h); p.end(); }
+      
+      h = pix->height();
+      NEW_PIX(decoLeft, w, h);
+      p.drawPixmap(0, 0, w, h, *pix, 0, 0, w, h); p.end(); }
+
+      decoRight = decoLeft;
+      
+   }
+   else {
+      
+      h = pix->height();
+      NEW_PIX(window, s, h);
+      p.drawPixmap(0,0, s, h, *pix, d, 0, s, h); p.end(); }
+      
+      if (!updateDeco)
+         return;
+      
+      NEW_PIX(decoTop, s, h);
+      p.drawPixmap(0, 0, s, h, *pix, 0, 0, s, h); p.end(); }
+      
+      decoBottom = decoTop;
+      
+      NEW_PIX(decoLeft, s, h);
+      p.drawPixmap(0, 0, s, h, *pix, 0, 0, s, h); p.end(); }
+
+      w = pix->width() - (d + s);
+      NEW_PIX(decoRight, w, h);
+      p.drawPixmap(0, 0, w, h, *pix, pix->width()-w, 0, w, h); p.end(); }
+
+   }
+   
+#undef NEW_PIX
+}
+
+void BgSet::wipe() {
+   if (window) { delete window; window = 0L; }
+   if (decoBottom && decoBottom != decoTop) { delete decoBottom; decoBottom = 0L; }
+   if (decoTop) { delete decoTop; decoTop = 0L; }
+   if (decoRight && decoRight != decoLeft) { delete decoRight; decoRight = 0L; }
+   if (decoLeft) { delete decoLeft; decoLeft = 0L; }
+}
+
+BgSet::~BgSet() {
+   wipe();
+}
+
+DynamicBrush::DynamicBrush(Mode mode, QObject *parent) : QObject(parent),
+_glContext(0), _mode(mode), _isActiveWindow(true)
+{
+   for (int i = 0; i < 4; ++i) decoDim[i] = 0;
    _timerBgWipe = new QTimer(this);
    connect (_timerBgWipe, SIGNAL(timeout()), this, SLOT(wipeBackground()));
    switch (_mode)
    {
-   case Tiled: updateBrush = &DynamicBrush::updateBrushTiled; break;
-   case XRender: updateBrush = &DynamicBrush::updateBrushRender; break;
-   case QtGradient: updateBrush = &DynamicBrush::updateBrushQt; break;
+   case Tiled: bgSet = &DynamicBrush::bgSetTiled; break;
+   case XRender: bgSet = &DynamicBrush::bgSetRender; break;
+   case QtGradient: bgSet = &DynamicBrush::bgSetQt; break;
    case OpenGL:
-      updateBrush = &DynamicBrush::updateBrushGL;
+      bgSet = &DynamicBrush::bgSetGL;
       _glContext = new QGLWidget( QGLFormat::defaultFormat(), 0 );
       initGL();
       break;
    case HGradient1:
-   case VGradient1: updateBrush = &DynamicBrush::updateBrushGradient1; generateTiles(mode); break;
+   case VGradient1: bgSet = &DynamicBrush::bgSetGradient1; generateTiles(mode); break;
    case HGradient2:
-   case VGradient2: updateBrush = &DynamicBrush::updateBrushGradient2; generateTiles(mode); break;
-   case Glass: updateBrush = &DynamicBrush::updateBrushGlass; generateTiles(mode); break;
+   case VGradient2: bgSet = &DynamicBrush::bgSetGradient2; generateTiles(mode); break;
+   case Glass: bgSet = &DynamicBrush::bgSetGlass; generateTiles(mode); break;
    }
 }
 
-DynamicBrush::DynamicBrush(OXPixmap pixmap, OXPixmap shadow, int bgYoffset, QObject *parent) : QObject(parent), _pixmap(pixmap), _shadow(shadow), _bgYoffset(bgYoffset), _mode(Tiled), _glContext(0) {
+DynamicBrush::DynamicBrush(OXPixmap pixmap, int bgYoffset, QObject *parent) :
+QObject(parent), _pixmap(pixmap), _bgYoffset(bgYoffset), _glContext(0), _mode(Tiled)
+{
+   for (int i = 0; i < 4; ++i) decoDim[i] = 0;
    _timerBgWipe = new QTimer(this);
    connect (_timerBgWipe, SIGNAL(timeout()), this, SLOT(wipeBackground()));
-   updateBrush = &DynamicBrush::updateBrushTiled;
+   bgSet = &DynamicBrush::bgSetTiled;
 }
 
 DynamicBrush::~DynamicBrush() {
    glDeleteLists( _background, 1 );
 //    QObject::~QObject();
+}
+
+static const Atom oxygen_decoDim =
+XInternAtom(QX11Info::display(), "OXYGEN_DECO_DIM", False);
+
+void DynamicBrush::readDecoDim(QWidget *topLevelWidget) {
+   unsigned char *data = 0;
+   Atom actual;
+   int format, result;
+   unsigned long n, left;
+   result = XGetWindowProperty(QX11Info::display(), topLevelWidget->winId(),
+                               oxygen_decoDim, 0L, 1L, False, XA_CARDINAL,
+                               &actual, &format, &n, &left, &data);
+   if (result == Success && data != None) { // found set design
+      uint tmp;
+      memcpy (&tmp, data, sizeof (unsigned int));
+      decoDim[0] = tmp & 0xff;
+      decoDim[1] = (tmp >> 8) & 0xff;
+      decoDim[2] = (tmp >> 16) & 0xff;
+      decoDim[3] = (tmp >> 24) & 0xff;
+   }
 }
 
 void DynamicBrush::setMode(Mode mode) {
@@ -137,21 +278,21 @@ void DynamicBrush::setMode(Mode mode) {
    }
    _mode = mode;
    switch (_mode) {
-   case Tiled: updateBrush = &DynamicBrush::updateBrushTiled; break;
-   case XRender: updateBrush = &DynamicBrush::updateBrushRender; break;
-   case QtGradient: updateBrush = &DynamicBrush::updateBrushQt; break;
+   case Tiled: bgSet = &DynamicBrush::bgSetTiled; break;
+   case XRender: bgSet = &DynamicBrush::bgSetRender; break;
+   case QtGradient: bgSet = &DynamicBrush::bgSetQt; break;
    case OpenGL:
-      updateBrush = &DynamicBrush::updateBrushGL;
+      bgSet = &DynamicBrush::bgSetGL;
       if (!_glContext) {
          _glContext = new QGLWidget( QGLFormat::defaultFormat(), 0 );
          initGL();
       }
       break;
    case HGradient1:
-   case VGradient1: updateBrush = &DynamicBrush::updateBrushGradient1; generateTiles(mode); break;
+   case VGradient1: bgSet = &DynamicBrush::bgSetGradient1; generateTiles(mode); break;
    case HGradient2:
-   case VGradient2: updateBrush = &DynamicBrush::updateBrushGradient2; generateTiles(mode); break;
-   case Glass: updateBrush = &DynamicBrush::updateBrushGlass; generateTiles(mode); break;
+   case VGradient2: bgSet = &DynamicBrush::bgSetGradient2; generateTiles(mode); break;
+   case Glass: bgSet = &DynamicBrush::bgSetGlass; generateTiles(mode); break;
    }
 }
 
@@ -215,6 +356,19 @@ void DynamicBrush::generateTiles(Mode mode) {
    }
 }
 
+static const Atom oxygen_deco_top =
+XInternAtom(QX11Info::display(), "OXYGEN_DECO_TOP", False);
+static const Atom oxygen_deco_bottom =
+XInternAtom(QX11Info::display(), "OXYGEN_DECO_BOTTOM", False);
+static const Atom oxygen_deco_left =
+XInternAtom(QX11Info::display(), "OXYGEN_DECO_LEFT", False);
+static const Atom oxygen_deco_right =
+XInternAtom(QX11Info::display(), "OXYGEN_DECO_RIGHT", False);
+
+#define EXPORT_DECO_PIX(_ATOM_, _PIX_) card = set->_PIX_->handle();\
+XChangeProperty(QX11Info::display(), widget->winId(), _ATOM_, XA_CARDINAL, 32,\
+PropModeReplace, (unsigned char *) &(card), 1L)
+
 bool DynamicBrush::eventFilter ( QObject * object, QEvent * ev )
 {
    // Rule out non widgets (this should never happen, but who knows...)
@@ -240,18 +394,18 @@ bool DynamicBrush::eventFilter ( QObject * object, QEvent * ev )
    else if (widget->isWindow()) {
       _topLevelWidget = widget;
       if (ev->type() == QEvent::Resize) {
+         readDecoDim(widget);
          triggerUpdate = true;
          size = ((QResizeEvent*)ev)->size();
       }
       else if ( ev->type() == QEvent::WindowActivate ||
-                ev->type() == QEvent::WindowDeactivate )
+                ev->type() == QEvent::WindowDeactivate ) {
+         readDecoDim(widget);
          size = ((QWidget*)object)->size();
+      }
       else if (ev->type() == QEvent::Show) {
+         readDecoDim(widget);
          size = ((QWidget*)object)->size();
-         // we might get a new deco, so tell it that this it a oxygen styled qt window
-         int one = 1;
-         XChangeProperty(QX11Info::display(), widget->winId(), oxygen_isQtWindow,
-                         XA_CARDINAL, 32, PropModeReplace, (unsigned char *) &(one), 1L);
          triggerUpdate = true;
       }
       else if (ev->type() == QEvent::Hide)
@@ -281,9 +435,22 @@ bool DynamicBrush::eventFilter ( QObject * object, QEvent * ev )
       needNewPix = (_size.width() != size.width());
    else // complex etc.
       needNewPix = (_size != size);
+   
    if (needNewPix) {
       _size = size;
-       (this->*updateBrush)();
+      QSize fullSize = size + QSize(decoDim[2]+decoDim[3],
+                                    decoDim[0]+decoDim[1]);
+      const BgSet* set = (this->*bgSet)(fullSize, triggerUpdate);
+
+      SETBACKGROUND(*(set->window));
+
+      if (triggerUpdate) { // tell the deco about new pics
+         int card;
+         EXPORT_DECO_PIX(oxygen_deco_top, decoTop);
+         EXPORT_DECO_PIX(oxygen_deco_bottom, decoBottom);
+         EXPORT_DECO_PIX(oxygen_deco_left, decoLeft);
+         EXPORT_DECO_PIX(oxygen_deco_right, decoRight);
+      }
    }
    
    // Maybe we better force an update
@@ -292,6 +459,8 @@ bool DynamicBrush::eventFilter ( QObject * object, QEvent * ev )
    
    return false;
 }
+
+#undef EXPORT_DECO_PIX
 
 void DynamicBrush::wipeBackground()
 {
@@ -305,8 +474,10 @@ void DynamicBrush::wipeBackground()
 BgPixCache::iterator DynamicBrush::checkCache(bool &found) {
    found = false;
    BgPixCache::iterator i, tlw = tlwbacks.end(), sm = tlwbacks.end();
+   QPixmap *pix = false;
    for (i = tlwbacks.begin(); i != tlwbacks.end(); ++i) {
-      if (i.value().size() == _size) {
+      pix = i.value()->window;
+      if (pix && pix->size() == _size) {
          sm = i;
          if (tlw != tlwbacks.end()) break;
       }
@@ -322,15 +493,16 @@ BgPixCache::iterator DynamicBrush::checkCache(bool &found) {
          else // just share
             tlw.value() = sm.value();
       }
-      // anyway, we have a pixmap, set it and get outahere
-      SETBACKGROUND(tlw.value());
+      // anyway, we have a pixmap
       found = true;
    }
    return tlw;
 }
 
-void DynamicBrush::updateBrushTiled()
+const BgSet* DynamicBrush::bgSetTiled(const QSize &size, bool updateDeco)
 {
+   return &_bgSet;
+#if 0
    Display *dpy = QX11Info::display();
    int ttbh = 22;
    int height = _bgYoffset - ttbh;
@@ -359,75 +531,81 @@ void DynamicBrush::updateBrushTiled()
    
    /* update  the brush textures*/
    SETBACKGROUND(qPix);
+#endif
 }
 
-void DynamicBrush::updateBrushGradient1()
+const BgSet* DynamicBrush::bgSetGradient1(const QSize &size, bool updateDeco)
 {
-   QPixmap qPix;
+   QPixmap *qPix;
    if (_mode == VGradient1)
    {
-      qPix = QPixmap(32, _size.height());
-      qPix.fill(_bgC[_isActiveWindow]);
-      QPainter p(&qPix);
-      int h = qMin(64,(qPix.height()+1)/2);
+      qPix = new QPixmap(32, size.height());
+      qPix->fill(_bgC[_isActiveWindow]);
+      QPainter p(qPix);
+      int h = qMin(64,(qPix->height()+1)/2);
       p.drawTiledPixmap( 0, 0, 32, h, _tile[_isActiveWindow][0], 0, 64-h );
-      h = qMin(64,(qPix.height())/2);
-      p.drawTiledPixmap( 0, qPix.height()-h, 32, h, _tile[_isActiveWindow][1] );
+      h = qMin(64,(qPix->height())/2);
+      p.drawTiledPixmap( 0, qPix->height()-h, 32, h, _tile[_isActiveWindow][1] );
       p.end();
+      _bgSet.setPixmap(qPix, decoDim[1], _size.height(), Qt::Vertical, updateDeco);
    }
    else // horizontal
    {
-      qPix = QPixmap(_size.width(), 32);
-      qPix.fill(_bgC[_isActiveWindow]);
-      QPainter p(&qPix);
-      int w = qMin(64,(qPix.width()+1)/2);
+      qPix = new QPixmap(size.width(), 32);
+      qPix->fill(_bgC[_isActiveWindow]);
+      QPainter p(qPix);
+      int w = qMin(64,(qPix->width()+1)/2);
       p.drawTiledPixmap( 0, 0, w, 32, _tile[_isActiveWindow][0], 64-w );
-      w = qMin(64,(qPix.width())/2);
-      p.drawTiledPixmap( qPix.width()-w, 0, w, 32, _tile[_isActiveWindow][1] );
+      w = qMin(64,(qPix->width())/2);
+      p.drawTiledPixmap( qPix->width()-w, 0, w, 32, _tile[_isActiveWindow][1] );
       p.end();
+      _bgSet.setPixmap(qPix, decoDim[0], _size.width(), Qt::Horizontal, updateDeco);
    }
-   SETBACKGROUND(qPix);
+   return &_bgSet;
 }
 
-void DynamicBrush::updateBrushGradient2()
+const BgSet* DynamicBrush::bgSetGradient2(const QSize &size, bool updateDeco)
 {
-   QPixmap qPix;
+   QPixmap *qPix;
    if (_mode == VGradient2)
    {
-      qPix = QPixmap(32, _size.height());
-      qPix.fill(_bgC[_isActiveWindow]);
-      QPainter p(&qPix);
-      int h = qMin(512,(qPix.height()+1)/2);
-      int h_2 = qPix.height()/2;
+      qPix = new QPixmap(32, size.height());
+      qPix->fill(_bgC[_isActiveWindow]);
+      QPainter p(qPix);
+      int h = qMin(512,(qPix->height()+1)/2);
+      int h_2 = qPix->height()/2;
       p.drawTiledPixmap( 0, h_2-h, 32, h, _tile[_isActiveWindow][0], 0, (512-h)/2 );
       h = qMin(512, h_2);
       p.drawTiledPixmap( 0, h_2, 32, h, _tile[_isActiveWindow][1], 0, (512-h)/2 );
       p.end();
+      _bgSet.setPixmap(qPix, decoDim[1], _size.height(), Qt::Vertical, updateDeco);
    }
    else // horizontal
    {
-      qPix = QPixmap(_size.width(), 32);
-      qPix.fill(_bgC[_isActiveWindow]);
-      QPainter p(&qPix);
-      int w = qMin(512,(qPix.width()+1)/2);
-      int w_2 = qPix.width()/2;
+      qPix = new QPixmap(size.width(), 32);
+      qPix->fill(_bgC[_isActiveWindow]);
+      QPainter p(qPix);
+      int w = qMin(512,(qPix->width()+1)/2);
+      int w_2 = qPix->width()/2;
       p.drawTiledPixmap( w_2-w, 0, w, 32, _tile[_isActiveWindow][0], (512-w)/2 );
       w = qMin(512,w_2);
       p.drawTiledPixmap( w_2, 0, w, 32, _tile[_isActiveWindow][1], (512-w)/2 );
       p.end();
+      _bgSet.setPixmap(qPix, decoDim[0], _size.width(), Qt::Horizontal, updateDeco);
    }
-   SETBACKGROUND(qPix);
+   return &_bgSet;
 }
 
-void DynamicBrush::updateBrushGlass()
+const BgSet* DynamicBrush::bgSetGlass(const QSize &size, bool updateDeco)
 {
-   // first check cache
+   // first check the cache
    bool found;
    BgPixCache::iterator tlw = checkCache(found);
-   if (found) return;
+   if (found)
+      return tlw.value();
    
    // nope, create one
-   QPixmap qPix(32, _size.height());
+   QPixmap *qPix = new QPixmap(32, size.height());
    QColor c = QApplication::palette().color(QPalette::Window);
    int h,s, v;
    int ch,cs,cv, delta, add;
@@ -462,17 +640,23 @@ void DynamicBrush::updateBrushGlass()
    dd.setHsv(h,cs,cv);
       
    // gradient
-   QLinearGradient lg(QPoint(0,0), QPoint(0, qPix.height()));
+   QLinearGradient lg(QPoint(0,0), QPoint(0, qPix->height()));
    lg.setColorAt(0,bb); lg.setColorAt(0.5,c);
    lg.setColorAt(0.5, dd); lg.setColorAt(1, c);
-   QPainter p(&qPix); p.fillRect(qPix.rect(), lg); p.end();
+   QPainter p(qPix); p.fillRect(qPix->rect(), lg); p.end();
    
    // cache
    if (tlw == tlwbacks.end())
-      tlw = tlwbacks.insert(_topLevelWidget, qPix);
+      tlw = tlwbacks.insert(_topLevelWidget, new BgSet(qPix, decoDim[1],
+         _size.height(), Qt::Vertical));
    else
-      tlw.value() = qPix;
-   SETBACKGROUND(qPix);
+      tlw.value()->setPixmap(qPix, decoDim[1], _size.height(),
+                             Qt::Vertical, updateDeco);
+   
+   // pixmap can be deleted now
+   delete qPix;
+   
+   return tlw.value();
 }
 
 void DynamicBrush::initGL()
@@ -489,7 +673,7 @@ void DynamicBrush::initGL()
 //    glEndList();
 }
 
-QPixmap DynamicBrush::glPixmap(const QRect &rect, int darkness)
+QPixmap *DynamicBrush::glPixmap(const QRect &rect, const QSize &size, int darkness)
 {
    // so we'll use false colors here, avoiding image swap orgies
 # if __BYTE_ORDER == __BIG_ENDIAN // OpenGL talks RGBA; Qt wants ARGB, do sth. about read type, need ppc arch for testing
@@ -505,8 +689,8 @@ QPixmap DynamicBrush::glPixmap(const QRect &rect, int darkness)
       QApplication::palette().color(QPalette::Window).getRgbF(_COLORS_);
    _glContext->makeCurrent();
    int width = 128, height = 128; // texture_2d must be 2^n, we start with 2^7 to save some time here ;)
-   while (width < _size.width()) width = (width<<1);
-   while (height < _size.height()) height = (height<<1);
+   while (width < size.width()) width = (width<<1);
+   while (height < size.height()) height = (height<<1);
 
 //    if (!QGLFramebufferObject::hasOpenGLFramebufferObjects())
 //    {
@@ -517,18 +701,18 @@ QPixmap DynamicBrush::glPixmap(const QRect &rect, int darkness)
    QGLFramebufferObject *buffer = new QGLFramebufferObject(width, height );
    if (!buffer->isValid()) {
       qWarning("ARRGHHH... failed to create a texture buffer!");
-      return QPixmap();
+      return new QPixmap();
    }
    if (!buffer->bind()) {
       qWarning("ARRGHHH... failed to bind gl rendering to texture buffer!");
-      return QPixmap();
+      return new QPixmap();
    }
    
-   glViewport(0, 0, (GLsizei) _size.width(), (GLsizei) _size.height());
+   glViewport(0, 0, (GLsizei) size.width(), (GLsizei) size.height());
    glMatrixMode (GL_PROJECTION);
    glLoadIdentity ();
 //    gluOrtho2D (0.0, 30.0, 30.0, 0.0); //lrbt
-   GLfloat fw = 30.0/_size.width(), fh = 30.0/_size.height();
+   GLfloat fw = 30.0/size.width(), fh = 30.0/size.height();
    // the statement is vertically mirrored, as is the pbuffer to a qimage
    // we simply avoid a software mirror and paint "mirrored" in gl (no one will see ;)
    glOrtho( rect.x()*fw, rect.right()*fw, rect.y()*fh, rect.bottom()*fh, -1, 1 );
@@ -587,14 +771,14 @@ QPixmap DynamicBrush::glPixmap(const QRect &rect, int darkness)
       THIS WOULD BE BY FAR BETTER!!!
    ================================================================ */
 
-   QPixmap pix(rect.size());
-   int w_2 = (_size.width()+1)/2;
-   int yOff = 5*_size.height()/30;
+   QPixmap *pix = new QPixmap(rect.size());
+   int w_2 = (size.width()+1)/2;
+   int yOff = 5*size.height()/30;
    int rlw = w_2 - rect.x();
    int rYOff = yOff-rect.y();
    int w,h;
    QPixmap tmp;
-   QPainter p(&pix);
+   QPainter p(pix);
    
    // top --------------------
    if (rect.y() < yOff)
@@ -620,7 +804,7 @@ QPixmap DynamicBrush::glPixmap(const QRect &rect, int darkness)
       delete btmLeft;
    }
    // bottom right --------------------
-   w_2 = (_size.width()-1)/2;
+   w_2 = (size.width()-1)/2;
    w = rect.right() - w_2;
    if (w > 0)
    {
@@ -636,75 +820,121 @@ QPixmap DynamicBrush::glPixmap(const QRect &rect, int darkness)
    return pix;
 }
 
-void DynamicBrush::updateBrushGL()
+const BgSet* DynamicBrush::bgSetGL(const QSize &size, bool updateDeco)
 {
-   QPixmap qPix = glPixmap(QRect(QPoint(0,0),_size));
-   SETBACKGROUND(qPix);
-}
-
-void DynamicBrush::updateBrushRender() {
+      
+   // first check the cache
    bool found;
    BgPixCache::iterator tlw = checkCache(found);
-   if (found) return;
+   if (found)
+      return tlw.value();
+
+   QPixmap *qPix = glPixmap(QRect(QPoint(0,0), size), size);
+   
+   // cache
+   if (tlw == tlwbacks.end())
+      tlw = tlwbacks.insert(_topLevelWidget, new BgSet(qPix, decoDim[0],
+         decoDim[2], _size.width(), _size.height()));
+   else
+      tlw.value()->setPixmap(qPix, decoDim[0], decoDim[2], _size.width(),
+                            _size.height(), updateDeco);
+   
+   // pixmap can be deleted now
+   delete qPix;
+   
+   return tlw.value();
+
+}
+
+const BgSet* DynamicBrush::bgSetRender(const QSize &size, bool updateDeco) {
+   
+   // first check the cache
+   bool found;
+   BgPixCache::iterator tlw = checkCache(found);
+   if (found)
+      return tlw.value();
+   
    // we have no sufficient pixmap, create one and set it
    QColor c = QApplication::palette().color(QPalette::Window);
-   QPixmap qPix(_size);
+   QPixmap *qPix = new QPixmap(size);
+   int w = size.width(), h = size.height();
    ColorArray ca = ColorArray() << c << c.dark(110);
-   OXPicture lgp = OXRender::gradient(QPoint(0,0), QPoint(0,qPix.height()), ca);
-   OXRender::composite (lgp, None, qPix, 0, 0, 0, 0, 0, 0,
-                        qPix.width(), qPix.height());
+   OXPicture lgp = OXRender::gradient(QPoint(0,0), QPoint(0, h), ca);
+   OXRender::composite (lgp, None, *qPix, 0, 0, 0, 0, 0, 0, w, h);
    OXRender::freePicture(lgp);
    c = c.light(160);
    c.setAlpha(180); ca.replace(0, c);
    c.setAlpha(0); ca.replace(1, c);
-   float f[2] = {
-         pow(0.5, (float)qPix.height()/qPix.width()),
-         pow(0.5, (float)qPix.width()/qPix.height())};
-   lgp = OXRender::gradient(QPoint(qPix.width(), qPix.height()),
-                            QPoint(qPix.width()*f[0], qPix.height()*f[1]), ca);
-   OXRender::composite (lgp, None, qPix, 0, 0, 0, 0, 0, 0,
-                        qPix.width(), qPix.height(), PictOpOver);
+   float f[2] = { pow(0.5, (float)h/w), pow(0.5, (float)w/h) };
+   lgp = OXRender::gradient(QPoint(w, h), QPoint(w*f[0], h*f[1]), ca);
+   OXRender::composite (lgp, None, *qPix, 0, 0, 0, 0, 0, 0, w, h, PictOpOver);
    OXRender::freePicture(lgp);
-   int h = qPix.height()/6;
-   int r = -(pow(qPix.width(),2)/4+pow(h,2))/(-2*h);
-   lgp = OXRender::gradient(QPoint(qPix.width()/2, 0), 0,
-                            QPoint(qPix.width()/2,h-r), r, ca);
-   OXRender::composite (lgp, None, qPix, 0, 0, 0, 0, 0, 0,
-                        qPix.width(), qPix.height(), PictOpOver);
+   h = qPix->height()/6;
+   int r = -(pow(w, 2)/4 + pow(h,2)) / (-2*h);
+   lgp = OXRender::gradient(QPoint(w/2, 0), 0, QPoint(w/2,h-r), r, ca);
+   OXRender::composite (lgp, None, *qPix, 0, 0, 0, 0, 0, 0,
+                        w, qPix->height(), PictOpOver);
    OXRender::freePicture(lgp);
+   
+   // cache
    if (tlw == tlwbacks.end())
-      tlw = tlwbacks.insert(_topLevelWidget, qPix);
+      tlw = tlwbacks.insert(_topLevelWidget, new BgSet(qPix, decoDim[0],
+         decoDim[2], _size.width(), _size.height()));
    else
-      tlw.value() = qPix;
-   SETBACKGROUND(tlw.value());
+      tlw.value()->setPixmap(qPix, decoDim[0], decoDim[2], _size.width(),
+                            _size.height(), updateDeco);
+   
+   // pixmap can be deleted now
+   delete qPix;
+   
+   return tlw.value();
 }
 
-void DynamicBrush::updateBrushQt()
+const BgSet* DynamicBrush::bgSetQt(const QSize &size, bool updateDeco)
 {
+
+   // first check the cache
+   bool found;
+   BgPixCache::iterator tlw = checkCache(found);
+   if (found)
+      return tlw.value();
+   
    QColor c = QApplication::palette().color(QPalette::Window);
-   QPixmap qPix(_size);
-   QLinearGradient lg1(QPoint(0,0), QPoint(0, _size.height()));
+   QPixmap *qPix = new QPixmap(_size);
+   QLinearGradient lg1(QPoint(0,0), QPoint(0, size.height()));
    lg1.setColorAt(0, c);
    lg1.setColorAt(1, c.dark(110));
-   QLinearGradient lg2(QPoint(_size.width()/2, _size.height()/2), QPoint(_size.width(), _size.height()));
+   QLinearGradient lg2(QPoint(size.width()/2, size.height()/2),
+                       QPoint(size.width(), size.height()));
    QColor ct = c; ct.setAlpha(0);
    lg2.setColorAt(0, ct);
    ct.setAlpha(140);
    lg2.setColorAt(1, ct);
-   QPainter p(&qPix);
+   QPainter p(qPix);
    p.setPen(Qt::NoPen);
    p.setBrush(lg1);
-   p.drawRect( 0, 0, qPix.width(), qPix.height());
-   QPoint points[3] =
-   {
-      QPoint(_size.width(), 0),
-      QPoint(_size.width(), _size.height()),
-      QPoint(0, _size.height())
+   p.drawRect( 0, 0, qPix->width(), qPix->height());
+   QPoint points[3] = {
+      QPoint(size.width(), 0),
+      QPoint(size.width(), size.height()),
+      QPoint(0, size.height())
    };
    p.setBrush(lg2);
    p.drawPolygon(points, 3);
    p.end();
-   SETBACKGROUND(qPix);
+
+   // cache
+   if (tlw == tlwbacks.end())
+      tlw = tlwbacks.insert(_topLevelWidget, new BgSet(qPix, decoDim[0],
+         decoDim[2], _size.width(), _size.height()));
+   else
+      tlw.value()->setPixmap(qPix, decoDim[0], decoDim[2], _size.width(),
+                            _size.height(), updateDeco);
+   
+   // pixmap can be deleted now
+   delete qPix;
+   
+   return tlw.value();
 }
 
 // QPixmap DynamicBrush::shadow(const QRect &rect)
@@ -943,12 +1173,10 @@ static bool eraseWidget(const QWidget *widget, const QPaintDevice *device, bool 
 }
 #endif
 
-void DynamicBrush::setXPixmap(OXPixmap pixmap, OXPixmap shadow)
+void DynamicBrush::setXPixmap(OXPixmap pixmap)
 {
    if (pixmap != -1)
       _pixmap = pixmap;
-   if (shadow != -1)
-      _shadow = shadow;
 }
 // cause of cmake
 #include "dynamicbrush.moc"

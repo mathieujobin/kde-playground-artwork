@@ -34,7 +34,24 @@ class QGLWidget;
 #include <X11/Xlib.h>
 #include <fixx11h.h>
 
-typedef QMap<QWidget*, QPixmap> BgPixCache;
+class BgSet {
+public:
+   BgSet();
+   BgSet(const QPixmap* pix, int dx, int dy, int w, int h,
+         bool updateDeco = true);
+   BgSet(const QPixmap* pix, int d, int s, Qt::Orientation o,
+         bool updateDeco = true);
+   void setPixmap(const QPixmap* pix, int dx, int dy, int w, int h,
+                  bool updateDeco = false);
+   void setPixmap(const QPixmap* pix, int d, int s, Qt::Orientation o,
+                  bool updateDeco = false);
+   void wipe();
+   ~BgSet();
+   QPixmap *window,
+      *decoTop, *decoBottom, *decoLeft, *decoRight;
+};
+
+typedef QMap<QWidget*, BgSet*> BgPixCache;
 
 class DynamicBrush : public QObject
 {
@@ -43,36 +60,54 @@ public:
    enum Mode {Tiled = 0, QtGradient, XRender, OpenGL,
          VGradient1, HGradient1, VGradient2, HGradient2, Glass};
    DynamicBrush(Mode mode, QObject *parent = 0);
-   DynamicBrush(Pixmap pixmap = -1, Pixmap shadow = -1, int bgYoffset = 0, QObject *parent = 0);
+   DynamicBrush(Pixmap pixmap = -1, int bgYoffset = 0, QObject *parent = 0);
    ~DynamicBrush();
 //    QPixmap shadow(const QRect &rect);
    void setMode(Mode);
-   void setXPixmap(Pixmap pixmap = -1, Pixmap shadow = -1);
+   void setXPixmap(Pixmap pixmap = -1);
+protected:
    virtual bool eventFilter ( QObject * watched, QEvent * event );
 private:
-   BgPixCache::iterator checkCache(bool &found);
-   void updateBrushTiled();
-   void updateBrushGL();
-   void updateBrushRender();
-   void updateBrushGradient1();
-   void updateBrushGradient2();
-   void updateBrushQt();
-   void updateBrushGlass();
-   void initGL();
-   void generateTiles(Mode mode);
-   QPixmap glPixmap(const QRect &rect, int darkness = 0);
-   QSize _size;
-   QWidget *_topLevelWidget;
-   Pixmap _pixmap, _shadow;
+   // bg pixmap creating
+   const BgSet* bgSetTiled(const QSize &size, bool updateDeco);
+   const BgSet* bgSetGL(const QSize &size, bool updateDeco);
+   const BgSet* bgSetRender(const QSize &size, bool updateDeco);
+   const BgSet* bgSetGradient1(const QSize &size, bool updateDeco);
+   const BgSet* bgSetGradient2(const QSize &size, bool updateDeco);
+   const BgSet* bgSetQt(const QSize &size, bool updateDeco);
+   const BgSet* bgSetGlass(const QSize &size, bool updateDeco);
+   
+   // get the deco dimensions from the deco
+   void readDecoDim(QWidget *topLevelWidget);
+   
+   // tiling
+   Pixmap _pixmap;
    int _bgYoffset;
-   Mode _mode;
-   QTimer *_timerBgWipe;
+   void generateTiles(Mode mode);
+   
+   // complex (gl/qt/render)
+   BgPixCache::iterator checkCache(bool &found);
+   
+   // openGL
+   void initGL();
+   QGLWidget *_glContext;
+   QPixmap *glPixmap(const QRect &rect, const QSize &size, int darkness = 0);
+   
+   // gradients
    QPixmap _tile[2][2];
    QColor _bgC[2];
+   
+   // states
+   QSize _size;
+   Mode _mode;
    bool _isActiveWindow;
-   QPixmap _glShadow;
-   QRect _lastShadowRect;
-   QGLWidget *_glContext;
+   int decoDim[4];
+   
+   // bender
+   QWidget *_topLevelWidget;
+   
+   // wiping
+   QTimer *_timerBgWipe;
 private slots:
    void wipeBackground();
 };
