@@ -226,8 +226,9 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             x3 -= 18;
          int x2 = x3;
          if (!dwOpt->title.isEmpty()) {
-            drawItemText(painter, RECT, Qt::AlignCenter, PAL, isEnabled, dwOpt->title, QPalette::WindowText);
-            textRect = painter->boundingRect ( RECT, Qt::AlignCenter, dwOpt->title );
+            int itemtextopts = Qt::AlignCenter | Qt::TextShowMnemonic;
+            drawItemText(painter, RECT, itemtextopts, PAL, isEnabled, dwOpt->title, QPalette::WindowText);
+            textRect = painter->boundingRect ( RECT, itemtextopts, dwOpt->title );
             x2 = textRect.x()-8;
          }
 
