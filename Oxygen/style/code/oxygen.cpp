@@ -368,6 +368,7 @@ void OxygenStyle::readSettings()
    
    config.bgMode = (BGMode) settings.value("BackgroundMode", FullPix).toInt();
    config.acceleration = (Acceleration) settings.value("Acceleration", XRender).toInt();
+   if (config.acceleration == None) config.bgMode = Plain;
    config.structure = settings.value("Structure", 0).toInt();
    
    config.scale = settings.value("Scale", 1.0).toDouble();
@@ -690,7 +691,7 @@ void OxygenStyle::polish ( QApplication * app ) {
       if (config.acceleration > None)
          _bgBrush = new DynamicBrush((DynamicBrush::Mode)config.acceleration, this);
       else
-         _bgBrush = new DynamicBrush(bgPix, shadowPix, bgYoffset_, this);
+         _bgBrush = new DynamicBrush(bgPix, bgYoffset_, this);
       }
    }
    app->installEventFilter(this);
