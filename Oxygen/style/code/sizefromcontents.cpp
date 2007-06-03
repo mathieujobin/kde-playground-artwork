@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006-2007 by Thomas Lübking                             *
+ *   Copyright (C) 2006-2007 by Thomas Lï¿½bking                             *
  *   thomas.luebking@web.de                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -60,7 +60,7 @@ QSize OxygenStyle::sizeFromContents ( ContentsType ct, const QStyleOption * opti
          return sz;
       }
    case CT_LineEdit: // A line edit, like QLineEdit
-      return contentsSize + QSize(dpi.$4,dpi.$5);
+      return contentsSize ;//+ QSize(dpi.$2,dpi.$2);
    case CT_MenuBarItem: // A menu bar item, like the buttons in a QMenuBar
       return QSize(qMax(contentsSize.width()+dpi.$18, (contentsSize.height()+dpi.$8)*8/5), contentsSize.height()+dpi.$8);
    case CT_MenuItem: // A menu item, like QMenuItem

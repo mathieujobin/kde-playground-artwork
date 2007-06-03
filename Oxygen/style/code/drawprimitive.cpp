@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006-2007 by Thomas Lübking                             *
+ *   Copyright (C) 2006-2007 by Thomas Lï¿½bking                             *
  *   thomas.luebking@web.de                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -88,7 +88,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          GradientType gt = isOn ? GradSunken : ( isDefault ? config.gradientStrong : config.gradBtn);
          fillWithMask(painter, r, gradient(c, r.height(), Qt::Vertical, gt), &masks.button);
          // border - glass has over or underlightened borders,
-         // we assume 360° overlight - looks nicer with the shadows ;)
+         // we assume 360ï¿½ overlight - looks nicer with the shadows ;)
          masks.button.outline(r, painter, Qt::white, true);
       }
       else
@@ -122,8 +122,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          painter->fillRect(RECT, COLOR(Base)); break;
       }
       if (isEnabled) {
-         fillWithMask(painter, RECT.adjusted(0,0,0,-dpi.$2), COLOR(Base),
-                      &masks.button);
+         fillWithMask(painter, RECT.adjusted(0,0,0,0), COLOR(Base), &masks.button);
          if (hasFocus) {
             painter->save();
             painter->setPen(QPen(COLOR(Highlight), dpi.$2));

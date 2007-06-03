@@ -59,7 +59,7 @@ void OxygenStyle::generatePixmaps()
    
    // -> sunken
    QLinearGradient lg; QGradientStops stops;
-   QImage tmpImg($9,$9, QImage::Format_ARGB32);
+   QImage tmpImg($9,$9+$9, QImage::Format_ARGB32);
    
    for (int i = 0; i < 2; ++i) {
       int add = i*30;
@@ -68,30 +68,45 @@ void OxygenStyle::generatePixmaps()
       p.begin(&tmpImg);
       p.setPen(Qt::NoPen);
       p.setRenderHint(QPainter::Antialiasing);
-      p.setBrush(QColor(0,0,0,55+add)); p.drawRoundRect(0,0,$9,$7,80,80);
-      p.setCompositionMode( QPainter::CompositionMode_DestinationOut );
-      add = 30 - add;
-      p.setBrush(QColor(0,0,0,120+add)); p.drawRoundRect(0,$1,$9,dpi.$6,75,75);
-      p.setBrush(QColor(0,0,0,140+add)); p.drawRoundRect(0,$2,$9,dpi.$5,80,80);
-      p.setBrush(QColor(0,0,0,160+add)); p.drawRoundRect($1,$3,$7,dpi.$4,85,85);
-      p.setBrush(QColor(0,0,0,180+add)); p.drawRoundRect($2,dpi.$4,dpi.$5,$3,90,90);
+      QRadialGradient rg = QRadialGradient($9/2.0,$9/2.0, dpi.$5, $9/2.0,$9/2.0+1.5*$1);
+      stops << QGradientStop( 0, QColor(0,0,0, 0) )
+         << QGradientStop( 0.4, QColor(0,0,0, 0) )
+         << QGradientStop( 0.58, QColor(0,0,0, 40/2) )
+         << QGradientStop( 0.75, QColor(0,0,0, 103/3) )
+         << QGradientStop( 0.88, QColor(0,0,0, 161/3) )
+         << QGradientStop( 1, QColor(0,0,0, 255/3) );
+      rg.setStops(stops);
+      p.setBrush(rg);
+
+      //p.setBrush(QColor(255,0,0,160));
+      p.drawRoundRect(0,0,$9,$9,80,80);
+
+      // draw white edge at bottom
+      p.setBrush(QColor(255,255,255,160));
+      p.drawRoundRect(0,$9,$9,$9,80,80);
+
+      // erase innerpart of the white
+      p.setCompositionMode( QPainter::CompositionMode_Clear );
+      p.drawRoundRect(0,$9,$9,$9-$1,80,80);
+      p.eraseRect($2,$9_2,dpi.$5,dpi.$1);
       p.setCompositionMode( QPainter::CompositionMode_SourceOver );
-      lg = QLinearGradient(0,0,0,$9);
-      stops << QGradientStop( 0, QColor(255,255,255, 90) )
-         << QGradientStop( 0.5, QColor(255,255,255, 190) )
-         << QGradientStop( 1, QColor(255,255,255, 90) );
-      lg.setStops(stops);
-      p.fillRect($3,$9-$2,$3,$1, lg);
+
+      // move the bottom part
+      p.drawImage(QPoint(0,$9+dpi.$4), tmpImg, QRect(0,dpi.$5,$9,$9_2));
+
+p.eraseRect(0,dpi.$5,$9,dpi.$9); // repeat the side edges
+p.drawImage(QRect(0,dpi.$5,$9,dpi.$9), tmpImg, QRect(0,$9_2,$9,$1));
+      lg = QLinearGradient(0,$3,0,dpi.$12);
       stops.clear();
-      stops << QGradientStop( 0, QColor(255,255,255, 30) )
-         << QGradientStop( 0.5, QColor(255,255,255, 100) )
-         << QGradientStop( 1, QColor(255,255,255, 30) );
+      stops << QGradientStop( 0, QColor(106,56,0, 15) )
+         << QGradientStop( 1.0, QColor(106,56,0, 0) );
+
       lg.setStops(stops);
-      p.fillRect($3,$9-$1,$3,$1, lg);
+      p.fillRect($2,$3,dpi.$5,dpi.$10, lg);
       stops.clear();
       p.end();
    
-      shadows.lineEdit[i] = Tile::Set(QPixmap::fromImage(tmpImg),$9_2,$9_2,$9-2*$9_2,$9-2*$9_2);
+      shadows.lineEdit[i] = Tile::Set(QPixmap::fromImage(tmpImg),$9_2,$9_2+$9,$9-2*$9_2,$9-2*$9_2);
    }
    
    // relief
