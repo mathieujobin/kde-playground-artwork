@@ -318,7 +318,7 @@ private:
       QRegion popupCorner[4];
    } masks;
    struct {
-      Tile::Set button[2][2], tab, sunken, group, lineEdit[2], raised, relief;
+      Tile::Set button[2][8], tab, sunken, group, lineEdit[2], raised, relief;
       QPixmap radio[2][2];
       QPixmap winClose[2], winMin[2], winMax[2];
       Tile::Line line[2][3];

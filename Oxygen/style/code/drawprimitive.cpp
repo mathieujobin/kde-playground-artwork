@@ -75,17 +75,25 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       
       int step = hoverStep(widget);
 
-      QColor c = btnBgColor(PAL, isEnabled, 0, step);
+      QColor c = btnBgColor(PAL, isEnabled, 0, 0);
       QRect r = RECT;
       
       // shadow
-      //shadows.button[sunken][hover||hasFocus].render(r, painter);
-      shadows.button[sunken][0].render(r, painter);
+      shadows.button[sunken][hover?7:step].render(r, painter);
+/*
+      painter->setPen(Qt::NoPen);
+      painter->setBrush(Qt::red);
+      painter->setRenderHint(QPainter::Antialiasing);
+      painter->drawRoundRect(r, ceil(9*90.0/r.width()), ceil(9*90.0/r.height()));
+*/
+      r.adjust(dpi.$4,dpi.$4,-dpi.$4,-dpi.$4);
 
-      r.adjust(dpi.$4,dpi.$4,-dpi.$5,-dpi.$5);
-
+      // background
+      painter->setRenderHint(QPainter::Antialiasing,false);
       fillWithMask(painter, r, c, &masks.button);
 
+      // edge and a nice light gradient
+      painter->setRenderHint(QPainter::Antialiasing);
       QLinearGradient lg(0, r.x(), 0, r.bottom());
       QGradientStops stops;
       stops << QGradientStop( 0, QColor(255,255,255, (isEnabled&&!sunken ? 220 : 160)) )
@@ -99,33 +107,22 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       lg2.setStops(stops);
       painter->setPen(QPen(QBrush(lg),1));
       painter->setBrush(lg2);
+      QRectF rf = r;
+      rf.adjust(0.5, 0.5,-0.5,-0.5);
+      painter->drawRoundRect(rf, ceil(9*90.0/r.width()), ceil(9*90.0/r.height()));
+
+      // hover effect
+      QRadialGradient rg = QRadialGradient(r.width()/2.0, 0.35*r.height(), qMax(r.width(),r.height())/2.0 - 5, r.width()/2.0, 0.35*r.height());
+      c = btnBgColor(PAL, isEnabled, hover, step);
+      c.setAlpha(190);
+      QColor c2= c;
+      c2.setAlpha(60);
+      stops << QGradientStop( 0, c ) << QGradientStop( 1, c2 );
+      rg.setStops(stops);
+      painter->setPen(Qt::NoPen);
+      painter->setBrush(rg);
       painter->drawRoundRect(r, ceil(9*90.0/r.width()), ceil(9*90.0/r.height()));
-
-     
-      painter->setRenderHint(QPainter::Antialiasing);
-
-      if (hover) {
-         QRadialGradient rg = QRadialGradient(r.width()/2.0, 0.35*r.height(), qMax(r.width(),r.height())/2.0 - 5, r.width()/2.0, 0.35*r.height());
-         stops << QGradientStop( 0, QColor(255, 255, 255, 190) )
-         << QGradientStop( 1, QColor(255, 255, 255, 60) );
-         rg.setStops(stops);
-         painter->setPen(Qt::NoPen);
-         painter->setBrush(rg);
-         painter->drawRoundRect(r, ceil(9*90.0/r.width()), ceil(9*90.0/r.height()));
-      }
-
-/*      // glass
-      if (sunken) r.adjust($1,0,-$1,-$1);
-      else r.adjust($3,$1,-$3,-$3);
-      if (isEnabled) {
-         GradientType gt = isOn ? GradSunken : ( isDefault ? config.gradientStrong : config.gradBtn);
-         fillWithMask(painter, r, gradient(c, r.height(), Qt::Vertical, gt), &masks.button);
-         // border - glass has over or underlightened borders,
-         // we assume 360� overlight - looks nicer with the shadows ;)
-         masks.button.outline(r, painter, Qt::white, true);
-      }
-      else
-*/      break;
+      break;
    }
    case PE_PanelButtonTool: { // Panel for a Tool button, used with QToolButton.
       if (sunken || (option->state & State_On)) {

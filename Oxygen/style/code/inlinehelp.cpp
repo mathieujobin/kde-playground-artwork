@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006-2007 by Thomas Lübking                             *
+ *   Copyright (C) 2006-2007 by Thomas Lï¿½bking                             *
  *   thomas.luebking@web.de                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -94,7 +94,7 @@ inline QColor btnBgColor(const QPalette &pal, bool isEnabled, bool hover = false
    if (step)
       return midColor(TMP_CONF_COLOR(role_btn[0]),
                          TMP_CONF_COLOR(role_btnHover[0]),
-                         6-step, step);
+                         8-step, step);
    if (hover)
       return TMP_CONF_COLOR(role_btnHover[0]);
    return TMP_CONF_COLOR(role_btn[0]).dark(103);

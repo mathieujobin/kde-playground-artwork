@@ -14,7 +14,7 @@ void OxygenStyle::generatePixmaps()
    int $7 = dpi.$7, $8 = dpi.$8;
    int $13 = dpi.$13, $15 = $7+$8, $6 = dpi.$6;
    tmp = QPixmap($15,$15);
-   for (int i = 0; i < 2; ++i) { // opaque?
+   for (int i = 0; i < 8; ++i) { // opaque?
       for (int j = 0; j < 2; ++j) { // sunken?
          tmp.fill(Qt::transparent);
          p.begin(&tmp);
@@ -23,6 +23,7 @@ void OxygenStyle::generatePixmaps()
          QRadialGradient rg;
          if (j) {
             rg = QRadialGradient($15/2.0, $15/2.0, $5, $15/2.0, $15/2.0+$3);
+            stops.clear();
             stops << QGradientStop( 0, QColor(0,0,0, 150) )
              << QGradientStop( 0.59, QColor(0,0,0, 70) )
              << QGradientStop( 1, QColor(0,0,0, 0) );
@@ -30,20 +31,24 @@ void OxygenStyle::generatePixmaps()
          }
          else {
             rg = QRadialGradient($15/2.0, $15/2.0, $15/2.0, $15/2.0, $15/2.0+$2);
+            stops.clear();
             stops << QGradientStop( 0, QColor(0,0,0, 160) )
              << QGradientStop( 0.4, QColor(0,0,0, 60) )
              << QGradientStop( 0.85, QColor(0,0,0, 0) )
              << QGradientStop( 1, QColor(0,0,0, 0) );
             rg.setStops(stops);
+
+            if (i) {
+               rg = QRadialGradient($15/2.0, $15/2.0, $15/2.0, $15/2.0, $15/2.0);
+               stops.clear();
+               stops << QGradientStop( 0, QColor(222,193,0, 180*i/7) )
+                << QGradientStop( 1, QColor(222,193,0,0) );
+               rg.setStops(stops);
+            }
          }
 
          p.setBrush(rg);
          p.drawRoundRect(0,0,$15,$15,90,90);
-
-         // erase inner part where button is
-         p.setCompositionMode( QPainter::CompositionMode_Clear );
-//p.setBrush(Qt::red);
-         p.drawRoundRect($5,$5,$5,$6,99,99);
 
          p.end();
          shadows.button[j][i] = Tile::Set(tmp,$7,$7,$15-2*$7,$15-2*$7);
@@ -72,6 +77,7 @@ void OxygenStyle::generatePixmaps()
       p.setPen(Qt::NoPen);
       p.setRenderHint(QPainter::Antialiasing);
       rg = QRadialGradient($9/2.0,$9/2.0, dpi.$5, $9/2.0,$9/2.0+1.5*$1);
+      stops.clear();
       stops << QGradientStop( 0, QColor(0,0,0, 0) )
          << QGradientStop( 0.4, QColor(0,0,0, 0) )
          << QGradientStop( 0.58, QColor(0,0,0, 40/2) )

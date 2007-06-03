@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006-2007 by Thomas Lübking                             *
+ *   Copyright (C) 2006-2007 by Thomas Lï¿½bking                             *
  *   thomas.luebking@web.de                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -447,15 +447,15 @@ void OxygenStyle::updateFades() {
    HoverFades::iterator it = hoverWidgets.begin();
    while (it != hoverWidgets.end()) {
       if (it.value().fadeIn) {
-         it.value().step += 2;
+         it.value().step += 1;
          it.key()->update();
-         if (it.value().step > 4)
+         if (it.value().step > 8)
             it = hoverWidgets.erase(it);
          else
             ++it;
       }
       else { // fade out
-         --it.value().step;
+         it.value().step-=2;
          it.key()->update();
          if (it.value().step < 1)
             it = hoverWidgets.erase(it);
