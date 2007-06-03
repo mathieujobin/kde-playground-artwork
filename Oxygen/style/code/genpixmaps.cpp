@@ -41,8 +41,11 @@ void OxygenStyle::generatePixmaps()
             if (i) {
                rg = QRadialGradient($15/2.0, $15/2.0, $15/2.0, $15/2.0, $15/2.0);
                stops.clear();
-               stops << QGradientStop( 0, QColor(222,193,0, 180*i/7) )
-                << QGradientStop( 1, QColor(222,193,0,0) );
+               QColor c = QColor(222,193,0);//COLOR(Highlight);
+               c.setAlpha(180*i/8);
+               stops << QGradientStop( 0, c );
+               c.setAlpha(0);
+               stops << QGradientStop( 1, c );
                rg.setStops(stops);
             }
          }

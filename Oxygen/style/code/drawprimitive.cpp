@@ -79,13 +79,8 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       QRect r = RECT;
       
       // shadow
-      shadows.button[sunken][hover?7:step].render(r, painter);
-/*
-      painter->setPen(Qt::NoPen);
-      painter->setBrush(Qt::red);
-      painter->setRenderHint(QPainter::Antialiasing);
-      painter->drawRoundRect(r, ceil(9*90.0/r.width()), ceil(9*90.0/r.height()));
-*/
+      shadows.button[sunken][step?step:hover*7].render(r, painter);
+
       r.adjust(dpi.$4,dpi.$4,-dpi.$4,-dpi.$4);
 
       // background

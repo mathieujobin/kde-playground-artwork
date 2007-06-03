@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006-2007 by Thomas Lübking                             *
+ *   Copyright (C) 2006-2007 by Thomas Lï¿½bking                             *
  *   thomas.luebking@web.de                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -200,7 +200,8 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             if (cmb->editable)
                drawPrimitive(PE_PanelLineEdit, option, painter, widget);
             else {
-               const QPixmap &fill =
+               drawPrimitive(PE_PanelButtonBevel, option, painter, widget);
+/*               const QPixmap &fill =
                      gradient(COLOR(Window), r.height(), Qt::Vertical, hover ?
                      config.gradientStrong : GradSunken);
                
@@ -232,9 +233,10 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                   fillWithMask(painter, r, gradient(c, r.height(),
                                Qt::Vertical, sunken ? GradSunken :
                                      config.gradientStrong), &masks.button, pf);
+
                }
                shadows.lineEdit[1].render(RECT, painter);
-            }
+*/            }
          }
          
          // the arrow

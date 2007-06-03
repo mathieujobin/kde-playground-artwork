@@ -449,7 +449,7 @@ void OxygenStyle::updateFades() {
       if (it.value().fadeIn) {
          it.value().step += 1;
          it.key()->update();
-         if (it.value().step > 8)
+         if (it.value().step > 7)
             it = hoverWidgets.erase(it);
          else
             ++it;
