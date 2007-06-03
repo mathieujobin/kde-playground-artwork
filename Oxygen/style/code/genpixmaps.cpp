@@ -3,48 +3,41 @@
 void OxygenStyle::generatePixmaps()
 {
    QPixmap tmp; QPainter p;
-   
+   QLinearGradient lg; QGradientStops stops;
+   QRadialGradient rg;
+
    // PUSHBUTTON =====================================
    // shadow
    int $1 = dpi.$1, $2 = dpi.$2, $2_2 = lround($2/2.0);
+   int $3 = dpi.$3, $4 = dpi.$4;
    int $9 = dpi.$9, $9_2 = ($9-1)/2;
-   int $7 = dpi.$7, $3 = dpi.$3;
-   tmp = QPixmap($9,$9);
+   int $7 = dpi.$7, $8 = dpi.$8;
+   int $13 = dpi.$13, $6 = dpi.$6;
+   tmp = QPixmap($13,$13);
    for (int i = 0; i < 2; ++i) { // opaque?
       for (int j = 0; j < 2; ++j) { // sunken?
          tmp.fill(Qt::transparent);
          p.begin(&tmp);
          p.setPen(Qt::NoPen);
          p.setRenderHint(QPainter::Antialiasing);
-         p.setBrush(QColor(0,0,0,((j?10:1)+i)*6));
-         p.drawRoundRect(0,0,$9,$9,90,90);
-         if (!j) {
-            p.setBrush(QColor(0,0,0,(1+i)*10));
-            p.drawRoundRect($1,$1,$9-2*$1,$9-2*$1,75,75);
-            p.setBrush(QColor(0,0,0,(1+i)*14));
-            p.drawRoundRect($2,$2,$9-2*$2,$9-2*$2,60,60);
-         }
+         QRadialGradient rg = QRadialGradient($13/2.0, $13/2.0, $13/2.0, $13/2.0, $13/2.0+$2);
+         stops << QGradientStop( 0, QColor(0,0,0, 160) )
+           << QGradientStop( 0.4, QColor(0,0,0, 60) )
+           << QGradientStop( 0.85, QColor(0,0,0, 0) )
+           << QGradientStop( 1, QColor(0,0,0, 0) );
+         rg.setStops(stops);
+         p.setBrush(rg);
+         p.drawRoundRect(0,0,$13,$13,90,90);
+
+         // erase inner part where button is
+         p.setCompositionMode( QPainter::CompositionMode_Clear );
+//p.setBrush(Qt::red);
+         p.drawRoundRect($4,$4,$13-$8,$13-$8,99,99);
+
          p.end();
-         shadows.button[j][i] = Tile::Set(tmp,$9_2,$9_2,$9-2*$9_2,$9-2*$9_2);
+         shadows.button[j][i] = Tile::Set(tmp,$6,$6,$13-2*$6,$13-2*$6);
       }
    }
-   
-   // light
-   tmp.fill(Qt::transparent);
-   p.begin(&tmp);
-   p.setPen(Qt::NoPen);
-   p.setRenderHint(QPainter::Antialiasing);
-   p.setBrush(QColor(0,0,0,80));
-   p.drawRoundRect(0,0,$9,$9,90,90);
-   p.setBrush(QColor(0,0,0,80));
-   p.drawRoundRect($1,$1,$9-2*$1,$9-2*$1,80,80);
-   p.setBrush(QColor(0,0,0,80));
-   p.drawRoundRect($2,$2,$9-2*$2,$9-2*$2,70,70);
-   p.setBrush(QColor(0,0,0,255));
-   p.drawRoundRect($3,$3,$9-2*$3,$9-2*$3,60,60);
-   p.end();
-   lights.button =
-      Tile::Mask(tmp,$9_2,$9_2,$9-2*$9_2,$9-2*$9_2, $3,$3,-$3,-$3, 75,75);
    
    // mask
    tmp = QPixmap($9,$9);
@@ -53,12 +46,11 @@ void OxygenStyle::generatePixmaps()
    p.setPen(Qt::NoPen);
    p.setRenderHint(QPainter::Antialiasing);
    p.setBrush(QColor(0,0,0,255));
-   p.drawRoundRect(0,0,$9,$9,60,60);
+   p.drawRoundRect(0,0,$9,$9,90,90);
    p.end();
-   masks.button = Tile::Mask(tmp,$9_2,$9_2,$9-2*$9_2,$9-2*$9_2,0,0,0,0,60,60);
+   masks.button = Tile::Mask(tmp,$9_2,$9_2,$9-2*$9_2,$9-2*$9_2,0,0,0,0,90,90);
    
    // -> sunken
-   QLinearGradient lg; QGradientStops stops;
    QImage tmpImg($9,$9+$9, QImage::Format_ARGB32);
    
    for (int i = 0; i < 2; ++i) {
@@ -68,7 +60,7 @@ void OxygenStyle::generatePixmaps()
       p.begin(&tmpImg);
       p.setPen(Qt::NoPen);
       p.setRenderHint(QPainter::Antialiasing);
-      QRadialGradient rg = QRadialGradient($9/2.0,$9/2.0, dpi.$5, $9/2.0,$9/2.0+1.5*$1);
+      rg = QRadialGradient($9/2.0,$9/2.0, dpi.$5, $9/2.0,$9/2.0+1.5*$1);
       stops << QGradientStop( 0, QColor(0,0,0, 0) )
          << QGradientStop( 0.4, QColor(0,0,0, 0) )
          << QGradientStop( 0.58, QColor(0,0,0, 40/2) )
@@ -146,7 +138,7 @@ p.drawImage(QRect(0,dpi.$5,$9,dpi.$9), tmpImg, QRect(0,$9_2,$9,$1));
    int $49_2 = ($49-1)/2;
    tmp = QPixmap($49,$49);
    tmp.fill(Qt::transparent);
-   QRadialGradient rg( tmp.rect().center(), $49_2 );
+   rg = QRadialGradient( tmp.rect().center(), $49_2 );
    rg.setColorAt ( 0, QColor(255,255,255,160) );
    rg.setColorAt ( 1, QColor(255,255,255,0) );
    p.begin(&tmp);
@@ -229,7 +221,6 @@ p.drawImage(QRect(0,dpi.$5,$9,dpi.$9), tmpImg, QRect(0,$9_2,$9,$1));
    // raised
    
    // sunken
-   int $4 = dpi.$4, $6 = dpi.$6;
    tmp = QPixmap($9,$9);
    tmp.fill(Qt::transparent);
    p.begin(&tmp);
@@ -261,7 +252,6 @@ p.drawImage(QRect(0,dpi.$5,$9,dpi.$9), tmpImg, QRect(0,$9_2,$9,$1));
    // TABBAR =====================================
    
    // mask
-   int $13 = SCALE(13);
    tmp = QPixmap($13,$13);
    tmp.fill(Qt::transparent);
    p.begin(&tmp);

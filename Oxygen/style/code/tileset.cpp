@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006-2007 by Thomas Lübking                             *
+ *   Copyright (C) 2006-2007 by Thomas Lï¿½bking                             *
  *   thomas.luebking@web.de                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -210,12 +210,11 @@ Picture Set::render(int W, int H, PosFlags pf) const
 #undef DRAW_TILED_PIXMAP
 }
 
-void Set::outline(const QRect &r, QPainter *p, QColor c, bool strong, PosFlags pf) const
+void Set::outline(const QRect &r, QPainter *p, QPen pen, bool strong, PosFlags pf) const
 {
    p->save();
    p->setRenderHint(QPainter::Antialiasing, false);
-   QPen pen = p->pen();
-   pen.setColor(c); pen.setWidth(1);
+   pen.setWidth(1);
    p->setPen(pen);
    p->setBrush(Qt::NoBrush);
    QRect rect = r/*.adjusted(0,0,0,-1)*/;

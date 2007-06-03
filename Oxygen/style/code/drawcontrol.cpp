@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006-2007 by Thomas Lübking                             *
+ *   Copyright (C) 2006-2007 by Thomas Lï¿½bking                             *
  *   thomas.luebking@web.de                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -773,7 +773,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
             rect = r.adjusted(dpi.$3, dpi.$2, -dpi.$3, -dpi.$3);
             const QPixmap &fill = gradient(CONF_COLOR(role_popup[0]), rect.height(), Qt::Vertical, config.gradient);
             fillWithMask(painter, rect, fill, &masks.button);
-            masks.button.outline(rect, painter, Qt::white, true);
+            masks.button.outline(rect, painter, QPen(Qt::white), true);
             cr = config.role_popup[1];
          }
          QPixmap pix = mbi->icon.pixmap(pixelMetric(PM_SmallIconSize), isEnabled ? QIcon::Normal : QIcon::Disabled);
@@ -1230,7 +1230,7 @@ void OxygenStyle::drawControl ( ControlElement element, const QStyleOption * opt
          // slider base
          fillWithMask(painter, r, gradient(btnBgColor(PAL, isEnabled, hover, complexStep),
                                            size, direction, config.gradBtn), &masks.button);
-	 masks.button.outline(r, painter, Qt::white, true);
+	 masks.button.outline(r, painter, QPen(Qt::white), true);
          
          // and maybe a "scrollarea hovered indicator"
          if (hover && !complexStep)

@@ -38,6 +38,8 @@
 
 #include <QtDebug>
 
+#include <cmath>
+
 using namespace Oxygen;
 
 extern int bgYoffset_;
@@ -78,10 +80,29 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       QRect r = RECT;
       
       // shadow
-      if (sunken) r.adjust($2,$1,-$2,-$2);
+      if (sunken) r.adjust($3,$3,-$3,-$3);
       shadows.button[sunken][hover||hasFocus].render(r, painter);
-      
-      // glass
+
+
+      if (sunken) r.adjust($1,0,-$1,-$1);
+      else r.adjust(dpi.$3,dpi.$3,-dpi.$4,-dpi.$4);
+      QLinearGradient lg(0, r.x(), 0, r.bottom());
+      QGradientStops stops;
+      stops << QGradientStop( 0, QColor(255,255,255, 220) )
+           << QGradientStop( 0.1, QColor(255,255,255, 100) )
+           << QGradientStop( 1, QColor(255,255,255, 50) );
+      lg.setStops(stops);
+      QLinearGradient lg2(0, r.x(), 0, r.bottom());
+      stops.clear();
+      stops << QGradientStop( 0, QColor(255,255,255, 40) )
+           << QGradientStop( 1, QColor(255,255,255, 0) );
+      lg2.setStops(stops);
+      painter->setPen(QPen(QBrush(lg),1));
+      painter->setBrush(lg2);
+      painter->drawRoundRect(r, ceil(9*90.0/r.width()), ceil(9*90.0/r.height()));
+      //masks.button.outline(r, painter, QPen(QBrush(lg),1), true);
+
+/*      // glass
       if (sunken) r.adjust($1,0,-$1,-$1);
       else r.adjust($3,$1,-$3,-$3);
       if (isEnabled) {
@@ -93,7 +114,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       }
       else
          fillWithMask(painter, r, c, &masks.button);
-      break;
+*/      break;
    }
    case PE_PanelButtonTool: { // Panel for a Tool button, used with QToolButton.
       if (sunken || (option->state & State_On)) {
