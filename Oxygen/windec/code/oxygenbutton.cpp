@@ -24,12 +24,12 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////////
+#include <math.h>
 #include <QPainterPath>
 #include <QPainter>
 #include <QBitmap>
 
 #include <kdecoration.h>
-
 
 #include "oxygenclient.h"
 #include "oxygenbutton.h"
@@ -66,6 +66,7 @@ OxygenButton::OxygenButton(OxygenClient *parent,
     setCursor(Qt::ArrowCursor);
     if (bitmap) setBitmap(bitmap);
     setToolTip(tip);
+    connect(this, SIGNAL(pressed()), this, SLOT(pressSlot()));
 }
 
 OxygenButton::~OxygenButton()
@@ -86,7 +87,7 @@ void OxygenButton::setBitmap(const unsigned char *bitmap)
     deco_ = new QBitmap(DECOSIZE, DECOSIZE);
     //PORT to qt4 set actual pixels   , bitmap, true);
     deco_->setMask(*deco_);
-    repaint();
+    update();
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -107,6 +108,9 @@ QSize OxygenButton::sizeHint() const
 void OxygenButton::enterEvent(QEvent *e)
 {
     // if we wanted to do mouseovers, we would keep track of it here
+    if (status_ != Oxygen::Pressed) {
+        status_ = Oxygen::Hovered;
+    }
     QAbstractButton::enterEvent(e);
 }
 
@@ -118,9 +122,21 @@ void OxygenButton::enterEvent(QEvent *e)
 void OxygenButton::leaveEvent(QEvent *e)
 {
     // if we wanted to do mouseovers, we would keep track of it here
+    status_ = Oxygen::Normal;
     QAbstractButton::leaveEvent(e);
 }
 
+//////////////////////////////////////////////////////////////////////////////
+// pressSlot()
+// ------------
+// Mouse has pressed the button
+
+void OxygenButton::pressSlot()
+{
+    kDebug() << "Pressed " << endl;
+    status_ = Oxygen::Pressed;
+    update();
+}
 //////////////////////////////////////////////////////////////////////////////
 // drawButton()
 // ------------
@@ -161,10 +177,173 @@ void OxygenButton::paintEvent(QPaintEvent *)
     QPainterPath path2;
     path2.addEllipse(0.5, 0.5, 9.0, 9.0);
     painter.fillPath(path2, brush2);
+    
+    
+    QLinearGradient grad8;
+    QLinearGradient grad7;
+    
+    if (type_ == Oxygen::ButtonClose){
+        //Draw the red 'x'
+        painter.save();
+        grad7.setStart(0,0);
+        grad7.setFinalStop(3, 7);
+        if (status_ == Oxygen::Hovered) {
+            grad7.setColorAt(0, Qt::red);
+            grad7.setColorAt(1, Qt::black);
+        } else if (status_ == Oxygen::Normal) {
+            grad7.setColorAt(0, QColor(91, 0, 0, 144));
+            grad7.setColorAt(1, QColor(91, 0, 0, 144));
+        }
+        painter.setBrush(grad7);
+        painter.translate(3.3, 2.5);
+        painter.rotate(45);
+        painter.setPen(Qt::NoPen);
+        painter.drawRoundRect(0, 0, 6, 1, 0, 0);
+        painter.translate(3.5, -2.5);
+        painter.rotate(90);
+        painter.drawRoundRect(0, 0, 6, 1, 0, 0);
+        painter.restore();
+    } else if (type_ == Oxygen::ButtonMax){
+        //Draw the green '+'
+        painter.save();
+        grad7.setStart(0,0);
+        grad7.setFinalStop(3, 7);
+        grad8.setStart(0,0);
+        grad8.setFinalStop(7, 3);
+        if (status_ == Oxygen::Hovered) {
+            grad7.setColorAt(0, QColor(0, 80, 0, 50));
+            grad7.setColorAt(1, QColor(0, 80, 0, 50));
+            grad8.setColorAt(0, QColor(0, 80, 0, 50));
+            grad8.setColorAt(1, QColor(0, 80, 0, 50));
+        } else if (status_ == Oxygen::Normal) {
+            grad7.setColorAt(0, QColor(0, 0, 0, 15));
+            grad7.setColorAt(1, QColor(0, 0, 0, 15));
+            grad8.setColorAt(0, QColor(0, 0, 0, 15));
+            grad8.setColorAt(1, QColor(0, 0, 0, 15));
+        } else { //Pressed
+            grad7.setColorAt(0, Qt::green);
+            grad7.setColorAt(1, Qt::green);
+            grad8.setColorAt(0, Qt::green);
+            grad8.setColorAt(1, Qt::green);
+        }
+        painter.setBrush(grad8);
+        painter.translate(2.0, 4.5);
+        painter.setPen(Qt::NoPen);
+        painter.drawRoundRect(0, 0, 6, 1, 0, 0);
+        painter.translate(3.5, -2.5);
+        painter.setBrush(grad7);
+        painter.rotate(90);
+        painter.drawRoundRect(0, 0, 6, 1, 0, 0);
+        painter.restore();
+    } else if (type_ == Oxygen::ButtonMin){
+        //Draw the yellow '-'
+        painter.save();
+//         QLinearGradient grad7;
+//         grad7.setStart(0,0);
+//         grad7.setFinalStop(3, 7);
+        grad8.setStart(0,0);
+        grad8.setFinalStop(7, 3);
+        if (status_ == Oxygen::Hovered) {
+//         grad7.setColorAt(0, QColor(0, 91, 0, 144));
+//         grad7.setColorAt(1, QColor(0, 91, 0, 144));
+            grad8.setColorAt(0, QColor(155, 121, 0, 155));
+            grad8.setColorAt(1, QColor(155, 121, 0, 155));
+        } else if (status_ == Oxygen::Normal) {
+//             grad7.setColorAt(0, QColor(0, 0, 0, 144));
+//             grad7.setColorAt(1, QColor(0, 0, 0, 144));
+            grad8.setColorAt(0, QColor(0, 0, 0, 30));
+            grad8.setColorAt(1, QColor(0, 0, 0, 30));
+        } else if (status_ == Oxygen::Pressed){ //Pressed
+//             grad7.setColorAt(0, Qt::yellow);
+//             grad7.setColorAt(1, Qt::yellow);
+            grad8.setColorAt(0, Qt::yellow);
+            grad8.setColorAt(1, Qt::yellow);
+        }
+        painter.setBrush(grad8);
+        painter.translate(2.0, 4.5);
+        painter.setPen(Qt::NoPen);
+        painter.drawRoundRect(0, 0, 6, 1, 0, 0);
+//         painter.translate(3.5, -2.5);
+//         painter.setBrush(grad7);
+//         painter.rotate(90);
+//         painter.drawRoundRect(0, 0, 6, 1, 0, 0);
+        painter.restore();
+    } else if (type_ == Oxygen::ButtonHelp){
+        //Draw the red 'x'
+        painter.save();
+//         QLinearGradient grad7;
+//         grad7.setStart(0,0);
+//         grad7.setFinalStop(3, 7);
+        grad8.setStart(0,0);
+        grad8.setFinalStop(7, 3);
+        if (status_ == Oxygen::Hovered) {
+//         grad7.setColorAt(0, QColor(0, 91, 0, 144));
+//         grad7.setColorAt(1, QColor(0, 91, 0, 144));
+            grad8.setColorAt(0, QColor(155, 121, 0, 155));
+            grad8.setColorAt(1, QColor(155, 121, 0, 155));
+        } else if (status_ == Oxygen::Normal) {
+//             grad7.setColorAt(0, QColor(0, 0, 0, 144));
+//             grad7.setColorAt(1, QColor(0, 0, 0, 144));
+            grad8.setColorAt(0, QColor(0, 0, 0, 30));
+            grad8.setColorAt(1, QColor(0, 0, 0, 30));
+        } else if (status_ == Oxygen::Pressed){ //Pressed
+//             grad7.setColorAt(0, Qt::yellow);
+//             grad7.setColorAt(1, Qt::yellow);
+            grad8.setColorAt(0, Qt::yellow);
+            grad8.setColorAt(1, Qt::yellow);
+        }
+        //This code has been picked up by a drawing made with inkscape
+        QPolygonF questionMark;
+        questionMark << QPointF(37.918475,94.451027) << QPointF(36.026474,85.486156)
+                     << QPointF(36.772553,75.80096) << QPointF(41.423128,66.688939)
+                     << QPointF(49.497475,61.402536) << QPointF(58.596523,56.663413)
+                     << QPointF(68.690373,56.194458) << QPointF(78.505617,59.46141) 
+                     << QPointF(86.699378,68.158973) << QPointF(90.881465,78.404561) 
+                     << QPointF(90.345804,89.078756) << QPointF(88.320755,95.66811) 
+                     << QPointF(81.408421,102.0783) << QPointF(69.198471,108.7171) 
+                     << QPointF(64.91,116.86) << QPointF(63.067541,120.47646) 
+                     << QPointF(62.467671,131.84155) << QPointF(62.6367,146.0);
 
+        QMatrix inkscapeMatrix(0.09245,0,0,0.0916,-3.2868,-5.1);
+
+        painter.translate(2.0, 4.5);
+        painter.setWorldMatrix(inkscapeMatrix);
+//         painter.setBrush(grad8);
+        QPen oxyPen;  // creates a default pen
+        oxyPen.setStyle(Qt::DashDotLine);
+        oxyPen.setWidth(5);
+        oxyPen.setBrush(grad8);
+        oxyPen.setCapStyle(Qt::RoundCap);
+        oxyPen.setJoinStyle(Qt::RoundJoin);
+
+        painter.setPen(oxyPen);
+//         painter.setPen(grad8);
+        painter.drawPolygon(questionMark);
+//         painter.drawRoundRect(0, 0, 6, 1, 0, 0);
+//         painter.translate(3.5, -2.5);
+//         painter.setBrush(grad7);
+//         painter.rotate(90);
+//         painter.drawRoundRect(0, 0, 6, 1, 0, 0);
+        painter.restore();
+    }
+
+    //light
     QPainterPath path3;
     path3.addEllipse(1.5, 0.5, 7.0, 6.0);
     painter.fillPath(path3, brush3);
+
+    if (type_ == Oxygen::ButtonMax) {
+        painter.save();
+        painter.setBrush(grad8);
+        painter.translate(2.0, 4.5);
+        painter.setPen(Qt::NoPen);
+        painter.drawRoundRect(0, 0, 6, 1, 0, 0);
+        painter.translate(3.5, -2.5);
+        painter.setBrush(grad7);
+        painter.rotate(90);
+        painter.drawRoundRect(0, 0, 6, 1, 0, 0);
+        painter.restore();
+    }
 
 //     QPainter painter(this);
 // 

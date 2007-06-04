@@ -57,27 +57,29 @@ namespace Oxygen
 
 
 // this method "stolen" from Plastik theme
-void renderDot(QPainter *p,
-                             const QPoint &point,
-                             const QColor &baseColor,
-                             const bool sunken)
+void renderDot(QPainter *p, const QPointF &point, qreal diameter)
 {
-    const QColor topColor = sunken?baseColor.dark(130):baseColor.light(120);
-    const QColor bottomColor = sunken?baseColor.light(120):baseColor.dark(130);
-    const QColor halftopColor = sunken?baseColor.dark(115):baseColor.light(110);
-    const QColor halfbottomColor = sunken?baseColor.light(110):baseColor.dark(115);
-    const QColor midColor = baseColor.light(110);
+//     const QColor topColor = sunken?baseColor.dark(130):baseColor.light(120);
+//     const QColor bottomColor = sunken?baseColor.light(120):baseColor.dark(130);
+//     const QColor halftopColor = sunken?baseColor.dark(115):baseColor.light(110);
+//     const QColor halfbottomColor = sunken?baseColor.light(110):baseColor.dark(115);
+//     const QColor midColor = baseColor.light(110);
+//     QColor baseColor(0, 0, 0, 127);
+//     QColor baseColor(0, 0, 0, 60);
 
-    p->setPen(topColor );
-    p->drawPoint(point.x()+1, point.y());
-    p->drawPoint(point.x(), point.y()+1);
-    p->setPen(bottomColor );
-    p->drawPoint(point.x()+1, point.y()+2);
-    p->drawPoint(point.x()+2, point.y()+1);
-    p->setPen(halftopColor );
-    p->drawPoint(point.x(), point.y());
-    p->setPen(halfbottomColor );
-    p->drawPoint(point.x()+2, point.y()+2);
+//     p->setPen(no
+
+    p->drawEllipse(QRectF(point.x(), point.y(), diameter, diameter));
+//     p->setPen(baseColor);
+//     p->drawPoint(point.x()+1, point.y());
+//     p->drawPoint(point.x(), point.y()+1);
+//     p->setPen(bottomColor );
+//     p->drawPoint(point.x()+1, point.y()+2);
+//     p->drawPoint(point.x()+2, point.y()+1);
+//     p->setPen(halftopColor );
+//     p->drawPoint(point.x(), point.y());
+//     p->setPen(halfbottomColor );
+//     p->drawPoint(point.x()+2, point.y()+2);
 }
 
 // window button decorations
@@ -494,7 +496,7 @@ void OxygenClient::paintEvent(QPaintEvent*)
     painter.setFont(options()->font(isActive(), false));
     painter.setBrush(palette.windowText());
     painter.drawText(title.x(), title.y(), title.width(), title.height(),
-             OxygenFactory::titleAlign() | Qt::AlignVCenter, caption());
+              OxygenFactory::titleAlign() | Qt::AlignVCenter, caption());
 
     // draw frame
     QRect frame(0, 0, width(), TFRAMESIZE);
@@ -511,12 +513,12 @@ void OxygenClient::paintEvent(QPaintEvent*)
     grad1.setColorAt(0.0, QColor(0,0,0,64));
     grad1.setColorAt(1.0, QColor(0,0,0,5));
     QBrush brush1(grad1);
-    painter.fillRect(LFRAMESIZE, TFRAMESIZE + title.height()/2-1, title.width(), 1, brush1);
+    painter.fillRect(LFRAMESIZE, TFRAMESIZE + title.height()/2-1, title.x(), 1, brush1);
     QLinearGradient grad2(LFRAMESIZE, TFRAMESIZE + title.height()/2, title.x(), TFRAMESIZE + title.height()/2);
     grad2.setColorAt(0.0, QColor(255,255,255,128));
     grad2.setColorAt(1.0, QColor(255,255,255,5));
     QBrush brush2(grad2);
-    painter.fillRect(LFRAMESIZE, TFRAMESIZE + title.height()/2, title.width(), 1, brush2);
+    painter.fillRect(LFRAMESIZE, TFRAMESIZE + title.height()/2, title.x(), 1, brush2);
     QLinearGradient grad3(width()-RFRAMESIZE, TFRAMESIZE + title.height()/2, title.right(), TFRAMESIZE + title.height()/2);
     grad3.setColorAt(0.0, QColor(0,0,0,64));
     grad3.setColorAt(1.0, QColor(0,0,0,5));
@@ -529,76 +531,84 @@ void OxygenClient::paintEvent(QPaintEvent*)
     painter.fillRect(title.right(), TFRAMESIZE + title.height()/2, width() -title.right()-RFRAMESIZE, 1, brush4);
 
     
-    // outline the frame
+    // shadows of the frame
     frame = widget()->rect();
     int x,y,w,h;
     frame.getRect(&x, &y, &w, &h);
-    int x2=x+w-1;
-    int y2=y+h-1;
-    painter.setBrush(palette.light());
-    painter.drawLine(x, y, x2, y);
-    painter.drawLine(x, y, x, y2);
-    painter.drawPoint(x+4, y+1);
-    painter.drawPoint(x+3, y+1);
-    painter.drawPoint(x+2, y+2);
-    painter.drawPoint(x+1, y+3);
-    painter.drawPoint(x+1, y+4);
-    painter.setBrush(palette.dark());
-    painter.drawLine(x, y2, x2, y2);
-    painter.drawLine(x2, y, x2, y2);
-    painter.drawPoint(x2-4, y2-1);
-    painter.drawPoint(x2-3, y2-1);
-    painter.drawPoint(x2-2, y2-2);
-    painter.drawPoint(x2-1, y2-3);
-    painter.drawPoint(x2-1, y2-4);
+//     painter.drawPoint(x2-2, y2-2);
+//     painter.drawPoint(x2-1, y2-3);
+    painter.setBrush(Qt::NoBrush);
+    painter.setPen(QColor(0, 0, 0, 20));
+    painter.drawRoundRect(0, 0, w, h, 9*90/w, 9*90/h);//, 4, 4);
 
     int numDotGroups = 1;
     if (frame.width() >700)
         numDotGroups = 3;
-    int step = frame.width() / (numDotGroups + 1);
+//     int step = frame.width() / 2;
+    x = frame.width() / 2;
 
-    for(int j = 0, x = step; j < numDotGroups; j++, x += step)
-    {
-        renderDot(&painter, QPoint(x-5, 2), palette.background().color(), true);
-        renderDot(&painter, QPoint(x, 2), palette.background().color(), true);
-        renderDot(&painter, QPoint(x+5, 2), palette.background().color(), true);
+//     for(int j = 0, x = step; j < numDotGroups; j++, x += step)
+//     {
+        painter.setPen(Qt::NoPen);
+        painter.setBrush(QColor(0, 0, 0, 66));
+        renderDot(&painter, QPointF(x-10, 3),        1);
+        renderDot(&painter, QPointF(x-5-0.25, 2.75), 1.5);
+        painter.setBrush(QColor(0, 0, 0, 60));
+        renderDot(&painter, QPointF(x-0.5, 2.5),       2);
+        painter.setBrush(QColor(0, 0, 0, 66));
+        renderDot(&painter, QPointF(x+5-0.25, 2.75), 1.5);
+        renderDot(&painter, QPointF(x+10, 3),        1);
 
-        renderDot(&painter, QPoint(x-5, frame.height()-5), palette.background().color(), true);
-        renderDot(&painter, QPoint(x, frame.height()-5), palette.background().color(), true);
-        renderDot(&painter, QPoint(x+5, frame.height()-5), palette.background().color(), true);
-    }
+//         renderDot(&painter, QPoint(x-5, frame.height()-5), palette.background().color(), true);
+//         renderDot(&painter, QPoint(x, frame.height()-5), palette.background().color(), true);
+//         renderDot(&painter, QPoint(x+5, frame.height()-5), palette.background().color(), true);
+//     }
 
     numDotGroups = 1;
     if (frame.height() >700)
         numDotGroups = 3;
-    step = frame.height() / (numDotGroups + 1);
+//     step = frame.height() / (numDotGroups + 1);
 
-    for(int j = 0, y = step; j < numDotGroups; j++, y += step)
-    {
-        renderDot(&painter, QPoint(3, y-5), palette.background().color(), true);
-        renderDot(&painter, QPoint(3, y), palette.background().color(), true);
-        renderDot(&painter, QPoint(3, y+5), palette.background().color(), true);
+//     for(int j = 0, y = step; j < numDotGroups; j++, y += step)
+//     {
+//         renderDot(&painter, QPoint(3, y-5), palette.background().color(), true);
+//         renderDot(&painter, QPoint(3, y), palette.background().color(), true);
+//         renderDot(&painter, QPoint(3, y+5), palette.background().color(), true);
+// 
+//         renderDot(&painter, QPoint(frame.width()-5, y-5), palette.background().color(), true);
+//         renderDot(&painter, QPoint(frame.width()-5, y), palette.background().color(), true);
+//         renderDot(&painter, QPoint(frame.width()-5, y+5), palette.background().color(), true);
+//     }
 
-        renderDot(&painter, QPoint(frame.width()-5, y-5), palette.background().color(), true);
-        renderDot(&painter, QPoint(frame.width()-5, y), palette.background().color(), true);
-        renderDot(&painter, QPoint(frame.width()-5, y+5), palette.background().color(), true);
-    }
-
-    renderDot(&painter, QPoint(3, 8), palette.background().color(), true);
-    renderDot(&painter, QPoint(4, 4), palette.background().color(), true);
-    renderDot(&painter, QPoint(8, 3), palette.background().color(), true);
-
-    renderDot(&painter, QPoint(3, frame.height()-11), palette.background().color(), true);
-    renderDot(&painter, QPoint(4, frame.height()-7), palette.background().color(), true);
-    renderDot(&painter, QPoint(8, frame.height()-5), palette.background().color(), true);
-
-    renderDot(&painter, QPoint(frame.width()-5, 8), palette.background().color(), true);
-    renderDot(&painter, QPoint(frame.width()-7, 4), palette.background().color(), true);
-    renderDot(&painter, QPoint(frame.width()-11, 3), palette.background().color(), true);
-
-    renderDot(&painter, QPoint(frame.width()-5, frame.height()-11), palette.background().color(), true);
-    renderDot(&painter, QPoint(frame.width()-7, frame.height()-7), palette.background().color(), true);
-    renderDot(&painter, QPoint(frame.width()-11, frame.height()-5), palette.background().color(), true);
+//     renderDot(&painter, QPoint(3, 8), palette.background().color(), true);
+//     renderDot(&painter, QPoint(4, 4), palette.background().color(), true);
+//     renderDot(&painter, QPoint(8, 3), palette.background().color(), true);
+// 
+//     renderDot(&painter, QPoint(3, frame.height()-11), palette.background().color(), true);
+//     renderDot(&painter, QPoint(4, frame.height()-7), palette.background().color(), true);
+//     renderDot(&painter, QPoint(8, frame.height()-5), palette.background().color(), true);
+// 
+//     renderDot(&painter, QPoint(frame.width()-5, 8), palette.background().color(), true);
+//     renderDot(&painter, QPoint(frame.width()-7, 4), palette.background().color(), true);
+//     renderDot(&painter, QPoint(frame.width()-11, 3), palette.background().color(), true);
+    painter.save();
+    painter.setBrush(QColor(0, 0, 0, 80));
+//     painter.setBrush(Qt::green);
+    painter.translate(frame.width()-9, frame.height()-9);
+    painter.rotate(-45);
+//     renderDot(&painter, QPoint(0, 0), 2);
+    renderDot(&painter, QPoint(4, 4), 2);
+    painter.rotate(45);
+//     painter.setBrush(Qt::blue);
+    renderDot(&painter, QPoint(4, 4), 2);
+    painter.rotate(45);
+    renderDot(&painter, QPoint(4, 4), 2);
+    painter.restore();
+//     painter.setBrush(Qt::red);
+//     renderDot(&painter, QPoint(frame.width()-5, frame.height()-11), 2);
+//     renderDot(&painter, QPoint(frame.width()-5, frame.height()-11), palette.background().color(), true);
+//     renderDot(&painter, QPoint(frame.width()-7, frame.height()-7), palette.background().color(), true);
+//     renderDot(&painter, QPoint(frame.width()-11, frame.height()-5), palette.background().color(), true);
 }
 
 void OxygenClient::doShape()

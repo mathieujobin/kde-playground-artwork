@@ -36,8 +36,12 @@ namespace Oxygen
 {
 class OxygenClient;
 
+enum ButtonStatus {
+    Normal,
+    Hovered,
+    Pressed };
 
-// Q_DECLARE_FLAGS(ButtonTypes, ButtonType);
+Q_DECLARE_FLAGS(ButtonState, ButtonStatus);
 
 class OxygenButton : public QAbstractButton
 {
@@ -58,9 +62,13 @@ private:
     void leaveEvent(QEvent *e);
     void paintEvent(QPaintEvent *e);
 
+private Q_SLOTS:
+    void pressSlot();
+
 private:
     OxygenClient *client_;
     ButtonType type_;
+    ButtonState status_;
     QBitmap *deco_;
     int lastmouse_;
 };
