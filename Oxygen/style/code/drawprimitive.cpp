@@ -89,13 +89,13 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
 
       // edge and a nice light gradient
       painter->setRenderHint(QPainter::Antialiasing);
-      QLinearGradient lg(0, r.x(), 0, r.bottom());
+      QLinearGradient lg(r.x(), r.y(), r.x(), r.bottom());
       QGradientStops stops;
       stops << QGradientStop( 0, QColor(255,255,255, (isEnabled&&!sunken ? 220 : 160)) )
            << QGradientStop( 0.1, QColor(255,255,255, (isEnabled&&!sunken ? 100 : 60)) )
            << QGradientStop( 1, QColor(255,255,255, (isEnabled&&!sunken ? 50 : 35)) );
       lg.setStops(stops);
-      QLinearGradient lg2(0, r.x(), 0, r.bottom());
+      QLinearGradient lg2(r.x(), r.y(), r.x(), r.bottom());
       stops.clear();
       stops << QGradientStop( 0, QColor(255,255,255, 40) )
            << QGradientStop( 1, QColor(255,255,255, 0) );
@@ -116,24 +116,41 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       rg.setStops(stops);
       painter->setPen(Qt::NoPen);
       painter->setBrush(rg);
+      r.adjust(1,1,-1,-1);
       painter->drawRoundRect(r, int(ceil(9*90.0/r.width())), int(ceil(9*90.0/r.height())));
       break;
    }
    case PE_PanelButtonTool: { // Panel for a Tool button, used with QToolButton.
       if (sunken || (option->state & State_On)) {
          if (sunken) hover = false;
+/*
          fillWithMask(painter, RECT,
                       gradient(COLOR(Window), RECT.height(), Qt::Vertical,
                                hover ? GradButton : GradSunken), &masks.button);
          shadows.lineEdit[1].render(RECT, painter);
+*/
+         QRect r = RECT;
+         painter->setRenderHint(QPainter::Antialiasing);
+         QRadialGradient rg(r.width()/2, r.height()/2, r.height()/2, r.width()/2, r.height()/4);
+         QGradientStops stops;
+         stops << QGradientStop( 0, QColor(0,0,0, 50) )
+           << QGradientStop( 1, QColor(0,0,0, 0) );
+         rg.setStops(stops);
+         painter->fillRect(r, rg);
+         rg = QRadialGradient(r.width()/2, r.height()/2, r.height()/2, r.width()/2, 3*r.height()/4);
+         stops.clear();
+         stops << QGradientStop( 0, QColor(255,255,255, 190) )
+           << QGradientStop( 1, QColor(255,255,255, 0) );
+         rg.setStops(stops);
+         painter->fillRect(r, rg);
       }
-      else if (hover) {
+/*      else if (hover) {
          fillWithMask(painter, RECT.adjusted(dpi.$2,dpi.$1,-dpi.$2,0),
                       gradient(COLOR(Window), RECT.height(), Qt::Vertical,
                                GradButton), &masks.button);
          shadows.group.render(RECT, painter, Tile::Ring);
       }
-      break;
+*/      break;
    }
    case PE_PanelLineEdit: { // Panel for a QLineEdit.
       // spinboxes and combos allready have a lineedit as global frame
