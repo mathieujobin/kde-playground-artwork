@@ -742,11 +742,16 @@ void OxygenStyle::polish( QWidget * widget) {
    
    // installs dynamic brush to all widgets, taking care of a correct bg pixmap size
    //TODO maybe we can exclude some more widgets here... (currently only popup menus)
+   
    if (_bgBrush && !(
          qobject_cast<QMenu*>(widget) ||
          widget->inherits("QAlphaWidget") ||
          widget->inherits("QComboBoxListView") ||
-         widget->inherits("QComboBoxPrivateContainer")
+         widget->inherits("QComboBoxPrivateContainer") ||
+         // Kwin stuff ===========================
+         widget->topLevelWidget()->objectName() == "decoration widget" ||
+         widget->topLevelWidget()->inherits("QDesktopWidget") ||
+         widget->topLevelWidget()->objectName() == "desktop_widget"
         ))
       widget->installEventFilter(_bgBrush);
 

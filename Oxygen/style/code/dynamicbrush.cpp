@@ -115,6 +115,7 @@ BgSet::BgSet(const QPixmap* pix, int d, int s, Qt::Orientation o,
 void BgSet::setPixmap(const QPixmap* pix, int dx, int dy, int w, int h,
                       bool updateDeco)
 {
+   
    if (window) delete window;
    window = new QPixmap(w, h);
    QPainter p(window);
@@ -365,7 +366,9 @@ XInternAtom(QX11Info::display(), "OXYGEN_DECO_LEFT", False);
 static const Atom oxygen_deco_right =
 XInternAtom(QX11Info::display(), "OXYGEN_DECO_RIGHT", False);
 
-#define EXPORT_DECO_PIX(_ATOM_, _PIX_) card = set->_PIX_->handle();\
+#define EXPORT_DECO_PIX(_ATOM_, _PIX_) \
+card = set->_PIX_->x11PictureHandle();\
+XRenderChangePicture(QX11Info::display(), card, CPRepeat, &pa);\
 XChangeProperty(QX11Info::display(), widget->winId(), _ATOM_, XA_CARDINAL, 32,\
 PropModeReplace, (unsigned char *) &(card), 1L)
 
@@ -446,6 +449,8 @@ bool DynamicBrush::eventFilter ( QObject * object, QEvent * ev )
 
       if (triggerUpdate) { // tell the deco about new pics
          int card;
+         XRenderPictureAttributes pa;
+         pa.repeat = True;
          EXPORT_DECO_PIX(oxygen_deco_top, decoTop);
          EXPORT_DECO_PIX(oxygen_deco_bottom, decoBottom);
          EXPORT_DECO_PIX(oxygen_deco_left, decoLeft);
@@ -547,7 +552,7 @@ const BgSet* DynamicBrush::bgSetGradient1(const QSize &size, bool updateDeco)
       h = qMin(64,(qPix->height())/2);
       p.drawTiledPixmap( 0, qPix->height()-h, 32, h, _tile[_isActiveWindow][1] );
       p.end();
-      _bgSet.setPixmap(qPix, decoDim[1], _size.height(), Qt::Vertical, updateDeco);
+      _bgSet.setPixmap(qPix, decoDim[0], _size.height(), Qt::Vertical, updateDeco);
    }
    else // horizontal
    {
@@ -559,7 +564,7 @@ const BgSet* DynamicBrush::bgSetGradient1(const QSize &size, bool updateDeco)
       w = qMin(64,(qPix->width())/2);
       p.drawTiledPixmap( qPix->width()-w, 0, w, 32, _tile[_isActiveWindow][1] );
       p.end();
-      _bgSet.setPixmap(qPix, decoDim[0], _size.width(), Qt::Horizontal, updateDeco);
+      _bgSet.setPixmap(qPix, decoDim[2], _size.width(), Qt::Horizontal, updateDeco);
    }
    return &_bgSet;
 }
@@ -578,7 +583,7 @@ const BgSet* DynamicBrush::bgSetGradient2(const QSize &size, bool updateDeco)
       h = qMin(512, h_2);
       p.drawTiledPixmap( 0, h_2, 32, h, _tile[_isActiveWindow][1], 0, (512-h)/2 );
       p.end();
-      _bgSet.setPixmap(qPix, decoDim[1], _size.height(), Qt::Vertical, updateDeco);
+      _bgSet.setPixmap(qPix, decoDim[0], _size.height(), Qt::Vertical, updateDeco);
    }
    else // horizontal
    {
@@ -591,7 +596,7 @@ const BgSet* DynamicBrush::bgSetGradient2(const QSize &size, bool updateDeco)
       w = qMin(512,w_2);
       p.drawTiledPixmap( w_2, 0, w, 32, _tile[_isActiveWindow][1], (512-w)/2 );
       p.end();
-      _bgSet.setPixmap(qPix, decoDim[0], _size.width(), Qt::Horizontal, updateDeco);
+      _bgSet.setPixmap(qPix, decoDim[2], _size.width(), Qt::Horizontal, updateDeco);
    }
    return &_bgSet;
 }
@@ -647,10 +652,10 @@ const BgSet* DynamicBrush::bgSetGlass(const QSize &size, bool updateDeco)
    
    // cache
    if (tlw == tlwbacks.end())
-      tlw = tlwbacks.insert(_topLevelWidget, new BgSet(qPix, decoDim[1],
+      tlw = tlwbacks.insert(_topLevelWidget, new BgSet(qPix, decoDim[0],
          _size.height(), Qt::Vertical));
    else
-      tlw.value()->setPixmap(qPix, decoDim[1], _size.height(),
+      tlw.value()->setPixmap(qPix, decoDim[0], _size.height(),
                              Qt::Vertical, updateDeco);
    
    // pixmap can be deleted now
@@ -833,10 +838,10 @@ const BgSet* DynamicBrush::bgSetGL(const QSize &size, bool updateDeco)
    
    // cache
    if (tlw == tlwbacks.end())
-      tlw = tlwbacks.insert(_topLevelWidget, new BgSet(qPix, decoDim[0],
-         decoDim[2], _size.width(), _size.height()));
+      tlw = tlwbacks.insert(_topLevelWidget, new BgSet(qPix, decoDim[2],
+         decoDim[0], _size.width(), _size.height()));
    else
-      tlw.value()->setPixmap(qPix, decoDim[0], decoDim[2], _size.width(),
+      tlw.value()->setPixmap(qPix, decoDim[2], decoDim[0], _size.width(),
                             _size.height(), updateDeco);
    
    // pixmap can be deleted now
@@ -878,10 +883,10 @@ const BgSet* DynamicBrush::bgSetRender(const QSize &size, bool updateDeco) {
    
    // cache
    if (tlw == tlwbacks.end())
-      tlw = tlwbacks.insert(_topLevelWidget, new BgSet(qPix, decoDim[0],
-         decoDim[2], _size.width(), _size.height()));
+      tlw = tlwbacks.insert(_topLevelWidget, new BgSet(qPix, decoDim[2],
+         decoDim[0], _size.width(), _size.height()));
    else
-      tlw.value()->setPixmap(qPix, decoDim[0], decoDim[2], _size.width(),
+      tlw.value()->setPixmap(qPix, decoDim[2], decoDim[0], _size.width(),
                             _size.height(), updateDeco);
    
    // pixmap can be deleted now
@@ -925,10 +930,10 @@ const BgSet* DynamicBrush::bgSetQt(const QSize &size, bool updateDeco)
 
    // cache
    if (tlw == tlwbacks.end())
-      tlw = tlwbacks.insert(_topLevelWidget, new BgSet(qPix, decoDim[0],
-         decoDim[2], _size.width(), _size.height()));
+      tlw = tlwbacks.insert(_topLevelWidget, new BgSet(qPix, decoDim[2],
+         decoDim[0], _size.width(), _size.height()));
    else
-      tlw.value()->setPixmap(qPix, decoDim[0], decoDim[2], _size.width(),
+      tlw.value()->setPixmap(qPix, decoDim[2], decoDim[0], _size.width(),
                             _size.height(), updateDeco);
    
    // pixmap can be deleted now
