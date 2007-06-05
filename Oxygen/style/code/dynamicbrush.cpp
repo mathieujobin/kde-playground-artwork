@@ -367,10 +367,12 @@ static const Atom oxygen_deco_right =
 XInternAtom(QX11Info::display(), "OXYGEN_DECO_RIGHT", False);
 
 #define EXPORT_DECO_PIX(_ATOM_, _PIX_) \
+if (!set->_PIX_->isNull()) { \
 card = set->_PIX_->x11PictureHandle();\
 XRenderChangePicture(QX11Info::display(), card, CPRepeat, &pa);\
 XChangeProperty(QX11Info::display(), widget->winId(), _ATOM_, XA_CARDINAL, 32,\
-PropModeReplace, (unsigned char *) &(card), 1L)
+PropModeReplace, (unsigned char *) &(card), 1L);\
+}
 
 bool DynamicBrush::eventFilter ( QObject * object, QEvent * ev )
 {
