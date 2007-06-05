@@ -165,53 +165,18 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
          const bool reverse = (option->direction == Qt::RightToLeft);
          
          // do we have an arrow?
-         if ((cmb->subControls & SC_ComboBoxArrow) && (!combo || combo->count() > 0))
+         if ((cmb->subControls & SC_ComboBoxArrow))
             ar = subControlRect(CC_ComboBox, cmb, SC_ComboBoxArrow, widget);
-         
+
          // the label
          if ((cmb->subControls & SC_ComboBoxFrame) && cmb->frame) {
             if (cmb->editable)
                drawPrimitive(PE_PanelLineEdit, option, painter, widget);
             else {
                drawPrimitive(PE_PanelButtonBevel, option, painter, widget);
-/*               const QPixmap &fill =
-                     gradient(COLOR(Window), r.height(), Qt::Vertical, hover ?
-                     config.gradientStrong : GradSunken);
-               
-               int step = listShown ? 0 : hoverStep(widget);
-               hover = hover || step || hasFocus || listShown;
-               
-               if (!hover || ar.isNull()) // unique color
-                  fillWithMask(painter,  r, fill, &masks.button);
-               else { // splitted view
-                  Tile::PosFlags pf;
-                  if (reverse) {
-                     r.setLeft(ar.right()); pf = Tile::Full&~Tile::Left;
-                  }
-                  else {
-                     r.setRight(ar.left()); pf = Tile::Full&~Tile::Right;
-                  }
-                  fillWithMask(painter, r, fill, &masks.button, pf);
-                  
-                  if (reverse) {
-                     r.setLeft(RECT.left()); r.setRight(ar.right());
-                     pf = Tile::Full&~Tile::Right;
-                  }
-                  else {
-                     r.setLeft(ar.left()); r.setRight(RECT.right());
-                     pf = Tile::Full&~Tile::Left;
-                  }
-                  const QColor c = step ? midColor(COLOR(Window), COLOR(WindowText),
-                        6-step, step) : COLOR(WindowText);
-                  fillWithMask(painter, r, gradient(c, r.height(),
-                               Qt::Vertical, sunken ? GradSunken :
-                                     config.gradientStrong), &masks.button, pf);
-
-               }
-               shadows.lineEdit[1].render(RECT, painter);
-*/            }
+            }
          }
-         
+
          // the arrow
          if (!ar.isNull()) {
             ar.adjust(ar.width()/3,ar.height()/3,-ar.width()/3,-ar.height()/3);
@@ -227,21 +192,12 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
                hover = hover && (cmb->activeSubControls == SC_ComboBoxArrow);
             painter->setRenderHint ( QPainter::Antialiasing, true );
             painter->save();
-            if (cmb->editable) {
-               if (!sunken) {
-                  painter->setPen(COLOR(Base).dark(105));
-                  tmpOpt.rect =  ar.translated(-dpi.$2, dpi.$2);
-                  drawPrimitive(arrow, &tmpOpt, painter, widget);
-               }
-            }
+
+            painter->setPen(COLOR(Text));
             if (hover || listShown) {
                if (cmb->editable)
                   painter->setPen(COLOR(Highlight));
-               else
-                  painter->setPen(COLOR(Base));
             }
-            else
-               painter->setPen( midColor(COLOR(Base), COLOR(Text)) );
             tmpOpt.rect =  ar;
             drawPrimitive(arrow, &tmpOpt, painter, widget);
             painter->restore();

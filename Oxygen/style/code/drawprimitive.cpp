@@ -211,7 +211,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       }
       else {
         //  0.5 is to have sharp horizontal edges
-         const QPointF points[3] =  { QPointF(x[0], y[0]-0.6), QPointF(x[1], y[0]-0.5), QPointF(x[2], y[1]) };
+         const QPointF points[3] =  { QPointF(x[0], y[0]-0.5), QPointF(x[1], y[0]-0.5), QPointF(x[2], y[1]) };
          painter->drawPolygon(points, 3);
       }
       if (hadNoBrush)
