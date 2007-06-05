@@ -70,29 +70,16 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             hover = isEnabled && (sb->activeSubControls == SC_SpinBoxUp);
             sunken = sunken && (sb->activeSubControls == SC_SpinBoxUp);
             
-//             shadows.button[1].render(copy.rect, painter, pf);
-//             copy.rect.adjust(2,2,-2,0);
-//             gt = (isEnabled && hover) ? (sunken ? GradSunken : GradGloss) : GradButton;
-//             fillWithMask(painter, copy.rect, gradient(COLOR(Button), RECT.height(), Qt::Vertical, gt),
-//                          &masks.button, pf | Tile::Center);
-            
             int dx = copy.rect.width()/4, dy = copy.rect.height()/4;
             copy.rect.adjust(dx, 2*dy,-dx,-dpi.$1);
-            
-            if (!sunken) {
-               painter->setPen(COLOR(Base).dark(105));
-               copy.rect.translate(dpi.$2, dpi.$2);
-               drawPrimitive(PE_IndicatorArrowUp, &copy, painter, widget);
-               copy.rect.translate(-dpi.$2, -dpi.$2);
-            }
             
             QColor c;
             if (hover)
                c = COLOR(Highlight);
             else if (isEnabled)
-               c = midColor(COLOR(Base), COLOR(Text));
+               c = COLOR(Text);
             else
-               c = midColor(COLOR(Base), PAL.color(QPalette::Disabled, QPalette::Text));
+               c = midColor(COLOR(Base), QPalette::Text);
             
             painter->setPen(c);
             drawPrimitive(PE_IndicatorSpinUp, &copy, painter, widget);
@@ -107,30 +94,16 @@ void OxygenStyle::drawComplexControl ( ComplexControl control, const QStyleOptio
             hover = isEnabled && (sb->activeSubControls == SC_SpinBoxDown);
             sunken = sunken && (sb->activeSubControls == SC_SpinBoxDown);
             
-//             shadows.button[1].render(copy.rect, painter, pf);
-//             copy.rect.adjust(2,0,-2,-2);
-//             gt = (isEnabled && hover) ? (sunken ? GradSunken : GradGloss) : GradButton;
-
-//             fillWithMask(painter, copy.rect, gradient(COLOR(Button), RECT.height(), Qt::Vertical, gt), &masks.button,
-//                          pf | Tile::Center, false, QPoint(0,-uh));
-            
             int dx = copy.rect.width()/4, dy = copy.rect.height()/4;
             copy.rect.adjust(dx, dpi.$1,-dx,-2*dy);
-            
-            if (!sunken) {
-               painter->setPen(COLOR(Base).dark(105));
-               copy.rect.translate(dpi.$2, dpi.$2);
-               drawPrimitive(PE_IndicatorArrowDown, &copy, painter, widget);
-               copy.rect.translate(-dpi.$2, -dpi.$2);
-            }
             
             QColor c;
             if (hover)
                c = COLOR(Highlight);
             else if (isEnabled)
-               c = midColor(COLOR(Base), COLOR(Text));
+               c = COLOR(Text);
             else
-               c = midColor(COLOR(Base), PAL.color(QPalette::Disabled, QPalette::Text));
+               c = midColor(COLOR(Base), QPalette::Text);
             
             painter->setPen(c);
             drawPrimitive(PE_IndicatorSpinDown, &copy, painter, widget);

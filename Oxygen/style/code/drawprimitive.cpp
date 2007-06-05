@@ -68,10 +68,10 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       break;
    case PE_PanelButtonCommand: // Button used to initiate an action, for example, a QPushButton.
    case PE_PanelButtonBevel: { // Generic panel with a button bevel.
-      const int $1 = dpi.$1, $2 = dpi.$2, $3 = dpi.$3;
-      bool isOn = option->state & State_On;
+      const int $4 = dpi.$4;
+      //bool isOn = option->state & State_On;
       const QStyleOptionButton* opt = qstyleoption_cast<const QStyleOptionButton*>(option);
-      bool isDefault = opt && (opt->features & QStyleOptionButton::DefaultButton);
+      //bool isDefault = opt && (opt->features & QStyleOptionButton::DefaultButton);
       
       int step = hoverStep(widget);
 
@@ -81,7 +81,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       // shadow
       shadows.button[sunken][step?step:hover*7].render(r, painter);
 
-      r.adjust(dpi.$4,dpi.$4,-dpi.$4,-dpi.$4);
+      r.adjust($4, $4, -$4, -$4);
 
       // background
       painter->setRenderHint(QPainter::Antialiasing,false);
@@ -104,7 +104,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       painter->setBrush(lg2);
       QRectF rf = r;
       rf.adjust(0.5, 0.5,-0.5,-0.5);
-      painter->drawRoundRect(rf, ceil(9*90.0/r.width()), ceil(9*90.0/r.height()));
+      painter->drawRoundRect(rf, int(ceil(9*90.0/r.width())), int(ceil(9*90.0/r.height())));
 
       // hover effect
       QRadialGradient rg = QRadialGradient(r.width()/2.0, 0.35*r.height(), qMax(r.width(),r.height())/2.0 - 5, r.width()/2.0, 0.35*r.height());
@@ -116,7 +116,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       rg.setStops(stops);
       painter->setPen(Qt::NoPen);
       painter->setBrush(rg);
-      painter->drawRoundRect(r, ceil(9*90.0/r.width()), ceil(9*90.0/r.height()));
+      painter->drawRoundRect(r, int(ceil(9*90.0/r.width())), int(ceil(9*90.0/r.height())));
       break;
    }
    case PE_PanelButtonTool: { // Panel for a Tool button, used with QToolButton.
@@ -205,11 +205,13 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          y[0] = RECT.y(); y[1] = RECT.bottom();
       }
       if (up) {
-         const QPoint points[3] =  { QPoint(x[0], y[1]), QPoint(x[1], y[1]), QPoint(x[2], y[0]) };
+         //  0.5 is to have sharp horizontal edges
+        const QPointF points[3] =  { QPointF(x[0], y[1]+0.5), QPointF(x[1], y[1]+0.5), QPointF(x[2], y[0]) };
          painter->drawPolygon(points, 3);
       }
       else {
-         const QPoint points[3] =  { QPoint(x[0], y[0]), QPoint(x[1], y[0]), QPoint(x[2], y[1]) };
+        //  0.5 is to have sharp horizontal edges
+         const QPointF points[3] =  { QPointF(x[0], y[0]-0.6), QPointF(x[1], y[0]-0.5), QPointF(x[2], y[1]) };
          painter->drawPolygon(points, 3);
       }
       if (hadNoBrush)
@@ -239,11 +241,12 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          x[0] = RECT.x(); x[1] = RECT.right();
       }
       if (up) { //right
-         const QPoint points[3] =  { QPoint(x[0], y[0]), QPoint(x[0], y[1]), QPoint(x[1], y[2]) };
+        //  0.5 is to have sharp vertical edge
+         const QPointF points[3] =  { QPointF(x[0]+0.5, y[0]), QPointF(x[0]+0.5, y[1]), QPointF(x[1], y[2]) };
          painter->drawPolygon(points, 3);
       }
       else {
-         const QPoint points[3] =  { QPoint(x[0], y[2]), QPoint(x[1], y[0]), QPoint(x[1], y[1]) };
+         const QPointF points[3] =  { QPointF(x[0], y[2]), QPointF(x[1]-0.5, y[0]), QPointF(x[1]-0.5, y[1]) };
          painter->drawPolygon(points, 3);
       }
       if (hadNoBrush)
