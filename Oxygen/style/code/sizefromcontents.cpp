@@ -108,12 +108,16 @@ QSize OxygenStyle::sizeFromContents ( ContentsType ct, const QStyleOption * opti
       if (const QStyleOptionButton *btn =
           qstyleoption_cast<const QStyleOptionButton *>(option)) {
          if (btn->text.isEmpty())
-//             3px for shadow & outline + 1px padding -> 4px per side
-            return ( QSize( contentsSize.width() + dpi.$8, contentsSize.height() + dpi.$8 ) );
+//            4 px for shadow & outline + 1px padding -> 5px per side
+            return ( QSize( contentsSize.width() + dpi.$10, contentsSize.height() + dpi.$10 ) );
          else {
             QSize sz = contentsSize;
-            return QSize((sz.width()+dpi.$20 < dpi.$80) ? dpi.$80 : contentsSize.width()+dpi.$20,
+            if (btn->icon.isNull())
+               return QSize((sz.width()+dpi.$20 < dpi.$80) ? dpi.$80 : contentsSize.width()+dpi.$20,
                          contentsSize.height()+dpi.$8);
+            else
+               return QSize((sz.width()+dpi.$20 < dpi.$80) ? dpi.$80 : contentsSize.width()+dpi.$20,
+                         contentsSize.height()+dpi.$10);
          }
       }
 //    case CT_RadioButton: // A radio button, like QRadioButton
