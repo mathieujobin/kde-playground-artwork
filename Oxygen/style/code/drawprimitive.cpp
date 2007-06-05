@@ -145,8 +145,9 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
           static_cast<const QStyleOptionFrame *>(option)->lineWidth < 1) {
          painter->fillRect(RECT, COLOR(Base)); break;
       }
+
       if (isEnabled) {
-         fillWithMask(painter, RECT.adjusted(0,0,0,0), COLOR(Base), &masks.button);
+         fillWithMask(painter, RECT, COLOR(Base), &masks.button);
          if (hasFocus) {
             painter->save();
             painter->setPen(QPen(COLOR(Highlight), dpi.$2));

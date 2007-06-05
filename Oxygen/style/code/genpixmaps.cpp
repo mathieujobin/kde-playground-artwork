@@ -69,7 +69,7 @@ void OxygenStyle::generatePixmaps()
    p.end();
    masks.button = Tile::Mask(tmp,$9_2,$9_2,$9-2*$9_2,$9-2*$9_2,0,0,0,0,90,90);
    
-   // -> sunken
+   // -> LINEEDIT
    QImage tmpImg($9,$9+$9, QImage::Format_ARGB32);
    
    for (int i = 0; i < 2; ++i) {
@@ -77,6 +77,8 @@ void OxygenStyle::generatePixmaps()
       tmpImg.fill(Qt::transparent);
    
       p.begin(&tmpImg);
+
+      // draw the shadows themselves, they appear on the inside naturally - as it's sunken
       p.setPen(Qt::NoPen);
       p.setRenderHint(QPainter::Antialiasing);
       rg = QRadialGradient($9/2.0,$9/2.0, dpi.$5, $9/2.0,$9/2.0+1.5*$1);
@@ -90,24 +92,29 @@ void OxygenStyle::generatePixmaps()
       rg.setStops(stops);
       p.setBrush(rg);
 
-      //p.setBrush(QColor(255,0,0,160));
       p.drawRoundRect(0,0,$9,$9,80,80);
-
-      // draw white edge at bottom
-      p.setBrush(QColor(255,255,255,160));
-      p.drawRoundRect(0,$9,$9,$9,80,80);
-
-      // erase innerpart of the white
-      p.setCompositionMode( QPainter::CompositionMode_Clear );
-      p.drawRoundRect(0,$9,$9,$9-$1,80,80);
-      p.eraseRect($2,$9_2,dpi.$5,dpi.$1);
-      p.setCompositionMode( QPainter::CompositionMode_SourceOver );
 
       // move the bottom part
       p.drawImage(QPoint(0,$9+dpi.$4), tmpImg, QRect(0,dpi.$5,$9,$9_2));
 
-p.eraseRect(0,dpi.$5,$9,dpi.$9); // repeat the side edges
-p.drawImage(QRect(0,dpi.$5,$9,dpi.$9), tmpImg, QRect(0,$9_2,$9,$1));
+      // draw white edge at bottom
+      p.setBrush(Qt::NoBrush);
+      p.setPen(QColor(255,255,255,160));
+      p.drawRoundRect(0,$9,$9,$9,80,80);
+      p.setPen(Qt::red);
+      p.setPen(QColor(255,255,255,210));
+      p.setRenderHint(QPainter::Antialiasing,false);
+      p.drawLine($1, $9+$9 -$2,$2, $9 + $9 - $3);
+      p.drawLine($9-$2, $9+$9 -$2, $9-$3, $9 + $9 - $3);
+      p.setRenderHint(QPainter::Antialiasing);
+      p.setPen(Qt::NoPen);
+
+      //  repeat the one good line we have for the next 9 lines (where we later draw the long shadow on top)
+      p.setCompositionMode( QPainter::CompositionMode_Source );
+      p.drawImage(QRect(0,dpi.$5,$9,dpi.$9), tmpImg, QRect(0,$9_2,$9,$1));
+      p.setCompositionMode( QPainter::CompositionMode_SourceOver );
+
+      // draw the shadow from the top and down
       lg = QLinearGradient(0,$3,0,dpi.$12);
       stops.clear();
       stops << QGradientStop( 0, QColor(106,56,0, 15) )
