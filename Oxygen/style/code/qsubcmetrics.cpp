@@ -511,8 +511,7 @@ QRect OxygenStyle::subElementRect ( SubElement element, const QStyleOption * opt
       return option->rect;//.adjusted(-10,0,10,0);
    case SE_ToolBoxTabContents: // Area for a toolbox tab's icon and label
       return QRect(); //kill the rect, we paint the content ourself
-   case SE_ViewItemCheckIndicator: // Area for a view item's check mark
-      return option->rect.adjusted(dpi.$3, dpi.$3, -dpi.$3, -dpi.$3);
+//   case SE_ViewItemCheckIndicator: // Area for a view item's check mark
 //    case SE_TabBarTearIndicator: // Area for the tear indicator on a tab bar with scroll arrows.
    default:
       return QCommonStyle::subElementRect ( element, option, widget);

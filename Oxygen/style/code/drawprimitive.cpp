@@ -585,6 +585,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
    case PE_IndicatorViewItemCheck: // On/off indicator for a view item
    case PE_Q3CheckListIndicator: // Qt 3 compatible Checkbox part of a list view item.
    case PE_IndicatorMenuCheckMark: { // Check mark used in a menu.
+      QRect rect;
       if (RECT.width() > RECT.height())
          rect.setRect(RECT.x()+(RECT.width()-RECT.height())/2, RECT.y(),
                       RECT.height()-1, RECT.height()-1);
