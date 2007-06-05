@@ -32,6 +32,9 @@
 #include <QShowEvent>
 #include <QPaintEvent>
 #include <QPainterPath>
+#include <QTimer>
+#include <QX11Info>
+#include <X11/Xatom.h>
 
 #include "oxygenclient.h"
 #include "oxygenclient.moc"
@@ -130,9 +133,12 @@ OxygenClient::~OxygenClient()
 // ------
 // Actual initializer for class
 
+static QTimer updateTimer;
+
 void OxygenClient::init()
 {
     createMainWidget(); //PORT  Qt::WResizeNoErase | Qt::WNoAutoErase);
+    widget()->setAutoFillBackground(true);
     widget()->installEventFilter(this);
 
     // setup layout
@@ -175,6 +181,14 @@ void OxygenClient::init()
     titlelayout->setMargin(0);
     mainlayout->setSpacing(0);
     mainlayout->setMargin(0);
+   
+    setDecoDim(TITLESIZE + TFRAMESIZE, BFRAMESIZE, LFRAMESIZE, RFRAMESIZE);
+    fallbackDeco = false;
+    xPic[0] = xPic[1] = xPic[2] = xPic[3] = 0L;
+    connect (&updateTimer, SIGNAL(timeout()), this, SLOT(updateDecoPics()));
+    if (!updateTimer.isActive())
+       updateTimer.start(250);
+
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -476,7 +490,7 @@ void OxygenClient::paintEvent(QPaintEvent*)
     QPalette palette = widget()->palette();
     QPainter painter(widget());
     painter.setRenderHint(QPainter::Antialiasing,true);
-
+#if 0
     // draw the titlebar+buttton background
     painter.fillRect(QRect(0,TFRAMESIZE,width(), TITLESIZE), palette.window());
 
@@ -490,14 +504,51 @@ void OxygenClient::paintEvent(QPaintEvent*)
 //    kDebug() << "focalPoint: " <<  mainRadialGradient.focalPoint() << endl;
 //    kDebug() << "radius: " <<  mainRadialGradient.radius() << endl;
     painter.fillRect(3, 3, width(), TFRAMESIZE*3, gradientBrush);
-
-    // draw title text
+#endif
+   
     QRect title(titlebar_->geometry());
+    // the background
+   
+   updateDecoPics();
+   
+   int x,y,w,h;
+   
+   if (fallbackDeco)
+      painter.fillRect(widget()->rect(), Qt::red);
+   else {
+      // explanation if you don't know render syntax:
+      //------------------------------------------------
+      // XRenderComposite (dpy, op,
+      // src.x11PictureHandle(), mask, dst.x11PictureHandle(),
+      // sx, sy, mx, my, dx, dy, w, h);
+      //=====================================================
+      widget()->rect().getRect(&x,&y,&w,&h);
+
+      Picture window = widget()->x11PictureHandle();
+      // left
+      XRenderComposite (QX11Info::display(), PictOpSrc, xPic[2], 0, window,
+                        0, 0, 0, 0, 0, 0, LFRAMESIZE, h);
+      // right
+      XRenderComposite (QX11Info::display(), PictOpSrc, xPic[3], 0, window,
+                        0, 0, 0, 0, w-RFRAMESIZE, 0, RFRAMESIZE, h);
+      
+      w -= (LFRAMESIZE + RFRAMESIZE);
+      
+      // top
+      XRenderComposite (QX11Info::display(), PictOpSrc, xPic[0], 0, window,
+                        0, 0, 0, 0, LFRAMESIZE, 0, w, TITLESIZE + TFRAMESIZE);
+      // bottom
+      XRenderComposite (QX11Info::display(), PictOpSrc, xPic[1], 0, window,
+                        0, 0, 0, 0, LFRAMESIZE, h-BFRAMESIZE, w, BFRAMESIZE);
+      XFlush(QX11Info::display()); // must be?! - the pictures will change soon
+   }
+    
+    // draw title text
     painter.setFont(options()->font(isActive(), false));
     painter.setBrush(palette.windowText());
     painter.drawText(title.x(), title.y(), title.width(), title.height(),
               OxygenFactory::titleAlign() | Qt::AlignVCenter, caption());
-
+#if 0
     // draw frame
     QRect frame(0, 0, width(), TFRAMESIZE);
     painter.fillRect(frame, palette.window());
@@ -507,6 +558,7 @@ void OxygenClient::paintEvent(QPaintEvent*)
     painter.fillRect(frame, palette.window());
     frame.setRect(width()-RFRAMESIZE, 0, RFRAMESIZE, height());
     painter.fillRect(frame, palette.window());
+#endif
     
     // Draw depression lines where the buttons are
     QLinearGradient grad1(LFRAMESIZE, TFRAMESIZE + title.height()/2, title.x(), TFRAMESIZE + title.height()/2);
@@ -532,8 +584,8 @@ void OxygenClient::paintEvent(QPaintEvent*)
 
     
     // shadows of the frame
-    frame = widget()->rect();
-    int x,y,w,h;
+    QRect frame = widget()->rect();
+//     int x,y,w,h;
     frame.getRect(&x, &y, &w, &h);
 //     painter.drawPoint(x2-2, y2-2);
 //     painter.drawPoint(x2-1, y2-3);
@@ -704,6 +756,84 @@ void OxygenClient::menuButtonPressed()
         if (!f->exists(this)) return; // decoration was destroyed
         button[ButtonMenu]->setDown(false);
     }
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// updateDecoPics()
+// -----------------
+// The function queries the X server for the location of the bg pixmaps
+// (XRender pictures), provided by the style
+// as these pictures can get lost or updated anytime (e.g. if the user
+// deselects the oxygen style), it's a slot and bound to a 250ms timer, i.e.
+// every quarter second we check if we're still using the proper and if not,
+// trigger a repaint
+
+void OxygenClient::updateDecoPics()
+{
+   if (readDecoPics())
+      widget()->update();
+}
+
+static const Atom oxygen_deco_top =
+XInternAtom(QX11Info::display(), "OXYGEN_DECO_TOP", False);
+static const Atom oxygen_deco_bottom =
+XInternAtom(QX11Info::display(), "OXYGEN_DECO_BOTTOM", False);
+static const Atom oxygen_deco_left =
+XInternAtom(QX11Info::display(), "OXYGEN_DECO_LEFT", False);
+static const Atom oxygen_deco_right =
+XInternAtom(QX11Info::display(), "OXYGEN_DECO_RIGHT", False);
+
+#define READ_PIC(_ATOM_, _CARD_)\
+   result = XGetWindowProperty(QX11Info::display(), windowId(), \
+                               _ATOM_, 0L, 1L, False, XA_CARDINAL, \
+                               &actual, &format, &n, &left, &data); \
+   if (result == Success && data != None) \
+      memcpy (&_CARD_, data, sizeof (unsigned int)); \
+   else {\
+      _CARD_ = 0; \
+      fallbackDeco = true;\
+   }//
+
+// this function reads out the Render Pictures the style should have stacked
+// onto the server
+//notice that on any read failure, we'll fall back to a simple deco
+
+bool OxygenClient::readDecoPics()
+{
+   fallbackDeco = false;
+   
+   unsigned char *data = 0;
+   Atom actual;
+   int format, result;
+   unsigned long n, left;
+
+// DON'T change the order atom -> pixmap
+   Picture oldPic = xPic[0];
+   READ_PIC(oxygen_deco_top, xPic[0]);
+   if (xPic[0] == oldPic) // there has been NO update
+      return false;
+   READ_PIC(oxygen_deco_bottom, xPic[1]);
+   READ_PIC(oxygen_deco_left, xPic[2]);
+   READ_PIC(oxygen_deco_right, xPic[3]);
+   
+   return true; // has been an update
+}
+
+static const Atom oxygen_decoDim =
+XInternAtom(QX11Info::display(), "OXYGEN_DECO_DIM", False);
+
+// this function tells the deco about how much oversize it should create for
+// the bg pixmap (each dim must be < 256)
+// it's called in init() and should be recalled whenever the sizes get changed
+// for some reason
+void OxygenClient::setDecoDim(int top, int bottom, int left, int right) {
+// DON'T change the order
+   int tmp = (top & 0xff) |
+             ((bottom & 0xff) << 8) |
+             ((left & 0xff) << 16) |
+             ((right & 0xff) <<24 );
+   XChangeProperty(QX11Info::display(), windowId(), oxygen_decoDim, XA_CARDINAL,
+   32, PropModeReplace, (unsigned char *) &(tmp), 1L);
 }
 
 } //namespace Oxygen
