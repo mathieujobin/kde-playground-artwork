@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <QDialogButtonBox>
 #include <QEvent>
 #include <QFrame>
 #include <QStyleOptionComboBox>
@@ -96,6 +97,8 @@ int OxygenStyle::styleHint ( StyleHint hint, const QStyleOption * option, const 
       return Qt::AlignTop;
 //    case SH_GroupBox_TextLabelColor: // How to paint a groupbox's text label.
 //    case SH_DialogButtons_DefaultButton: // Which button gets the default status in a dialog's button widget.
+   case SH_DialogButtonLayout:
+       return QDialogButtonBox::KdeLayout; //TODO: this should check what session type we are in
    case SH_ToolBox_SelectedPageTitleBold: // Boldness of the selected page title in a QToolBox.
       return true;
    case SH_LineEdit_PasswordCharacter: // The Unicode character to be used for passwords.
