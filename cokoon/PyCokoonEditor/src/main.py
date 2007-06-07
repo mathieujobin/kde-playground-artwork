@@ -6,7 +6,7 @@ from PyQt4 import QtCore, QtGui
 import sdi_rc
 from themespec import ThemeSpec
 from thememodel import ThemeModel
-from previewwidget import PreviewWidget
+#from previewwidget import PreviewWidget
 
 class MainWindow(QtGui.QMainWindow):
     sequenceNumber = 1
@@ -76,10 +76,8 @@ class MainWindow(QtGui.QMainWindow):
         
         dock = QtGui.QDockWidget(self.tr("Preview"), self)
         dock.setAllowedAreas(QtCore.Qt.LeftDockWidgetArea | QtCore.Qt.RightDockWidgetArea)
-        self.preview = PreviewWidget()
-        dock.setWidget(self.preview)
-#        self.themeView = QtGui.QTreeView(dock)
-#        dock.setWidget(self.themeView)
+#        self.preview = PreviewWidget()
+#        dock.setWidget(self.preview)
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
 
 #        TODO: Factor out self.textEdit
