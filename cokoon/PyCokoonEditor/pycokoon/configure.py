@@ -74,5 +74,5 @@ content = {
 
 # This creates the helloconfig.py module from the helloconfig.py.in
 # template and the dictionary.
-sipconfig.create_config_module("cokoonconfig.py", "cokoonconfig.py.in", content)
+#sipconfig.create_config_module("cokoonconfig.py", "cokoonconfig.py.in", content)
 
