@@ -179,8 +179,7 @@ void CokoonTest::evaluate()
 
 void CokoonTest::loadThemeDocument()
 {
-    Cokoon::Document doc;
-    DecorationThemeSpec::setupItems(&doc);
+    DecorationThemeSpec::SpecDocument doc;
     doc.loadTheme("TestDecoration.xml");
 
     ExpressionVariableHash vars;
@@ -215,8 +214,7 @@ void CokoonTest::loadThemeDocument()
 
 void CokoonTest::themeExpressionReferences()
 {
-    Cokoon::Document doc;
-    DecorationThemeSpec::setupItems(&doc);
+    DecorationThemeSpec::SpecDocument doc;
     doc.loadTheme("TestDecoration.xml");
 
     const int objId = DecorationThemeSpec::Button + DecorationThemeSpec::Button0_close +

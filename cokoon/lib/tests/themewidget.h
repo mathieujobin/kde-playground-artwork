@@ -23,6 +23,9 @@
 
 #include "../document.h"
 
+#include "ThemeWidgetSpec.h"
+
+
 class ThemeWidget : public QWidget
 {
     Q_OBJECT
@@ -31,7 +34,7 @@ class ThemeWidget : public QWidget
         ThemeWidget(const QString &fileName);
         virtual void paintEvent ( QPaintEvent * event );
     private:
-        Cokoon::Document m_doc;
+        ThemeWidgetSpec::SpecDocument m_doc;
 };
 
 #endif

@@ -14,7 +14,7 @@ kde4_automoc(${cokoontest_SRCS})
 
 kde4_add_executable(cokoontest ${cokoontest_SRCS})
 
-target_link_libraries(cokoontest  ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} )
+target_link_libraries(cokoontest  ${QT_QTSVG_LIBRARY} ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} )
 
 
 ########### next target ###############
@@ -25,7 +25,7 @@ kde4_automoc(${themewidget_SRCS})
 
 kde4_add_executable(themewidget ${themewidget_SRCS})
 
-target_link_libraries(themewidget  ${KDE4_KDECORE_LIBS} )
+target_link_libraries(themewidget  ${QT_QTSVG_LIBRARY} ${KDE4_KDECORE_LIBS} )
 
 endif(KDE4_BUILD_TESTS)
 

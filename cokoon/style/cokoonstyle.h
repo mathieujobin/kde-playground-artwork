@@ -24,6 +24,8 @@
 #include <document.h>
 #include <bridges.h>
 
+#include "CokoonStyleSpec.h"
+
 class CokoonStyle : public KStyle
 {
     public:
@@ -41,7 +43,7 @@ class CokoonStyle : public KStyle
                                          Option* kOpt = 0) const;
 
     protected:
-        Cokoon::Document theme;
+        CokoonStyleSpec::SpecDocument theme;
 };
 
 #endif // COKOON_STYLE_H

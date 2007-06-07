@@ -21,8 +21,6 @@
 
 #include "../document.h"
 
-#include "ThemeWidgetSpec.h"
-
 #include "themewidget.h"
 
 int main(int argc, char *argv[])
@@ -38,7 +36,6 @@ ThemeWidget::ThemeWidget(const QString &fileName)
     setWindowTitle(tr("Themed widget test..."));
     resize(400,400);
 
-    ThemeWidgetSpec::setupItems(&m_doc);
     m_doc.loadTheme(fileName);
 }
 void ThemeWidget::paintEvent ( QPaintEvent * event )

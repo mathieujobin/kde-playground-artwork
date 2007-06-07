@@ -1,5 +1,4 @@
 TODO:
-- Adapt to KDE library code guidelines
 - Move more error reporting into the theme parser
 - implement all Tile paint modes
 - Implementation of Bitmap tile source
@@ -20,7 +19,6 @@ TODO:
 - create dtd's for theme spec and theme description XML formats when they are becoming more stable
 
 Ideas:
-- KWin Decoration, KStyle, Theme library for use in custom widgets
 - GetHotNewStuff
 - Theme editor application. Basically something which edits the theme
   description file DOM and which offers instant preview (through plugins?).

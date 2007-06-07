@@ -24,7 +24,6 @@
 
 class QPainter;
 
-#include <kdelibs_export.h>
 #include "bridges.h"
 
 /**
@@ -59,9 +58,10 @@ class DocumentPrivate;
  *
  * @author Sandro Giessl <giessl@kde.org>
  */
-class KDEFX_EXPORT Document
+class Q_DECL_EXPORT Document
 {
     public:
+
         /**
          * Construct.
          */
@@ -72,103 +72,10 @@ class KDEFX_EXPORT Document
         virtual ~Document();
 
         /**
-         * @brief Used to 'declare' items and states.
-         *
-         * A theme specification can declare several 'items' that a theme
-         * should define. An item can have several 'states'. States are separated
-         * in 'state levels', so the actual state of an item is the combination
-         * of one state from each state level. For example, the item 'Button'
-         * could have the following states:
-         * @verbatim
-'item' | 'states 0' | 'states 1'
--------|------------|----------
-       |  enabled   |  normal
-Button +            +  pressed
-       |  disabled  |  hover @endverbatim
-         *
-         * This method normally doesn't need to be called manually. Usually a
-         * theme specification is defined in an XML file, which is then
-         * converted to an include file (using tools/gen-themespec-include.rb).
-         * In this file, a function SpecNameSpace::setupItems() is defined, which
-         * takes care of the theme specification.
-         * 
-         * This is used to provide initial
-         * states for object id autocompletion in themes.
-         * Additionally, it offers access to object based on int ids.
-         * @param objName The id of the "root item".
-         * @param objStates A QList of a QHash with several state levels. The hash
-         * key are all states of a specific state level. The hash value are the
-         * ids of the state.
-         * @return the int id of the "root item".
-         * @sa obj(int)
-         */
-        int declareObject(const QString &objName, QList<QHash<QString,int> > objStates);
-
-        /**
-         * Used to 'declare' identifiers.
-         *
-         * In order to use variables in expressions from a theme, they need
-         * to be declared first. This is usually done automatically by
-         * the auto-generated theme specification in SpecNameSpace::setupItems().
-         * @param varId The identifier of the variable.
-         * @param varIndex The index used to access the variable value.
-         * @sa declareObject()
-         * @sa ExpressionVariableBridge
-         */
-        void declareVariable(const QString &varId, int varIndex);
-
-        /**
-         * Used to 'declare' identifiers.
-         *
-         * In order to access object properties by id, they need to be
-         * declared before loading a theme. This is usually done
-         * automatically by the auto-generated theme specification in
-         * SpecNameSpace::setupItems().
-         *
-         * @param id The identifier of the expression.
-         * @param index The index used to access the expression. If -1, an
-         * id will be chosen automatically.
-         * @return The index of the newly declared identifier.
-         * 
-         */
-        int declareIdentifier(const QString &id, int index = -1);
-
-        /**
-         * @return the index of variable @p id, or -1 if the
-         * variable has not been declared yet.
-         */
-        int getVariableIndex(const QString &id) const;
-
-        /**
-         * @return The index of identifier @p id , or -1 if the identifier has not
-         * been declared yet.
-         */
-        int getIdentifierIndex(const QString &id) const;
-
-        /**
-         * @returns The id of the "root item", or -1 if it has not been declared.
-         * @sa declareObject()
-         */
-        int declarationItemId(const QString &objName) const;
-	/**
-	 * @return the count of state levels for item @p itemId
-	 */
-	int declarationItemStateLevels(int itemId) const;
-        /**
-         * @param objId The id of the "root item"
-         * @param level The state level.
-         * @returns The list of states of a specific state level.
-         * @sa declareObject()
-         */
-        const QHash<QString,int> declarationStates(int objId, int level);
-
-        /**
          * Read file @p themeFile and construct a theme document from it.
          *
-         * Be sure to make the theme specification objects and states available
-         * first, using declareObject() ; otherwise, e.g. the id autocompletion
-         * for definition of multiple spec objects at once will not
-         * work - it's likely that this will break most themes!
+         * Be sure to provide a proper theme specification by subclassing
+         * this class.
          */
         void loadTheme(const QString &themeFile);
 
@@ -238,11 +145,157 @@ Button +            +  pressed
 	QVariant getExpValue(int objId, int expressionId,
 			     const ExpressionVariableBridge *vars = 0) const;
 
+        /**
+         * @see mapToId()
+         */
+        enum DeclarationType {
+            ObjectNameDecl, ///< 
+            VariableDecl,
+            IdentifierDecl
+        };
+
+protected:
+
+        /**
+         * Cokoon themes specify various items using string identifiers. In order
+         * to provide faster access times, they are mapped to integer identifers
+         * when loading a theme.
+         *
+         * Reimplement this Theme Specification method.
+         *
+         * @param type specifies what kind of identifier should be mapped.
+         * @returns the Id of the declaration, or -1 if the identifier @p str has not been declared yet.
+         *
+         * @sa declareIdMapping()
+         *
+         */
+        virtual int mapToId(DeclarationType type, const QString &str) const;
+	/**
+         * Reimplement this Theme Specification method.
+         *
+	 * @returns the count of state levels for object @p objId
+         * @sa mapObjectStateToId()
+	 */
+        virtual int objectStateLevels(int objId) const;
+        /**
+         * Reimplement this Theme Specification method.
+         *
+         * @returns the number of states in a state level.
+         * @sa mapObjectStateToId()
+	 */
+        virtual int objectStateLevelStates(int objId, int stateLevel) const;
+        /**
+         * @brief Theme Specification of possible states for a given object.
+         *
+         * Every object can have several states. These states can be
+         * exclusive (e.g. enabled or disabled) and supplemental
+         * (e.g. enabled and normal, or enabled and pressed). This
+         * concept is central to Cokoon themes.
+         *
+         * Exclusive states can be thought of being in the same @p
+         * stateLevel, or column, while supplemental states are kept
+         * in a separate state level.
+         *
+         * For example, an object 'Button' could have the following states:
+@verbatim
+object | level 0    | level 1
+-------|------------|----------
+       |  enabled   |  normal
+Button +            +  pressed
+       |  disabled  |  hover @endverbatim
+         * In a theme these would expand into six object definitions
+         * (Button.enabled.normal, Button.disabled.normal,
+         * Button.enabled.pressed, ...). (Note that in theme
+         * definitions Button.*.normal would expand into
+         * Button.enabled.normal and Button.disabled.normal)
+         *
+         *Theme Engines are required to implement this method, mapping
+         *a specific state to a unique integer ID. This is necessary
+         *in order to access specific object states later. It is
+         *essential to keep in mind the following:
+         *@li Those 'specific
+         *object states' are built by adding the values of the object
+         *ID, and one state ID from each state
+         *level. e.g. "Button.disabled.pressed" would be calculated
+         *using
+@code
+int objId = mapToId(Document::ObjectName,"Button");
+int actualObject = objId + mapObjectStateToId(objId,0,"enabled")+
+                              mapObjectStateToId(objId,1,"pressed")@endcode
+         *@li All object and states expanded, the IDs of every
+         *'specific object state' must be unique
+         * @li A simple example of valid IDs:
+@verbatim
+Button   := 0
+enabled  := 0*2^1
+disabled := 1*2^1
+normal   := 0*2^2
+pressed  := 1*2^2
+hover    := 2*2^2@endverbatim
+
+         * Usually it is not necessary to write the implementation
+         * manually, since it can be generated automatically from an
+         * XML specification file (e.g. using
+         * tools/gen-themespec-include.rb)
+         * 
+         * @param objId The id of the object.
+         * @param stateLevel The state level.
+         * @param stateName The name that should be mapped to an ID.
+         * @return the int id of the state item, or -1 if the state has
+         * not been specified.
+         *
+         * @sa obj(int)
+         */
+        virtual int mapObjectStateToId(int objId, int stateLevel, const QString &stateName) const = 0;
+        /**
+         * Like mapObjectStateToId above, mapping from the state number
+         * (within one stateLevel) instead of name string to the absolute ID.
+         *
+         * @param objId The id of the object.
+         * @param stateLevel The state level.
+         * @param stateNumber The number (counting from 0) that should
+         * be mapped to an ID.
+         * @return the int id of the state item, or -1 if the state has
+         * not been specified.
+         *
+         * @sa obj(int)
+         */ 
+        virtual int mapObjectStateToId(int objId,int stateLevel, int stateNumber) const = 0;
+
+        /**
+         * When sublassing Document and overwriting mapToId(), it is usually
+         * also necessary to overwrite this method. It will be used
+         * in declareIdMapping() to create new unique Ids for custom items
+         * declared in themes.
+         *
+         * @param type specifies the what kind of identifier base is requested.
+         *
+         * @sa mapToId()
+         */
+        virtual int customIdMappingBase(DeclarationType type) const;
+
+        /**
+         * Used to 'declare' custom identifiers from the Cokoon Theme.
+         * Usually one doesn't need to touch this method, when loading
+         * themes using loadTheme(), since it will take care of declaring
+         * new identifiers.
+         *
+         * It's not possible to declare identifiers of type VariableDecl,
+         * since it only makes sense to declare variables in the
+         * theme specification (overwriting mapToId() and customIdMappingBase() ).
+         *
+         * @param type specifies what kind of identifier should be mapped.
+         * @param str The identifier of the expression.
+         * @return The index of the newly declared identifier.
+         */
+        int declareIdMapping(DeclarationType type, const QString &str);
+
     private:
         friend class Object;
 	friend class DocumentHandler;
 	friend class ObjectRefBridge;
 	friend class CustomExpBase;
+        friend class DocumentPrivate;
 
         /**
          * Insert an object into the document. The document will take care of
@@ -250,15 +303,11 @@ Button +            +  pressed
          * could not be inserted (e.g. because the @p objId already exists),
          * it will do nothing, so be sure to check Object::docRefCount() after
          * insertion and free memory yourself.
-         * @param objId The absolute object identification. It is expected to
-         * have the following form (Button example from declareObject() ): @verbatim
-'item'.'state 0'.'state 1'
-Button.enabled.normal
-Button.disabled.pressed
-etc. @endverbatim
+         * @param objId object ID as declared in mapToId()
+         * @param objStates object states as specified in mapObjectStatesToId()
          * @param obj The actual object.
          */
-        void insertObject(const QString &objId, Object *obj);
+        void insertObject(int objId, const QList<int> &objStates,Object *obj);
 
         /**
          * @param id The absolute id of the object.
@@ -270,13 +319,9 @@ etc. @endverbatim
         /**
          * This is the preferred access method for clients using the theme library.
          * @param id The id of the object. It is calculated from enum values
-         * which have been generated from the theme specification. Calculation
-         * is done like e.g.: @verbatim
-Button + Button0_enabled  + Button1_normal
-Button + Button0_disabled + Button1_pressed
-etc. @endverbatim
+         * which have been gathered from mapToId() and mapObjectStatesToId().
          * @return The object or 0 if it doesn't exist.
-         * @sa declareObject()
+         * @sa mapObjectStatesToId()
          */
         const Object *obj(int id) const;
 

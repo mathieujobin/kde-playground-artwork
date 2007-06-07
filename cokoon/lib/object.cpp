@@ -55,12 +55,12 @@ namespace Cokoon {
 
         if ( !ref.startsWith( '.' ) ) {
             QString itemIdStr = ref.section( '.', 0, 0 );
-            int itemId = obj->doc()->declarationItemId( itemIdStr );
+            int itemId = obj->doc()->mapToId(Document::ObjectNameDecl, itemIdStr );
 
             if ( itemId == -1 )
                 return 0;
 
-            int itemStateLevels = obj->doc()->declarationItemStateLevels( itemId );
+            int itemStateLevels = obj->doc()->objectStateLevels(itemId);
 
             if ( itemStateLevels < 0 )
                 return 0;
@@ -96,7 +96,7 @@ namespace Cokoon {
         if ( ref.startsWith( ".t." ) ) {
 
             QString tileIdStr = ref.section( '.', 2, 2 );
-            int tileId = obj->doc()->getIdentifierIndex(tileIdStr);
+            int tileId = obj->doc()->mapToId(Document::IdentifierDecl, tileIdStr);
 
             const Tile *t = obj->tile( tileId );
             if (t) {
@@ -114,7 +114,7 @@ namespace Cokoon {
         } else  {
 
             QString expressionIdStr = ref.section( '.', 1, 1 );
-            int expressionId = obj->doc()->getIdentifierIndex( expressionIdStr );
+            int expressionId = obj->doc()->mapToId(Document::IdentifierDecl, expressionIdStr );
 
             const Expression *e = obj->expression( expressionId );
             if ( e ) {
@@ -334,7 +334,7 @@ QVariant Object::evalExpression(int id,
     }
 }
 
-Object::Object(Document *doc, const QString &inherit)
+Object::Object(Document *doc, int inheritId, const QString &inherit)
     : m_inherit(0), m_paintLayersSet(false), m_doc(doc), m_valid(false),
       m_docRefCount(0), m_paintWidth(QVariant()), m_paintHeight(QVariant())
 {
@@ -343,10 +343,10 @@ Object::Object(Document *doc, const QString &inherit)
         return;
     }
 
-    if (!inherit.isEmpty()) {
-        m_inherit = doc->obj(inherit);
+    if (inheritId != -1) {
+        m_inherit = doc->obj(inheritId);
         if (m_inherit == 0) {
-            qCritical("Object can not inherit '%s' because it does not exist!", qPrintable(inherit) );
+            qCritical("Object can not inherit '%s' (ID %d) because it does not exist!", qPrintable(inherit), inheritId );
             return;
         }
     }

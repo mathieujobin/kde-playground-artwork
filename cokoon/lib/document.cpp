@@ -41,25 +41,25 @@ namespace Cokoon {
 class DocumentPrivate : public ExpressionVariableIndexFactory
 {
 public:
+    DocumentPrivate(Document *doc) : m_doc(doc)
+    {
+    }
+
     /**
      * Implementation of the abstract ExpressionVariableIndexBridge interface.
      */
     virtual int getVariableIndex(const QString &id) const
     {
-        if (declVariables.contains(id) )
-            return declVariables.value(id);
-        else
-            return -1;
+        return m_doc->mapToId(Document::VariableDecl, id);
     }
 
-    QHash<QString, Object*> objects;
+    Document *m_doc;
+
     QHash<int, Object*> specIndex;
 
     // theme spec declaration (multiple string/int IDs can point to
     // one Object, e.g. with declarations like Button.*.*
-    QHash<QString, int> objItems;
-    QList<QList<QHash<QString,int> > > objStates;
-
+    QHash<QString, int> declObjNames;
     QHash<QString, int> declVariables;
     QHash<QString, int> declId;
 
@@ -109,50 +109,86 @@ class DocumentHandler : public QXmlDefaultHandler
             if (m_context == DocumentStart && qName == "cokoon_theme") {
                 m_context = Theme;
             } else if (m_context == Theme && qName == "object") {
-                QString objId = attributes.value("id");
-                QString objInherit = attributes.value("inherit");
+                QString objIdStr = attributes.value("id");
+                QString objInheritStr = attributes.value("inherit");
 
-                QStringList objIdStates = objId.split(".");
+                QStringList objStatesString = objIdStr.split(".");
 
-                // auto-complete the inheritance string
-                if (!objInherit.isEmpty() ) {
-                    QStringList inheritNodes = objInherit.split(".");
 
-                    for (int i = 0; i < inheritNodes.size(); ++i) {
-                        if (inheritNodes[i].isEmpty() ) {
-                            if (!objIdStates[i].isEmpty() && objIdStates[i] != "*") {
-                                inheritNodes[i] = objIdStates[i];
-                            } else {
-                                qCritical("%s: Unable to complete 'inherit' (%s): The according section must be specified in 'id'.", qPrintable(objId), qPrintable(objInherit) );
-                                return false;
-                            }
+                // translate the string identifier to integer identifiers
+                int objId = m_doc->mapToId(Document::ObjectNameDecl,
+                                                 objStatesString.at(0) );
+                if (objId == -1) {
+                    if (objStatesString.size() > 1) {
+                        // only objects defined in the theme spec can have 'states'
+                        qCritical("%s: invalid object id: object name not defined in the theme specification. only specified objects can have states.", qPrintable(objIdStr) );
+                        return false;
+                    } else {
+                        // declare custom object...
+                        objId = m_doc->declareIdMapping(Document::ObjectNameDecl,
+                                                        objStatesString.at(0));
+                    }
+                }
+
+                QList<int> objStates;
+                for (int i = 1; i < objStatesString.size(); ++i) {
+                    int stateId = -1;
+                    QString stateStr = objStatesString.at(i);
+                    if (stateStr == "*") {
+                        stateId = -1;
+                    } else {
+                        stateId = m_doc->mapObjectStateToId(objId, i-1,
+                                                            stateStr);
+                        if (stateId == -1) {
+                            qCritical("%s: state '%s' not defined in the theme specification.", qPrintable(objIdStr), qPrintable(stateStr));
+                            return false;
                         }
                     }
 
-                    objInherit = inheritNodes.join(".");
+                    objStates.append(stateId);
                 }
 
-                if (objId.indexOf("*") != -1) {
-                    // multiple objects defined at once; expand ids and for each
-                    // id insert the same object. Thanks to docRefCount this
-                    // will not cause any trouble.
-                    QString itemIdStr = objIdStates.at(0);
-
-                    int itemId = m_doc->declarationItemId(itemIdStr);
-                    if (itemId == -1) {
-                        qDebug() << itemIdStr;
-                        qCritical("%s: Multiple object id invalid: First node must be specified and exist.", qPrintable(objId) );
+                // build the inherit object ID
+                int objInheritAbsoluteId = -1;
+                if (!objInheritStr.isEmpty()) {
+                    int objInheritObjId;
+                    QStringList objInheritStrs = objInheritStr.split(".");
+                    if (objInheritStrs[0].isEmpty()) {
+                        objInheritObjId = objId;
+                    } else {
+                        objInheritObjId = m_doc->mapToId(Document::ObjectNameDecl, objInheritStrs[0]);
+                    }
+                    if (objInheritObjId == -1) {
+                        qCritical("%s: Inherit object (%s) does not exist.",
+                                  qPrintable(objIdStr), qPrintable(objInheritStr));
                         return false;
                     }
+                    objInheritAbsoluteId = objInheritObjId;
+                    for (int i = 1; i < objInheritStrs.size(); ++i) {
+                        const int si = i-1; // same column in the state list
+                        if (objInheritStrs[i].isEmpty() ) {
+                            if (objStates.size()<=si || objStates[si] == -1) {
+                                qCritical("%s: Unable to complete 'inherit' (%s): The according section (%d) must be specified in 'id'.", qPrintable(objIdStr), qPrintable(objInheritStr), i );
+                                return false;
+                            }
+                            objInheritAbsoluteId += objStates[si];
 
-                    m_currentObj = new Object(m_doc, objInherit );
+                        } else {
+                            int stateId = m_doc->mapObjectStateToId(objInheritObjId,si, objInheritStrs[i]);
+                            if (stateId == -1) {
+                                qCritical("%s: Unable to complete 'inherit' (%s): section %d must be specified in 'id'.", qPrintable(objIdStr), qPrintable(objInheritStr), i );
+                                return false;
+                            }
+                            objInheritAbsoluteId += stateId;
+                        }
+                    }
 
-                    insertMultiObjectDef(itemId, objIdStates, 1, m_currentObj);
-
-                } else {
-                    m_currentObj = new Object(m_doc, objInherit );
-                    m_doc->insertObject(objId, m_currentObj);
                 }
+
+
+                m_currentObj = new Object(m_doc, objInheritAbsoluteId, objInheritStr);
+                m_doc->insertObject(objId, objStates, m_currentObj);
+
 
                 if (m_currentObj->docRefCount() < 1) {
                     delete m_currentObj;
@@ -232,7 +268,7 @@ class DocumentHandler : public QXmlDefaultHandler
 
                 // check if the source exists
                 const QString sourceIdStr = attributes.value("source_id");
-                const int sourceId = m_doc->getIdentifierIndex(sourceIdStr);
+                const int sourceId = m_doc->mapToId(Document::IdentifierDecl, sourceIdStr);
                 const Object *so = sourceObj;
                 if (!so) {
                     so = m_currentObj;
@@ -275,7 +311,7 @@ class DocumentHandler : public QXmlDefaultHandler
 
                 // check if the layout exists
                 const QString layoutIdStr = attributes.value("layout_id");
-                const int layoutId = m_doc->getIdentifierIndex(layoutIdStr);
+                const int layoutId = m_doc->mapToId(Document::IdentifierDecl, layoutIdStr);
                 const Object *lo = layoutObj;
                 if (!lo) {
                     lo = m_currentObj;
@@ -335,7 +371,7 @@ class DocumentHandler : public QXmlDefaultHandler
 
                     // check if the tile exists
                     const QString tileIdStr = attributes.value("tile_id");
-                    const int tileId = m_doc->getIdentifierIndex(tileIdStr);
+                    const int tileId = m_doc->mapToId(Document::IdentifierDecl, tileIdStr);
                     const Object *to = tileObj;
                     if (!to) {
                         to = m_currentLayout->obj();
@@ -348,7 +384,8 @@ class DocumentHandler : public QXmlDefaultHandler
 
                     m_currentLayout->addTileCell(tileObj, tileId);
                 } else if (cellType == "special") {
-                    const int id = m_doc->getIdentifierIndex(attributes.value("special_id") );
+                    const int id = m_doc->mapToId(Document::IdentifierDecl,
+                                                        attributes.value("special_id") );
                     if (id == -1) {
                         qCritical("special_id not specified or invalid!");
                         return false;
@@ -423,9 +460,9 @@ class DocumentHandler : public QXmlDefaultHandler
 
     private:
         int declareAndGetIdIndex(const QString &id) {
-            int idx = m_doc->getIdentifierIndex(id);
+            int idx = m_doc->mapToId(Document::IdentifierDecl, id);
             if (idx == -1) {
-                idx = m_doc->declareIdentifier(id);
+                idx = m_doc->declareIdMapping(Document::IdentifierDecl, id);
             }
             return idx;
         }
@@ -483,39 +520,6 @@ class DocumentHandler : public QXmlDefaultHandler
             return true;
         }
 
-        bool insertMultiObjectDef(int itemId, QStringList objStates, int section, Object *obj)
-        {
-            while (section < objStates.count() &&
-                   m_doc->declarationStates(itemId,section-1).contains(objStates[section]) ) {
-                ++section;
-            }
-
-            if (section >= objStates.count() ) {
-                QString id = objStates.join(".");
-                // definitions of multiple objects can never overwrite already existing
-                // objects.
-                if (m_doc->obj(id) == 0) {
-                    m_doc->insertObject(id, obj);
-                }/* else {
-                    qDebug() << "Skipping inserting object" << id << "because it has already been defined.";
-                }*/
-            } else if (objStates[section] == "*") {
-                QHashIterator<QString,int> i(m_doc->declarationStates(itemId,section-1) );
-                while (i.hasNext()) {
-                    i.next();
-
-                    objStates[section] = i.key();
-                    if (! insertMultiObjectDef(itemId, objStates, section, obj) )
-                        return false;
-                }
-            } else {
-                qCritical("%s: Multiple object id invalid: state '%s' (sec %d) has not been declared.", qPrintable(objStates.join(".")), qPrintable(objStates[section]), section );
-                return false;
-            }
-
-            return true;
-        }
-
         DocumentContext m_context;
         bool m_inTheme;
         Object *m_currentObj;
@@ -527,7 +531,7 @@ class DocumentHandler : public QXmlDefaultHandler
 
 
 Document::Document()
-    : d( new DocumentPrivate )
+    : d( new DocumentPrivate(this) )
 {
 }
 
@@ -538,18 +542,12 @@ Document::~Document()
 
 void Document::clear()
 {
-    Object *o;
-    foreach(o, d->objects) {
-        unrefObj(o);
-    }
-    d->objects.clear();
-    foreach(o, d->specIndex) {
+    foreach(Object *o, d->specIndex) {
         unrefObj(o);
     }
     d->specIndex.clear();
 
-    d->objItems.clear();
-    d->objStates.clear();
+    d->declObjNames.clear();
     d->declVariables.clear();
     d->declId.clear();
 }
@@ -586,7 +584,30 @@ void Document::loadTheme(const QString &fileName)
 
 const Object *Document::obj(const QString &id) const
 {
-    return d->objects.value(id);
+    QStringList objStrs = id.split(".");
+
+    int objId = mapToId(Document::ObjectNameDecl, objStrs[0]);
+
+    if (objId == -1) {
+        qCritical("%s: object (%s) does not exist.",
+                  qPrintable(id), qPrintable(objStrs[0]));
+        return 0;
+    }
+
+    int objAbsoluteId = objId;
+
+    for (int i = 1; i < objStrs.size(); ++i) {
+        const int si = i-1; // same column in the state list
+        int stateId = mapObjectStateToId(objId,si, objStrs[i]);
+        if (stateId == -1) {
+            qCritical("%s: object state '%s' (level %d) does not exist.",
+                      qPrintable(id), qPrintable(objStrs[i]), i );
+            return 0;
+        }
+        objAbsoluteId += stateId;
+    }
+
+    return obj(objAbsoluteId);
 }
 
 const Object *Document::obj(int id) const
@@ -612,111 +633,118 @@ void Document::unrefObj(Object *o)
         delete o;
 }
 
-void Document::insertObject(const QString &objId, Object *obj)
+void Document::insertObject(int objId, const QList<int> &objStates,
+                            Object *obj)
 {
     if (!obj) {
         qFatal("Document::insertObject: item to insert is 0!");
         return;
     }
 
-    if (d->objects.contains(objId) ) {
-        qCritical("Document::insertObject: Could not insert object because id '%s' has already been defined.", qPrintable(objId) );
-        return;
-    }
+    // Traverse the objStates list. If all states are set (!= -1),
+    // then every loop is skipped using break at the beginning.
+    // Otherwise (-1, meaning a wildcard), insertObject calls itself
+    // recursively for all states in the state level, and
+    // skips the rest of the current insertObject call using return;
+    for (int i = 0; i < objStates.size(); ++i) {
+        if (objStates.at(i) != -1) {
+            break;
+        } else {
 
-    d->objects.insert(objId, obj);
-    refObj(obj);
+            // current state level is a wildcard (-1)
 
-    // try to insert the same object with numerical id as well.
-    QStringList objStates = objId.split(".");
-    int itemId = declarationItemId(objStates[0] );
-    if (itemId != -1) {
-        bool isSpecObject = true;
-        int specIndex = itemId+1;
-
-        QHash<QString,int> stateLvl;
-        for (int i = 0; isSpecObject && i < d->objStates.at(itemId).size(); ++i) {
-            if ((i+1) >= objStates.size() ||
-                 !d->objStates.at(itemId).at(i).contains(objStates.at(i+1) ) ) {
-                isSpecObject = false;
-                continue;
-            } else {
-                specIndex += d->objStates.at(itemId).at(i).value(objStates.at(i+1) );
+            if (mapObjectStateToId(objId, i, 0) == -1) {
+                qFatal("Document::insertObject: state level %d not defined in the theme specification.", i);
             }
-        }
 
-        if (isSpecObject) {
-            if (d->specIndex.contains(specIndex) ) {
-                qCritical("Document::insertObject: Could not insert object because numerical id '%d' has already been defined.", specIndex );
-            } else {
-                d->specIndex.insert(specIndex, obj);
-                refObj(obj);
+            int j = 0;
+            int stateId = -1;
+            QList<int> newObjStates = objStates;
+            while ((stateId = mapObjectStateToId(objId, i, j++)) != -1) {
+                newObjStates[i] = stateId;
+                insertObject(objId, newObjStates, obj);
             }
+
+            return;
         }
     }
-}
 
-int Document::declareObject(const QString &objName, QList<QHash<QString,int> > objStates)
-{
-    int objId = d->objStates.size();
-    d->objItems.insert(objName, objId );
-    d->objStates.append(objStates);
+    // All state items have been set. Inserting the object now.
+    // construct the final obj()-id
+    int objAccessIndex = objId;
+    foreach(int stId, objStates) {
+        objAccessIndex += stId;
+    }
 
-    return objId;
-}
-
-void Document::declareVariable(const QString &varId, int varIndex)
-{
-    d->declVariables.insert(varId, varIndex);
-}
-
-int Document::declareIdentifier(const QString &id, int index)
-{
-    if (index != -1) {
-        d->declId.insert(id, index);
-//         qDebug() << "declare " << id << index;
-        return index;
+    if (d->specIndex.contains(objAccessIndex) ) {
+        qCritical("Document::insertObject: Could not insert object because numerical id '%d' has already been defined.", objAccessIndex );
     } else {
-        int idx = d->declId.size();
-        d->declId.insert(id, idx);
-//         qDebug() << "declare " << id << idx;
+//                 qDebug() << "insertObject:" << objId << specIndex;
+        d->specIndex.insert(objAccessIndex, obj);
+        refObj(obj);
+    }
+}
+
+int Document::mapToId(DeclarationType type, const QString &str) const
+{
+    switch(type) {
+    case ObjectNameDecl:
+        if (d->declObjNames.contains(str) )
+            return d->declObjNames.value(str);
+        else
+            return -1;
+    case VariableDecl:
+        if (d->declVariables.contains(str) )
+            return d->declVariables.value(str);
+        else
+            return -1;
+    case IdentifierDecl:
+        if (d->declId.contains(str) )
+            return d->declId.value(str);
+        else
+            return -1;
+    }
+    return -1;
+}
+
+
+int Document::customIdMappingBase(DeclarationType type) const
+{
+    return 0;
+}
+
+int Document::declareIdMapping(DeclarationType type, const QString &str)
+{
+    switch(type) {
+    case ObjectNameDecl:
+    {
+        int idx = customIdMappingBase(ObjectNameDecl) + d->declObjNames.size();
+        d->declObjNames.insert(str, idx);
+        /* qDebug() << "declare objectName " << str << idx; */
         return idx;
     }
-}
-
-int Document::getVariableIndex(const QString &id) const
-{
-    return d->getVariableIndex( id );
-}
-
-int Document::getIdentifierIndex(const QString &id) const
-{
-    if (d->declId.contains(id) )
-        return d->declId.value(id);
-    else
-        return -1;
-}
-
-int Document::declarationItemId(const QString &objName) const
-{
-    if (d->objItems.contains(objName) )
-        return d->objItems.value(objName);
-    else
-        return -1;
-}
-
-    int Document::declarationItemStateLevels( int itemId ) const
+    case VariableDecl:
+        return -1; // Themes can't declare variables
+    case IdentifierDecl:
     {
-        return d->objStates.at( itemId ).size();
+        int idx = customIdMappingBase(IdentifierDecl) + d->declId.size();
+        d->declId.insert(str, idx);
+        // qDebug() << "declare " << id << idx;
+        return idx;
+    }
     }
 
-const QHash<QString,int> Document::declarationStates(int objId, int level)
+    return -1;
+}
+
+int Document::objectStateLevels(int objId) const
 {
-    if (d->objStates.size() > objId && d->objStates.at(objId).size() > level ) {
-        return d->objStates.at(objId).at(level);
-    } else {
-        return QHash<QString,int>();
-    }
+    return -1;
+}
+
+int Document::objectStateLevelStates(int objId, int stateLevel) const
+{
+    return -1;
 }
 
 void Document::drawLayers(int objId,

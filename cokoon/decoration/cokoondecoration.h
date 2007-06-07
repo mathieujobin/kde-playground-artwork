@@ -29,6 +29,8 @@
 #include <document.h>
 #include <bridges.h>
 
+#include "CokoonDecorationSpec.h"
+
 class Cokoon::Object;
 
 namespace KWinCokoon {
@@ -51,7 +53,7 @@ public:
 
     QList< Handler::BorderSize >  borderSizes() const;
 
-    Cokoon::Document theme;
+    CokoonDecorationSpec::SpecDocument theme;
     bool menuClose;
     bool customBtnSize;
     bool respectBorderSize;

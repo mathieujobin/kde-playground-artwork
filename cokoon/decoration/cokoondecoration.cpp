@@ -29,7 +29,6 @@
 
 #include "cokoondecoration.h"
 
-#include "CokoonDecorationSpec.h"
 
 using namespace CokoonDecorationSpec;
 
@@ -55,7 +54,6 @@ bool Handler::reset(unsigned long changed)
 
     // load theme...
     theme.clear();
-    CokoonDecorationSpec::setupItems(&theme);
     // TODO: locate themes using .desktop file
     theme.loadTheme("/home/k4dev/src/playground-artwork/cokoon/decoration/TestTheme.xml");
 

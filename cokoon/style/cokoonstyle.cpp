@@ -31,7 +31,6 @@
 
 #include "cokoonstyle.h"
 
-#include "CokoonStyleSpec.h"
 
 K_EXPORT_STYLE("Cokoon", CokoonStyle)
 
@@ -41,7 +40,6 @@ CokoonStyle::CokoonStyle()
 {
     // load theme...
     theme.clear();
-    CokoonStyleSpec::setupItems(&theme);
     // TODO: !!! locate themes using .desktop file or something...
     theme.loadTheme("/home/k4dev/src/playground-artwork/cokoon/style/TestTheme/TestTheme.xml");
 
@@ -1102,7 +1100,7 @@ void CokoonStyle::drawKStylePrimitive(WidgetType widgetType, int primitive,
 
                 case MenuItem::CheckOff:
                 {
-                    
+
                     drawKStylePrimitive(WT_CheckBox, CheckBox::CheckOff, opt, r, pal, flags, p, widget);
                     return;
                 }

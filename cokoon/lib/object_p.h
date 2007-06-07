@@ -204,7 +204,7 @@ class Object
         /**
          * Construct.
          */
-        Object(Document *doc, const QString &inherit = QString() );
+    Object(Document *doc, int inheritId = -1, const QString &inherit = QString() );
         /**
          * Destruct.
          */
