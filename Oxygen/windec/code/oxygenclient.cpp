@@ -59,34 +59,12 @@ namespace Oxygen
 
 
 
-// this method "stolen" from Plastik theme
 void renderDot(QPainter *p, const QPointF &point, qreal diameter)
 {
-//     const QColor topColor = sunken?baseColor.dark(130):baseColor.light(120);
-//     const QColor bottomColor = sunken?baseColor.light(120):baseColor.dark(130);
-//     const QColor halftopColor = sunken?baseColor.dark(115):baseColor.light(110);
-//     const QColor halfbottomColor = sunken?baseColor.light(110):baseColor.dark(115);
-//     const QColor midColor = baseColor.light(110);
-//     QColor baseColor(0, 0, 0, 127);
-//     QColor baseColor(0, 0, 0, 60);
-
-//     p->setPen(no
-
-    p->drawEllipse(QRectF(point.x(), point.y(), diameter, diameter));
-//     p->setPen(baseColor);
-//     p->drawPoint(point.x()+1, point.y());
-//     p->drawPoint(point.x(), point.y()+1);
-//     p->setPen(bottomColor );
-//     p->drawPoint(point.x()+1, point.y()+2);
-//     p->drawPoint(point.x()+2, point.y()+1);
-//     p->setPen(halftopColor );
-//     p->drawPoint(point.x(), point.y());
-//     p->setPen(halfbottomColor );
-//     p->drawPoint(point.x()+2, point.y()+2);
+    p->drawEllipse(QRectF(point.x()-diameter/2, point.y()-diameter/2, diameter, diameter));
 }
 
 // window button decorations
-
 static const unsigned char close_bits[] = {
     0xc3, 0x66, 0x7e, 0x3c, 0x3c, 0x7e, 0x66, 0xc3};
 
@@ -481,7 +459,7 @@ void OxygenClient::mouseDoubleClickEvent(QMouseEvent *e)
 // ------------
 // Repaint the window
 
-void OxygenClient::paintEvent(QPaintEvent*)
+void OxygenClient::paintEvent(QPaintEvent *e)
 {
     if (!OxygenFactory::initialized()) return;
 
@@ -490,59 +468,70 @@ void OxygenClient::paintEvent(QPaintEvent*)
     QPalette palette = widget()->palette();
     QPainter painter(widget());
     painter.setRenderHint(QPainter::Antialiasing,true);
-#if 0
-    // draw the titlebar+buttton background
-    painter.fillRect(QRect(0,TFRAMESIZE,width(), TITLESIZE), palette.window());
 
-    // draw the central gradient
-    QRadialGradient mainRadialGradient(width()/2, 10, width()/2,
-                                       width()/2, TFRAMESIZE*2);
-    mainRadialGradient.setColorAt(0.0, QColor(255, 255, 255, 55));
-    mainRadialGradient.setColorAt(0.0, QColor(255, 255, 255, 0));
-    QBrush gradientBrush(mainRadialGradient);
-//    kDebug() << "center: " <<  mainRadialGradient.center() << endl;
-//    kDebug() << "focalPoint: " <<  mainRadialGradient.focalPoint() << endl;
-//    kDebug() << "radius: " <<  mainRadialGradient.radius() << endl;
-    painter.fillRect(3, 3, width(), TFRAMESIZE*3, gradientBrush);
-#endif
-   
     QRect title(titlebar_->geometry());
+
     // the background
-   
-   updateDecoPics();
-   
-   int x,y,w,h;
-   
-   if (fallbackDeco)
-      painter.fillRect(widget()->rect(), Qt::red);
-   else {
+
+    updateDecoPics();
+
+    int x,y,w,h;
+
+    if (fallbackDeco)
+        painter.fillRect(widget()->rect(), Qt::red);
+    else {
       // explanation if you don't know render syntax:
       //------------------------------------------------
       // XRenderComposite (dpy, op,
       // src.x11PictureHandle(), mask, dst.x11PictureHandle(),
       // sx, sy, mx, my, dx, dy, w, h);
       //=====================================================
-      widget()->rect().getRect(&x,&y,&w,&h);
+        QRect winRect = widget()->rect();
+        winRect.getRect(&x,&y,&w,&h);
+        x = e->rect().x();
+        y = e->rect().y();
+        int updW = e->rect().width();
+        int updH = e->rect().height();
 
-      Picture window = widget()->x11PictureHandle();
-      // left
-      XRenderComposite (QX11Info::display(), PictOpSrc, xPic[2], 0, window,
-                        0, 0, 0, 0, 0, 0, LFRAMESIZE, h);
-      // right
-      XRenderComposite (QX11Info::display(), PictOpSrc, xPic[3], 0, window,
-                        0, 0, 0, 0, w-RFRAMESIZE, 0, RFRAMESIZE, h);
-      
-      w -= (LFRAMESIZE + RFRAMESIZE);
-      
-      // top
-      XRenderComposite (QX11Info::display(), PictOpSrc, xPic[0], 0, window,
-                        0, 0, 0, 0, LFRAMESIZE, 0, w, TITLESIZE + TFRAMESIZE);
-      // bottom
-      XRenderComposite (QX11Info::display(), PictOpSrc, xPic[1], 0, window,
-                        0, 0, 0, 0, LFRAMESIZE, h-BFRAMESIZE, w, BFRAMESIZE);
-      XFlush(QX11Info::display()); // must be?! - the pictures will change soon
-   }
-    
+        Picture window = widget()->x11PictureHandle();
+        // left
+        if (x < LFRAMESIZE)
+            XRenderComposite (QX11Info::display(), PictOpSrc, xPic[2], 0, window,
+                        x, y, 0, 0, x, y, qMin(LFRAMESIZE - x, updW), qMin(h - y, updH));
+        // right
+        if (x+updW >= w - RFRAMESIZE - 1) {
+            int paintW = updW;
+            if(x < w-RFRAMESIZE-1)
+                paintW = updW - (w - RFRAMESIZE - 1) + x;
+            XRenderComposite (QX11Info::display(), PictOpSrc, xPic[3], 0, window,
+                        qMax(x-(w-RFRAMESIZE),0), y, 0, 0,
+                        qMax(x, w-RFRAMESIZE-1), y, paintW, qMin(h - y, updH));
+        }
+
+        if (x < LFRAMESIZE) {   // don't paint left frame again
+           updW -= (LFRAMESIZE - x);
+           x = LFRAMESIZE;
+        }
+        if (x + updW > w - RFRAMESIZE) // dont paint right frame again
+            updW = w - RFRAMESIZE - x;
+
+        // top
+        if (y < TITLESIZE + TFRAMESIZE)
+            XRenderComposite (QX11Info::display(), PictOpSrc, xPic[0], 0, window,
+                        x-LFRAMESIZE, y, 0, 0, x, y, updW, qMin(TITLESIZE + TFRAMESIZE - y, updH));
+        // bottom
+        if (y + updH >= h - BFRAMESIZE - 1) {
+            int paintH = updH;
+            if(y < h-BFRAMESIZE-1)
+                paintH = updH - (h - BFRAMESIZE - 1) + y;
+            XRenderComposite (QX11Info::display(), PictOpSrc, xPic[1], 0, window,
+                        x-LFRAMESIZE, qMax(y-(h-BFRAMESIZE),0), 0, 0,
+                        x, qMax(y, h-BFRAMESIZE-1), updW, paintH);
+        }
+
+        XFlush(QX11Info::display()); // must be?! - the pictures will change soon
+    }
+
     // draw title text
     painter.setFont(options()->font(isActive(), false));
     painter.setBrush(palette.windowText());
@@ -582,85 +571,51 @@ void OxygenClient::paintEvent(QPaintEvent*)
     QBrush brush4(grad4);
     painter.fillRect(title.right(), TFRAMESIZE + title.height()/2, width() -title.right()-RFRAMESIZE, 1, brush4);
 
-    
+    painter.setRenderHint(QPainter::Antialiasing);
+
     // shadows of the frame
     QRect frame = widget()->rect();
-//     int x,y,w,h;
     frame.getRect(&x, &y, &w, &h);
-//     painter.drawPoint(x2-2, y2-2);
-//     painter.drawPoint(x2-1, y2-3);
+
     painter.setBrush(Qt::NoBrush);
-    painter.setPen(QColor(0, 0, 0, 20));
-    painter.drawRoundRect(0, 0, w, h, 9*90/w, 9*90/h);//, 4, 4);
+    QLinearGradient lg(0, 0, 0, 10);
+    QGradientStops stops;
+    stops << QGradientStop( 0, QColor(255,255,255, 110) )
+           << QGradientStop( 1, QColor(128,128,128, 60) );
+    lg.setStops(stops);
+    painter.setPen(QPen(QBrush(lg),1));
+    painter.drawLine(QPointF(6.3, 0.5), QPointF(w-6.3, 0.5));
+    painter.drawArc(QRectF(0.5, 0.5, 9.5, 9.5),90*16, 90*16);
+    painter.drawArc(QRectF(w-9.5-0.5, 0.5, 9.5, 9.5), 0, 90*16);
 
-    int numDotGroups = 1;
-    if (frame.width() >700)
-        numDotGroups = 3;
-//     int step = frame.width() / 2;
-    x = frame.width() / 2;
+    painter.setPen(QColor(128,128,128, 60));
+    painter.drawLine(QPointF(0.5, 6.3), QPointF(0.5, h-6.3));
+    painter.drawLine(QPointF(w-0.5, 6.3), QPointF(w-0.5, h-6.3));
 
-//     for(int j = 0, x = step; j < numDotGroups; j++, x += step)
-//     {
-        painter.setPen(Qt::NoPen);
-        painter.setBrush(QColor(0, 0, 0, 66));
-        renderDot(&painter, QPointF(x-10, 3),        1);
-        renderDot(&painter, QPointF(x-5-0.25, 2.75), 1.5);
-        painter.setBrush(QColor(0, 0, 0, 60));
-        renderDot(&painter, QPointF(x-0.5, 2.5),       2);
-        painter.setBrush(QColor(0, 0, 0, 66));
-        renderDot(&painter, QPointF(x+5-0.25, 2.75), 1.5);
-        renderDot(&painter, QPointF(x+10, 3),        1);
+    lg = QLinearGradient(0, h-10, 0, h);
+    stops.clear();
+    stops << QGradientStop( 0, QColor(128,128,128, 60) )
+           << QGradientStop( 1, QColor(0,0,0, 50) );
+    lg.setStops(stops);
+    painter.setPen(QPen(QBrush(lg),1));
+    painter.drawArc(QRectF(0.5, h-9.5-0.5, 9.5, 9.5),180*16, 90*16);
+    painter.drawArc(QRectF(w-9.5-0.5, h-9.5-0.5, 9.5, 9.5), 270*16, 90*16);
+    painter.drawLine(QPointF(6.3, h-0.5), QPointF(w-6.3, h-0.5));
 
-//         renderDot(&painter, QPoint(x-5, frame.height()-5), palette.background().color(), true);
-//         renderDot(&painter, QPoint(x, frame.height()-5), palette.background().color(), true);
-//         renderDot(&painter, QPoint(x+5, frame.height()-5), palette.background().color(), true);
-//     }
+    qreal cenX = frame.width() / 2 + 0.5;
 
-    numDotGroups = 1;
-    if (frame.height() >700)
-        numDotGroups = 3;
-//     step = frame.height() / (numDotGroups + 1);
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(QColor(0, 0, 0, 66));
+    renderDot(&painter, QPointF(cenX-10, 2.5), 1);
+    renderDot(&painter, QPointF(cenX-5, 2.5), 1.5);
+    renderDot(&painter, QPointF(cenX, 2.5), 2);
+    renderDot(&painter, QPointF(cenX+5, 2.5), 1.5);
+    renderDot(&painter, QPointF(cenX+10, 2.5), 1);
 
-//     for(int j = 0, y = step; j < numDotGroups; j++, y += step)
-//     {
-//         renderDot(&painter, QPoint(3, y-5), palette.background().color(), true);
-//         renderDot(&painter, QPoint(3, y), palette.background().color(), true);
-//         renderDot(&painter, QPoint(3, y+5), palette.background().color(), true);
-// 
-//         renderDot(&painter, QPoint(frame.width()-5, y-5), palette.background().color(), true);
-//         renderDot(&painter, QPoint(frame.width()-5, y), palette.background().color(), true);
-//         renderDot(&painter, QPoint(frame.width()-5, y+5), palette.background().color(), true);
-//     }
-
-//     renderDot(&painter, QPoint(3, 8), palette.background().color(), true);
-//     renderDot(&painter, QPoint(4, 4), palette.background().color(), true);
-//     renderDot(&painter, QPoint(8, 3), palette.background().color(), true);
-// 
-//     renderDot(&painter, QPoint(3, frame.height()-11), palette.background().color(), true);
-//     renderDot(&painter, QPoint(4, frame.height()-7), palette.background().color(), true);
-//     renderDot(&painter, QPoint(8, frame.height()-5), palette.background().color(), true);
-// 
-//     renderDot(&painter, QPoint(frame.width()-5, 8), palette.background().color(), true);
-//     renderDot(&painter, QPoint(frame.width()-7, 4), palette.background().color(), true);
-//     renderDot(&painter, QPoint(frame.width()-11, 3), palette.background().color(), true);
-    painter.save();
-    painter.setBrush(QColor(0, 0, 0, 80));
-//     painter.setBrush(Qt::green);
     painter.translate(frame.width()-9, frame.height()-9);
-    painter.rotate(-45);
-//     renderDot(&painter, QPoint(0, 0), 2);
-    renderDot(&painter, QPoint(4, 4), 2);
-    painter.rotate(45);
-//     painter.setBrush(Qt::blue);
-    renderDot(&painter, QPoint(4, 4), 2);
-    painter.rotate(45);
-    renderDot(&painter, QPoint(4, 4), 2);
-    painter.restore();
-//     painter.setBrush(Qt::red);
-//     renderDot(&painter, QPoint(frame.width()-5, frame.height()-11), 2);
-//     renderDot(&painter, QPoint(frame.width()-5, frame.height()-11), palette.background().color(), true);
-//     renderDot(&painter, QPoint(frame.width()-7, frame.height()-7), palette.background().color(), true);
-//     renderDot(&painter, QPoint(frame.width()-11, frame.height()-5), palette.background().color(), true);
+    renderDot(&painter, QPointF(0.5, 6.5), 2.5);
+    renderDot(&painter, QPointF(5.5, 5.5), 2.5);
+    renderDot(&painter, QPointF(6.5, 0.5), 2.5);
 }
 
 void OxygenClient::doShape()
@@ -669,28 +624,24 @@ void OxygenClient::doShape()
   int b=widget()->height();
 QRegion mask(0,0,r,b);
     // Remove top-left corner.
-    mask -= QRegion(0, 0, 5, 1);
-    mask -= QRegion(0, 1, 3, 1);
-    mask -= QRegion(0, 2, 2, 1);
-    mask -= QRegion(0, 3, 1, 2);
+    mask -= QRegion(0, 0, 3, 1);
+    mask -= QRegion(0, 1, 2, 1);
+    mask -= QRegion(0, 2, 1, 1);
 
     // Remove top-right corner.
-    mask -= QRegion(r - 5, 0, 5, 1);
-    mask -= QRegion(r - 3, 1, 3, 1);
-    mask -= QRegion(r - 2, 2, 2, 1);
-    mask -= QRegion(r - 1, 3, 1, 2);
+    mask -= QRegion(r - 3, 0, 3, 1);
+    mask -= QRegion(r - 2, 1, 2, 1);
+    mask -= QRegion(r - 1, 2, 1, 1);
 
     // Remove bottom-left corner.
-    mask -= QRegion(0, b-1-0, 5, b-1-1);
-    mask -= QRegion(0, b-1-1, 3, b-1-1);
-    mask -= QRegion(0, b-1-2, 2, b-1-1);
-    mask -= QRegion(0, b-1-3, 1, b-1-2);
+    mask -= QRegion(0, b-1-0, 3, b-1-1);
+    mask -= QRegion(0, b-1-1, 2, b-1-1);
+    mask -= QRegion(0, b-1-2, 1, b-1-1);
 
     // Remove bottom-right corner.
-    mask -= QRegion(r - 5, b-1-0, 5, b-1-1);
-    mask -= QRegion(r - 3, b-1-1, 3, b-1-1);
-    mask -= QRegion(r - 2, b-1-2, 2, b-1-1);
-    mask -= QRegion(r - 1, b-1-3, 1, b-1-2);
+    mask -= QRegion(r - 3, b-1-0, 3, b-1-1);
+    mask -= QRegion(r - 2, b-1-1, 2, b-1-1);
+    mask -= QRegion(r - 1, b-1-2, 1, b-1-1);
 
     setMask(mask);
 }
