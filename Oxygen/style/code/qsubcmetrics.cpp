@@ -53,9 +53,10 @@ QRect OxygenStyle::subControlRect ( ComplexControl control, const QStyleOptionCo
          case SC_SpinBoxEditField: {
             int hfw = 0, vfw = 0;
             if (spinbox->frame) {
-               hfw = dpi.$4; vfw = dpi.$1;
+               hfw = dpi.$3; vfw = dpi.$1;
             }
-            ret = QRect(hfw, vfw, x-dpi.$1, spinbox->rect.height() - 2*vfw);
+            // in next line -1 and +2 is too offset some qt weirdness so spinbox and linedit have same height
+            ret = QRect(hfw, vfw-1, x-dpi.$1, spinbox->rect.height() - 2*vfw + 2);
             break;
          }
          case SC_SpinBoxFrame:

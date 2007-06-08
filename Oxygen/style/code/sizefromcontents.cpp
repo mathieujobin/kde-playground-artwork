@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2006-2007 by Thomas L�bking                             *
- *   thomas.luebking@web.de                                                *
+ *   Copyright (C) 2006-2007 by Thomas L�bking  thomas.luebking@web.de
+ *   Copyright (C) 2007 by Casper Boemann cbr@boemann.dk
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -37,8 +37,10 @@ QSize OxygenStyle::sizeFromContents ( ContentsType ct, const QStyleOption * opti
    case CT_ComboBox: // A combo box, like QComboBox
       if (const QStyleOptionComboBox *cb =
           qstyleoption_cast<const QStyleOptionComboBox *>(option)) {
-         int margin = cb->frame ? dpi.$3 : 0;
-         int hgt = contentsSize.height() + 2*margin;
+         int hgt = contentsSize.height() - dpi.$1;
+         if(!cb->editable)
+           hgt += 2*dpi.$3;
+
          return QSize(contentsSize.width()+dpi.$10+(int)(hgt/1.1), hgt);
       }
 //    case CT_DialogButtons: //

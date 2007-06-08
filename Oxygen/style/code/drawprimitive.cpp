@@ -279,7 +279,7 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          QColor c = btnFgColor(PAL, isEnabled, hover||hasFocus);
          painter->save();
          painter->setRenderHint(QPainter::Antialiasing);
-         QRect r = RECT.adjusted(dpi.$6,dpi.$5,-dpi.$6,-dpi.$7);
+         QRect r = RECT.adjusted(dpi.$6,dpi.$6,-dpi.$6,-dpi.$6);
          const QPixmap &fill = gradient(c, r.height(), Qt::Vertical, config.gradBtn);
          switch (config.checkType) {
          case 0: {

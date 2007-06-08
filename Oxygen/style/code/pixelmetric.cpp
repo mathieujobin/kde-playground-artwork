@@ -52,7 +52,7 @@ int OxygenStyle::pixelMetric ( PixelMetric pm, const QStyleOption * option, cons
       if (widget && qobject_cast<const QFrame*>(widget) &&
           static_cast<const QFrame*>(widget)->frameShape() == QFrame::StyledPanel &&
          !widget->inherits("QTextEdit"))
-         return 0;
+         return dpi.$1;
 #warning stupid idea?
       return dpi.$1;
    case PM_SpinBoxFrameWidth: // Frame width of a spin box, defaults to PM_DefaultFrameWidth
