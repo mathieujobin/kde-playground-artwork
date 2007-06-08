@@ -889,6 +889,9 @@ void OxygenStyle::polish( QWidget * widget) {
          }
       }
 
+      else if (widget->inherits("QListView")) {
+        // don't do anything as it breaks drag and drop 
+      }
 //        && !(
 //          widget->inherits("QComboBoxListView") ||
 //          widget->inherits("QComboBoxPrivateContainer"))
