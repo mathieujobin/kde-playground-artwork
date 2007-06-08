@@ -161,11 +161,11 @@ int OxygenStyle::pixelMetric ( PixelMetric pm, const QStyleOption * option, cons
    case PM_ExclusiveIndicatorHeight: // Height of a radio button indicator
       return dpi.ExclusiveIndicator;
    case PM_MenuPanelWidth: // Border width (applied on all sides) for a QMenu
-      return 1; // cosmetic, qt hates 0 sized popupframes
+      return dpi.$3; 
    case PM_MenuHMargin: // Additional border (used on left and right) for a QMenu
-      return dpi.$2;
+      return 0; //dpi.$2;
    case PM_MenuVMargin: // Additional border (used for bottom and top) for a QMenu
-      return dpi.$1;
+      return 0; //dpi.$1;
 //    case PM_MenuScrollerHeight: // Height of the scroller area in a QMenu
 //    case PM_MenuTearoffHeight: // Height of a tear off area in a QMenu
 //    case PM_MenuDesktopFrameWidth: //  

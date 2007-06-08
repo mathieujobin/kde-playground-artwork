@@ -444,21 +444,39 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
       break;
    }
    case PE_FrameMenu: { // Frame for popup windows/menus; see also QMenu.
-#if 0
       SAVE_PEN;
-      QPalette::ColorRole role = QPalette::Window;
-      if (widget)
-         role = widget->inherits("QComboBox") ? // this is a combo popup
-         QPalette::WindowText : widget->backgroundRole();
-      QColor c = PAL.color(role);
-      painter->setPen(c);
-      painter->drawLine(RECT.x(), RECT.top(), RECT.right(), RECT.top());
-      painter->setPen(c.dark(110));
-      painter->drawLine(RECT.x(), RECT.top(), RECT.x(), RECT.bottom());
-      painter->drawLine(RECT.x(), RECT.bottom(), RECT.right(), RECT.bottom());
-      painter->drawLine(RECT.right(), RECT.top(), RECT.right(), RECT.bottom());
+    QRect frame = RECT;
+    int x,y,w,h;
+    frame.getRect(&x, &y, &w, &h);
+
+    painter->setRenderHint(QPainter::Antialiasing);
+    painter->setBrush(Qt::NoBrush);
+    QLinearGradient lg(0, 0, 0, 10);
+    QGradientStops stops;
+    stops << QGradientStop( 0, QColor(255,255,255, 110) )
+           << QGradientStop( 1, QColor(128,128,128, 60) );
+    lg.setStops(stops);
+    painter->setPen(QPen(QBrush(lg),1));
+    painter->drawLine(QPointF(6.3, 0.5), QPointF(w-6.3, 0.5));
+    painter->drawArc(QRectF(0.5, 0.5, 9.5, 9.5),90*16, 90*16);
+    painter->drawArc(QRectF(w-9.5-0.5, 0.5, 9.5, 9.5), 0, 90*16);
+
+    painter->setPen(QColor(128,128,128, 60));
+    painter->drawLine(QPointF(0.5, 6.3), QPointF(0.5, h-6.3));
+    painter->drawLine(QPointF(w-0.5, 6.3), QPointF(w-0.5, h-6.3));
+
+    lg = QLinearGradient(0, h-10, 0, h);
+    stops.clear();
+    stops << QGradientStop( 0, QColor(128,128,128, 60) )
+           << QGradientStop( 1, QColor(0,0,0, 50) );
+    lg.setStops(stops);
+    painter->setPen(QPen(QBrush(lg),1));
+    painter->drawArc(QRectF(0.5, h-9.5-0.5, 9.5, 9.5),180*16, 90*16);
+    painter->drawArc(QRectF(w-9.5-0.5, h-9.5-0.5, 9.5, 9.5), 270*16, 90*16);
+    painter->drawLine(QPointF(6.3, h-0.5), QPointF(w-6.3, h-0.5));
+
       RESTORE_PEN;
-#endif
+#if 0
       if (config.glassMenus) {
          painter->save();
          painter->setPen(Qt::white);
@@ -478,7 +496,8 @@ void OxygenStyle::drawPrimitive ( PrimitiveElement pe, const QStyleOption * opti
          shadows.line[true][Sunken].render(rect, painter, Tile::Full, false);
          shadows.line[true][Sunken].render(rect, painter, Tile::Full, true);
       }
-      break;
+#endif
+     break;
    }
    case PE_PanelMenuBar: // Panel for menu bars.
    case PE_FrameDockWidget: // Panel frame for dock windows and toolbars.
