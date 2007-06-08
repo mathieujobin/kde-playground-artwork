@@ -445,7 +445,7 @@ void OxygenStyle::initMetrics()
    dpi.ScrollBarSliderMin = SCALE(40);
    dpi.SliderThickness = SCALE(24);
    dpi.SliderControl = SCALE(17);
-   dpi.Indicator = SCALE(20);
+   dpi.Indicator = SCALE(24);
    dpi.ExclusiveIndicator = SCALE(19);
 }
 
@@ -971,7 +971,7 @@ bool OxygenStyle::eventFilter( QObject *object, QEvent *ev ) {
    }
    case QEvent::Resize: {
       if (QMenu *menu = qobject_cast<QMenu*>(object)) {
-         QPalette::ColorRole role = menu->backgroundRole();
+/*         QPalette::ColorRole role = menu->backgroundRole();
          QColor c = menu->palette().color(QPalette::Active, role);
          int size = ((QResizeEvent*)ev)->size().height();
          QBrush brush;
@@ -997,7 +997,7 @@ bool OxygenStyle::eventFilter( QObject *object, QEvent *ev ) {
          QPalette pal = menu->palette();
          pal.setBrush(role, brush);
          menu->setPalette(pal);
-         return false;
+*/         return false;
       }
 //          QResizeEvent *rev = (QResizeEvent*)ev;
 //          int w = ((QResizeEvent*)ev)->size().width(),
