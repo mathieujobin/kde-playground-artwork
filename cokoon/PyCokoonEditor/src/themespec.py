@@ -10,7 +10,10 @@ from cokoon import Cokoon
 class ThemeSpecItem:
   def __init__(self):
     self.id = ''
+    self.providedVariables = []
+    self.providedSpecials = []
     self.requiredExpressions = []
+    self.requiredTiles = []
     self.states = []
 
 def _nextColumnBase(currentColumnId):
@@ -59,11 +62,25 @@ class ThemeSpec:
     self.specObjIdToStateLevels = {}
     objectId = 0
     identifierId = 0
+    variableId = 0
     for i in self.items:
       self.specObjNameToId[i.id] = objectId
-      for id in i.requiredExpressions:
-        self.specIdentifierToId[id] = identifierId
+
+      # identifiers address expression, special_cell, tile
+      for exp in i.requiredExpressions:
+        self.specIdentifierToId[exp[0]] = identifierId
         identifierId += 1
+      for special in i.providedSpecials:
+        self.specIdentifierToId[special] = identifierId
+        identifierId += 1
+      for tile in i.requiredTiles:
+        self.specIdentifierToId[tile] = identifierId
+        identifierId += 1
+
+      for var in i.providedVariables:
+        self.specVariableToId[var[0]] = variableId
+        variableId += 1
+
 
       stateLevelList = []
 
@@ -109,6 +126,15 @@ class ThemeSpecHandler(QtXml.QXmlDefaultHandler):
     elif qName == "expression":
       exp = (attributes.value("id"), attributes.value("type"))
       self.currentItem.requiredExpressions.append(exp)
+    elif qName == "special_cell":
+      special = attributes.value("id")
+      self.currentItem.providedSpecials.append(special)
+    elif qName == "tile":
+      tile = attributes.value("id")
+      self.currentItem.requiredTiles.append(tile)
+    elif qName == "variable":
+      var = (attributes.value("id"), attributes.value("type"))
+      self.currentItem.providedVariables.append(var)
     elif qName == "states":
       self.currentStateList = []
     elif qName == "state":
