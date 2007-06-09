@@ -6,7 +6,7 @@ from PyQt4 import QtCore, QtGui
 import sdi_rc
 from themespec import ThemeSpec
 from thememodel import ThemeModel
-#from previewwidget import PreviewWidget
+from previewwidget import PreviewWidget
 
 class MainWindow(QtGui.QMainWindow):
     sequenceNumber = 1
@@ -68,21 +68,22 @@ class MainWindow(QtGui.QMainWindow):
         
 #        self.themeView.setAnimated(True)
         
-        dock = QtGui.QDockWidget(self.tr("Objects"), self)
-        dock.setAllowedAreas(QtCore.Qt.LeftDockWidgetArea | QtCore.Qt.RightDockWidgetArea)
-        self.themeView = QtGui.QTreeView(dock)
-        dock.setWidget(self.themeView)
-        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, dock)
+#         dock = QtGui.QDockWidget(self.tr("Objects"), self)
+#         dock.setAllowedAreas(QtCore.Qt.LeftDockWidgetArea | QtCore.Qt.RightDockWidgetArea)
+#         self.themeView = QtGui.QTreeView(dock)
+#         dock.setWidget(self.themeView)
+#         self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, dock)
         
         dock = QtGui.QDockWidget(self.tr("Preview"), self)
         dock.setAllowedAreas(QtCore.Qt.LeftDockWidgetArea | QtCore.Qt.RightDockWidgetArea)
-#        self.preview = PreviewWidget()
-#        dock.setWidget(self.preview)
+        self.preview = PreviewWidget(self.themeModel)
+        dock.setWidget(self.preview)
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
 
 #        TODO: Factor out self.textEdit
-        self.textEdit = QtGui.QTextEdit() 
-#        self.setCentralWidget(self.themeView)
+        self.textEdit = QtGui.QTextEdit()
+        self.themeView = QtGui.QTreeView(self)
+        self.setCentralWidget(self.themeView)
         
         self.createActions()
         self.createMenus()
@@ -233,6 +234,7 @@ class MainWindow(QtGui.QMainWindow):
       QtGui.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
       self.themeModel.loadFile(file)
       self.themeView.setModel(self.themeModel)
+      self.preview.setThemeModel(self.themeModel)
       QtGui.QApplication.restoreOverrideCursor()
       
       self.setCurrentFile(fileName)
@@ -273,7 +275,6 @@ class MainWindow(QtGui.QMainWindow):
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
-#    mainwindow = MainWindow(QtCore.QString('/home/kde-devel/src/cokoon/style/CokoonStyleSpec.xml') )
     mainwindow = MainWindow()
     mainwindow.show()
     sys.exit(app.exec_())

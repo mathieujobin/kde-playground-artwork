@@ -19,4 +19,5 @@ install(TARGETS cokoonstyle DESTINATION ${PLUGIN_INSTALL_DIR}/plugins/styles/ )
 
 ########### install files ###############
 
+install(FILES CokoonStyleSpec.xml DESTINATION ${DATA_INSTALL_DIR}/cokoon/specs )
 install(FILES cokoonstyle.themerc DESTINATION ${DATA_INSTALL_DIR}/kstyle/themes  )

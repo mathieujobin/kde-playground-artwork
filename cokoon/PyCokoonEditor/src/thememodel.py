@@ -3,6 +3,8 @@ from PyQt4 import QtCore
 from PyQt4.QtXml import QDomDocument
 from PyQt4.QtCore import QFile, QTextStream, QAbstractItemModel
 
+from themespec import ThemeSpec, ThemeSpecDocument
+
 class InvalidCokoonThemeException(Exception):
   '''Exception raised when an error occurs while handling a Cokoon Theme'''
   def __init__(self, msg, domElement):
@@ -199,6 +201,8 @@ class CokoonTheme(CokoonDomElement):
     CokoonDomElement.__init__(self, node, parent, 'cokoon_theme')
   def name(self):
     return self._domAttr('name')
+  def spec(self):
+    return self._domAttr('spec')
   def version(self):
     return self._domAttr('version')
   def createChildNode(self, node):
@@ -233,13 +237,27 @@ class ThemeModel(QAbstractItemModel):
   def loadFile(self, file):
     '''Loads a theme description file (must be QFile)'''
     if not self.doc.setContent(file):
+      self.clear()
       return False
+
     
+    ## theme model initialization
     self.rootElement = CokoonTheme(self.doc.firstChildElement(), None)
     self.rootElement.row = 0
+
+    ## make sure there is always a corresponding theme specification
+    # TODO: do not hardcode the spec directory path...
+    self.spec = ThemeSpec("/usr/share/apps/cokoon/specs/" + self.theme().spec() + ".xml")
+    self.cokoonDoc = ThemeSpecDocument(self.spec)
+    self.cokoonDoc.loadTheme(file.fileName())
+
+    ## theme modifications...
     self._modified = False
     
     return True
+
+  def theme(self):
+    return self.rootElement
 
   def clear(self):
     '''Clears the current document'''

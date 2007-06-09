@@ -20,5 +20,6 @@ install(TARGETS kwin3_cokoon DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 ########### install files ###############
 
+install(FILES CokoonDecorationSpec.xml DESTINATION ${DATA_INSTALL_DIR}/cokoon/specs )
 install(FILES cokoon.desktop DESTINATION ${DATA_INSTALL_DIR}/kwin/  )
 
