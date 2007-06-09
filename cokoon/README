@@ -9,3 +9,15 @@ CoKoon is a flexible theme library. It's aims are:
   possible with programmatically coded themes previously.
 
 See apidocs for an overview of CoKoon concepts.
+
+== Building Cokoon ==
+* dependencies:
+** KDE 4 development files (Kubuntu: kde4base-dev)
+** PyQt bindings and binding generator: (Kubuntu: sip4, python-qt4-dev)
+
+* compile order
+*# Cokoon libraries: cokoon/lib (might need to be installed to /usr, otherwise pycokoon can't find the library, at least on my system)
+*# Cokoon decoration, widget style: cokoon/decoration, cokoon/style
+*# Cokoon Python binding (for PyCokoonEditor): cokoon/PyCokoonEditor/pycokoon
+*** $ python configure.py && make && sudo make install
+
