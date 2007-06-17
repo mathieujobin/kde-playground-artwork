@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-04-11 20:29+0200\n"
-"PO-Revision-Date: 2007-04-11 20:36+0200\n"
+"PO-Revision-Date: 2007-06-09 14:38+0200\n"
 "Last-Translator: Gerd Fleischer <GerdFleischer@gmx.de>\n"
 "Language-Team:  <de@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -132,7 +132,7 @@ msgstr "Alt+V"
 #: rc.cpp:57 config/configdialog.cpp:306
 #, no-c-format
 msgid "Never draw rounded window top corners."
-msgstr "Anordnung nie abgerundete obere Fensterecken."
+msgstr "Keine abgerundeten oberen Fensterecken."
 
 #. i18n: file config/configdialog.ui line 146
 #: rc.cpp:60 config/configdialog.cpp:307
@@ -226,7 +226,7 @@ msgstr "Schaltflächenart"
 #: rc.cpp:99 config/configdialog.cpp:322
 #, no-c-format
 msgid "Plastik flat"
-msgstr "Plastisch, flach"
+msgstr "Plastik, flach"
 
 #. i18n: file config/configdialog.ui line 326
 #: rc.cpp:102 config/configdialog.cpp:323
