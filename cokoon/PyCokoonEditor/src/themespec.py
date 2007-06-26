@@ -29,14 +29,17 @@ class ThemeSpec:
   def clearThemeSpec(self):
     self.name = ''
     self.items = []
+    self.clearThemeSpecMappings()
 
+  def clearThemeSpecMappings(self):
     self.specObjNameToId = {}
     self.specVariableToId = {}
     self.specIdentifierToId = {}
+    self.specObjIdToStateLevels = {}
+    self.specObjIdBase = 0
 
   def readThemeSpec(self,themeSpecFile):
     self.clearThemeSpec()
-    
     handler = ThemeSpecHandler(self)
     reader = QtXml.QXmlSimpleReader()
     reader.setContentHandler(handler)
@@ -56,10 +59,10 @@ class ThemeSpec:
       self.genCokoonSpecMappings()
 
   def genCokoonSpecMappings(self):
-    self.specObjNameToId = {}
-    self.specVariableToId = {}
-    self.specIdentifierToId = {}
-    self.specObjIdToStateLevels = {}
+    self.clearThemeSpecMappings()
+
+    maxObjAccessId = 0                # used to compute the objIdBase...
+
     objectId = 0
     identifierId = 0
     variableId = 0
@@ -76,11 +79,11 @@ class ThemeSpec:
       for tile in i.requiredTiles:
         self.specIdentifierToId[tile] = identifierId
         identifierId += 1
-
       for var in i.providedVariables:
         self.specVariableToId[var[0]] = variableId
         variableId += 1
 
+      objAccessId = objectId    # used compute objIdBase
 
       stateLevelList = []
 
@@ -95,6 +98,12 @@ class ThemeSpec:
           print str(objectId), " ", st, "/", stateCount, " - ", highestStateIndex
           stateLevel[st] = highestStateIndex
           stateLevel[stateCount] = highestStateIndex
+
+          objAccessId += highestStateIndex
+          print "objAccessId:",objAccessId, " maxObjAccessId:",maxObjAccessId
+          if objAccessId > maxObjAccessId:
+            maxObjAccessId = objAccessId
+
           stateCount += 1
         print stateLevel
         stateLevelList.append(stateLevel)
@@ -102,6 +111,8 @@ class ThemeSpec:
       self.specObjIdToStateLevels[objectId] = stateLevelList
 
       objectId += 1
+
+    self.specObjIdBase = maxObjAccessId
 
 class ThemeSpecHandler(QtXml.QXmlDefaultHandler):
   def __init__(self,themeSpec):
@@ -206,7 +217,9 @@ class ThemeSpecDocument(Cokoon.Document):
 
   def customIdMappingBase(self, type):
     if type == self.ObjectNameDecl:
-      return len(self.spec.specObjNameToId)
+      # TODO: change this in gen-themespec.rb as well!
+      print "Object ID Base:", self.spec.specObjIdBase
+      return self.spec.specObjIdBase
     elif type == self.VariableDecl:
       return len(self.spec.specVariableToId)
     elif type == self.IdentifierDecl:
