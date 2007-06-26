@@ -187,12 +187,15 @@ class DocumentHandler : public QXmlDefaultHandler
 
 
                 m_currentObj = new Object(m_doc, objInheritAbsoluteId, objInheritStr);
-                m_doc->insertObject(objId, objStates, m_currentObj);
+                qDebug("about to insert obj: %s", qPrintable(objIdStr));
+                int insertRet = m_doc->insertObject(objId, objStates, m_currentObj);
 
-
-                if (m_currentObj->docRefCount() < 1) {
+                if ((insertRet<0) || (m_currentObj->docRefCount() < 1)) {
+                    // cleanup. delete the object
                     delete m_currentObj;
                     m_currentObj = 0;
+
+                    qCritical("%s: Error while inserting the object into the theme document.", qPrintable(objIdStr) );
                     return false;
                 }
 
@@ -633,22 +636,28 @@ void Document::unrefObj(Object *o)
         delete o;
 }
 
-void Document::insertObject(int objId, const QList<int> &objStates,
+int Document::insertObject(int objId, const QList<int> &objStates,
                             Object *obj)
 {
     if (!obj) {
         qFatal("Document::insertObject: item to insert is 0!");
-        return;
+        return -1;
     }
 
+//     QString statesStr = QString("obj: %1 states:").arg(objId);
+//     foreach(int s, objStates) {
+//         statesStr += QString(" %1").arg(s);
+//     }
+//     qDebug("Document::insertObject: %s", qPrintable(statesStr));
+
     // Traverse the objStates list. If all states are set (!= -1),
-    // then every loop is skipped using break at the beginning.
+    // then every loop is skipped using continue at the beginning.
     // Otherwise (-1, meaning a wildcard), insertObject calls itself
     // recursively for all states in the state level, and
     // skips the rest of the current insertObject call using return;
     for (int i = 0; i < objStates.size(); ++i) {
         if (objStates.at(i) != -1) {
-            break;
+            continue;
         } else {
 
             // current state level is a wildcard (-1)
@@ -662,10 +671,17 @@ void Document::insertObject(int objId, const QList<int> &objStates,
             QList<int> newObjStates = objStates;
             while ((stateId = mapObjectStateToId(objId, i, j++)) != -1) {
                 newObjStates[i] = stateId;
-                insertObject(objId, newObjStates, obj);
+                int ret = insertObject(objId, newObjStates, obj);
+
+                // Break here in case of an error.
+                if (ret == -1) {
+                    qCritical("Document::insertObject: Error while inserting the expanded object state into the theme document." );
+                    return -1;
+                }
             }
 
-            return;
+            // Multiple items inserted successfully
+            return 0;
         }
     }
 
@@ -678,10 +694,12 @@ void Document::insertObject(int objId, const QList<int> &objStates,
 
     if (d->specIndex.contains(objAccessIndex) ) {
         qCritical("Document::insertObject: Could not insert object because numerical id '%d' has already been defined.", objAccessIndex );
+        return -1;
     } else {
-//                 qDebug() << "insertObject:" << objId << specIndex;
+        qDebug() << "insertObject:" << objId << " -> " << objAccessIndex;
         d->specIndex.insert(objAccessIndex, obj);
         refObj(obj);
+        return objAccessIndex;
     }
 }
 

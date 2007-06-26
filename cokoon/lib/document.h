@@ -306,8 +306,9 @@ hover    := 2*2^2@endverbatim
          * @param objId object ID as declared in mapToId()
          * @param objStates object states as specified in mapObjectStatesToId()
          * @param obj The actual object.
+         * @return The new ID used to access the specific object state (0 if objStates have been expanded into multiple states), or -1 in case of an error.
          */
-        void insertObject(int objId, const QList<int> &objStates,Object *obj);
+        int insertObject(int objId, const QList<int> &objStates,Object *obj);
 
         /**
          * @param id The absolute id of the object.
