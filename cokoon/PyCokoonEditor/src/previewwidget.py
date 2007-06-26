@@ -11,11 +11,16 @@ class PreviewWidget(QtGui.QWidget):
     self.setThemeModel(themeModel)
     
   def paintEvent(self, event):
+    doc = self.model.cokoonDoc
+    if doc != None:
+      id = 34
+      if id != -1:
+        painter = QtGui.QPainter(self)
+        doc.drawLayers(id,painter,0,0,self.width(), self.height())
+        return
+
+    # else...
     QtGui.QWidget.paintEvent(self,event)
-#     painter = QtGui.QPainter(self)
-#     id = self.cokoonDoc.getIdentifierIndex("Button.normal.normal")
-#     print id
-#     self.cokoonDoc.drawLayers(id, painter, 0, 0, self.width(), self.height() )
 
   def setThemeModel(self, themeModel):
     self.model = themeModel
