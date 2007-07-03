@@ -234,6 +234,9 @@ class ThemeModel(QAbstractItemModel):
     self.rootElement = None
     self._modified = False
 
+    self.spec = None
+    self.cokoonDoc = None
+
   def loadFile(self, file):
     '''Loads a theme description file (must be QFile)'''
     if not self.doc.setContent(file):

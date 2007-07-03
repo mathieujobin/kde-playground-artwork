@@ -114,6 +114,32 @@ class ThemeSpec:
 
     self.specObjIdBase = maxObjAccessId
 
+  def mapObjectStringToSpecIndex(self,str):
+    '''Maps specification identifiers in the form of objName.state1.state2...stateN to the numeric spec ID'''
+    strSplit = str.split(".")
+    print strSplit
+    objId = self.specObjNameToId[strSplit[0]]
+    print "objId:",objId
+    if objId==None or objId<0:
+      return -1
+
+    specId = objId
+
+    objStateLevels = self.specObjIdToStateLevels[objId]
+    print "objStateLevels:",objStateLevels
+    if objStateLevels==None:
+      return -1
+
+    cnt = 0
+    for st in strSplit[1:]:
+      objStateLevelStates = objStateLevels[cnt]
+      stLvlId = objStateLevelStates[st]
+      print stLvlId
+      specId = specId + stLvlId
+      cnt=cnt+1
+
+    return specId
+
 class ThemeSpecHandler(QtXml.QXmlDefaultHandler):
   def __init__(self,themeSpec):
     QtXml.QXmlDefaultHandler.__init__(self)

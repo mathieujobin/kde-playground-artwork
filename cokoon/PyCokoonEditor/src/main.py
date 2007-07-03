@@ -6,7 +6,9 @@ from PyQt4 import QtCore, QtGui
 import sdi_rc
 from themespec import ThemeSpec
 from thememodel import ThemeModel
+from documentview import DocumentView
 from previewwidget import PreviewWidget
+from attributeeditwidget import AttributeEditWidget
 
 class MainWindow(QtGui.QMainWindow):
     sequenceNumber = 1
@@ -68,22 +70,28 @@ class MainWindow(QtGui.QMainWindow):
         
 #        self.themeView.setAnimated(True)
         
-#         dock = QtGui.QDockWidget(self.tr("Objects"), self)
-#         dock.setAllowedAreas(QtCore.Qt.LeftDockWidgetArea | QtCore.Qt.RightDockWidgetArea)
-#         self.themeView = QtGui.QTreeView(dock)
-#         dock.setWidget(self.themeView)
-#         self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, dock)
-        
-        dock = QtGui.QDockWidget(self.tr("Preview"), self)
-        dock.setAllowedAreas(QtCore.Qt.LeftDockWidgetArea | QtCore.Qt.RightDockWidgetArea)
         self.preview = PreviewWidget(self.themeModel)
-        dock.setWidget(self.preview)
+        self.themeView = DocumentView(self)
+        self.editView = AttributeEditWidget(self)
+
+        self.connect(self.themeView, QtCore.SIGNAL("themeElementSelected"),
+                     self.editView.switchThemeElement)
+        self.connect(self.themeView, QtCore.SIGNAL("themeElementSelected"),
+                     self.preview.setCurrentThemeElement)
+
+        dock = QtGui.QDockWidget(self.tr("Objects"), self)
+        dock.setAllowedAreas(QtCore.Qt.LeftDockWidgetArea | QtCore.Qt.RightDockWidgetArea)
+        dock.setWidget(self.themeView)
+        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, dock)
+
+        dock = QtGui.QDockWidget(self.tr("Attributes"), self)
+        dock.setAllowedAreas(QtCore.Qt.LeftDockWidgetArea | QtCore.Qt.RightDockWidgetArea)
+        dock.setWidget(self.editView)
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
 
 #        TODO: Factor out self.textEdit
         self.textEdit = QtGui.QTextEdit()
-        self.themeView = QtGui.QTreeView(self)
-        self.setCentralWidget(self.themeView)
+        self.setCentralWidget(self.preview)
         
         self.createActions()
         self.createMenus()
