@@ -60,19 +60,12 @@ namespace Cokoon {
             if ( itemId == -1 )
                 return 0;
 
-            int itemStateLevels = obj->doc()->objectStateLevels(itemId);
-
-            if ( itemStateLevels < 0 )
-                return 0;
-
-            QString objectIdStr = ref.section( '.', 0, itemStateLevels );
-
-            const Object *o = obj->doc()->obj( objectIdStr );
+            const Object *o = obj->doc()->obj(itemIdStr);
 
             if ( !o )
                 return 0;
 
-            ref = "." + ref.section( '.', itemStateLevels+1 );
+            ref = "." + ref.section('.', 1);
         }
 
         return 0;
@@ -334,21 +327,13 @@ QVariant Object::evalExpression(int id,
     }
 }
 
-Object::Object(Document *doc, int inheritId, const QString &inherit)
-    : m_inherit(0), m_paintLayersSet(false), m_doc(doc), m_valid(false),
-      m_docRefCount(0), m_paintWidth(QVariant()), m_paintHeight(QVariant())
+Object::Object(Document *doc, const QString &objIdStr, const Object *inherit)
+    : m_id(objIdStr), m_inherit(inherit), m_paintLayersSet(false), m_doc(doc), m_valid(false),
+      m_paintWidth(QVariant()), m_paintHeight(QVariant())
 {
     if (!m_doc) {
         qFatal("Object can not be constructed without valid Document!" );
         return;
-    }
-
-    if (inheritId != -1) {
-        m_inherit = doc->obj(inheritId);
-        if (m_inherit == 0) {
-            qCritical("Object can not inherit '%s' (ID %d) because it does not exist!", qPrintable(inherit), inheritId );
-            return;
-        }
     }
 
     m_valid = true;
@@ -390,6 +375,11 @@ void Object::clear()
 bool Object::isValid() const
 {
     return m_valid;
+}
+
+const QString &Object::id() const
+{
+    return m_id;
 }
 
 Document *Object::doc() const
@@ -548,11 +538,6 @@ void Object::paint(QPainter *p,
 
     m_paintWidth.clear();
     m_paintHeight.clear();
-}
-
-int Object::docRefCount() const
-{
-    return m_docRefCount;
 }
 
 const Object *Object::inherit() const

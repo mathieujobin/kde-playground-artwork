@@ -55,6 +55,7 @@ public:
 
     Document *m_doc;
 
+    QHash<int, Object*> objIndex;
     QHash<int, Object*> specIndex;
 
     // theme spec declaration (multiple string/int IDs can point to
@@ -110,23 +111,47 @@ class DocumentHandler : public QXmlDefaultHandler
                 m_context = Theme;
             } else if (m_context == Theme && qName == "object") {
                 QString objIdStr = attributes.value("id");
-                QString objInheritStr = attributes.value("inherit");
+                QString objImplStr = attributes.value("implement");
+                QString objExtendStr = attributes.value("extend");
 
-                QStringList objStatesString = objIdStr.split(".");
+                const Object *extendObj = 0;
+                if(! objExtendStr.isEmpty() ) {
+                    int extendId = m_doc->mapToId(Document::ObjectNameDecl,
+                                                  objExtendStr);
+                    if(extendId < 0) {
+                        qCritical("%s: Object '%s' can not be extended, because it does not exist",
+                                  qPrintable(objIdStr), qPrintable(objExtendStr));
+                        return false;
+                    }
+                    extendObj = m_doc->obj(extendId);
+                }
+
+                m_currentObj = new Object(m_doc, objIdStr, extendObj);
+
+                int objIdRet = m_doc->insertObject(m_currentObj);
+
+                if (objIdRet<0) {
+                    // error... cleanup: delete the object
+                    delete m_currentObj;
+                    m_currentObj = 0;
+
+                    qCritical("%s: Error while inserting the object into the theme document.", qPrintable(objIdStr) );
+                    return false;
+                }
 
 
-                // translate the string identifier to integer identifiers
-                int objId = m_doc->mapToId(Document::ObjectNameDecl,
-                                                 objStatesString.at(0) );
-                if (objId == -1) {
+                /*
+                 * Map specification object states to the object
+                 */
+                QStringList objStatesString = objImplStr.split(".");
+                // translate the string state list to integer state IDs
+                int stateObjId = m_doc->mapToId(Document::ObjectStateDecl,
+                                             objStatesString.at(0) );
+                if (stateObjId == -1) {
                     if (objStatesString.size() > 1) {
                         // only objects defined in the theme spec can have 'states'
-                        qCritical("%s: invalid object id: object name not defined in the theme specification. only specified objects can have states.", qPrintable(objIdStr) );
+                        qCritical("%s: invalid state id '%s': state object not defined in the theme specification.", qPrintable(objIdStr), qPrintable(objImplStr) );
                         return false;
-                    } else {
-                        // declare custom object...
-                        objId = m_doc->declareIdMapping(Document::ObjectNameDecl,
-                                                        objStatesString.at(0));
                     }
                 }
 
@@ -137,10 +162,10 @@ class DocumentHandler : public QXmlDefaultHandler
                     if (stateStr == "*") {
                         stateId = -1;
                     } else {
-                        stateId = m_doc->mapObjectStateToId(objId, i-1,
+                        stateId = m_doc->mapObjectStateToId(stateObjId, i-1,
                                                             stateStr);
                         if (stateId == -1) {
-                            qCritical("%s: state '%s' not defined in the theme specification.", qPrintable(objIdStr), qPrintable(stateStr));
+                            qCritical("%s: state '%s' not defined in the theme specification.", qPrintable(objImplStr), qPrintable(stateStr));
                             return false;
                         }
                     }
@@ -148,58 +173,16 @@ class DocumentHandler : public QXmlDefaultHandler
                     objStates.append(stateId);
                 }
 
-                // build the inherit object ID
-                int objInheritAbsoluteId = -1;
-                if (!objInheritStr.isEmpty()) {
-                    int objInheritObjId;
-                    QStringList objInheritStrs = objInheritStr.split(".");
-                    if (objInheritStrs[0].isEmpty()) {
-                        objInheritObjId = objId;
-                    } else {
-                        objInheritObjId = m_doc->mapToId(Document::ObjectNameDecl, objInheritStrs[0]);
-                    }
-                    if (objInheritObjId == -1) {
-                        qCritical("%s: Inherit object (%s) does not exist.",
-                                  qPrintable(objIdStr), qPrintable(objInheritStr));
-                        return false;
-                    }
-                    objInheritAbsoluteId = objInheritObjId;
-                    for (int i = 1; i < objInheritStrs.size(); ++i) {
-                        const int si = i-1; // same column in the state list
-                        if (objInheritStrs[i].isEmpty() ) {
-                            if (objStates.size()<=si || objStates[si] == -1) {
-                                qCritical("%s: Unable to complete 'inherit' (%s): The according section (%d) must be specified in 'id'.", qPrintable(objIdStr), qPrintable(objInheritStr), i );
-                                return false;
-                            }
-                            objInheritAbsoluteId += objStates[si];
+                int objSpecMappingRet = m_doc->declareSpecMapping(objIdRet, stateObjId, objStates);
 
-                        } else {
-                            int stateId = m_doc->mapObjectStateToId(objInheritObjId,si, objInheritStrs[i]);
-                            if (stateId == -1) {
-                                qCritical("%s: Unable to complete 'inherit' (%s): section %d must be specified in 'id'.", qPrintable(objIdStr), qPrintable(objInheritStr), i );
-                                return false;
-                            }
-                            objInheritAbsoluteId += stateId;
-                        }
-                    }
-
-                }
-
-
-                m_currentObj = new Object(m_doc, objInheritAbsoluteId, objInheritStr);
-                qDebug("about to insert obj: %s", qPrintable(objIdStr));
-                int insertRet = m_doc->insertObject(objId, objStates, m_currentObj);
-
-                if ((insertRet<0) || (m_currentObj->docRefCount() < 1)) {
-                    // cleanup. delete the object
-                    delete m_currentObj;
-                    m_currentObj = 0;
-
-                    qCritical("%s: Error while inserting the object into the theme document.", qPrintable(objIdStr) );
+                if (objSpecMappingRet<0) {
+                    qCritical("%s: Error while declaring the specification mapping.", qPrintable(objIdStr) );
                     return false;
                 }
 
                 m_context = Obj;
+
+
             } else if (m_context == Obj && m_currentObj && qName == "expression") {
                 QString expressionIdStr = attributes.value("id");
                 int expressionId = declareAndGetIdIndex(expressionIdStr);
@@ -545,9 +528,11 @@ Document::~Document()
 
 void Document::clear()
 {
-    foreach(Object *o, d->specIndex) {
-        unrefObj(o);
+    foreach(Object *o, d->objIndex) {
+        delete o;
     }
+    d->objIndex.clear();
+
     d->specIndex.clear();
 
     d->declObjNames.clear();
@@ -585,65 +570,66 @@ void Document::loadTheme(const QString &fileName)
     }
 }
 
+const Object *Document::specObj(int specStateId) const
+{
+    if(! d->specIndex.contains(specStateId))
+        return 0;
+
+    return d->specIndex[specStateId];
+}
+
 const Object *Document::obj(const QString &id) const
 {
-    QStringList objStrs = id.split(".");
-
-    int objId = mapToId(Document::ObjectNameDecl, objStrs[0]);
-
-    if (objId == -1) {
-        qCritical("%s: object (%s) does not exist.",
-                  qPrintable(id), qPrintable(objStrs[0]));
-        return 0;
-    }
-
-    int objAbsoluteId = objId;
-
-    for (int i = 1; i < objStrs.size(); ++i) {
-        const int si = i-1; // same column in the state list
-        int stateId = mapObjectStateToId(objId,si, objStrs[i]);
-        if (stateId == -1) {
-            qCritical("%s: object state '%s' (level %d) does not exist.",
-                      qPrintable(id), qPrintable(objStrs[i]), i );
-            return 0;
-        }
-        objAbsoluteId += stateId;
-    }
-
-    return obj(objAbsoluteId);
+    int objId = mapToId(ObjectNameDecl, id);
+    qDebug() << "Document::obj" << id << "->" << objId;
+    return obj(objId);
 }
 
 const Object *Document::obj(int id) const
 {
-//     qDebug() << "requested obj id: " << id;
-    return d->specIndex.value(id);
+    return d->objIndex[id];
 }
 
-void Document::refObj(Object *o)
-{
-    if (!o)
-        return;
-    o->m_docRefCount += 1;
-}
-
-void Document::unrefObj(Object *o)
-{
-    if (!o)
-        return;
-    if (o->m_docRefCount > 1)
-        o->m_docRefCount -= 1;
-    else
-        delete o;
-}
-
-int Document::insertObject(int objId, const QList<int> &objStates,
-                            Object *obj)
+int Document::insertObject(Object *obj)
 {
     if (!obj) {
-        qFatal("Document::insertObject: item to insert is 0!");
+        qFatal("Document::insertObject: object to insert is 0!");
         return -1;
     }
 
+    if (mapToId(Document::ObjectNameDecl, obj->id() ) != -1) {
+        qCritical("Document::insertObject: %s: Object id has already been defined",
+                  qPrintable(obj->id() ));
+        return -1;
+    }
+
+    int objId = declareIdMapping(ObjectNameDecl, obj->id());
+
+    if (objId < 0) {
+        qCritical("Document::insertObject: %s: Unable to declare Object id",
+                  qPrintable(obj->id() ));
+        return -1;
+    }
+
+    qDebug() << "insertObject:" << objId << "->" << obj->id();
+    d->objIndex.insert(objId, obj);
+
+    return objId;
+}
+
+int Document::declareSpecMapping(int objId, int stateId)
+{
+    Object *o = d->objIndex.value(objId);
+    if (o) {
+        qDebug() << "declareSpecMapping:" << o->id() << objId << " -> " << stateId;
+        d->specIndex.insert(stateId, o);
+        return objId;
+    }
+    return -1;
+}
+
+int Document::declareSpecMapping(int objId, int stateObjId, const QList<int> &objStates)
+{
 //     QString statesStr = QString("obj: %1 states:").arg(objId);
 //     foreach(int s, objStates) {
 //         statesStr += QString(" %1").arg(s);
@@ -662,20 +648,20 @@ int Document::insertObject(int objId, const QList<int> &objStates,
 
             // current state level is a wildcard (-1)
 
-            if (mapObjectStateToId(objId, i, 0) == -1) {
+            if (mapObjectStateToId(stateObjId, i, 0) == -1) {
                 qFatal("Document::insertObject: state level %d not defined in the theme specification.", i);
             }
 
             int j = 0;
             int stateId = -1;
             QList<int> newObjStates = objStates;
-            while ((stateId = mapObjectStateToId(objId, i, j++)) != -1) {
+            while ((stateId = mapObjectStateToId(stateObjId, i, j++)) != -1) {
                 newObjStates[i] = stateId;
-                int ret = insertObject(objId, newObjStates, obj);
+                int ret = declareSpecMapping(objId, stateObjId, newObjStates);
 
                 // Break here in case of an error.
                 if (ret == -1) {
-                    qCritical("Document::insertObject: Error while inserting the expanded object state into the theme document." );
+                    qCritical("Document::declareSpecMapping: Error while inserting the expanded object state into the theme document." );
                     return -1;
                 }
             }
@@ -685,22 +671,20 @@ int Document::insertObject(int objId, const QList<int> &objStates,
         }
     }
 
-    // All state items have been set. Inserting the object now.
-    // construct the final obj()-id
-    int objAccessIndex = objId;
+    // No more wildcards in the item. insert the mapping directly now
+    // construct the final state-id
+    int objStateAccessIndex = stateObjId;
     foreach(int stId, objStates) {
-        objAccessIndex += stId;
+        objStateAccessIndex += stId;
     }
 
-    if (d->specIndex.contains(objAccessIndex) ) {
-        qCritical("Document::insertObject: Could not insert object because numerical id '%d' has already been defined.", objAccessIndex );
+    if (d->specIndex.contains(objStateAccessIndex) ) {
+        qCritical("Document::declareSpecMapping: Could not insert mapping because numerical id '%d' has already been defined.", objStateAccessIndex );
         return -1;
     } else {
-        qDebug() << "insertObject:" << objId << " -> " << objAccessIndex;
-        d->specIndex.insert(objAccessIndex, obj);
-        refObj(obj);
-        return objAccessIndex;
+        return declareSpecMapping(objId, objStateAccessIndex);
     }
+
 }
 
 int Document::mapToId(DeclarationType type, const QString &str) const
@@ -711,6 +695,8 @@ int Document::mapToId(DeclarationType type, const QString &str) const
             return d->declObjNames.value(str);
         else
             return -1;
+    case ObjectStateDecl:
+        return -1;
     case VariableDecl:
         if (d->declVariables.contains(str) )
             return d->declVariables.value(str);
@@ -726,7 +712,7 @@ int Document::mapToId(DeclarationType type, const QString &str) const
 }
 
 
-int Document::customIdMappingBase(DeclarationType type) const
+int Document::customIdMappingBase(DeclarationType ) const
 {
     return 0;
 }
@@ -741,6 +727,8 @@ int Document::declareIdMapping(DeclarationType type, const QString &str)
         /* qDebug() << "declare objectName " << str << idx; */
         return idx;
     }
+    case ObjectStateDecl:
+        return -1;              // Themes can't declare states
     case VariableDecl:
         return -1; // Themes can't declare variables
     case IdentifierDecl:
@@ -755,12 +743,12 @@ int Document::declareIdMapping(DeclarationType type, const QString &str)
     return -1;
 }
 
-int Document::objectStateLevels(int objId) const
+int Document::objectStateLevels(int) const
 {
     return -1;
 }
 
-int Document::objectStateLevelStates(int objId, int stateLevel) const
+int Document::objectStateLevelStates(int, int) const
 {
     return -1;
 }
@@ -770,7 +758,7 @@ void Document::drawLayers(int objId,
                           const ExpressionVariableBridge *vars,
                           const SpecialCellBridge *cells) const
 {
-    const Object *o = obj( objId );
+    const Object *o = specObj( objId );
     if ( o )
         o->paint( p, left, top, width, height, vars, cells );
     else
@@ -782,7 +770,7 @@ void Document::drawLayout(int objId, int layoutId,
                           const ExpressionVariableBridge *vars,
                           const SpecialCellBridge *cells) const
 {
-    const Object *o = obj( objId );
+    const Object *o = specObj( objId );
     if ( !o )
         return;
 
@@ -796,7 +784,7 @@ void Document::drawLayout(int objId, int layoutId,
 QPixmap Document::getTilePixmap(int objId, int tileId,
                                 const ExpressionVariableBridge *vars) const
 {
-    const Object *o = obj( objId );
+    const Object *o = specObj( objId );
     if ( !o )
         return QPixmap();
 
@@ -812,7 +800,7 @@ QPixmap Document::getTilePixmap(int objId, int tileId,
 QVariant Document::getExpValue(int objId, int expressionId,
                                const ExpressionVariableBridge *vars) const
 {
-    const Object *o = obj( objId );
+    const Object *o = specObj( objId );
     if ( !o ) {
         qCritical("Object '%d' does not exist; unable to get expression value '%d'.",
                  objId, expressionId);

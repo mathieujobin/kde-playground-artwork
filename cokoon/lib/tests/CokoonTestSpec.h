@@ -49,7 +49,7 @@ class SpecDocument : public Cokoon::Document {
 protected:
 int mapToId(Cokoon::Document::DeclarationType type,const QString &str) const {
   switch(type) {
-  case Cokoon::Document::ObjectNameDecl:
+  case Cokoon::Document::ObjectStateDecl:
     if (false) { return -1; }
     else if (str == "Expressions") { return Expressions; }
     else if (str == "Painting") { return Painting; }
@@ -70,7 +70,7 @@ int mapToId(Cokoon::Document::DeclarationType type,const QString &str) const {
 return Cokoon::Document::mapToId(type,str); }
 int customIdMappingBase(Cokoon::Document::DeclarationType type) const {
   switch(type) {
-  case Cokoon::Document::ObjectNameDecl: return Items__Count;
+  case Cokoon::Document::ObjectStateDecl: return Items__Count;
   case Cokoon::Document::VariableDecl:   return Var::Variables__Count;
   case Cokoon::Document::IdentifierDecl: return Identifiers__Count;
   }

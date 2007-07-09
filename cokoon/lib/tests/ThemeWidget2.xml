@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cokoon_theme name="ThemeWidget1" version="0.1pre">
-	<object id="Widget">
+	<object id="Widget" inherit="Widget">
 		<source id="decorationsrc" type="svg" file="svgtest.svg"/>
 
 		<expression id="zoom" value="1"/>

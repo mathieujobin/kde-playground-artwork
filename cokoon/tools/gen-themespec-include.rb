@@ -243,7 +243,7 @@ o.puts "class SpecDocument : public Cokoon::Document {"
 o.puts "protected:"
 o.puts "int mapToId(Cokoon::Document::DeclarationType type,const QString &str) const {"
 o.puts "  switch(type) {"
-o.puts "  case Cokoon::Document::ObjectNameDecl:"
+o.puts "  case Cokoon::Document::ObjectStateDecl:"
 o.puts "    if (false) { return -1; }"
 items.each {
   |v|
@@ -278,7 +278,7 @@ o.puts "return Cokoon::Document::mapToId(type,str); }"
 o.puts "int customIdMappingBase(Cokoon::Document::DeclarationType type) const {"
 
 o.puts "  switch(type) {"
-o.puts "  case Cokoon::Document::ObjectNameDecl: return Items__Count;"
+o.puts "  case Cokoon::Document::ObjectStateDecl: return Items__Count;"
 o.puts "  case Cokoon::Document::VariableDecl:   return Var::Variables__Count;"
 o.puts "  case Cokoon::Document::IdentifierDecl: return Identifiers__Count;"
 o.puts "  }"

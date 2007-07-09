@@ -149,7 +149,8 @@ class Q_DECL_EXPORT Document
          * @see mapToId()
          */
         enum DeclarationType {
-            ObjectNameDecl, ///< 
+            ObjectNameDecl, ///<
+            ObjectStateDecl,
             VariableDecl,
             IdentifierDecl
         };
@@ -299,16 +300,32 @@ hover    := 2*2^2@endverbatim
 
         /**
          * Insert an object into the document. The document will take care of
-         * memory management -- if everything works as expected. If the object
-         * could not be inserted (e.g. because the @p objId already exists),
-         * it will do nothing, so be sure to check Object::docRefCount() after
-         * insertion and free memory yourself.
-         * @param objId object ID as declared in mapToId()
-         * @param objStates object states as specified in mapObjectStatesToId()
-         * @param obj The actual object.
-         * @return The new ID used to access the specific object state (0 if objStates have been expanded into multiple states), or -1 in case of an error.
+         * memory management, but only after the object has been inserted
+         * successfully. If the object could not be inserted (e.g. because
+         * the object ID already exists), the caller needs to take care of memory
+         * management.
+         * @param obj the object that should  e inserted
+         * @return the new object id, or -1 in case of an error
          */
-        int insertObject(int objId, const QList<int> &objStates,Object *obj);
+        int insertObject(Object *obj);
+
+        /**
+         * Maps an existing object @p objId to a specific object state ID
+         * as specified in mapObjectStatesToId()
+         * @return -1 in case of an error, objId on success
+         */
+        int declareSpecMapping(int objId, int stateId);
+        /**
+         * Convenience method for the above. Maps all object states specified
+         * as wild cards (state with the value -1) to the object @p objId.
+         */
+        int declareSpecMapping(int objId, int objStateId, const QList<int> &states);
+
+        /**
+         * Access the theme object using the id defined in the specification.
+         * @return the object or 0 if it doesn't exist.
+         */
+        const Object *specObj(int specStateId) const;
 
         /**
          * @param id The absolute id of the object.

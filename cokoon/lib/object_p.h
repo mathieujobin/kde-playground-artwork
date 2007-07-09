@@ -204,11 +204,16 @@ class Object
         /**
          * Construct.
          */
-    Object(Document *doc, int inheritId = -1, const QString &inherit = QString() );
+    Object(Document *doc, const QString &objIdStr, const Object *inherit = 0);
         /**
          * Destruct.
          */
         ~Object();
+
+        /**
+         * @return the ID string of the object.
+         */
+        const QString &id() const;
 
         /**
          * @return The inherited object.
@@ -289,12 +294,6 @@ class Object
          */
         QVariant evalExpression(int id,
                                 const ExpressionVariableBridge *vars = 0) const;
-
-        /**
-         * One object can be referenced by different ids in the document.
-         * @returns The number of document references to this object.
-         */
-        int docRefCount() const;
     private:
         friend class Document;
         friend class TileLayout;
@@ -314,6 +313,9 @@ class Object
          */
         void insertTileSource(TileSource *source);
 
+        /* Id string of the object */
+        const QString m_id;
+
         // can inherit another object.
         const Object *m_inherit;
 
@@ -332,8 +334,6 @@ class Object
         Document *m_doc;
 
         bool m_valid;
-
-        int m_docRefCount;
 
         // set while painting, to provide .width and .height references.
         // make the ref bridge friend to allow access...

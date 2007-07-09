@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cokoon_theme name="ThemeWidget1" version="0.1pre">
-	<object id="Widget">
+	<object id="Widget" implement="Widget">
 		<source id="decorationsrc" type="svg" file="svgtest.svg">
 			<replace_style_attr element_id="stop2191" attr="stop-color" value="#FF9999"/>
 			<replace_style_attr element_id="stop2191" attr="stop-opacity" value="0.4"/>
