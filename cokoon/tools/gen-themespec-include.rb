@@ -338,6 +338,7 @@ cnt += 1
 o.puts "                else return -1;"
 o.puts "             break;"
 }
+o.puts "            default: return -1;"
 o.puts "            }"
 o.puts "            break;"
 }
