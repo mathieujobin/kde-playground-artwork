@@ -26,8 +26,7 @@ class CokoonTest: public QObject
 Q_OBJECT
     private slots:
         void evaluate();
-        void loadThemeDocument();
-        void themeExpressionReferences();
+        void testCaseTheme();
 };
 
 #endif

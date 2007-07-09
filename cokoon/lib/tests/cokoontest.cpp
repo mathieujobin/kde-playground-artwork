@@ -31,7 +31,7 @@
 #include "../tilesource_p.h"
 #include "../tilelayout_p.h"
 
-#include "DecorationThemeSpec.h"
+#include "CokoonTestSpec.h"
 
 #include "cokoontest.h"
 
@@ -138,23 +138,14 @@ void CokoonTest::evaluate()
     QVERIFY( e.evaluate() == 9);
 
     QCOMPARE(e.parse("1+(3*(2-(6/2)))+3").expression(), QString("1 3 2 6 2 / - * + 3 +") );
-    QVERIFY( e.evaluate() == 1);
-
-    e.parse("4+5*2");
-    QVERIFY( e.evaluate() == 14);
 
     QCOMPARE(e.parse("variable1+5*2", &vars).expression(), QString("v0 5 2 * +"));
     QVERIFY( e.isValid() == true );
     QVERIFY( e.evaluate(&vars) == 14);
 
     QCOMPARE(e.parse("testVar*(testvar-variable1*2)", &vars).expression(), QString("v1 v2 v0 2 * - *") );
-    QVERIFY( e.evaluate(&vars) == -42);
 
     QCOMPARE(e.parse("12%5").expression(), QString("12 5 %") );
-    QVERIFY( e.evaluate() == 2);
-
-    e.parse("12%5-5%3*3");
-    QVERIFY( e.evaluate() == -4);
 
     e.parse("2%0");
     QVERIFY( e.evaluate() == QVariant() );
@@ -163,43 +154,55 @@ void CokoonTest::evaluate()
     QVERIFY( e.evaluate() == QVariant() );
 
     QCOMPARE( e.parse("2+max(1+5,2*4)").expression(), QString("2 1 5 + 2 4 * max +") );
-    QCOMPARE( e.evaluate(),  QVariant(10) );
     QCOMPARE( e.parse("min(1+5,2*max(2,1))").expression(), QString("1 5 + 2 2 1 max * min") );
-    QCOMPARE( e.evaluate(),  QVariant(4) );
 
     QCOMPARE( e.parse("#AABBCC").expression(), QString("#aabbcc") );
-    QCOMPARE( e.evaluate(),  QVariant(QColor("#aaBBcC")) );
 
     QCOMPARE( e.parse("rgb(255,200+55,254*1+1)").expression(), QString("255 200 55 + 254 1 * 1 + rgb") );
-    QCOMPARE( e.evaluate(),  QVariant(QColor("#ffffff")) );
 
     QCOMPARE( e.parse("rgba(0, 255, 100-50, 2*33)").expression(), QString("0 255 100 50 - 2 33 * rgba") );
     QCOMPARE( e.evaluate(),  QVariant(QColor(0, 255, 50, 66)) );
 }
 
-void CokoonTest::loadThemeDocument()
+#define expression_test_case(objId) \
+    vars.setValue("var01", doc.getExpValue(objId, CokoonTestSpec::Exp_varValue01)); \
+    vars.setValue("var02", doc.getExpValue(objId, CokoonTestSpec::Exp_varValue02)); \
+    qDebug() << "testing " << doc.getExpValue(objId, CokoonTestSpec::Exp_exp, &vars) << "==" << doc.getExpValue(objId, CokoonTestSpec::Exp_expAssert, &vars); \
+    QCOMPARE(doc.getExpValue(objId, CokoonTestSpec::Exp_exp, &vars),          \
+             doc.getExpValue(objId, CokoonTestSpec::Exp_expAssert, &vars));
+
+void CokoonTest::testCaseTheme()
 {
-    DecorationThemeSpec::SpecDocument doc;
-    doc.loadTheme("TestDecoration.xml");
+    CokoonTestSpec::SpecDocument doc;
+    doc.loadTheme("TestCaseTheme.xml");
 
     ExpressionVariableHash vars;
-    vars.setValue("testVar", 5);
+
+    expression_test_case(CokoonTestSpec::Expressions + CokoonTestSpec::Expressions0_test01);
+    expression_test_case(CokoonTestSpec::Expressions + CokoonTestSpec::Expressions0_test02);
+    expression_test_case(CokoonTestSpec::Expressions + CokoonTestSpec::Expressions0_test03);
+    expression_test_case(CokoonTestSpec::Expressions + CokoonTestSpec::Expressions0_test04);
+    expression_test_case(CokoonTestSpec::Expressions + CokoonTestSpec::Expressions0_test05);
+    expression_test_case(CokoonTestSpec::Expressions + CokoonTestSpec::Expressions0_test06);
+    expression_test_case(CokoonTestSpec::Expressions + CokoonTestSpec::Expressions0_test07);
+    expression_test_case(CokoonTestSpec::Expressions + CokoonTestSpec::Expressions0_test08);
+    expression_test_case(CokoonTestSpec::Expressions + CokoonTestSpec::Expressions0_test09);
+    expression_test_case(CokoonTestSpec::Expressions + CokoonTestSpec::Expressions0_test10);
+    expression_test_case(CokoonTestSpec::Expressions + CokoonTestSpec::Expressions0_test11);
+    expression_test_case(CokoonTestSpec::Expressions + CokoonTestSpec::Expressions0_test12);
+    expression_test_case(CokoonTestSpec::Expressions + CokoonTestSpec::Expressions0_test13);
+    expression_test_case(CokoonTestSpec::Expressions + CokoonTestSpec::Expressions0_test14);
+    expression_test_case(CokoonTestSpec::Expressions + CokoonTestSpec::Expressions0_test15);
+    expression_test_case(CokoonTestSpec::Expressions + CokoonTestSpec::Expressions0_test16);
+    expression_test_case(CokoonTestSpec::Expressions + CokoonTestSpec::Expressions0_test17);
+
 
     QImage test1Orig("testdeco1.xpm");
-
     QImage test1Theme(test1Orig.size(), QImage::Format_ARGB32_Premultiplied );
     QPainter p(&test1Theme);
-
-    const int objId = DecorationThemeSpec::Decoration + DecorationThemeSpec::Decoration0_active +
-                      DecorationThemeSpec::Decoration1_normal + DecorationThemeSpec::Decoration2_normal +
-                      DecorationThemeSpec::Decoration3_normal;
-
-    QCOMPARE( doc.getExpValue( objId, DecorationThemeSpec::Exp_variableExpression, &vars ), QVariant(5) );
-
-    doc.drawLayers( objId, &p, 0, 0, test1Orig.size().width(), test1Orig.size().height(), &vars );
-
+    int objId = CokoonTestSpec::Painting + CokoonTestSpec::Painting0_test01;
+    doc.drawLayers( objId, &p, 0, 0, test1Orig.size().width(), test1Orig.size().height() );
     test1Theme.save("temp-testdeco1-result.xpm", "XPM");
-
     bool equal = true;
     for (int i=0; equal && i < test1Orig.width(); ++i) {
         for (int j=0; equal && j < test1Orig.height(); ++j) {
@@ -210,19 +213,7 @@ void CokoonTest::loadThemeDocument()
         }
     }
     QVERIFY(equal);
-}
 
-void CokoonTest::themeExpressionReferences()
-{
-    DecorationThemeSpec::SpecDocument doc;
-    doc.loadTheme("TestDecoration.xml");
-
-    const int objId = DecorationThemeSpec::Button + DecorationThemeSpec::Button0_close +
-                      DecorationThemeSpec::Button1_normal + DecorationThemeSpec::Button2_active +
-                      DecorationThemeSpec::Button3_normal;
-    QCOMPARE( doc.getExpValue( objId, DecorationThemeSpec::Exp_objectExp ),  QVariant( 5 ) );
-    QCOMPARE( doc.getExpValue( objId, DecorationThemeSpec::Exp_objectExp2 ),  QVariant( 6 ) );
-    QCOMPARE( doc.getExpValue( objId, DecorationThemeSpec::Exp_objectExp3 ),  QVariant( 7 ) );
 }
 
 #include "cokoontest.moc"

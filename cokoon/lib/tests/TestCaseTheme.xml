@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cokoon_theme name="CokoonTestSpec" version="0.1pre">
+
+  <object id="Expressions.test01">
+    <!-- Test the variable mechanism, and expression referencing -->
+    <expression id="varValue01" value="3"/>
+    <expression id="varValue02" value="4"/>
+    <expression id="exp" value="var01+var02"/>
+    <expression id="expAssert" value=".varValue01+.varValue02"/>
+  </object>
+  <object id="Expressions.test02" inherit="Expressions.test01">
+    <!-- Test inherited expressions, and simple expression evaluation -->
+    <expression id="exp" value="var01+var02"/>
+    <expression id="expAssert" value="7"/>
+  </object>
+  <object id="Expressions.test03">
+    <!-- Test some more evaluation rules: +/*-%, precedence, ... -->
+    <expression id="varValue01" value="0"/>
+    <expression id="varValue02" value="0"/>
+    <expression id="exp" value="7+4/2+4*(4-3%2)"/>
+    <expression id="expAssert" value="7+2+12"/>
+  </object>
+  <object id="Expressions.test04" inherit="Expressions.test03">
+    <!-- Test Flating point evaluation... Although the specification sais this should be of type 'Int', this works at the moment. -->
+    <expression id="exp" value="7/2"/>
+    <expression id="expAssert" value="3.5"/>
+  </object>
+  <object id="Expressions.test05">
+    <expression id="exp" value="#aaBBcc"/>
+    <expression id="expAssert" value="#AAbbCc"/>
+  </object>
+  <object id="Expressions.test06">
+    <expression id="exp" value="rgb(255,200+55,127*2+1)"/>
+    <expression id="expAssert" value="#ffffff"/>
+  </object>
+  <object id="Expressions.test07">
+    <expression id="exp" value="rgba(0, 255, 100-50, 2*33)"/>
+    <expression id="expAssert" value="rgba(0,255,50,66)"/>
+  </object>
+  <object id="Expressions.test08">
+    <expression id="exp" value="rgb(255,200+55,127*2+1)"/>
+    <expression id="expAssert" value="#ffffff"/>
+  </object>
+  <object id="Expressions.test09">
+    <expression id="exp" value="2/0"/>
+    <expression id="expAssert" value=""/>
+  </object>
+  <object id="Expressions.test10">
+    <expression id="exp" value="2%0"/>
+    <expression id="expAssert" value=""/>
+  </object>
+  <object id="Expressions.test11">
+    <expression id="exp" value="12%5-5%3*3"/>
+    <expression id="expAssert" value="-4"/>
+  </object>
+  <object id="Expressions.test12">
+    <expression id="exp" value="4+5*2"/>
+    <expression id="expAssert" value="14"/>
+  </object>
+  <object id="Expressions.test13">
+    <expression id="exp" value="1+(3*(2-(6/2)))+3"/>
+    <expression id="expAssert" value="1"/>
+  </object>
+  <object id="Expressions.test14">
+    <expression id="varValue01" value="4"/>
+    <expression id="exp" value="var01+5*2"/>
+    <expression id="expAssert" value="14"/>
+  </object>
+  <object id="Expressions.test15">
+    <expression id="exp" value="12%5"/>
+    <expression id="expAssert" value="2"/>
+  </object>
+  <object id="Expressions.test16">
+    <expression id="exp" value="2+max(1+5,2*4)"/>
+    <expression id="expAssert" value="10"/>
+  </object>
+  <object id="Expressions.test17">
+    <expression id="exp" value="min(1+5,2*max(2,1))"/>
+    <expression id="expAssert" value="4"/>
+  </object>
+  <object id="Expressions.test18">
+    <expression id="refvalue" value="10-3"/>
+    <source id="decorationsrc" type="pixmap" file="testdeco1-src.xpm"/>
+    <tile id="topleft" mode_hor="normal" mode_vert="normal" source_id="decorationsrc" left=".top*2" top="4" width="Expressions.test18.refvalue" height=".o.refvalue"/>
+
+    <expression id="objectExp" value=".t.topleft.top+1"/>
+    <expression id="objectExp2" value="Expressions.test18.t.topleft.top+2"/>
+    <expression id="objectExp3" value=".refvalue"/>
+
+    <layout id="bglayout">
+      <column type="fixed" fixed_size=".o.refvalue"/>
+      <row type="fixed" fixed_size=".o.t.topleft.top">
+	<cell type="tile" tile_id="topleft"/>
+      </row>
+    </layout>
+
+
+    <expression id="exp" value=".t.topleft.top+1"/>
+    <expression id="expAssert" value="5"/>
+  </object>
+  <object id="Expressions.test19" inherit="Expressions.test18">
+    <expression id="exp" value="Expressions.test18.t.topleft.top+2"/>
+    <expression id="expAssert" value="6"/>
+  </object>
+  <object id="Expressions.test20" inherit="Expressions.test18">
+    <expression id="exp" value=".refvalue"/>
+    <expression id="expAssert" value="7"/>
+  </object>
+
+
+
+  <object id="Painting.test01">
+    <expression id="oneplusone" value="1+1"/>
+
+    <expression id="variableExpression" value="5"/>
+
+    <expression id="outermargin" value="5"/>
+    <expression id="toprowheight" value=".outermargin"/>
+
+    <source id="decorationsrc" type="pixmap" file="testdeco1-src.xpm"/>
+    <source id="svgrc" type="svg" file="svgtest.svg"/>
+    <tile id="topleft" mode_hor="normal" mode_vert="normal" source_id="decorationsrc" left="0" top="0" width="5" height=".width"/>
+    <tile id="top" mode_hor="tiled" mode_vert="tiled" source_object="" source_id="decorationsrc" left="5" top="0" width="5" height="5"/>
+    <tile id="topright" mode_hor="normal" mode_vert="normal" source_id="decorationsrc" left="10" top="0" width="5" height="5"/>
+    <tile id="bottomleft" mode_hor="normal" mode_vert="normal" source_id="decorationsrc" left="0" top="10" width="5" height="5"/>
+    <tile id="bottom" mode_hor="tiled" mode_vert="tiled" source_id="decorationsrc" left="5" top="10" width="5" height="5"/>
+    <tile id="bottomright" mode_hor="normal" mode_vert="normal" source_id="decorationsrc" left="10" top="10" width="5" height="5"/>
+    <tile id="left" mode_hor="tiled" mode_vert="tiled" source_id="decorationsrc" left="0" top="5" width="5" height="5"/>
+    <tile id="right" mode_hor="tiled" mode_vert="tiled" source_id="decorationsrc" left="10" top="5" width="5" height="5"/>
+    <tile id="center" mode_hor="tiled" mode_vert="tiled" source_id="decorationsrc" left="5" top="5" width="5" height="5"/>
+    <layout id="bglayout">
+      <column type="fixed" fixed_size="2+3"/>
+      <column type="expanding"/>
+      <column type="fixed" fixed_size="5"/>
+      <row type="fixed" fixed_size=".o.toprowheight">
+	<cell type="tile" tile_id="topleft"/>
+	<cell type="tile" tile_id="top"/>
+	<cell type="tile" tile_id="topright"/>
+      </row>
+      <row type="expanding">
+	<cell type="tile" tile_id="left"/>
+	<cell type="tile" tile_id="center"/>
+	<cell type="tile" tile_id="right"/>
+      </row>
+      <row type="fixed" fixed_size=".o.variableExpression">
+	<cell type="tile" tile_id="bottomleft"/>
+	<cell type="tile" tile_id="bottom"/>
+	<cell type="tile" tile_id="bottomright"/>
+      </row>
+    </layout>
+    <paint>
+      <layer layout_object="" layout_id="bglayout"/>
+    </paint>
+  </object>
+
+
+
+
+  <!-- TODO: Test painting+tiles, referencing from tile/layout/expression... -->
+
+
+</cokoon_theme>
+

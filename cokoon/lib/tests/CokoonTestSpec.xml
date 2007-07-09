@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cokoon_spec name="CokoonTestSpec" version="0.1pre">
+  <desc>This is the definition of the requirements for Cokoon test case themes.</desc>
+
+  <item id="Expressions">
+    <desc>A few cokoon expressions, and their expected results. The test case first evaluates varValue01 and varValue02, then it compares exp and expAssert, both having variable access to the previous values.</desc>
+    <states>
+      <state id="test01" />
+      <state id="test02" />
+      <state id="test03" />
+      <state id="test04" />
+      <state id="test05" />
+      <state id="test06" />
+      <state id="test07" />
+      <state id="test08" />
+      <state id="test09" />
+      <state id="test10" />
+      <state id="test11" />
+      <state id="test12" />
+      <state id="test13" />
+      <state id="test14" />
+      <state id="test15" />
+      <state id="test16" />
+      <state id="test17" />
+      <state id="test18" />
+      <state id="test19" />
+      <state id="test20" />
+    </states>
+    <provided>
+      <variable type="Int" id="var01" />
+      <variable type="Int" id="var02" />
+    </provided>
+    <required>
+      <expression type="Int" id="varValue01"/>
+      <expression type="Int" id="varValue02"/>
+      <expression type="Int" id="exp"/>
+      <expression type="Int" id="expAssert"/>
+    </required>
+  </item>
+  <item id="Painting">
+    <desc>Some painting tests. It is tested that what's painted by the states is equal to some static image (testX.xpm).</desc>
+    <states>
+      <state id="test01" />
+    </states>
+  </item>
+</cokoon_spec>
