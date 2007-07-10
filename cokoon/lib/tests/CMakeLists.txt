@@ -20,8 +20,6 @@ target_link_libraries(cokoontest  ${QT_QTSVG_LIBRARY} ${KDE4_KDECORE_LIBS} ${QT_
 ########### next target ###############
 set(themewidget_SRCS themewidget.cpp ${COKOONTEST_LIB_SRCS})
 
-kde4_automoc(${themewidget_SRCS})
-
 
 kde4_add_executable(themewidget ${themewidget_SRCS})
 

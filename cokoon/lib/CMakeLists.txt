@@ -22,8 +22,6 @@ set(cokoon_LIB_SRCS
 #set(INCLUDE_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/include")
 
 #qt4_automoc(${cokoon_LIB_SRCS})
-kde4_automoc(${cokoon_LIB_SRCS})
-
 kde4_add_library(cokoon SHARED ${cokoon_LIB_SRCS})
 
 SET(QT_USE_QTXML TRUE)
