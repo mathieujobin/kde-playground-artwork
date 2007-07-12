@@ -1,4 +1,4 @@
-/* Plastik widget style for KDE 4
+/* Oxygen widget style for KDE 4
    Copyright (C) 2003-2005 Sandro Giessl <sandro@giessl.com>
 
    based on the KDE style "dotNET":
@@ -53,13 +53,13 @@
 
 class QTimer;
 
-class PlastikStyle : public KStyle
+class OxygenStyle : public KStyle
 {
     Q_OBJECT
 
 public:
-    PlastikStyle();
-    virtual ~PlastikStyle();
+    OxygenStyle();
+    virtual ~OxygenStyle();
 
     virtual void drawKStylePrimitive(WidgetType widgetType, int primitive,
                                      const QStyleOption* opt,

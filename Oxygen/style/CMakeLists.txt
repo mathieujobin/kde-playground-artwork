@@ -1,5 +1,5 @@
 
-project(kstyle-plastik)
+project(kstyle-oxygen)
 
 add_subdirectory( config ) 
 
@@ -7,19 +7,19 @@ add_subdirectory( config )
 
 ########### next target ###############
 
-set(plastik_PART_SRCS oxygen.cpp misc.cpp )
+set(oxygen_PART_SRCS oxygen.cpp misc.cpp )
 
 
-kde4_add_plugin(plastik ${plastik_PART_SRCS})
+kde4_add_plugin(oxygen ${plastik_PART_SRCS})
 
-target_link_libraries(plastik  ${KDE4_KDECORE_LIBS} kdefx )
+target_link_libraries(oxygen  ${KDE4_KDECORE_LIBS} kdefx )
 
-install(TARGETS plastik  DESTINATION ${PLUGIN_INSTALL_DIR}/plugins/styles/ )
+install(TARGETS oxygen  DESTINATION ${PLUGIN_INSTALL_DIR}/plugins/styles/ )
 
 
 ########### install files ###############
 
-install( FILES plastik.themerc  DESTINATION  ${DATA_INSTALL_DIR}/kstyle/themes )
+install( FILES oxygen.themerc  DESTINATION  ${DATA_INSTALL_DIR}/kstyle/themes )
 
 
 

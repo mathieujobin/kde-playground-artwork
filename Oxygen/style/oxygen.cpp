@@ -1,4 +1,4 @@
-/* Plastik widget style for KDE 4
+/* Oxygen widget style for KDE 4
    Copyright (C) 2003-2005 Sandro Giessl <sandro@giessl.com>
 
    based on the KDE style "dotNET":
@@ -38,8 +38,8 @@
    Boston, MA 02110-1301, USA.
  */
 
-#include "plastik.h"
-#include "plastik.moc"
+#include "oxygen.h"
+#include "oxygen.moc"
 
 #include <QtGui/QPainter>
 #include <QtCore/QTimer>
@@ -58,7 +58,7 @@
 
 #include "misc.h"
 
-K_EXPORT_STYLE("Plastik", PlastikStyle)
+K_EXPORT_STYLE("Oxygen", PlastikStyle)
 
 // some bitmaps for the radio button so it's easier to handle the circle stuff...
 // 13x13
@@ -113,7 +113,7 @@ static const unsigned char radiomark_light_bits[] = {
    0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
 
-PlastikStyle::PlastikStyle() :
+OxygenStyle::PlastikStyle() :
 //     kickerMode(false),
 //     kornMode(false),
     flatMode(false)
@@ -182,7 +182,7 @@ PlastikStyle::PlastikStyle() :
 
     QSettings settings;
     _contrast = settings.value("/Qt/KDE/contrast", 6).toInt();
-    settings.beginGroup("/plastikstyle/Settings");
+    settings.beginGroup("/oxygenstyle/Settings");
     _scrollBarLines = settings.value("/scrollBarLines", false).toBool();
     _animateProgressBar = settings.value("/animateProgressBar", true).toBool();
     _drawToolBarSeparator = settings.value("/drawToolBarSeparator", true).toBool();
@@ -209,7 +209,7 @@ PlastikStyle::PlastikStyle() :
 }
 
 
-void PlastikStyle::updateProgressPos()
+void OxygenStyle::updateProgressPos()
 {
     QProgressBar* pb;
     //Update the registered progressbars.
@@ -237,13 +237,13 @@ void PlastikStyle::updateProgressPos()
 }
 
 
-PlastikStyle::~PlastikStyle()
+OxygenStyle::~PlastikStyle()
 {
     delete pixmapCache;
 }
 
 
-void PlastikStyle::drawKStylePrimitive(WidgetType widgetType, int primitive,
+void OxygenStyle::drawKStylePrimitive(WidgetType widgetType, int primitive,
                                        const QStyleOption* opt,
                                        const QRect &r, const QPalette &pal,
                                        State flags, QPainter* p,
@@ -1700,7 +1700,7 @@ void PlastikStyle::drawKStylePrimitive(WidgetType widgetType, int primitive,
                                 r, pal, flags, p, widget, kOpt);
 }
 
-void PlastikStyle::polish(QWidget* widget)
+void OxygenStyle::polish(QWidget* widget)
 {
     if( _animateProgressBar && qobject_cast<QProgressBar*>(widget) )
     {
@@ -1735,7 +1735,7 @@ void PlastikStyle::polish(QWidget* widget)
     KStyle::polish(widget);
 }
 
-void PlastikStyle::unpolish(QWidget* widget)
+void OxygenStyle::unpolish(QWidget* widget)
 {
     if ( qobject_cast<QProgressBar*>(widget) )
     {
@@ -1762,12 +1762,12 @@ void PlastikStyle::unpolish(QWidget* widget)
     KStyle::unpolish(widget);
 }
 
-void PlastikStyle::progressBarDestroyed(QObject* obj)
+void OxygenStyle::progressBarDestroyed(QObject* obj)
 {
     progAnimWidgets.remove(static_cast<QWidget*>(obj));
 }
 
-void PlastikStyle::renderContour(QPainter *p,
+void OxygenStyle::renderContour(QPainter *p,
                                 const QRect &r,
                                 const QColor &backgroundColor,
                                 const QColor &contour,
@@ -1892,7 +1892,7 @@ void PlastikStyle::renderContour(QPainter *p,
 }
 
 
-void PlastikStyle::renderSurface(QPainter *p,
+void OxygenStyle::renderSurface(QPainter *p,
                                  const QRect &r,
                                  const QColor &backgroundColor,
                                  const QColor &buttonColor,
@@ -2058,7 +2058,7 @@ void PlastikStyle::renderSurface(QPainter *p,
     }
 }
 
-void PlastikStyle::renderButton(QPainter *p,
+void OxygenStyle::renderButton(QPainter *p,
                                const QRect &r,
                                const QPalette &pal,
                                bool sunken,
@@ -2112,7 +2112,7 @@ void PlastikStyle::renderButton(QPainter *p,
     p->setPen(oldPen);
 }
 
-void PlastikStyle::renderCheckBox(QPainter *p, const QRect &rect, const QPalette &pal,
+void OxygenStyle::renderCheckBox(QPainter *p, const QRect &rect, const QPalette &pal,
                                   bool enabled, bool mouseOver, int primitive) const
 {
     QColor contentColor = enabled?pal.color(QPalette::Base):pal.color(QPalette::Background);
@@ -2188,7 +2188,7 @@ void PlastikStyle::renderCheckBox(QPainter *p, const QRect &rect, const QPalette
     }
 }
 
-void PlastikStyle::renderRadioButton(QPainter *p, const QRect &r, const QPalette &pal,
+void OxygenStyle::renderRadioButton(QPainter *p, const QRect &r, const QPalette &pal,
                                         bool enabled, bool mouseOver, int prim) const
 {
 
@@ -2284,7 +2284,7 @@ void PlastikStyle::renderRadioButton(QPainter *p, const QRect &r, const QPalette
     }
 }
 
-void PlastikStyle::renderDot(QPainter *p,
+void OxygenStyle::renderDot(QPainter *p,
                              const QPoint &point,
                              const QColor &baseColor,
                              const bool thick,
@@ -2304,7 +2304,7 @@ void PlastikStyle::renderDot(QPainter *p,
     }
 }
 
-void PlastikStyle::renderGradient(QPainter *painter,
+void OxygenStyle::renderGradient(QPainter *painter,
                                   const QRect &rect,
                                   const QColor &c1,
                                   const QColor &c2,
@@ -2397,7 +2397,7 @@ void PlastikStyle::renderGradient(QPainter *painter,
         delete result;
 }
 
-void PlastikStyle::renderPanel(QPainter *p,
+void OxygenStyle::renderPanel(QPainter *p,
                               const QRect &r,
                               const QPalette &pal,
                               const bool pseudo3d,
@@ -2442,7 +2442,7 @@ void PlastikStyle::renderPanel(QPainter *p,
 }
 
 
-void PlastikStyle::renderTab(QPainter *p,
+void OxygenStyle::renderTab(QPainter *p,
                             const QRect &r,
                             const QPalette &pal,
                             bool mouseOver,
@@ -2702,7 +2702,7 @@ void PlastikStyle::renderTab(QPainter *p,
     }
 }
 
-int PlastikStyle::styleHint(StyleHint hint, const QStyleOption * option,
+int OxygenStyle::styleHint(StyleHint hint, const QStyleOption * option,
                             const QWidget * widget, QStyleHintReturn * returnData) const
 {
     switch (hint) {
@@ -2714,7 +2714,7 @@ int PlastikStyle::styleHint(StyleHint hint, const QStyleOption * option,
     }
 }
 
-bool PlastikStyle::eventFilter(QObject *obj, QEvent *ev)
+bool OxygenStyle::eventFilter(QObject *obj, QEvent *ev)
 {
     if (KStyle::eventFilter(obj, ev) )
         return true;
@@ -2731,12 +2731,12 @@ bool PlastikStyle::eventFilter(QObject *obj, QEvent *ev)
     return false;
 }
 
-QColor PlastikStyle::getColor(const QPalette &pal, const ColorType t, const bool enabled)const
+QColor OxygenStyle::getColor(const QPalette &pal, const ColorType t, const bool enabled)const
 {
     return getColor(pal, t, enabled?IsEnabled:IsDisabled);
 }
 
-QColor PlastikStyle::getColor(const QPalette &pal, const ColorType t, const WidgetState s)const
+QColor OxygenStyle::getColor(const QPalette &pal, const ColorType t, const WidgetState s)const
 {
     const bool enabled = (s != IsDisabled) &&
             ((s == IsEnabled) || (s == IsPressed) || (s == IsHighlighted));
