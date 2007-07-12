@@ -7,7 +7,7 @@ add_subdirectory( config )
 
 ########### next target ###############
 
-set(plastik_PART_SRCS plastik.cpp misc.cpp )
+set(plastik_PART_SRCS oxygen.cpp misc.cpp )
 
 
 kde4_add_plugin(plastik ${plastik_PART_SRCS})

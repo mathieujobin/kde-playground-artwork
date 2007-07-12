@@ -4,7 +4,7 @@ include_directories( ${KDE4_KDEUI_INCLUDES} )
 
 ########### next target ###############
 
-set(kstyle_plastik_config_PART_SRCS plastikconf.cpp )
+set(kstyle_plastik_config_PART_SRCS oxygenconf.cpp )
 
 
 kde4_add_plugin(kstyle_plastik_config ${kstyle_plastik_config_PART_SRCS})
