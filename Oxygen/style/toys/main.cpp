@@ -5,24 +5,24 @@
 #include <KColorScheme>
 #include <KColorUtils>
 
-//BEGIN class declarations
-// TODO merge with implementation
-class Controller : public QWidget
-{
-    Q_OBJECT
-public:
-    Controller(QWidget *parent=0);
-public slots:
-    void khaChanged(double value);
-    void khbChanged(double value);
-    void kraChanged(double value);
-    void krbChanged(double value);
-    void modeChanged(int value);
-};
-//END class declarations
-
 int r = 224, g = 224, b = 224;
-double kha = 0.04, khb = 0.20, kra = 0.10, krb = 0.60;
+
+#define NUM_MODES 3
+#define MAX_PARAMS 6
+int params[NUM_MODES] = { 3, 6, 3 };
+
+const char* knames[NUM_MODES][MAX_PARAMS] = {
+    { "H+ Amount", "H- Amount", "R Amount", "(unused)", "(unused)", "(unused)" },
+    { "H+ Offset", "H+ Scale", "H- Offset", "H- Scale", "R Offset", "R Scale" },
+    { "H+ Scale", "H- Scale", "R Scale", "(unused)", "(unused)", "(unused)" }
+};
+
+double k[NUM_MODES][MAX_PARAMS] = {
+    { 0.05, 0.11, 0.40 },
+    { 0.04, 0.20, 0.04, 0.20, 0.10, 0.60 },
+    { 1.0, -0.6, 1.0 }
+};
+
 int mode = 1;
 
 //BEGIN TileCache
@@ -64,6 +64,45 @@ void TileCache::clear()
     m_cache.clear();
 }
 
+QColor calcLightColor(const QColor &color)
+{
+    qreal y = KColorUtils::luma(color);
+    switch (mode) {
+        case 0:
+            return color.lighter(100 + int(100.0 * k[0][2]));
+        case 1:
+            return KColorUtils::shade(color, k[1][4] + k[1][5]*y);
+        default:
+            return KColorScheme::shade(color, KColorScheme::LightShade, 0.7 * k[2][2]);
+    }
+}
+
+QColor calcMidlightColor(const QColor &color)
+{
+    qreal y = KColorUtils::luma(color);
+    switch (mode) {
+        case 0:
+            return color.lighter(100 + int(100.0 * k[0][0]));
+        case 1:
+            return KColorUtils::shade(color, k[1][0] + k[1][1]*y);
+        default:
+            return KColorScheme::shade(color, KColorScheme::MidlightShade, 0.7 * k[2][0]);
+    }
+}
+
+QColor calcMidColor(const QColor &color)
+{
+    qreal y = KColorUtils::luma(color);
+    switch (mode) {
+        case 0:
+            return color.darker(100 + int(100.0 * k[0][1]));
+        case 1:
+            return KColorUtils::shade(color, -k[1][2] - k[1][3]*y);
+        default:
+            return KColorScheme::shade(color, KColorScheme::MidShade, 0.7 * k[2][1]);
+    }
+}
+
 QPixmap TileCache::verticalGradient(const QColor &color, int height)
 {
     quint64 key = (quint64(color.rgba()) << 32) | height | 0x8000;
@@ -71,15 +110,12 @@ QPixmap TileCache::verticalGradient(const QColor &color, int height)
 
     if (!pixmap)
     {
-        qreal y = KColorUtils::luma(color);
         pixmap = new QPixmap(32, height);
 
         QLinearGradient gradient(0, 0, 0, height);
-        if (mode == 0)
-            gradient.setColorAt(0, color.lighter(115));
-        else
-            gradient.setColorAt(0, KColorUtils::shade(color, kha + khb*y));
-        gradient.setColorAt(1, color);
+        gradient.setColorAt(0.0, calcMidlightColor(color));
+        gradient.setColorAt(0.5, color);
+        gradient.setColorAt(1.0, calcMidColor(color));
 
         QPainter p(pixmap);
         p.setCompositionMode(QPainter::CompositionMode_Source);
@@ -98,15 +134,10 @@ QPixmap TileCache::radialGradient(const QColor &color, int width)
 
     if (!pixmap)
     {
-        qreal y = KColorUtils::luma(color);
         width /= 2;
         pixmap = new QPixmap(width, 64);
         pixmap->fill(QColor(0,0,0,0));
-        QColor radialColor;
-        if (mode == 0)
-            radialColor = color.lighter(140);
-        else
-            radialColor = KColorUtils::shade(color, kra + krb*y);
+        QColor radialColor = calcLightColor(color);
         radialColor.setAlpha(255);
         QRadialGradient gradient(64, 0, 64);
         gradient.setColorAt(0, radialColor);
@@ -132,6 +163,9 @@ QPixmap TileCache::radialGradient(const QColor &color, int width)
 class Widget : public QWidget
 {
     Q_OBJECT
+protected:
+    friend class Picker;
+    QLineEdit *_r[3];
 public:
     Widget(QWidget *parent=0) : QWidget(parent) {}
 
@@ -141,6 +175,10 @@ public Q_SLOTS:
     {
         TileCache::instance()->clear();
         QWidget::update();
+        QColor color(r, g, b);
+        _r[0]->setText(calcLightColor(color).name());
+        _r[1]->setText(calcMidlightColor(color).name());
+        _r[2]->setText(calcMidColor(color).name());
     }
 
 protected:
@@ -160,7 +198,7 @@ protected:
         p.drawTiledPixmap(upperRect, tile);
 
         QRect lowerRect = QRect(0,splitY, rect.width(), rect.height() - splitY);
-        p.fillRect(lowerRect, color);
+        p.fillRect(lowerRect, calcMidColor(color));
 
         int radialW = qMin(600, rect.width());
         tile = TileCache::instance()->radialGradient(color, radialW);
@@ -200,6 +238,15 @@ public:
         l->addWidget(s[0], 0, 1);
         l->addWidget(s[1], 1, 1);
         l->addWidget(s[2], 2, 1);
+        w->_r[0] = new QLineEdit();
+        w->_r[1] = new QLineEdit();
+        w->_r[2] = new QLineEdit();
+        w->_r[0]->setReadOnly(true);
+        w->_r[1]->setReadOnly(true);
+        w->_r[2]->setReadOnly(true);
+        l->addWidget(w->_r[0], 3, 0, 1, 2);
+        l->addWidget(w->_r[1], 4, 0, 1, 2);
+        l->addWidget(w->_r[2], 5, 0, 1, 2);
         setLayout(l);
     }
 
@@ -210,50 +257,76 @@ public slots:
 };
 //END Picker
 
-Controller::Controller(QWidget *parent )
-    : QWidget(parent)
+//BEGIN Controller
+class Controller : public QWidget
 {
-#define NUM_PARAMS 4
-    const char *names[NUM_PARAMS] = {"H Offset", "H Scale", "R Offset", "R Scale"};
-    QGridLayout *l = new QGridLayout;
-    QLabel *c[NUM_PARAMS];
-    QDoubleSpinBox *k[NUM_PARAMS];
-    for (int i=0; i<NUM_PARAMS; i++) {
-        c[i] = new QLabel(names[i]);
-        k[i] = new QDoubleSpinBox;
-        k[i]->setMinimum(-1.0);
-        k[i]->setMaximum(1.0);
-        k[i]->setDecimals(2);
-        k[i]->setSingleStep(0.01);
-        l->addWidget(c[i], i, 0);
-        l->addWidget(k[i], i, 1);
+    Q_OBJECT
+protected:
+    QDoubleSpinBox *_s[MAX_PARAMS];
+    QLabel *_c[MAX_PARAMS];
+    bool _noUpdate;
+public:
+    Controller(QWidget *parent=0) : QWidget(parent)
+    {
+        _noUpdate = false;
+        QGridLayout *l = new QGridLayout;
+        // modes
+        QGroupBox *f = new QGroupBox("Mode");
+        QButtonGroup *g = new QButtonGroup;
+        QRadioButton *m[3];
+        m[0] = new QRadioButton("Qt");
+        m[1] = new QRadioButton("KCU");
+        m[2] = new QRadioButton("KCS");
+        QVBoxLayout *v = new QVBoxLayout;
+        v->addWidget(m[0]); g->addButton(m[0]); g->setId(m[0], 0);
+        v->addWidget(m[1]); g->addButton(m[1]); g->setId(m[1], 1);
+        v->addWidget(m[2]); g->addButton(m[2]); g->setId(m[2], 2);
+        m[mode]->setChecked(true);
+        connect(g, SIGNAL(buttonClicked(int)), this, SLOT(modeChanged(int)));
+        f->setLayout(v);
+        l->addWidget(f, 0, 0, 1, 2);
+        // params
+        for (int i=0; i<MAX_PARAMS; i++) {
+            _c[i] = new QLabel(knames[mode][i]);
+            _s[i] = new QDoubleSpinBox;
+            _s[i]->setMinimum(-1.0);
+            _s[i]->setMaximum(1.0);
+            _s[i]->setDecimals(2);
+            _s[i]->setSingleStep(0.01);
+            _s[i]->setValue(k[mode][i]);
+            l->addWidget(_c[i], i+1, 0);
+            l->addWidget(_s[i], i+1, 1);
+            connect(_s[i], SIGNAL(valueChanged(double)), this, SLOT(kChanged(double)));
+            _c[i]->setEnabled(i < params[mode]);
+            _s[i]->setEnabled(i < params[mode]);
+        }
+        setLayout(l);
     }
-    k[0]->setValue(kha); k[1]->setValue(khb);
-    k[2]->setValue(kra); k[3]->setValue(krb);
-    connect(k[0], SIGNAL(valueChanged(double)), this, SLOT(khaChanged(double)));
-    connect(k[1], SIGNAL(valueChanged(double)), this, SLOT(khbChanged(double)));
-    connect(k[2], SIGNAL(valueChanged(double)), this, SLOT(kraChanged(double)));
-    connect(k[3], SIGNAL(valueChanged(double)), this, SLOT(krbChanged(double)));
-    QGroupBox *f = new QGroupBox("Mode");
-    QButtonGroup *g = new QButtonGroup;
-    QRadioButton *m[2];
-    m[0] = new QRadioButton("Qt");
-    m[1] = new QRadioButton("KCU");
-    QVBoxLayout *v = new QVBoxLayout;
-    v->addWidget(m[0]); g->addButton(m[0]); g->setId(m[0], 0);
-    v->addWidget(m[1]); g->addButton(m[1]); g->setId(m[1], 1);
-    m[mode]->setChecked(true);
-    connect(g, SIGNAL(buttonClicked(int)), this, SLOT(modeChanged(int)));
-    f->setLayout(v);
-    l->addWidget(f, NUM_PARAMS, 0, 1, 2);
-    setLayout(l);
-}
-
-void Controller::khaChanged(double value) { kha = value; w->update(); }
-void Controller::khbChanged(double value) { khb = value; w->update(); }
-void Controller::kraChanged(double value) { kra = value; w->update(); }
-void Controller::krbChanged(double value) { krb = value; w->update(); }
-void Controller::modeChanged(int value) { mode = value; w->update(); }
+public slots:
+    void kChanged(double value)
+    {
+        Q_UNUSED(value);
+        if (_noUpdate)
+            return;
+        for (int i=0; i<MAX_PARAMS; i++)
+            k[mode][i] = _s[i]->value();
+        w->update();
+    }
+    void modeChanged(int value)
+    {
+        _noUpdate = true;
+        mode = value;
+        for (int i=0; i<MAX_PARAMS; i++) {
+            _s[i]->setValue(k[mode][i]);
+            _c[i]->setText(knames[mode][i]);
+            _c[i]->setEnabled(i < params[mode]);
+            _s[i]->setEnabled(i < params[mode]);
+        }
+        w->update();
+        _noUpdate = false;
+    }
+};
+//END Controller
 
 //BEGIN MyLayout
 class MyLayout : public QWidget
@@ -262,15 +335,17 @@ class MyLayout : public QWidget
 public:
     MyLayout(QWidget *parent=0) : QWidget(parent)
     {
+        w = new Widget; // needed by Picker
+
         QVBoxLayout *lv = new QVBoxLayout;
         lv->addWidget(new Picker);
         lv->addWidget(new Controller);
 
         QHBoxLayout *lh = new QHBoxLayout;
         lh->addLayout(lv);
-        w = new Widget;
         lh->addWidget(w);
         setLayout(lh);
+        w->update();
     }
 };
 //END MyLayout
