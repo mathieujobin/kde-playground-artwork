@@ -12,4 +12,5 @@ include_directories (${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} ${KDE4_INCLUDES})
 
 #add_subdirectory( cmake )
 add_subdirectory(oxygen)
+add_subdirectory(toys)
 
