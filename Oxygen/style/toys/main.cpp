@@ -23,7 +23,7 @@ double k[NUM_MODES][MAX_PARAMS] = {
     { 1.0, -0.6, 1.0 }
 };
 
-int mode = 1;
+int mode = 2;
 
 //BEGIN TileCache
 class TileCache
