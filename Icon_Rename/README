@@ -2,20 +2,22 @@ The file DB.odt is the data base for renaming icons.
 
 The Type coluumn contains the following:
 
-	FD.o        The icon name is in the current release 0.8 of the spec
+	FD.o        in the current release 0.8 of the spec
 
-	FD.o-CVS    The icon name is in the current draft of the spec available here:
+	FD.o-CVS    added in the current draft of the spec available here:
 
 		    http://webcvs.freedesktop.org/icon-theme/default-icon-theme/spec/icon-naming-spec.xml?view=log
 
 		    This is a DocBook XML file which can be converted with: docbook2html
 
-	KDE Only    This icon name will be use only for KDE
+	KDE Only    name will be use only for KDE
 
-	new	    An icon name not in the spec which we are requesting be added to the spec
+	new	    not in the spec which we are requesting be added to the spec
 
-	Tango       An icon name which is in the Tango renaming XML file but not in the current 
-		    spec  We need to determine if we need these icons for KDE.
+	old         to be use ONLY to rename existing names in older icon themes.
+
+	Tango       is in the Tango renaming XML file but not in the current spec  We need to 
+		    determine if we need these icons for KDE.
 
 In the "O" column:
 
