@@ -1,0 +1,34 @@
+The file DB.odt is the data base for renaming icons.
+
+The Type coluumn contains the following:
+
+	FD.o        The icon name is in the current release 0.8 of the spec
+
+	FD.o-CVS    The icon name is in the current draft of the spec available here:
+
+		    http://webcvs.freedesktop.org/icon-theme/default-icon-theme/spec/icon-naming-spec.xml?view=log
+
+		    This is a DocBook XML file which can be converted with: docbook2html
+
+	KDE Only    This icon name will be use only for KDE
+
+	new	    An icon name not in the spec which we are requesting be added to the spec
+
+	Tango       An icon name which is in the Tango renaming XML file but not in the current 
+		    spec  We need to determine if we need these icons for KDE.
+
+In the "O" column:
+
+	OK          An icon with this name is currently in Oxygen with the correct name.
+
+	->          An icon for this name is currently in Oxygen but something needs to be changed.
+
+There are notes in the right (unlabeled) columns
+
+	rename      An Oxygen icon exists with the name that follows which needs to be changed.
+		    As with *NIX, I make no distinction between renaming and moving.
+
+	remove      Icons with that name should be deleted.
+
+        use         The code needs to be changed to use the standard name which follows.
+
