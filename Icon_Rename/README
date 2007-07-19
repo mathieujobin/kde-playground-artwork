@@ -19,7 +19,11 @@ The Type coluumn contains the following:
 	Tango       is in the Tango renaming XML file but not in the current spec  We need to 
 		    determine if we need these icons for KDE.
 
-In the "O" column:
+	IANA        is an offically registered MIME type name.
+
+                    http://www.iana.org/assignments/media-types/
+
+In the "O" (for Oxygen) column:
 
 	OK          An icon with this name is currently in Oxygen with the correct name.
 
@@ -30,15 +34,17 @@ There are notes in the right (unlabeled) columns
 	rename      An Oxygen icon exists with the name that follows which needs to be changed.
 		    As with *NIX, I make no distinction between renaming and moving.
 
+	copy        An Oxygen icon exists with the name that follows which can be copied.
+
 	remove      Icons with that name should be deleted.
 
         use         The code needs to be changed to use the standard name which follows.
 
 My purpose here is not to rewrite the Icon Naming Spec.  That should be discussed on the XDG mailing list.
 
-Cells marked in bright yellow indicat sepcific issues that need to be decided befor that directory's page can become final.
+Cells marked in bright yellow indicate sepcific issues that need to be decided befor that directory's page can become final.
 
-Cells marked in lite orange are names in the spec which have issues.  We will use the current name until such time as the spec is changed.
+Cells marked in lite orange are names in the spec which (I think) have issues.  We will use the current name until such time as the spec is changed.
 
 -- 
 JRT
