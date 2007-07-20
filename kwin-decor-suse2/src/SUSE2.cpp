@@ -167,9 +167,9 @@ void SUSE2Handler::readConfig()
 
     m_titlebarStyle = config.readNumEntry("TitleBarStyle", 0);
 
-    m_buttonType = config.readNumEntry("TitleBarButtonType", 0);
+    m_buttonType = config.readNumEntry("TitleBarButtonType", 2);
     m_customColors = config.readBoolEntry("CustomColors", false);
-    m_useTitleProps = config.readBoolEntry("UseTitleProps", false);
+    m_useTitleProps = config.readBoolEntry("UseTitleProps", true);
     m_animateButtons = config.readBoolEntry("AnimateButtons", true);
     m_redCloseButton = config.readBoolEntry("RedCloseButton", false);
     m_iconSize = (config.readNumEntry("IconSize", 45))/100.0;
@@ -182,9 +182,9 @@ void SUSE2Handler::readConfig()
     m_iFgColor = config.readColorEntry("IFgColor", &ifgcolor);
     QColor ibgcolor = QColor(240, 240, 240);
     m_iBgColor = config.readColorEntry("IBgColor", &ibgcolor);
-    m_iconShadow = config.readBoolEntry("IconShadow", false);
+    m_iconShadow = config.readBoolEntry("IconShadow", true);
 
-    m_titleLogo      = config.readBoolEntry("TitleBarLogo", true);
+    m_titleLogo      = config.readBoolEntry("TitleBarLogo", false);
     m_titleLogoOffset = config.readNumEntry("TitleBarLogoOffset", 3);
     m_titleLogoURL   = config.readEntry("TitleBarLogoURL", locate("data", "kwin/pics/titlebar_decor.png"));
 }
