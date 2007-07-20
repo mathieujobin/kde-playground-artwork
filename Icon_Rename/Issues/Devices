@@ -1,6 +1,6 @@
-camera-photo		Use: "camera" if available
+camera-photo		Use: "camera" if available.  Rename to: "camera_unmount"
 
-computer-cpu		Rename: "*_cpu" if necessary
+computer-cpu		Rename: "*_cpu" to "cpu" if necessary
 
 input-keyboard          Copy: "apps/keyboard" if missing
 
