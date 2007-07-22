@@ -1,6 +1,19 @@
-blockdevice<inode-blockdevice>
-chardevice<inode-chardevice>
-folder<inode-directory>
-filesystem/socket<inode-socket>
+../filesystem/exec<application-x-executable>
+sound<audio-x-generic>
+font<font-x-generic>
+image<image-x-generic>
+../filesystem/blockdevice<inode-blockdevice>
+../filesystem/chardevice<inode-chardevice>
+../filesystem/folder<inode-directory>
+folder_home<inode-directory-home>
+../filesystem/socket<inode-socket>
+html<text-html>
+ascii<text-plain>
+txt<text-x-generic>
+video<video-x-generic>
+document2<x-office-document>
+spreadsheet<x-office-spreadsheet>
+wordprocessing<X-office-wordprocessing>
+
 
 
