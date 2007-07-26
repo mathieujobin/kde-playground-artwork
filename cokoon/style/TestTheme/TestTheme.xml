@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cokoon_theme name="TestTheme" version="0.1pre" spec="CokoonStyleSpec">
-	<object id="LayoutProperties">
+	<object id="LayoutProperties" implement="LayoutProperties">
 		<expression id="zoom" value="1"/>
 
 		<expression id="Generic_DefaultFrameWidth" value="4*.zoom"/>
@@ -414,323 +414,323 @@
 	</object>
 
 
-	<object id="Button.*.normal">
+	<object id="ButtonNormal" implement="Button.*.normal">
 		<paint>
 			<layer layout_object="src_normal" layout_id="button"/>
 		</paint>
 	</object>
-	<object id="Button.*.pressed">
+	<object id="ButtonPressed" implement="Button.*.pressed">
 		<paint>
 			<layer layout_object="src_pressed" layout_id="button"/>
 		</paint>
 	</object>
-	<object id="Button.*.prelight">
+	<object id="ButtonPrelight" implement="Button.*.prelight">
 		<paint>
 			<layer layout_object="src_prelight" layout_id="button"/>
 		</paint>
 	</object>
-	<object id="Button.*.disabled">
+	<object id="ButtonDisabled" implement="Button.*.disabled">
 		<paint>
 			<layer layout_object="src_disabled" layout_id="button"/>
 		</paint>
 	</object>
 
-	<object id="CheckBox.normal.off">
+	<object id="CheckBoxNormalOff" implement="CheckBox.normal.off">
 		<paint>
 			<layer layout_object="src_normal" layout_id="checkbox"/>
 		</paint>
 	</object>
-	<object id="CheckBox.pressed.off">
+	<object id="CheckBoxPressedOff" implement="CheckBox.pressed.off">
 		<paint>
 			<layer layout_object="src_pressed" layout_id="checkbox"/>
 		</paint>
 	</object>
-	<object id="CheckBox.prelight.off">
+	<object id="CheckBoxPrelightOff" implement="CheckBox.prelight.off">
 		<paint>
 			<layer layout_object="src_prelight" layout_id="checkbox"/>
 		</paint>
 	</object>
-	<object id="CheckBox.disabled.off">
+	<object id="CheckBoxDisabledOff" implement="CheckBox.disabled.off">
 		<paint>
 			<layer layout_object="src_disabled" layout_id="checkbox"/>
 		</paint>
 	</object>
-	<object id="CheckBox.normal.on">
+	<object id="CheckBoxNormalOn" implement="CheckBox.normal.on">
 		<paint>
 			<layer layout_object="src_normal" layout_id="checkbox"/>
 			<layer layout_object="src_normal" layout_id="checkboxMark"/>
 		</paint>
 	</object>
-	<object id="CheckBox.pressed.on">
+	<object id="CheckBoxPressedOn" implement="CheckBox.pressed.on">
 		<paint>
 			<layer layout_object="src_pressed" layout_id="checkbox"/>
 			<layer layout_object="src_pressed" layout_id="checkboxMark"/>
 		</paint>
 	</object>
-	<object id="CheckBox.prelight.on">
+	<object id="CheckBoxPrelightOn" implement="CheckBox.prelight.on">
 		<paint>
 			<layer layout_object="src_prelight" layout_id="checkbox"/>
 			<layer layout_object="src_prelight" layout_id="checkboxMark"/>
 		</paint>
 	</object>
-	<object id="CheckBox.disabled.on">
+	<object id="CheckBoxDisabledOn" implement="CheckBox.disabled.on">
 		<paint>
 			<layer layout_object="src_disabled" layout_id="checkbox"/>
 			<layer layout_object="src_disabled" layout_id="checkboxMark"/>
 		</paint>
 	</object>
-	<object id="CheckBox.normal.tristate">
+	<object id="CheckBoxNormalTristate" implement="CheckBox.normal.tristate">
 		<paint>
 			<layer layout_object="src_normal" layout_id="checkbox"/>
 			<layer layout_object="src_normal" layout_id="checkboxMarkTri"/>
 		</paint>
 	</object>
-	<object id="CheckBox.pressed.tristate">
+	<object id="CheckBoxPressedTristate" implement="CheckBox.pressed.tristate">
 		<paint>
 			<layer layout_object="src_pressed" layout_id="checkbox"/>
 			<layer layout_object="src_pressed" layout_id="checkboxMarkTri"/>
 		</paint>
 	</object>
-	<object id="CheckBox.prelight.tristate">
+	<object id="CheckBoxPrelightTristate" implement="CheckBox.prelight.tristate">
 		<paint>
 			<layer layout_object="src_prelight" layout_id="checkbox"/>
 			<layer layout_object="src_prelight" layout_id="checkboxMarkTri"/>
 		</paint>
 	</object>
-	<object id="CheckBox.disabled.tristate">
+	<object id="CheckBoxDisabledTristate" implement="CheckBox.disabled.tristate">
 		<paint>
 			<layer layout_object="src_disabled" layout_id="checkbox"/>
 			<layer layout_object="src_disabled" layout_id="checkboxMarkTri"/>
 		</paint>
 	</object>
 
-	<object id="RadioButton.normal.off">
+	<object id="RadioButtonNormalOff" implement="RadioButton.normal.off">
 		<paint>
 			<layer layout_object="src_normal" layout_id="radiobutton"/>
 		</paint>
 	</object>
-	<object id="RadioButton.pressed.off">
+	<object id="RadioButtonPressedOff" implement="RadioButton.pressed.off">
 		<paint>
 			<layer layout_object="src_pressed" layout_id="radiobutton"/>
 		</paint>
 	</object>
-	<object id="RadioButton.prelight.off">
+	<object id="RadioButtonPrelightOff" implement="RadioButton.prelight.off">
 		<paint>
 			<layer layout_object="src_prelight" layout_id="radiobutton"/>
 		</paint>
 	</object>
-	<object id="RadioButton.disabled.off">
+	<object id="RadioButtonDisabledOff" implement="RadioButton.disabled.off">
 		<paint>
 			<layer layout_object="src_disabled" layout_id="radiobutton"/>
 		</paint>
 	</object>
-	<object id="RadioButton.normal.on">
+	<object id="RadioButtonNormalOn" implement="RadioButton.normal.on">
 		<paint>
 			<layer layout_object="src_normal" layout_id="radiobutton"/>
 			<layer layout_object="src_normal" layout_id="radiobuttonMark"/>
 		</paint>
 	</object>
-	<object id="RadioButton.pressed.on">
+	<object id="RadioButtonPressedOn" implement="RadioButton.pressed.on">
 		<paint>
 			<layer layout_object="src_pressed" layout_id="radiobutton"/>
 			<layer layout_object="src_pressed" layout_id="radiobuttonMark"/>
 		</paint>
 	</object>
-	<object id="RadioButton.prelight.on">
+	<object id="RadioButtonPrelightOn" implement="RadioButton.prelight.on">
 		<paint>
 			<layer layout_object="src_prelight" layout_id="radiobutton"/>
 			<layer layout_object="src_prelight" layout_id="radiobuttonMark"/>
 		</paint>
 	</object>
-	<object id="RadioButton.disabled.on">
+	<object id="RadioButtonDisabledOn" implement="RadioButton.disabled.on">
 		<paint>
 			<layer layout_object="src_disabled" layout_id="radiobutton"/>
 			<layer layout_object="src_disabled" layout_id="radiobuttonMark"/>
 		</paint>
 	</object>
 
-	<object id="LineEdit.normal">
+	<object id="LineEditNormal" implement="LineEdit.normal">
 		<paint>
 			<layer layout_object="src_normal" layout_id="lineeditFrame"/>
 		</paint>
 	</object>
-	<object id="LineEdit.focused">
+	<object id="LineEditFocused" implement="LineEdit.focused">
 		<paint>
 			<layer layout_object="src_normal" layout_id="lineeditFrame"/>
 		</paint>
 	</object>
-	<object id="LineEdit.disabled">
+	<object id="LineEditDisabled" implement="LineEdit.disabled">
 		<paint>
 			<layer layout_object="src_disabled" layout_id="lineeditFrame"/>
 		</paint>
 	</object>
 
-	<object id="ComboBox.normal.*">
+	<object id="ComboBoxNormal" implement="ComboBox.normal.*">
 		<paint>
 			<layer layout_object="src_normal" layout_id="comboboxFrame"/>
 			<layer layout_object="src_normal" layout_id="comboboxButton"/>
 		</paint>
 	</object>
-	<object id="ComboBox.pressed.*">
+	<object id="ComboBoxPressed" implement="ComboBox.pressed.*">
 		<paint>
 			<layer layout_object="src_pressed" layout_id="comboboxFrame"/>
 			<layer layout_object="src_pressed" layout_id="comboboxButton"/>
 		</paint>
 	</object>
-	<object id="ComboBox.prelight.*">
+	<object id="ComboBoxPrelight" implement="ComboBox.prelight.*">
 		<paint>
 			<layer layout_object="src_prelight" layout_id="comboboxFrame"/>
 			<layer layout_object="src_prelight" layout_id="comboboxButton"/>
 		</paint>
 	</object>
-	<object id="ComboBox.disabled.*">
+	<object id="ComboBoxDisabled" implement="ComboBox.disabled.*">
 		<paint>
 			<layer layout_object="src_disabled" layout_id="comboboxFrame"/>
 			<layer layout_object="src_disabled" layout_id="comboboxButton"/>
 		</paint>
 	</object>
 
-	<object id="SpinBox.normal.*">
+	<object id="SpinBoxNormal" implement="SpinBox.normal.*">
 		<paint>
 			<layer layout_object="src_normal" layout_id="comboboxFrame"/>
 			<layer layout_object="src_normal" layout_id="comboboxButton"/>
 		</paint>
 	</object>
-	<object id="SpinBox.pressedUp.*">
+	<object id="SpinBoxPressedUp" implement="SpinBox.pressedUp.*">
 		<paint>
 			<layer layout_object="src_pressed" layout_id="comboboxFrame"/>
 			<layer layout_object="src_pressed" layout_id="comboboxButton"/>
 		</paint>
 	</object>
-	<object id="SpinBox.pressedDown.*">
+	<object id="SpinBoxPressedDown" implement="SpinBox.pressedDown.*">
 		<paint>
 			<layer layout_object="src_pressed" layout_id="comboboxFrame"/>
 			<layer layout_object="src_pressed" layout_id="comboboxButton"/>
 		</paint>
 	</object>
-	<object id="SpinBox.prelightUp.*">
+	<object id="SpinBoxPrelightUp" implement="SpinBox.prelightUp.*">
 		<paint>
 			<layer layout_object="src_prelight" layout_id="comboboxFrame"/>
 			<layer layout_object="src_prelight" layout_id="comboboxButton"/>
 		</paint>
 	</object>
-	<object id="SpinBox.prelightDown.*">
+	<object id="SpinBoxPrelightDown" implement="SpinBox.prelightDown.*">
 		<paint>
 			<layer layout_object="src_prelight" layout_id="comboboxFrame"/>
 			<layer layout_object="src_prelight" layout_id="comboboxButton"/>
 		</paint>
 	</object>
-	<object id="SpinBox.disabled.*">
+	<object id="SpinBoxDisabled" implement="SpinBox.disabled.*">
 		<paint>
 			<layer layout_object="src_disabled" layout_id="comboboxFrame"/>
 			<layer layout_object="src_disabled" layout_id="comboboxButton"/>
 		</paint>
 	</object>
 
-	<object id="GenericFrame.raised.*">
+	<object id="GenericFrameRaised" implement="GenericFrame.raised.*">
 		<paint>
 			<layer layout_object="src_normal" layout_id="frameRaised"/>
 		</paint>
 	</object>
-	<object id="GenericFrame.sunken.*">
+	<object id="GenericFrameSunken" implement="GenericFrame.sunken.*">
 		<paint>
 			<layer layout_object="src_normal" layout_id="frameSunken"/>
 		</paint>
 	</object>
-	<object id="GenericFrame.plain.*">
+	<object id="GenericFramePlain" implement="GenericFrame.plain.*">
 		<paint>
 			<layer layout_object="src_disabled" layout_id="framePlain"/>
 		</paint>
 	</object>
 
-	<object id="ScrollBarGroove.normal.vertical">
+	<object id="ScrollBarGrooveNormalVert" implement="ScrollBarGroove.normal.vertical">
 		<paint>
 			<layer layout_object="src_normal" layout_id="scrollbarGrooveVert"/>
 		</paint>
 	</object>
-	<object id="ScrollBarGroove.pressed.vertical">
+	<object id="ScrollBarGroovePressedVert" implement="ScrollBarGroove.pressed.vertical">
 		<paint>
 			<layer layout_object="src_pressed" layout_id="scrollbarGrooveVert"/>
 		</paint>
 	</object>
-	<object id="ScrollBarGroove.disabled.vertical">
+	<object id="SBGrooveDisabledVert" implement="ScrollBarGroove.disabled.vertical">
 		<paint>
 			<layer layout_object="src_disabled" layout_id="scrollbarGrooveVert"/>
 		</paint>
 	</object>
-	<object id="ScrollBarGroove.normal.horizontal">
+	<object id="SBGrooveNormalHor" implement="ScrollBarGroove.normal.horizontal">
 		<paint>
 			<layer layout_object="src_normal" layout_id="scrollbarGrooveHor"/>
 		</paint>
 	</object>
-	<object id="ScrollBarGroove.pressed.horizontal">
+	<object id="SBGroovePressedHor" implement="ScrollBarGroove.pressed.horizontal">
 		<paint>
 			<layer layout_object="src_pressed" layout_id="scrollbarGrooveHor"/>
 		</paint>
 	</object>
-	<object id="ScrollBarGroove.disabled.horizontal">
+	<object id="SBGrooveDisabledHor" implement="ScrollBarGroove.disabled.horizontal">
 		<paint>
 			<layer layout_object="src_disabled" layout_id="scrollbarGrooveHor"/>
 		</paint>
 	</object>
 
-	<object id="ScrollBarHandle.normal.vertical">
+	<object id="SBHandleNormalVert" implement="ScrollBarHandle.normal.vertical">
 		<paint>
 			<layer layout_object="src_normal" layout_id="scrollbarHandleVert"/>
 		</paint>
 	</object>
-	<object id="ScrollBarHandle.pressed.vertical">
+	<object id="SBHandlePressedVert" implement="ScrollBarHandle.pressed.vertical">
 		<paint>
 			<layer layout_object="src_pressed" layout_id="scrollbarHandleVert"/>
 		</paint>
 	</object>
-	<object id="ScrollBarHandle.disabled.vertical">
+	<object id="SBHandleDisabledVert" implement="ScrollBarHandle.disabled.vertical">
 		<paint>
 			<layer layout_object="src_disabled" layout_id="scrollbarHandleVert"/>
 		</paint>
 	</object>
-	<object id="ScrollBarHandle.normal.horizontal">
+	<object id="SBHandleNormalHor" implement="ScrollBarHandle.normal.horizontal">
 		<paint>
 			<layer layout_object="src_normal" layout_id="scrollbarHandleHor"/>
 		</paint>
 	</object>
-	<object id="ScrollBarHandle.pressed.horizontal">
+	<object id="SBHandlePressedHor" implement="ScrollBarHandle.pressed.horizontal">
 		<paint>
 			<layer layout_object="src_pressed" layout_id="scrollbarHandleHor"/>
 		</paint>
 	</object>
-	<object id="ScrollBarHandle.disabled.horizontal">
+	<object id="SBHandleDisabledHor" implement="ScrollBarHandle.disabled.horizontal">
 		<paint>
 			<layer layout_object="src_disabled" layout_id="scrollbarHandleHor"/>
 		</paint>
 	</object>
 
-	<object id="ScrollBarButton.normal.up">
+	<object id="SBButtonNormalUp" implement="ScrollBarButton.normal.up">
 		<paint>
 			<layer layout_object="src_normal" layout_id="scrollbarGrooveVert"/>
 		</paint>
 	</object>
-	<object id="ScrollBarButton.pressed.up">
+	<object id="SBButtonPressedUp" implement="ScrollBarButton.pressed.up">
 		<paint>
 			<layer layout_object="src_pressed" layout_id="scrollbarGrooveVert"/>
 		</paint>
 	</object>
-	<object id="ScrollBarButton.disabled.up">
+	<object id="SBButtonDisabledUp" implement="ScrollBarButton.disabled.up">
 		<paint>
 			<layer layout_object="src_disabled" layout_id="scrollbarGrooveVert"/>
 		</paint>
 	</object>
-	<object id="ScrollBarButton.normal.left">
+	<object id="SBButtonNormalLeft" implement="ScrollBarButton.normal.left">
 		<paint>
 			<layer layout_object="src_normal" layout_id="scrollbarGrooveHor"/>
 		</paint>
 	</object>
-	<object id="ScrollBarButton.pressed.left">
+	<object id="SBButtonPressedLeft" implement="ScrollBarButton.pressed.left">
 		<paint>
 			<layer layout_object="src_pressed" layout_id="scrollbarGrooveHor"/>
 		</paint>
 	</object>
-	<object id="ScrollBarButton.disabled.left">
+	<object id="SBButtonDisabledLeft" implement="ScrollBarButton.disabled.left">
 		<paint>
 			<layer layout_object="src_disabled" layout_id="scrollbarGrooveHor"/>
 		</paint>
