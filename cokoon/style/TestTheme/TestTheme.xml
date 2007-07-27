@@ -389,7 +389,7 @@
 		</layout>
 	</object>
 
-	<object id="src_prelight" inherit="src_normal">
+	<object id="src_prelight" extend="src_normal">
 <!--		<source id="decorationsrc" type="svg" file="svg-style.svg">
 			<replace_style_attr element_id="rect2788" attr="stroke-opacity" value="0.1"/>
 			<replace_style_attr element_id="rect2788" attr="fill-opacity" value="0.8"/>
@@ -399,14 +399,14 @@
 		<expression id="btn_y" value="0"/>
 	</object>
 
-	<object id="src_pressed" inherit="src_normal">
+	<object id="src_pressed" extend="src_normal">
 <!--		<source id="decorationsrc" type="svg" file="svg-style.svg">
 			<replace_style_attr element_id="rect2788" attr="fill-opacity" value="0.2"/>
 			<replace_style_attr element_id="rect2788" attr="stroke-opacity" value="0.7"/>
 		</source>-->
 	</object>
 
-	<object id="src_disabled" inherit="src_normal">
+	<object id="src_disabled" extend="src_normal">
 <!--		<source id="decorationsrc" type="svg" file="svg-style.svg">
 			<replace_style_attr element_id="rect2788" attr="fill-opacity" value="0.2"/>
 			<replace_style_attr element_id="rect2788" attr="stroke-opacity" value="0.3"/>

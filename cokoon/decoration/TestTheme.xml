@@ -113,7 +113,7 @@
 		</paint>
 	</object>
 
-	<object id="DecorationActiveMax" implement="Decoration.active.max.*.*" inherit="DecorationActiveNormal">
+	<object id="DecorationActiveMax" implement="Decoration.active.max.*.*" extend="DecorationActiveNormal">
 		<expression id="BorderLeft" value="0"/>
 		<expression id="BorderRight" value="0"/>
 		<expression id="BorderBottom" value="0"/>
@@ -128,12 +128,12 @@
 		<tile id="WindowMaskBottomRight" source_id="masksrc" mode_hor="normal" mode_vert="normal" left="0" top="0" width="0" height="0"/>
 	</object>
 
-<!--	<object id="DecorationActiveRest" implement="Decoration.active.*.*.*" inherit="DecorationActiveNormal"/> -->
+<!--	<object id="DecorationActiveRest" implement="Decoration.active.*.*.*" extend="DecorationActiveNormal"/> -->
 
-	<object id="DecorationInactiveNormal" implement="Decoration.inactive.normal.*.*" inherit="DecorationActiveNormal">
+	<object id="DecorationInactiveNormal" implement="Decoration.inactive.normal.*.*" extend="DecorationActiveNormal">
 	</object>
 	
-	<object id="DecorationInactiveMax" implement="Decoration.inactive.max.*.*" inherit="DecorationInactiveNormal">
+	<object id="DecorationInactiveMax" implement="Decoration.inactive.max.*.*" extend="DecorationInactiveNormal">
 		<expression id="BorderLeft" value="0"/>
 		<expression id="BorderRight" value="0"/>
 		<expression id="BorderBottom" value="0"/>
@@ -143,7 +143,7 @@
 		<expression id="TitleEdgeRight" value="0"/>
 	</object>
 
-<!--	<object id="DecorationInactiveRest" implement="Decoration.inactive.*.*.*" inherit="DecorationInactiveNormal"/> -->
+<!--	<object id="DecorationInactiveRest" implement="Decoration.inactive.*.*.*" extend="DecorationInactiveNormal"/> -->
 
 	<object id="button_normal">
 		<source id="decorationsrc" type="svg" file="testdecorationbutton.svg"/>
@@ -189,13 +189,13 @@
 		</layout>
 	</object>
 
-	<object id="button_prelight" inherit="button_normal">
+	<object id="button_prelight" extend="button_normal">
 		<source id="decorationsrc" type="svg" file="testdecorationbutton.svg">
 			<replace_style_attr element_id="rect2788" attr="fill-opacity" value="0.8"/>
 		</source>
 	</object>
 
-	<object id="button_pressed" inherit="button_normal">
+	<object id="button_pressed" extend="button_normal">
 		<source id="decorationsrc" type="svg" file="testdecorationbutton.svg">
 			<replace_style_attr element_id="rect2788" attr="fill-opacity" value="0.2"/>
 			<replace_style_attr element_id="rect2788" attr="stroke-opacity" value="0.7"/>
@@ -260,75 +260,75 @@
 			<layer layout_id="icon"/>
 		</paint>
 	</object>
-	<object id="ButtonClosePrelight" implement="Button.close.prelight.*.*" inherit="ButtonCloseNormal">
+	<object id="ButtonClosePrelight" implement="Button.close.prelight.*.*" extend="ButtonCloseNormal">
 		<paint>
 			<layer layout_object="button_prelight" layout_id="button"/>
 			<layer layout_id="icon"/>
 		</paint>
 	</object>
-	<object id="ButtonClosePressed" implement="Button.close.pressed.*.*" inherit="ButtonCloseNormal">
+	<object id="ButtonClosePressed" implement="Button.close.pressed.*.*" extend="ButtonCloseNormal">
 		<paint>
 			<layer layout_object="button_pressed" layout_id="button"/>
 			<layer layout_id="icon_sunken"/>
 		</paint>
 	</object>
 
-	<object id="ButtonMaxNormal" implement="Button.maximize.normal.*.*" inherit="ButtonCloseNormal">
+	<object id="ButtonMaxNormal" implement="Button.maximize.normal.*.*" extend="ButtonCloseNormal">
 		<source id="iconsrc" type="svg" file="TestTheme/icon_maximize.svg"/>
 	</object>
-	<object id="ButtonMaxPrelight" implement="Button.maximize.prelight.*.*" inherit="ButtonMaxNormal">
+	<object id="ButtonMaxPrelight" implement="Button.maximize.prelight.*.*" extend="ButtonMaxNormal">
 		<paint>
 			<layer layout_object="button_prelight" layout_id="button"/>
 			<layer layout_id="icon"/>
 		</paint>
 	</object>
-	<object id="ButtonMaxPressed" implement="Button.maximize.pressed.*.*" inherit="ButtonMaxNormal">
+	<object id="ButtonMaxPressed" implement="Button.maximize.pressed.*.*" extend="ButtonMaxNormal">
 		<paint>
 			<layer layout_object="button_pressed" layout_id="button"/>
 			<layer layout_id="icon_sunken"/>
 		</paint>
 	</object>
 
-	<object id="ButtonMaxRestoreNormal" implement="Button.maxRestore.normal.*.*" inherit="ButtonCloseNormal">
+	<object id="ButtonMaxRestoreNormal" implement="Button.maxRestore.normal.*.*" extend="ButtonCloseNormal">
 		<source id="iconsrc" type="svg" file="TestTheme/icon_max_restore.svg"/>
 	</object>
-	<object id="ButtonMaxRestorePrelight" implement="Button.maxRestore.prelight.*.*" inherit="ButtonMaxRestoreNormal">
+	<object id="ButtonMaxRestorePrelight" implement="Button.maxRestore.prelight.*.*" extend="ButtonMaxRestoreNormal">
 		<paint>
 			<layer layout_object="button_prelight" layout_id="button"/>
 			<layer layout_id="icon"/>
 		</paint>
 	</object>
-	<object id="ButtonMaxRestorePressed" implement="Button.maxRestore.pressed.*.*" inherit="ButtonMaxRestoreNormal">
+	<object id="ButtonMaxRestorePressed" implement="Button.maxRestore.pressed.*.*" extend="ButtonMaxRestoreNormal">
 		<paint>
 			<layer layout_object="button_pressed" layout_id="button"/>
 			<layer layout_id="icon_sunken"/>
 		</paint>
 	</object>
 
-	<object id="ButtonMaxVertRestoreNormal" implement="Button.maxVertRestore.normal.*.*" inherit="ButtonMaxRestoreNormal"/>
-	<object id="ButtonMaxHorRestoreNormal" implement="Button.maxHorRestore.normal.*.*" inherit="ButtonMaxRestoreNormal"/>
-	<object id="ButtonMaxVertRestorePrelight" implement="Button.maxVertRestore.prelight.*.*" inherit="ButtonMaxRestoreNormal"/>
-	<object id="ButtonMaxHorRestorePrelight" implement="Button.maxHorRestore.prelight.*.*" inherit="ButtonMaxRestoreNormal"/>
-	<object id="ButtonMaxVertRestorePressed" implement="Button.maxVertRestore.pressed.*.*" inherit="ButtonMaxRestoreNormal"/>
-	<object id="ButtonMaxHorRestorePressed" implement="Button.maxHorRestore.pressed.*.*" inherit="ButtonMaxRestoreNormal"/>
+	<object id="ButtonMaxVertRestoreNormal" implement="Button.maxVertRestore.normal.*.*" extend="ButtonMaxRestoreNormal"/>
+	<object id="ButtonMaxHorRestoreNormal" implement="Button.maxHorRestore.normal.*.*" extend="ButtonMaxRestoreNormal"/>
+	<object id="ButtonMaxVertRestorePrelight" implement="Button.maxVertRestore.prelight.*.*" extend="ButtonMaxRestoreNormal"/>
+	<object id="ButtonMaxHorRestorePrelight" implement="Button.maxHorRestore.prelight.*.*" extend="ButtonMaxRestoreNormal"/>
+	<object id="ButtonMaxVertRestorePressed" implement="Button.maxVertRestore.pressed.*.*" extend="ButtonMaxRestoreNormal"/>
+	<object id="ButtonMaxHorRestorePressed" implement="Button.maxHorRestore.pressed.*.*" extend="ButtonMaxRestoreNormal"/>
 
-	<object id="ButtonHelpNormal" implement="Button.help.normal.*.*" inherit="ButtonCloseNormal">
+	<object id="ButtonHelpNormal" implement="Button.help.normal.*.*" extend="ButtonCloseNormal">
 		<source id="iconsrc" type="svg" file="TestTheme/icon_help.svg"/>
 	</object>
-	<object id="ButtonHelpPrelight" implement="Button.help.prelight.*.*" inherit="ButtonHelpNormal">
+	<object id="ButtonHelpPrelight" implement="Button.help.prelight.*.*" extend="ButtonHelpNormal">
 		<paint>
 			<layer layout_object="button_prelight" layout_id="button"/>
 			<layer layout_id="icon"/>
 		</paint>
 	</object>
-	<object id="ButtonHelpPressed" implement="Button.help.pressed.*.*" inherit="ButtonHelpNormal">
+	<object id="ButtonHelpPressed" implement="Button.help.pressed.*.*" extend="ButtonHelpNormal">
 		<paint>
 			<layer layout_object="button_pressed" layout_id="button"/>
 			<layer layout_id="icon_sunken"/>
 		</paint>
 	</object>
 
-	<object id="ButtonMenuNormal" implement="Button.menu.normal.*.*" inherit="ButtonCloseNormal">
+	<object id="ButtonMenuNormal" implement="Button.menu.normal.*.*" extend="ButtonCloseNormal">
 		<layout id="icon">
 			<column type="fixed" fixed_size=".o.iconMargin"/>
 			<column type="expanding"/>
@@ -370,157 +370,157 @@
 			</row>
 		</layout>
 	</object>
-	<object id="ButtonMenuPrelight" implement="Button.menu.prelight.*.*" inherit="ButtonMenuNormal">
+	<object id="ButtonMenuPrelight" implement="Button.menu.prelight.*.*" extend="ButtonMenuNormal">
 		<paint>
 			<layer layout_object="button_prelight" layout_id="button"/>
 			<layer layout_id="icon"/>
 		</paint>
 	</object>
-	<object id="ButtonMenuPressed" implement="Button.menu.pressed.*.*" inherit="ButtonMenuNormal">
+	<object id="ButtonMenuPressed" implement="Button.menu.pressed.*.*" extend="ButtonMenuNormal">
 		<paint>
 			<layer layout_object="button_pressed" layout_id="button"/>
 			<layer layout_id="icon_sunken"/>
 		</paint>
 	</object>
 	
-	<object id="ButtonMinNormal" implement="Button.minimize.normal.*.*" inherit="ButtonCloseNormal">
+	<object id="ButtonMinNormal" implement="Button.minimize.normal.*.*" extend="ButtonCloseNormal">
 		<source id="iconsrc" type="svg" file="TestTheme/icon_minimize.svg"/>
 	</object>
-	<object id="ButtonMinPrelight" implement="Button.minimize.prelight.*.*" inherit="ButtonMinNormal">
+	<object id="ButtonMinPrelight" implement="Button.minimize.prelight.*.*" extend="ButtonMinNormal">
 		<paint>
 			<layer layout_object="button_prelight" layout_id="button"/>
 			<layer layout_id="icon"/>
 		</paint>
 	</object>
-	<object id="ButtonMinPressed" implement="Button.minimize.pressed.*.*" inherit="ButtonMinNormal">
+	<object id="ButtonMinPressed" implement="Button.minimize.pressed.*.*" extend="ButtonMinNormal">
 		<paint>
 			<layer layout_object="button_pressed" layout_id="button"/>
 			<layer layout_id="icon_sunken"/>
 		</paint>
 	</object>
 
-	<object id="ButtonAboveNormal" implement="Button.above.normal.*.*" inherit="ButtonCloseNormal">
+	<object id="ButtonAboveNormal" implement="Button.above.normal.*.*" extend="ButtonCloseNormal">
 		<source id="iconsrc" type="svg" file="TestTheme/icon_above.svg"/>
 	</object>
-	<object id="ButtonAbovePrelight" implement="Button.above.prelight.*.*" inherit="ButtonAboveNormal">
+	<object id="ButtonAbovePrelight" implement="Button.above.prelight.*.*" extend="ButtonAboveNormal">
 		<paint>
 			<layer layout_object="button_prelight" layout_id="button"/>
 			<layer layout_id="icon"/>
 		</paint>
 	</object>
-	<object id="ButtonAbovePressed" implement="Button.above.pressed.*.*" inherit="ButtonAboveNormal">
+	<object id="ButtonAbovePressed" implement="Button.above.pressed.*.*" extend="ButtonAboveNormal">
 		<paint>
 			<layer layout_object="button_pressed" layout_id="button"/>
 			<layer layout_id="icon_sunken"/>
 		</paint>
 	</object>
 
-	<object id="ButtonBelowNormal" implement="Button.below.normal.*.*" inherit="ButtonCloseNormal">
+	<object id="ButtonBelowNormal" implement="Button.below.normal.*.*" extend="ButtonCloseNormal">
 		<source id="iconsrc" type="svg" file="TestTheme/icon_below.svg"/>
 	</object>
-	<object id="ButtonBelowPrelight" implement="Button.below.prelight.*.*" inherit="ButtonBelowNormal">
+	<object id="ButtonBelowPrelight" implement="Button.below.prelight.*.*" extend="ButtonBelowNormal">
 		<paint>
 			<layer layout_object="button_prelight" layout_id="button"/>
 			<layer layout_id="icon"/>
 		</paint>
 	</object>
-	<object id="ButtonBelowPressed" implement="Button.below.pressed.*.*" inherit="ButtonBelowNormal">
+	<object id="ButtonBelowPressed" implement="Button.below.pressed.*.*" extend="ButtonBelowNormal">
 		<paint>
 			<layer layout_object="button_pressed" layout_id="button"/>
 			<layer layout_id="icon_sunken"/>
 		</paint>
 	</object>
 
-	<object id="ButtonShadeNormal" implement="Button.shade.normal.*.*" inherit="ButtonCloseNormal">
+	<object id="ButtonShadeNormal" implement="Button.shade.normal.*.*" extend="ButtonCloseNormal">
 		<source id="iconsrc" type="svg" file="TestTheme/icon_shade.svg"/>
 	</object>
-	<object id="ButtonShadePrelight" implement="Button.shade.prelight.*.*" inherit="ButtonShadeNormal">
+	<object id="ButtonShadePrelight" implement="Button.shade.prelight.*.*" extend="ButtonShadeNormal">
 		<paint>
 			<layer layout_object="button_prelight" layout_id="button"/>
 			<layer layout_id="icon"/>
 		</paint>
 	</object>
-	<object id="ButtonShadePressed" implement="Button.shade.pressed.*.*" inherit="ButtonShadeNormal">
+	<object id="ButtonShadePressed" implement="Button.shade.pressed.*.*" extend="ButtonShadeNormal">
 		<paint>
 			<layer layout_object="button_pressed" layout_id="button"/>
 			<layer layout_id="icon_sunken"/>
 		</paint>
 	</object>
 
-	<object id="ButtonAllDeskNormal" implement="Button.allDesktops.normal.*.*" inherit="ButtonCloseNormal">
+	<object id="ButtonAllDeskNormal" implement="Button.allDesktops.normal.*.*" extend="ButtonCloseNormal">
 		<source id="iconsrc" type="svg" file="TestTheme/icon_oad.svg"/>
 	</object>
-	<object id="ButtonAllDeskPrelight" implement="Button.allDesktops.prelight.*.*" inherit="ButtonAllDeskNormal">
+	<object id="ButtonAllDeskPrelight" implement="Button.allDesktops.prelight.*.*" extend="ButtonAllDeskNormal">
 		<paint>
 			<layer layout_object="button_prelight" layout_id="button"/>
 			<layer layout_id="icon"/>
 		</paint>
 	</object>
-	<object id="ButtonAllDeskPressed" implement="Button.allDesktops.pressed.*.*" inherit="ButtonAllDeskNormal">
+	<object id="ButtonAllDeskPressed" implement="Button.allDesktops.pressed.*.*" extend="ButtonAllDeskNormal">
 		<paint>
 			<layer layout_object="button_pressed" layout_id="button"/>
 			<layer layout_id="icon_sunken"/>
 		</paint>
 	</object>
 
-	<object id="ButtonAboveRestoreNormal" implement="Button.aboveRestore.normal.*.*" inherit="ButtonCloseNormal">
+	<object id="ButtonAboveRestoreNormal" implement="Button.aboveRestore.normal.*.*" extend="ButtonCloseNormal">
 		<source id="iconsrc" type="svg" file="TestTheme/icon_above_restore.svg"/>
 	</object>
-	<object id="ButtonAboveRestorePrelight" implement="Button.aboveRestore.prelight.*.*" inherit="ButtonAboveRestoreNormal">
+	<object id="ButtonAboveRestorePrelight" implement="Button.aboveRestore.prelight.*.*" extend="ButtonAboveRestoreNormal">
 		<paint>
 			<layer layout_object="button_prelight" layout_id="button"/>
 			<layer layout_id="icon"/>
 		</paint>
 	</object>
-	<object id="ButtonAboveRestorePressed" implement="Button.aboveRestore.pressed.*.*" inherit="ButtonAboveRestoreNormal">
+	<object id="ButtonAboveRestorePressed" implement="Button.aboveRestore.pressed.*.*" extend="ButtonAboveRestoreNormal">
 		<paint>
 			<layer layout_object="button_pressed" layout_id="button"/>
 			<layer layout_id="icon_sunken"/>
 		</paint>
 	</object>
 	
-	<object id="ButtonBelowRestoreNormal" implement="Button.belowRestore.normal.*.*" inherit="ButtonCloseNormal">
+	<object id="ButtonBelowRestoreNormal" implement="Button.belowRestore.normal.*.*" extend="ButtonCloseNormal">
 		<source id="iconsrc" type="svg" file="TestTheme/icon_below_restore.svg"/>
 	</object>
-	<object id="ButtonBelowRestorePrelight" implement="Button.belowRestore.prelight.*.*" inherit="ButtonBelowRestoreNormal">
+	<object id="ButtonBelowRestorePrelight" implement="Button.belowRestore.prelight.*.*" extend="ButtonBelowRestoreNormal">
 		<paint>
 			<layer layout_object="button_prelight" layout_id="button"/>
 			<layer layout_id="icon"/>
 		</paint>
 	</object>
-	<object id="ButtonBelowRestorePressed" implement="Button.belowRestore.pressed.*.*" inherit="ButtonBelowRestoreNormal">
+	<object id="ButtonBelowRestorePressed" implement="Button.belowRestore.pressed.*.*" extend="ButtonBelowRestoreNormal">
 		<paint>
 			<layer layout_object="button_pressed" layout_id="button"/>
 			<layer layout_id="icon_sunken"/>
 		</paint>
 	</object>
 	
-	<object id="ButtonShadeRestoreNormal" implement="Button.shadeRestore.normal.*.*" inherit="ButtonCloseNormal">
+	<object id="ButtonShadeRestoreNormal" implement="Button.shadeRestore.normal.*.*" extend="ButtonCloseNormal">
 		<source id="iconsrc" type="svg" file="TestTheme/icon_shade_restore.svg"/>
 	</object>
-<!--	<object id="ButtonShadeRestoreNormal" implement="Button.shadeRestore.prelight.*.*" inherit="ButtonShadeRestoreNormal">
+<!--	<object id="ButtonShadeRestoreNormal" implement="Button.shadeRestore.prelight.*.*" extend="ButtonShadeRestoreNormal">
 		<paint>
 			<layer layout_object="button_prelight" layout_id="button"/>
 			<layer layout_id="icon"/>
 		</paint>
 	</object> -->
-	<object id="ButtonShadeRestorePressed" implement="Button.shadeRestore.pressed.*.*" inherit="ButtonShadeRestoreNormal">
+	<object id="ButtonShadeRestorePressed" implement="Button.shadeRestore.pressed.*.*" extend="ButtonShadeRestoreNormal">
 		<paint>
 			<layer layout_object="button_pressed" layout_id="button"/>
 			<layer layout_id="icon_sunken"/>
 		</paint>
 	</object>
 
-	<object id="ButtonAllDeskRestoreNormal" implement="Button.allDesktopsRestore.normal.*.*" inherit="ButtonCloseNormal">
+	<object id="ButtonAllDeskRestoreNormal" implement="Button.allDesktopsRestore.normal.*.*" extend="ButtonCloseNormal">
 		<source id="iconsrc" type="svg" file="TestTheme/icon_oad_restore.svg"/>
 	</object>
-	<object id="ButtonAllDeskRestorePrelight" implement="Button.allDesktopsRestore.prelight.*.*" inherit="ButtonAllDeskRestoreNormal">
+	<object id="ButtonAllDeskRestorePrelight" implement="Button.allDesktopsRestore.prelight.*.*" extend="ButtonAllDeskRestoreNormal">
 		<paint>
 			<layer layout_object="button_prelight" layout_id="button"/>
 			<layer layout_id="icon"/>
 		</paint>
 	</object>
-	<object id="ButtonAllDeskRestorePressed" implement="Button.allDesktopsRestore.pressed.*.*" inherit="ButtonAllDeskRestoreNormal">
+	<object id="ButtonAllDeskRestorePressed" implement="Button.allDesktopsRestore.pressed.*.*" extend="ButtonAllDeskRestoreNormal">
 		<paint>
 			<layer layout_object="button_pressed" layout_id="button"/>
 			<layer layout_id="icon_sunken"/>
