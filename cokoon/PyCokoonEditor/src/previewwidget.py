@@ -25,7 +25,6 @@ class PreviewWidget(QtGui.QWidget):
   def setThemeModel(self, themeModel):
     self.model = themeModel
 
-  def setCurrentThemeElement(self,el):
-    if el!=None:
-      self.currentId = self.model.spec.mapObjectStringToSpecIndex(el.id())
-      self.update()
+  def setCurrentThemeElement(self,specStateString):
+    self.currentId = self.model.spec.mapObjectStringToSpecIndex(QtCore.QString(specStateString) )
+    self.update()

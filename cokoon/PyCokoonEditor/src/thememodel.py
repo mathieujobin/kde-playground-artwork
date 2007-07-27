@@ -20,6 +20,8 @@ class CokoonDomNode:
     self.row = -1
     self.parent = parent
     self._childItems = None
+  def setModified(self):
+    self.parent.setModified()
   def isNull(self):
     return self.node.isNull()
   def children(self):
@@ -99,6 +101,10 @@ class CokoonDomElement(CokoonDomNode):
     if attr==None:
       raise InvalidCokoonThemeException('%s attribute %s not specified'%(self.tag, attributeName), self)
     return attr
+  def _setDomAttr(self,attributeName,text):
+    print "_setDomAttr",attributeName,":",text
+    self.element.setAttribute(attributeName,text)
+    self.setModified()
 
 class CokoonThemeSource(CokoonDomElement):
   def __init__(self, node, parent):
@@ -245,7 +251,7 @@ class ThemeModel(QAbstractItemModel):
 
     
     ## theme model initialization
-    self.rootElement = CokoonTheme(self.doc.firstChildElement(), None)
+    self.rootElement = CokoonTheme(self.doc.firstChildElement(), self)
     self.rootElement.row = 0
 
     ## make sure there is always a corresponding theme specification
@@ -271,6 +277,11 @@ class ThemeModel(QAbstractItemModel):
     '''Saves the theme description to file (must be QFile)'''
     outstr = QTextStream(file)
     outstr << self.doc.toString()
+
+  def setModified(self, mod=True):
+    self._modified = True
+    self.emit(QtCore.SIGNAL("modelWasModified"), ())
+    self.emit(QtCore.SIGNAL("dataChanged(const QModelIndex&,const QModelIndex&)"), QtCore.QModelIndex(),QtCore.QModelIndex())
 
   def isModified(self):
     '''Whether the document has been modified'''

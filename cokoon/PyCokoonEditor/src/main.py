@@ -9,6 +9,7 @@ from thememodel import ThemeModel
 from documentview import DocumentView
 from previewwidget import PreviewWidget
 from attributeeditwidget import AttributeEditWidget
+from themespecselector import ThemeSpecSelector
 
 class MainWindow(QtGui.QMainWindow):
     sequenceNumber = 1
@@ -61,22 +62,24 @@ class MainWindow(QtGui.QMainWindow):
         self.tr("Something about PyCokoonEditor."))
 
     def documentWasModified(self):
-      self.setWindowModified(True)
+      self.setWindowModified(self.themeModel.isModified() )
 
     def init(self):
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.isUntitled = True
         self.themeModel = ThemeModel()
+        self.connect(self.themeModel, QtCore.SIGNAL("modelWasModified"), self.documentWasModified)
         
 #        self.themeView.setAnimated(True)
         
         self.preview = PreviewWidget(self.themeModel)
         self.themeView = DocumentView(self)
         self.editView = AttributeEditWidget(self)
+        self.specSelector = ThemeSpecSelector(self.themeModel,self)
 
         self.connect(self.themeView, QtCore.SIGNAL("themeElementSelected"),
                      self.editView.switchThemeElement)
-        self.connect(self.themeView, QtCore.SIGNAL("themeElementSelected"),
+        self.connect(self.specSelector, QtCore.SIGNAL("specStateChanged"),
                      self.preview.setCurrentThemeElement)
 
         dock = QtGui.QDockWidget(self.tr("Objects"), self)
@@ -89,6 +92,11 @@ class MainWindow(QtGui.QMainWindow):
         dock.setWidget(self.editView)
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
 
+        dock = QtGui.QDockWidget(self.tr("Specification Selector"), self)
+        dock.setAllowedAreas(QtCore.Qt.TopDockWidgetArea | QtCore.Qt.BottomDockWidgetArea)
+        dock.setWidget(self.specSelector)
+        self.addDockWidget(QtCore.Qt.TopDockWidgetArea, dock)
+
 #        TODO: Factor out self.textEdit
         self.textEdit = QtGui.QTextEdit()
         self.setCentralWidget(self.preview)
@@ -99,9 +107,6 @@ class MainWindow(QtGui.QMainWindow):
         self.createStatusBar()
         
         self.readSettings()
-        
-        self.connect(self.textEdit.document(), QtCore.SIGNAL("contentsChanged()"), 
-                     self.documentWasModified)
         
     def createActions(self):
         self.newAct = QtGui.QAction(QtGui.QIcon(":/images/new.png"),self.tr("&New"), self)
@@ -243,6 +248,7 @@ class MainWindow(QtGui.QMainWindow):
       self.themeModel.loadFile(file)
       self.themeView.setModel(self.themeModel)
       self.preview.setThemeModel(self.themeModel)
+      self.specSelector.setThemeModel(self.themeModel)
       QtGui.QApplication.restoreOverrideCursor()
       
       self.setCurrentFile(fileName)

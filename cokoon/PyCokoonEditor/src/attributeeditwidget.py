@@ -22,11 +22,11 @@ class AttrEditor(QtGui.QWidget):
   def setAttrWidget(self,attrName,widget):
     self.attrs.append([attrName,widget])
     widget.setText(self.el._domAttr(attrName))
-    self.connect(widget, QtCore.SIGNAL("textChanged()"),self.valueChanged)
-
+    self.connect(widget, QtCore.SIGNAL("editingFinished()"),self.valueChanged)
   def valueChanged(self):
+    print "widget value changed."
     for a in self.attrs:
-      print el.id(),": setze ",a
+      self.el._setDomAttr(a[0],a[1].text())
 
 class ObjectEditor(AttrEditor):
   def __init__(self,el,parent=None):

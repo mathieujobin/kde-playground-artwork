@@ -14,7 +14,7 @@ class ThemeSpecItem:
     self.providedSpecials = []
     self.requiredExpressions = []
     self.requiredTiles = []
-    self.states = []
+    self.states = []            # Format: [Levels of [StateIds]]
 
 def _nextColumnBase(currentColumnId):
   return math.ceil(math.log(currentColumnId+1,2) )
@@ -28,7 +28,7 @@ class ThemeSpec:
     self.readThemeSpec(themeSpecFile)
   def clearThemeSpec(self):
     self.name = ''
-    self.items = []
+    self.items = []             # Format: [ThemeSpecItem]
     self.clearThemeSpecMappings()
 
   def clearThemeSpecMappings(self):
@@ -55,8 +55,18 @@ class ThemeSpec:
     xmlInputSource = QtXml.QXmlInputSource(file)
     ret = reader.parse(xmlInputSource, True)
     if ret:
-      print self.items
       self.genCokoonSpecMappings()
+#     self.debug()
+
+  def debug(self):
+    """Used to print out some information about the ThemeSpec"""
+    print "ThemeSpec.debug:"
+    print "self.name",self.name
+    print "len(self.items)",len(self.items)
+    print "len(self.specObjNameToId)",len(self.specObjNameToId)
+    print "len(self.specVariableToId)",len(self.specVariableToId)
+    print "len(self.specIdentifierToId)",len(self.specIdentifierToId)
+    print "self.specObjIdBase",self.specObjIdBase
 
   def genCokoonSpecMappings(self):
     self.clearThemeSpecMappings()
@@ -95,17 +105,17 @@ class ThemeSpec:
         stateCount = 0
         for st in stLvl:
           highestStateIndex = _columnItemId(stateCount,colBase)
-          print str(objectId), " ", st, "/", stateCount, " - ", highestStateIndex
+#           print str(objectId), " ", st, "/", stateCount, " - ", highestStateIndex
           stateLevel[st] = highestStateIndex
           stateLevel[stateCount] = highestStateIndex
 
           objAccessId += highestStateIndex
-          print "objAccessId:",objAccessId, " maxObjAccessId:",maxObjAccessId
+#           print "objAccessId:",objAccessId, " maxObjAccessId:",maxObjAccessId
           if objAccessId > maxObjAccessId:
             maxObjAccessId = objAccessId
 
           stateCount += 1
-        print stateLevel
+#         print stateLevel
         stateLevelList.append(stateLevel)
         colBase = _nextColumnBase(highestStateIndex)
       self.specObjIdToStateLevels[objectId] = stateLevelList
@@ -182,7 +192,6 @@ class ThemeSpecHandler(QtXml.QXmlDefaultHandler):
 
   def endElement(self,namespaceURI, localName, qName):
     if qName == "item":
-      print self.currentItem
       self.themeSpec.items.append(self.currentItem)
       self.currentItem = None
     elif qName == "states":
@@ -208,6 +217,7 @@ class ThemeSpecDocument(Cokoon.Document):
     self.spec = themeSpec
 
   def mapToId(self, type,str):
+    print "ThemeSpecDocument.mapToId",type,str
     if type == Cokoon.Document.ObjectNameDecl and (str in self.spec.specObjNameToId):
       return self.spec.specObjNameToId[str]
     elif type == Cokoon.Document.VariableDecl and (str in self.spec.specVariableToId):
