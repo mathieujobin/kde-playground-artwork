@@ -350,7 +350,7 @@ public:
 };
 //END MyLayout
 
-#include "main.moc"
+#include "bgtest.moc"
 
 int main(int argc, char **argv)
 {
