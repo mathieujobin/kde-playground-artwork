@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<cokoon_theme name="CokoonTestSpec" version="0.1pre">
+<cokoon_theme name="TestCaseTheme" spec="CokoonTestSpec" version="0.1pre">
 
   <object id="ExpTest01" implement="Expressions.test01">
     <!-- Test the variable mechanism, and expression referencing -->
