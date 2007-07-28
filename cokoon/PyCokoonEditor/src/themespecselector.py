@@ -58,6 +58,7 @@ class ThemeSpecSelector(QtGui.QWidget):
           w.addItem(state)
         self.stateWidgets.append(w)
         self.stateLayout.addWidget(w)
+      self.emit(QtCore.SIGNAL("specItemChanged"), (cur))
   def slotSelectionChanged(self):
     stateText = self.objBox.currentText()
     for w in self.stateWidgets:

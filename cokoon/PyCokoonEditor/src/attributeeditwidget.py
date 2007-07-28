@@ -43,7 +43,6 @@ class AttrEditor(QtGui.QWidget):
     widget.setText(self.el._domAttr(attrName))
     self.connect(widget, QtCore.SIGNAL("editingFinished()"),self.valueChanged)
   def valueChanged(self):
-    print "widget value changed."
     for a in self.attrs:
       self.el._setDomAttr(a[0],a[1].text())
 
@@ -99,7 +98,6 @@ class AttributeEditWidget(QtGui.QWidget):
     self.switchThemeElement(None)
 
   def switchThemeElement(self, el):
-    print "AttributeEdit:",el, dir(el)
     if el != None:
       print el.id()
 

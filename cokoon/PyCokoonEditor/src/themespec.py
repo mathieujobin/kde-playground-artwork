@@ -29,7 +29,7 @@ from cokoon import Cokoon
 class ThemeSpecItem:
   def __init__(self):
     self.id = ''
-    self.providedVariables = []
+    self.providedVariables = [] # Format: [Variables of (id of str,type of str)]
     self.providedSpecials = []
     self.requiredExpressions = []
     self.requiredTiles = []
@@ -236,7 +236,6 @@ class ThemeSpecDocument(Cokoon.Document):
     self.spec = themeSpec
 
   def mapToId(self, type,str):
-    print "ThemeSpecDocument.mapToId",type,str
     if type == Cokoon.Document.ObjectStateDecl and (str in self.spec.specObjNameToId):
       return self.spec.specObjNameToId[str]
     elif type == Cokoon.Document.VariableDecl and (str in self.spec.specVariableToId):
@@ -272,8 +271,6 @@ class ThemeSpecDocument(Cokoon.Document):
 
   def customIdMappingBase(self, type):
     if type == self.ObjectStateDecl:
-      # TODO: change this in gen-themespec.rb as well!
-      print "Object ID Base:", self.spec.specObjIdBase
       return self.spec.specObjIdBase
     elif type == self.VariableDecl:
       return len(self.spec.specVariableToId)

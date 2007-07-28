@@ -29,7 +29,6 @@ from thememodel import ThemeModel
 from documentview import DocumentView
 from previewwidget import PreviewWidget
 from attributeeditwidget import AttributeEditWidget
-from themespecselector import ThemeSpecSelector
 
 class MainWindow(QtGui.QMainWindow):
     sequenceNumber = 1
@@ -53,7 +52,6 @@ class MainWindow(QtGui.QMainWindow):
             
     def newFile(self):
       if self.maybeSave():
-        self.textEdit.clear()
         self.setCurrentFile(QtCore.QString())
 
     def open(self):
@@ -95,12 +93,9 @@ class MainWindow(QtGui.QMainWindow):
         self.preview = PreviewWidget(self.themeModel)
         self.themeView = DocumentView(self)
         self.editView = AttributeEditWidget(self)
-        self.specSelector = ThemeSpecSelector(self.themeModel,self)
 
         self.connect(self.themeView, QtCore.SIGNAL("themeElementSelected"),
                      self.editView.switchThemeElement)
-        self.connect(self.specSelector, QtCore.SIGNAL("specStateChanged"),
-                     self.preview.setCurrentThemeElement)
 
         dock = QtGui.QDockWidget(self.tr("Objects"), self)
         dock.setAllowedAreas(QtCore.Qt.LeftDockWidgetArea | QtCore.Qt.RightDockWidgetArea)
@@ -112,13 +107,6 @@ class MainWindow(QtGui.QMainWindow):
         dock.setWidget(self.editView)
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
 
-        dock = QtGui.QDockWidget(self.tr("Specification Selector"), self)
-        dock.setAllowedAreas(QtCore.Qt.TopDockWidgetArea | QtCore.Qt.BottomDockWidgetArea)
-        dock.setWidget(self.specSelector)
-        self.addDockWidget(QtCore.Qt.TopDockWidgetArea, dock)
-
-#        TODO: Factor out self.textEdit
-        self.textEdit = QtGui.QTextEdit()
         self.setCentralWidget(self.preview)
         
         self.createActions()
@@ -164,21 +152,21 @@ class MainWindow(QtGui.QMainWindow):
         self.cutAct.setShortcut(self.tr("Ctrl+X"))
         self.cutAct.setStatusTip(self.tr("Cut the current selection's "
                                          "contents to the clipboard"))
-        self.connect(self.cutAct, QtCore.SIGNAL("triggered()"), self.textEdit.cut)
+#         self.connect(self.cutAct, QtCore.SIGNAL("triggered()"), self.textEdit.cut)
 
         self.copyAct = QtGui.QAction(QtGui.QIcon(":/images/copy.png"),self.tr("&Copy"),
                                      self)
         self.copyAct.setShortcut(self.tr("Ctrl+C"))
         self.copyAct.setStatusTip(self.tr("Copy the current selection's "
                                           "contents to the clipboard"))
-        self.connect(self.copyAct, QtCore.SIGNAL("triggered()"), self.textEdit.copy)
+#         self.connect(self.copyAct, QtCore.SIGNAL("triggered()"), self.textEdit.copy)
 
         self.pasteAct = QtGui.QAction(QtGui.QIcon(":/images/paste.png"), 
                                       self.tr("&Paste"), self)
         self.pasteAct.setShortcut(self.tr("Ctrl+V"))
         self.pasteAct.setStatusTip(self.tr("Paste the clipboard's contents "
                                            "into the current selection"))
-        self.connect(self.pasteAct, QtCore.SIGNAL("triggered()"), self.textEdit.paste)
+#         self.connect(self.pasteAct, QtCore.SIGNAL("triggered()"), self.textEdit.paste)
 
         self.aboutAct = QtGui.QAction(self.tr("&About"), self)
         self.aboutAct.setStatusTip(self.tr("Show the application's About box"))
@@ -190,10 +178,10 @@ class MainWindow(QtGui.QMainWindow):
 
         self.cutAct.setEnabled(False)
         self.copyAct.setEnabled(False)
-        self.connect(self.textEdit, QtCore.SIGNAL("copyAvailable(bool)"),
-                self.cutAct.setEnabled)
-        self.connect(self.textEdit, QtCore.SIGNAL("copyAvailable(bool)"),
-                self.copyAct.setEnabled)
+#         self.connect(self.textEdit, QtCore.SIGNAL("copyAvailable(bool)"),
+#                 self.cutAct.setEnabled)
+#         self.connect(self.textEdit, QtCore.SIGNAL("copyAvailable(bool)"),
+#                 self.copyAct.setEnabled)
 
     def createMenus(self):
         self.fileMenu = self.menuBar().addMenu(self.tr("&File"))
@@ -268,7 +256,6 @@ class MainWindow(QtGui.QMainWindow):
       self.themeModel.loadFile(file)
       self.themeView.setModel(self.themeModel)
       self.preview.setThemeModel(self.themeModel)
-      self.specSelector.setThemeModel(self.themeModel)
       QtGui.QApplication.restoreOverrideCursor()
       
       self.setCurrentFile(fileName)
@@ -293,7 +280,6 @@ class MainWindow(QtGui.QMainWindow):
     
     def setCurrentFile(self, fileName):
       self.curFile = fileName
-#      self.textEdit.document().setModified(False)
       self.setWindowModified(False)
       
       if self.curFile.isEmpty():
