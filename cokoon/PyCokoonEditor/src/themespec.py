@@ -237,7 +237,7 @@ class ThemeSpecDocument(Cokoon.Document):
 
   def mapToId(self, type,str):
     print "ThemeSpecDocument.mapToId",type,str
-    if type == Cokoon.Document.ObjectNameDecl and (str in self.spec.specObjNameToId):
+    if type == Cokoon.Document.ObjectStateDecl and (str in self.spec.specObjNameToId):
       return self.spec.specObjNameToId[str]
     elif type == Cokoon.Document.VariableDecl and (str in self.spec.specVariableToId):
       return self.spec.specVariableToId[str]
@@ -271,7 +271,7 @@ class ThemeSpecDocument(Cokoon.Document):
     return -1
 
   def customIdMappingBase(self, type):
-    if type == self.ObjectNameDecl:
+    if type == self.ObjectStateDecl:
       # TODO: change this in gen-themespec.rb as well!
       print "Object ID Base:", self.spec.specObjIdBase
       return self.spec.specObjIdBase

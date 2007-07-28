@@ -76,6 +76,7 @@ class Document {
 
         enum DeclarationType {
             ObjectNameDecl,
+            ObjectStateDecl,
             VariableDecl,
             IdentifierDecl
         };
