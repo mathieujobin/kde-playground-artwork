@@ -107,6 +107,12 @@
     <expression id="expAssert" value="7"/>
   </object>
 
+  <object id="CustomObjectNoImplement">
+    <!-- Check that Cokoon is able to load objects which do not implement
+         anything from the Specification. Such objects are used to
+         provide things to other objects -->
+  </object>
+
 
 
   <object id="PaintTest01" implement="Painting.test01">

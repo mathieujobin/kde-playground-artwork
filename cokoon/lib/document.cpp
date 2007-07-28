@@ -140,44 +140,46 @@ class DocumentHandler : public QXmlDefaultHandler
                 }
 
 
-                /*
-                 * Map specification object states to the object
-                 */
-                QStringList objStatesString = objImplStr.split(".");
-                // translate the string state list to integer state IDs
-                int stateObjId = m_doc->mapToId(Document::ObjectStateDecl,
-                                             objStatesString.at(0) );
-                if (stateObjId == -1) {
-                    if (objStatesString.size() > 1) {
-                        // only objects defined in the theme spec can have 'states'
-                        qCritical("%s: invalid state id '%s': state object not defined in the theme specification.", qPrintable(objIdStr), qPrintable(objImplStr) );
-                        return false;
-                    }
-                }
-
-                QList<int> objStates;
-                for (int i = 1; i < objStatesString.size(); ++i) {
-                    int stateId = -1;
-                    QString stateStr = objStatesString.at(i);
-                    if (stateStr == "*") {
-                        stateId = -1;
-                    } else {
-                        stateId = m_doc->mapObjectStateToId(stateObjId, i-1,
-                                                            stateStr);
-                        if (stateId == -1) {
-                            qCritical("%s: state '%s' not defined in the theme specification.", qPrintable(objImplStr), qPrintable(stateStr));
+                if (!objImplStr.isEmpty()) {
+                    /*
+                     * Map specification object states to the object
+                     */
+                    QStringList objStatesString = objImplStr.split(".");
+                    // translate the string state list to integer state IDs
+                    int stateObjId = m_doc->mapToId(Document::ObjectStateDecl,
+                                                    objStatesString.at(0) );
+                    if (stateObjId == -1) {
+                        if (objStatesString.size() > 1) {
+                            // only objects defined in the theme spec can have 'states'
+                            qCritical("%s: invalid state id '%s': state object not defined in the theme specification.", qPrintable(objIdStr), qPrintable(objImplStr) );
                             return false;
                         }
                     }
 
-                    objStates.append(stateId);
-                }
+                    QList<int> objStates;
+                    for (int i = 1; i < objStatesString.size(); ++i) {
+                        int stateId = -1;
+                        QString stateStr = objStatesString.at(i);
+                        if (stateStr == "*") {
+                            stateId = -1;
+                        } else {
+                            stateId = m_doc->mapObjectStateToId(stateObjId, i-1,
+                                                                stateStr);
+                            if (stateId == -1) {
+                                qCritical("%s: state '%s' not defined in the theme specification.", qPrintable(objImplStr), qPrintable(stateStr));
+                                return false;
+                            }
+                        }
 
-                int objSpecMappingRet = m_doc->declareSpecMapping(objIdRet, stateObjId, objStates);
+                        objStates.append(stateId);
+                    }
 
-                if (objSpecMappingRet<0) {
-                    qCritical("%s: Error while declaring the specification mapping.", qPrintable(objIdStr) );
-                    return false;
+                    int objSpecMappingRet = m_doc->declareSpecMapping(objIdRet, stateObjId, objStates);
+
+                    if (objSpecMappingRet<0) {
+                        qCritical("%s: Error while declaring the specification mapping.", qPrintable(objIdStr) );
+                        return false;
+                    }
                 }
 
                 m_context = Obj;
