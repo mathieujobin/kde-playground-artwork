@@ -26,13 +26,49 @@ from cokoon import Cokoon
 from thememodel import ThemeModel
 from themespecselector import ThemeSpecSelector
 
-class PreviewSettingsWidget(QtGui.QWidget,Cokoon.ExpressionVariableBridge):
+class IntSettingWidget(QtGui.QSpinBox):
+  def __init__(self,default,parent=None):
+    QtGui.QSpinBox.__init__(self,parent)
+    self.connect(self,QtCore.SIGNAL("valueChanged(int)"),self.slotChanged)
+    self.setValue(int(default))
+  def slotChanged(self):
+    self.emit(QtCore.SIGNAL("valueChanged"),())
+  def getVariantValue(self):
+    return QtCore.QVariant(int(self.value()))
+class DoubleSettingWidget(QtGui.QDoubleSpinBox):
+  def __init__(self,default,parent=None):
+    QtGui.QDoubleSpinBox.__init__(self,parent)
+    self.connect(self,QtCore.SIGNAL("valueChanged(double)"),self.slotChanged)
+    self.setValue(float(default))
+  def slotChanged(self):
+    self.emit(QtCore.SIGNAL("valueChanged"),())
+  def getVariantValue(self):
+    return QtCore.QVariant(float(self.value()))
+class ColorSettingWidget(QtGui.QPushButton):
+  def __init__(self,defaultColorString,parent=None):
+    QtGui.QPushButton.__init__(self,parent)
+    self.setColor(QtGui.QColor(defaultColorString))
+    self.connect(self,QtCore.SIGNAL("clicked(bool)"),self.colorRequester)
+  def colorRequester(self):
+    col = QtGui.QColorDialog.getColor(self.color)
+    print "the selected color:",col.name()
+    if col.isValid():
+      self.setColor(col)
+  def setColor(self,color):
+    self.color = color
+    self.setText(self.color.name())
+    self.emit(QtCore.SIGNAL("valueChanged"),())
+  def getVariantValue(self):
+    return QtCore.QVariant(self.color)
+
+class PreviewSettingsWidget(QtGui.QWidget):
   def __init__(self,model,parent=None):
     QtGui.QWidget.__init__(self,parent)
     self.currentItem = -1
     self.layout = QtGui.QGridLayout(self)
     self.widgetLabels = []
     self.widgets = []
+    self.idToValueStringMap = {}
     self.setThemeModel(model)
   def setThemeModel(self,model):
     self.model = model
@@ -45,26 +81,41 @@ class PreviewSettingsWidget(QtGui.QWidget,Cokoon.ExpressionVariableBridge):
       self.layout.removeWidget(l)
     self.widgetLabels = []
     self.widgets = []
+    self.idToValueStringMap = {} # id -> valueString function pointer
     # Init...
     self.addRow("width","Int")  # Height and width are handled specially,
     self.addRow("height","Int") # they are given during the drawLayers() call
     if itemId >= 0:
       for var in self.model.spec.items[itemId].providedVariables:
-        self.addRow(var[0],var[1])
-  def addRow(self,varId,varType):
-    label = QtGui.QLabel(varId+" ("+varType+"):",self)
+        varIdString = var[0]
+        varType = var[1]
+        varId = None
+        if varIdString in self.model.spec.specVariableToId:
+          varId = self.model.spec.specVariableToId[varIdString]
+        w = self.addRow(varIdString,var[1],varId)
+
+  def addRow(self,varIdString,varType,varId=None):
+    label = QtGui.QLabel(varIdString+" ("+varType+"):",self)
     widget = None
+    valueFunctionPtr = None
     if varType=="Int":
-      widget = QtGui.QSpinBox(self)
-      self.connect(widget,QtCore.SIGNAL("valueChanged(int)"),self.slotSettingsChanged)
-    else:
-      widget = QtGui.QLineEdit(self)
-      self.connect(widget,QtCore.SIGNAL("textChanged(const QString&)"),self.slotSettingsChanged)
-    row = len(self.widgets)
-    self.layout.addWidget(label,row,0)
-    self.layout.addWidget(widget,row,1)
-    self.widgetLabels.append(label)
-    self.widgets.append(widget)
+      widget = IntSettingWidget("20",self)
+    elif varType=="Double":
+      widget = DoubleSettingWidget("1.0",self)
+    elif varType=="Color":
+      widget = ColorSettingWidget("#rrrrrr",self)
+
+    if varId != None and widget != None:
+      self.idToValueStringMap[varId] = widget.getVariantValue
+
+    if widget != None:
+      self.connect(widget,QtCore.SIGNAL("valueChanged"),self.slotSettingsChanged)
+      row = len(self.widgets)
+      self.layout.addWidget(label,row,0)
+      self.layout.addWidget(widget,row,1)
+      self.widgetLabels.append(label)
+      self.widgets.append(widget)
+
   def getWidth(self):
     if len(self.widgets)>=1:
       return int(self.widgets[0].value())
@@ -76,15 +127,20 @@ class PreviewSettingsWidget(QtGui.QWidget,Cokoon.ExpressionVariableBridge):
     else:
       return 100
   def getVariableValue(self,varIndex):
-    """implemented from ExpressionVariableBridge.
-    Returns QVariant(value)"""
-    if vars != None and varIndex>=0 and (len(self.widgets)-2)>varIndex:
-      val = QtCore.QVariant(QVariant.Int) # TODO: other variable types as Int
-      val.setValue(self.widgets[varIndex-2].value())
+    """Returns QVariant of the variable, or an invalid QVariant if the variable doe not exist"""
+    if varIndex in self.idToValueStringMap:
+      return self.idToValueStringMap[varIndex]()
     else:
       return QtCore.QVariant()
   def slotSettingsChanged(self):
     self.emit(QtCore.SIGNAL("settingsChanged"), ())
+
+class SettingsVariableBridge(Cokoon.ExpressionVariableBridge):
+  def __init__(self,settingsWidget):
+    Cokoon.ExpressionVariableBridge.__init__(self)
+    self.settings = settingsWidget
+  def getVariableValue(self,varIndex):
+    return self.settings.getVariableValue(varIndex)
 
 class PreviewDisplayWidget(QtGui.QWidget):
   def __init__(self, preview, parent=None):
@@ -98,8 +154,8 @@ class PreviewDisplayWidget(QtGui.QWidget):
         painter = QtGui.QPainter(self)
         w = self.preview.settings.getWidth()
         h = self.preview.settings.getHeight()
-        s = self.preview.settings # TODO: get the variable bridge to work!
-        doc.drawLayers(curId,painter,0,0,w, h)
+        s2 = SettingsVariableBridge(self.preview.settings)
+        doc.drawLayers(curId,painter,0,0,w, h, s2)
         return
 
     # else...
