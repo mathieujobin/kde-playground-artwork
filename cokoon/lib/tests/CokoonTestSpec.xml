@@ -27,8 +27,8 @@
       <state id="test20" />
     </states>
     <provided>
-      <variable type="Int" id="var01" />
-      <variable type="Int" id="var02" />
+      <variable type="Int" id="var01" preview_default="0" />
+      <variable type="Int" id="var02" preview_default="0" />
     </provided>
     <required>
       <expression type="Int" id="varValue01"/>
@@ -37,7 +37,7 @@
       <expression type="Int" id="expAssert"/>
     </required>
   </item>
-  <item id="Painting">
+  <item id="Painting" preview_width="300" preview_height="300">
     <desc>Some painting tests. It is tested that what's painted by the states is equal to some static image (testX.xpm).</desc>
     <states>
       <state id="test01" />

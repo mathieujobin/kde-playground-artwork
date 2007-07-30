@@ -29,8 +29,12 @@ from themespecselector import ThemeSpecSelector
 class IntSettingWidget(QtGui.QSpinBox):
   def __init__(self,default,parent=None):
     QtGui.QSpinBox.__init__(self,parent)
+    self.setRange(-10000000,1000000)
     self.connect(self,QtCore.SIGNAL("valueChanged(int)"),self.slotChanged)
-    self.setValue(int(default))
+    if default==None or default=="":
+      self.setValue(0)
+    else:
+      self.setValue(int(default))
   def slotChanged(self):
     self.emit(QtCore.SIGNAL("valueChanged"),())
   def getVariantValue(self):
@@ -38,8 +42,12 @@ class IntSettingWidget(QtGui.QSpinBox):
 class DoubleSettingWidget(QtGui.QDoubleSpinBox):
   def __init__(self,default,parent=None):
     QtGui.QDoubleSpinBox.__init__(self,parent)
+    self.setRange(-10000000,1000000)
     self.connect(self,QtCore.SIGNAL("valueChanged(double)"),self.slotChanged)
-    self.setValue(float(default))
+    if default==None or default=="":
+      self.setValue(0.0)
+    else:
+      self.setValue(float(default))
   def slotChanged(self):
     self.emit(QtCore.SIGNAL("valueChanged"),())
   def getVariantValue(self):
@@ -47,7 +55,10 @@ class DoubleSettingWidget(QtGui.QDoubleSpinBox):
 class ColorSettingWidget(QtGui.QPushButton):
   def __init__(self,defaultColorString,parent=None):
     QtGui.QPushButton.__init__(self,parent)
-    self.setColor(QtGui.QColor(defaultColorString))
+    if default==None or default=="":
+      self.setValue(QtGui.QColor("#000000"))
+    else:
+      self.setColor(QtGui.QColor(defaultColorString))
     self.connect(self,QtCore.SIGNAL("clicked(bool)"),self.colorRequester)
   def colorRequester(self):
     col = QtGui.QColorDialog.getColor(self.color)
@@ -83,27 +94,29 @@ class PreviewSettingsWidget(QtGui.QWidget):
     self.widgets = []
     self.idToValueStringMap = {} # id -> valueString function pointer
     # Init...
-    self.addRow("width","Int")  # Height and width are handled specially,
-    self.addRow("height","Int") # they are given during the drawLayers() call
     if itemId >= 0:
-      for var in self.model.spec.items[itemId].providedVariables:
+      item = self.model.spec.items[itemId]
+      self.addRow("width","Int",item.preview_width)  # Height and width are handled specially,
+      self.addRow("height","Int",item.preview_height) # they are given during the drawLayers() call
+      for var in item.providedVariables:
         varIdString = var[0]
         varType = var[1]
+        varDefault = var[2]
         varId = None
         if varIdString in self.model.spec.specVariableToId:
           varId = self.model.spec.specVariableToId[varIdString]
-        w = self.addRow(varIdString,var[1],varId)
+        w = self.addRow(varIdString,var[1],varDefault,varId)
 
-  def addRow(self,varIdString,varType,varId=None):
+  def addRow(self,varIdString,varType,default,varId=None):
     label = QtGui.QLabel(varIdString+" ("+varType+"):",self)
     widget = None
     valueFunctionPtr = None
     if varType=="Int":
-      widget = IntSettingWidget("20",self)
+      widget = IntSettingWidget(default,self)
     elif varType=="Double":
-      widget = DoubleSettingWidget("1.0",self)
+      widget = DoubleSettingWidget(default,self)
     elif varType=="Color":
-      widget = ColorSettingWidget("#rrrrrr",self)
+      widget = ColorSettingWidget(default,self)
 
     if varId != None and widget != None:
       self.idToValueStringMap[varId] = widget.getVariantValue

@@ -29,11 +29,13 @@ from cokoon import Cokoon
 class ThemeSpecItem:
   def __init__(self):
     self.id = ''
-    self.providedVariables = [] # Format: [Variables of (id of str,type of str)]
+    self.providedVariables = [] # Format: [Variables of (id of str,type of str,preview_default of str)]
     self.providedSpecials = []
     self.requiredExpressions = []
     self.requiredTiles = []
     self.states = []            # Format: [Levels of [StateIds]]
+    self.preview_width = ""
+    self.preview_height = ""
 
 def _nextColumnBase(currentColumnId):
   return math.ceil(math.log(currentColumnId+1,2) )
@@ -189,6 +191,8 @@ class ThemeSpecHandler(QtXml.QXmlDefaultHandler):
     elif qName == "item":
       self.currentItem = ThemeSpecItem()
       self.currentItem.id = attributes.value("id")
+      self.currentItem.preview_width = attributes.value("preview_width")
+      self.currentItem.preview_height = attributes.value("preview_height")
     elif qName == "expression":
       exp = (attributes.value("id"), attributes.value("type"))
       self.currentItem.requiredExpressions.append(exp)
@@ -199,7 +203,7 @@ class ThemeSpecHandler(QtXml.QXmlDefaultHandler):
       tile = attributes.value("id")
       self.currentItem.requiredTiles.append(tile)
     elif qName == "variable":
-      var = (attributes.value("id"), attributes.value("type"))
+      var = (attributes.value("id"), attributes.value("type"), attributes.value("preview_default"))
       self.currentItem.providedVariables.append(var)
     elif qName == "states":
       self.currentStateList = []

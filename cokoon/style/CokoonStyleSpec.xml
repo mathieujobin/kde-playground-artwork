@@ -221,7 +221,7 @@
 		</required>
 	</item>
 
-	<item id="GenericFrame">
+	<item id="GenericFrame" preview_width="300" preview_height="300">
 		<desc>Frame around e.g. frames, list view items...</desc>
 
 		<states>
@@ -283,7 +283,7 @@
 		</states>
 	</item>-->
 
-	<item id="Button">
+	<item id="Button" preview_width="300" preview_height="25">
 		<desc>Push button and similar.</desc>
 
 		<states>
@@ -314,7 +314,7 @@
 		</states>
 		<!-- TODO: Maybe add states for hor/vert button direction. -->
 	</item>
-	<item id="CheckBox">
+	<item id="CheckBox" preview_width="20" preview_height="20">
 		<desc>Check box and similar.</desc>
 		
 		<states>
@@ -347,7 +347,7 @@
 			</state>
 		</states>
 	</item>
-	<item id="RadioButton">
+	<item id="RadioButton" preview_width="20" preview_height="20">
 		<desc>Check box and similar.</desc>
 		
 		<states>
@@ -378,7 +378,7 @@
 		</states>
 		<!-- TODO: Maybe add states for hor/vert button direction. -->
 	</item>
-	<item id="LineEdit">
+	<item id="LineEdit" preview_width="300" preview_height="25">
 		<desc>Frame of a line edit.</desc>
 
 		<states>
@@ -395,7 +395,7 @@
 			</state>
 		</states>
 	</item>
-	<item id="ComboBox">
+	<item id="ComboBox" preview_width="300" preview_height="25">
 		<desc>Frame and button of a combobox.</desc>
 
 		<states>
@@ -425,7 +425,7 @@
 			</state>
 		</states>
 	</item>
-	<item id="SpinBox">
+	<item id="SpinBox" preview_width="300" preview_height="25">
 		<desc>Frame and button of a SpinBox.</desc>
 		
 		<states>
@@ -461,7 +461,7 @@
 			</state>
 		</states>
 	</item>
-	<item id="ScrollBarButton">
+	<item id="ScrollBarButton" preview_width="20" preview_height="20">
 		<desc>Button on a ScrollBar.</desc>
 
 		<states>
@@ -497,7 +497,7 @@
 			</state>
 		</states>
 	</item>
-	<item id="ScrollBarGroove">
+	<item id="ScrollBarGroove" preview_width="20" preview_height="20">
 		<desc>Groove of the ScrollBar handle.</desc>
 		
 		<states>
@@ -524,7 +524,7 @@
 			</state>
 		</states>
 	</item>
-	<item id="ScrollBarHandle">
+	<item id="ScrollBarHandle" preview_width="20" preview_height="20">
 		<desc>The ScrollBar handle.</desc>
 		
 		<states>
@@ -554,7 +554,7 @@
 			</state>
 		</states>
 	</item>
-	<item id="SliderGroove">
+	<item id="SliderGroove" preview_width="20" preview_height="20">
 		<desc>A tab in the tab bar.</desc>
 		
 		<states>
@@ -588,7 +588,7 @@
 			</state>
 		</states>
 	</item>
-	<item id="SliderHandle">
+	<item id="SliderHandle" preview_width="20" preview_height="20">
 		<desc>A tab in the tab bar.</desc>
 		
 		<states>
@@ -628,7 +628,7 @@
 			</state>
 		</states>
 	</item>
-	<item id="ProgressBarGroove">
+	<item id="ProgressBarGroove" preview_width="300" preview_height="25">
 		<desc>ProgressBar groove, painted before the contents.</desc>
 		
 		<states>
@@ -652,7 +652,7 @@
 			</state>
 		</states>
 	</item>
-	<item id="ProgressBarBar">
+	<item id="ProgressBarBar" preview_width="150" preview_height="25">
 		<desc>ProgressBar groove, painted before the contents.</desc>
 		
 		<states>
@@ -676,7 +676,7 @@
 			</state>
 		</states>
 	</item>
-	<item id="TabBarTab">
+	<item id="TabBarTab" preview_width="300" preview_height="25">
 		<desc>A tab in the tab bar.</desc>
 		
 		<states>
@@ -761,7 +761,7 @@
 			</state>
 		</states>
 	</item>
-	<item id="Header">
+	<item id="Header" preview_width="300" preview_height="25">
 		<desc>A Header section, e.g. in a list view.</desc>
 		
 		<states>
@@ -823,7 +823,7 @@
 			</state>
 		</states>
 	</item>
-	<item id="ToolBoxTab">
+	<item id="ToolBoxTab" preview_width="300" preview_height="25">
 		<desc>A section in a ToolBox.</desc>
 		
 		<states>
@@ -853,7 +853,7 @@
 			</state>
 		</states>
 	</item>
-	<item id="ToolBarHandle">
+	<item id="ToolBarHandle" preview_width="300" preview_height="25">
 		<desc>A ToolBar handle.</desc>
 		
 		<states>
@@ -880,7 +880,7 @@
 			</state>
 		</states>
 	</item>
-	<item id="ToolBarSeparator">
+	<item id="ToolBarSeparator" preview_width="300" preview_height="25">
 		<desc>A ToolBar item separator.</desc>
 		
 		<states>
@@ -894,7 +894,7 @@
 			</state>
 		</states>
 	</item>
-	<item id="MenuBarItem">
+	<item id="MenuBarItem" preview_width="300" preview_height="25">
 		<desc>A menu item in a MenuBar.</desc>
 		
 		<states>
@@ -911,10 +911,10 @@
 			</state>
 		</states>
 	</item>
-	<item id="MenuFrame">
+	<item id="MenuFrame" preview_width="300" preview_height="25">
 		<desc>A frame around a Menu, no states.</desc>
 	</item>
-	<item id="MenuItem">
+	<item id="MenuItem" preview_width="300" preview_height="25">
 		<desc>A menu item in a MenuBar.</desc>
 		
 		<states>
@@ -941,10 +941,10 @@
 			</state>
 		</states>-->
 	</item>
-	<item id="MenuItemSeparator">
+	<item id="MenuItemSeparator" preview_width="300" preview_height="25">
 		<desc>A menu item separator.</desc>
 	</item>
-	<item id="ToolButton">
+	<item id="ToolButton" preview_width="300" preview_height="25">
 		<desc>A tool button, usually in a ToolBar.</desc>
 		
 		<states>
@@ -964,7 +964,7 @@
 			</state>
 		</states>
 	</item>
-	<item id="Splitter">
+	<item id="Splitter" preview_width="300" preview_height="300">
 		<desc>A splitter layout handle.</desc>
 		
 		<states>
@@ -992,13 +992,13 @@
 		</states>
 		
 	</item>
-	<item id="DockWidgetFrame">
+	<item id="DockWidgetFrame" preview_width="300" preview_height="300">
 		<desc>Frame around a floating DockWidget.</desc>
 	</item>
-	<item id="DockWidgetTitle">
+	<item id="DockWidgetTitle" preview_width="300" preview_height="25">
 		<desc>Frame around a DockWidget.</desc>
 	</item>
-	<item id="WindowFrame">
+	<item id="WindowFrame" preview_width="300" preview_height="300">
 		<desc>Frame around a floating DockWidget.</desc>
 		
 		<states>
@@ -1012,7 +1012,7 @@
 			</state>
 		</states>
 	</item>
-	<item id="WindowTitle">
+	<item id="WindowTitle" preview_width="300" preview_height="25">
 		<desc>Frame around a DockWidget.</desc>
 		
 		<states>
@@ -1026,7 +1026,7 @@
 			</state>
 		</states>
 	</item>
-	<item id="WindowButton">
+	<item id="WindowButton" preview_width="25" preview_height="25">
 		<desc>Frame around a DockWidget.</desc>
 		
 		<states>

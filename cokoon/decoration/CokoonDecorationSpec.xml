@@ -19,7 +19,7 @@
 		</required>
 	</item>
 
-	<item id="Decoration">
+	<item id="Decoration" preview_width="300" preview_height="300">
 		<desc>A window decoration frame.</desc>
 
 		<states>
@@ -70,40 +70,40 @@
 		</states>
 
 		<provided>
-			<variable type="Double" id="BorderSizeFactor">
+			<variable type="Double" id="BorderSizeFactor" preview_default="1.0">
 				<desc>The preferred border size factor.</desc>
 			</variable>
 
-			<variable type="Int" id="ButtonGroupLeftWidth">
+			<variable type="Int" id="ButtonGroupLeftWidth" preview_default="30">
 				<desc>The width which is taken by the left button group.</desc>
 			</variable>
-			<variable type="Int" id="ButtonGroupRightWidth">
+			<variable type="Int" id="ButtonGroupRightWidth" preview_default="30">
 				<desc>The width which is taken by the right button group.</desc>
 			</variable>
 
-			<variable type="Int" id="WindowTitleHeight">
+			<variable type="Int" id="WindowTitleHeight" preview_default="25">
 				<desc>Height of the titleBar text (caption).</desc>
 			</variable>
-			<variable type="Int" id="WindowTitleWidth">
+			<variable type="Int" id="WindowTitleWidth" preview_default="200">
 				<desc>Width of the titleBar text.</desc>
 			</variable>
 
-			<variable type="Color" id="ColorTitleBar">
+			<variable type="Color" id="ColorTitleBar" preview_default="#44ffff">
 				<desc>The color for the titlebar</desc>
 			</variable>
-			<variable type="Color" id="ColorTitleBlend">
+			<variable type="Color" id="ColorTitleBlend" preview_default="#4444ff">
 				<desc>The blend color for the titlebar</desc>
 			</variable>
-			<variable type="Color" id="ColorFont">
+			<variable type="Color" id="ColorFont" preview_default="#ffffff">
 				<desc>The titlebar text color</desc>
 			</variable>
-			<variable type="Color" id="ColorButtonBg">
+			<variable type="Color" id="ColorButtonBg" preview_default="#999999">
 				<desc>The color to use for the titlebar buttons</desc>
 			</variable>
-			<variable type="Color" id="ColorFrame">
+			<variable type="Color" id="ColorFrame" preview_default="#44ffff">
 				<desc>The color for the window frame (border)</desc>
 			</variable>
-			<variable type="Color" id="ColorHandle">
+			<variable type="Color" id="ColorHandle" preview_default="#AAAAAA">
 				<desc>The color for the resize handle</desc>
 			</variable>
 
@@ -178,7 +178,7 @@
 		</required>
 	</item>
 
-	<item id="Button">
+	<item id="Button" preview_width="25" preview_height="25">
 		<desc>A window decoration button.</desc>
 		<states>
 			<desc>The button type.</desc>
