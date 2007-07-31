@@ -36,7 +36,7 @@ class Widget : public QWidget
 public:
     Widget(QWidget *parent=0) : QWidget(parent) {}
 
-    QSize sizeHint() const { return QSize(20, 20); }
+    QSize sizeHint() const { return QSize(100, 100); }
 
 protected:
     void paintEvent(QPaintEvent *e)
@@ -45,29 +45,46 @@ protected:
         QPainter p(this);
         QRect rect = e->rect();
         p.setClipRect(rect);
-        p.setWindow(rect);
         p.setRenderHints(QPainter::Antialiasing);
 
+        //* comment/uncomment to switch between zoomed and actual size
+        if (rect.width() < rect.height())
+            p.setWindow(0, 0, 20, 20 * rect.height() / rect.width());
+        else
+            p.setWindow(0, 0, 20 * rect.width() / rect.height(), 20);
+        /*/
+        p.setWindow(rect);
+        //*/
+
         p.fillRect(rect, color);
+        p.setPen(Qt::NoPen);
 
         // shadow
-        p.setPen(calcMidColor(color));
-        p.setBrush(QBrush(calcMidColor(color)));
-        p.setOpacity(0.6);
-        p.drawEllipse(QRectF(1.8,2.8,16.4,16.4));
-        p.setOpacity(1.0);
+        QRadialGradient shadowGradient(10, 11, 9, 10, 12);
+        shadowGradient.setColorAt(0.0, QColor(0,0,0,80));
+        shadowGradient.setColorAt(1.0, QColor(0,0,0,0));
+        p.setBrush(shadowGradient);
+        p.drawEllipse(QRectF(0, 0, 20, 20));
 
         // outline
-        p.drawEllipse(QRectF(2.0,2.0,16.0,16.0));
+        QRadialGradient edgeGradient(10, 10, 9, 10, 10);
+        edgeGradient.setColorAt(0.0, QColor(0,0,0,60));
+        edgeGradient.setColorAt(0.9, QColor(0,0,0,20));
+        edgeGradient.setColorAt(1.0, QColor(0,0,0,0));
+        p.setBrush(edgeGradient);
+        p.drawEllipse(QRectF(0, 0, 20, 20));
+
+        // base (for anti-shadow)
+        p.setBrush(color);
+        p.drawEllipse(QRectF(2.4,2.4,15.2,15.2));
 
         // bevel
         QLinearGradient bevelGradient(0, 0, 0, 20);
         bevelGradient.setColorAt(0.45, calcLightColor(color));
         bevelGradient.setColorAt(0.55, color);
         bevelGradient.setColorAt(0.65, calcDarkColor(color));
-        p.setPen(Qt::NoPen);
         p.setBrush(QBrush(bevelGradient));
-        p.drawEllipse(QRectF(2.4,2.4,15.2,15.2));
+        p.drawEllipse(QRectF(2.4,2.4,15.2,15.0));
 
         // inside
         QLinearGradient innerGradient(0, 0, 0, 20);
