@@ -64,6 +64,12 @@ void TileCache::clear()
     m_cache.clear();
 }
 
+bool lowThreshold(const QColor& color)
+{
+    QColor darker = KColorScheme::shade(color, KColorScheme::MidShade, 0.5);
+    return KColorUtils::luma(darker) > KColorUtils::luma(color);
+}
+
 QColor calcLightColor(const QColor &color)
 {
     qreal y = KColorUtils::luma(color);
@@ -73,7 +79,10 @@ QColor calcLightColor(const QColor &color)
         case 1:
             return KColorUtils::shade(color, k[1][4] + k[1][5]*y);
         default:
-            return KColorScheme::shade(color, KColorScheme::LightShade, 0.7 * k[2][2]);
+            if (lowThreshold(color))
+                return KColorScheme::shade(color, KColorScheme::LightShade, 0.0);
+            else
+                return KColorScheme::shade(color, KColorScheme::LightShade, 0.7 * k[2][2]);
     }
 }
 
@@ -86,7 +95,10 @@ QColor calcMidlightColor(const QColor &color)
         case 1:
             return KColorUtils::shade(color, k[1][0] + k[1][1]*y);
         default:
-            return KColorScheme::shade(color, KColorScheme::MidlightShade, 0.7 * k[2][0]);
+            if (lowThreshold(color))
+                return KColorScheme::shade(color, KColorScheme::MidlightShade, 0.0);
+            else
+                return KColorScheme::shade(color, KColorScheme::MidlightShade, 0.7 * k[2][0]);
     }
 }
 
@@ -99,7 +111,10 @@ QColor calcMidColor(const QColor &color)
         case 1:
             return KColorUtils::shade(color, -k[1][2] - k[1][3]*y);
         default:
-            return KColorScheme::shade(color, KColorScheme::MidShade, 0.7 * k[2][1]);
+            if (lowThreshold(color))
+                return KColorScheme::shade(color, KColorScheme::MidShade, 0.0);
+            else
+                return KColorScheme::shade(color, KColorScheme::MidShade, 0.7 * k[2][1]);
     }
 }
 
