@@ -37,7 +37,6 @@
 
 namespace Cokoon {
 
-
 class DocumentPrivate : public ExpressionVariableIndexFactory
 {
 public:
@@ -52,6 +51,8 @@ public:
     {
         return m_doc->mapToId(Document::VariableDecl, id);
     }
+
+    void loadTheme(const QXmlInputSource &data, const QString &path);
 
     Document *m_doc;
 
@@ -517,6 +518,22 @@ class DocumentHandler : public QXmlDefaultHandler
         Document *m_doc;
 };
 
+void DocumentPrivate::loadTheme(const QXmlInputSource &data, const QString &fileName)
+{
+    DocumentHandler handler(m_doc);
+    QXmlSimpleReader reader;
+    reader.setContentHandler(&handler);
+    reader.setErrorHandler(&handler);
+
+    QFileInfo fileInfo(fileName);
+    QDir::setCurrent(fileInfo.absolutePath());
+
+    if (! reader.parse(data) ) {
+        qCritical("%s: %s", qPrintable(fileName), qPrintable(handler.errorString()) );
+        return;
+    }
+}
+
 
 Document::Document()
     : d( new DocumentPrivate(this) )
@@ -542,13 +559,22 @@ void Document::clear()
     d->declId.clear();
 }
 
+void Document::loadTheme(const QByteArray &data, const QString &path)
+{
+    QXmlInputSource src;
+    src.setData(data);
+    d->loadTheme(src,path);
+}
+
+void Document::loadTheme(const QString &data, const QString &path)
+{
+    QXmlInputSource src;
+    src.setData(data);
+    d->loadTheme(src,path);
+}
+
 void Document::loadTheme(const QString &fileName)
 {
-    DocumentHandler handler(this);
-    QXmlSimpleReader reader;
-    reader.setContentHandler(&handler);
-    reader.setErrorHandler(&handler);
-
     QFile file(fileName);
 
     if (! file.exists() ) {
@@ -562,14 +588,8 @@ void Document::loadTheme(const QString &fileName)
         return;
     }
 
-    QFileInfo fileInfo(fileName);
-    QDir::setCurrent(fileInfo.absolutePath() );
-
     QXmlInputSource xmlInputSource(&file);
-    if (! reader.parse(xmlInputSource) ) {
-        qCritical("%s: %s", qPrintable(fileName), qPrintable(handler.errorString()) );
-        return;
-    }
+    d->loadTheme(xmlInputSource,fileName);
 }
 
 const Object *Document::specObj(int specStateId) const

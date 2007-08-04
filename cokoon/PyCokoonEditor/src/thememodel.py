@@ -256,6 +256,7 @@ class ThemeModel(QAbstractItemModel):
   def __init__(self):
     QAbstractItemModel.__init__(self, )
     self.doc = QDomDocument()
+    self.currentFile = None
     self.rootElement = None
     self._modified = False
 
@@ -264,6 +265,7 @@ class ThemeModel(QAbstractItemModel):
 
   def loadFile(self, file):
     '''Loads a theme description file (must be QFile)'''
+    self.currentFile = file
     if not self.doc.setContent(file):
       self.clear()
       return False
@@ -277,7 +279,7 @@ class ThemeModel(QAbstractItemModel):
     # TODO: do not hardcode the spec directory path...
     self.spec = ThemeSpec("/usr/share/apps/cokoon/specs/" + self.theme().spec() + ".xml")
     self.cokoonDoc = ThemeSpecDocument(self.spec)
-    self.cokoonDoc.loadTheme(file.fileName())
+    self.cokoonDoc.loadTheme(self.doc.toString(), file.fileName())
 
     ## theme modifications...
     self._modified = False
@@ -299,6 +301,10 @@ class ThemeModel(QAbstractItemModel):
 
   def setModified(self, mod=True):
     self._modified = True
+
+    if self.doc != None and self.currentFile != None:
+      self.cokoonDoc.loadTheme(self.doc.toString(), self.currentFile)
+
     self.emit(QtCore.SIGNAL("modelWasModified"), ())
     self.emit(QtCore.SIGNAL("dataChanged(const QModelIndex&,const QModelIndex&)"), QtCore.QModelIndex(),QtCore.QModelIndex())
 

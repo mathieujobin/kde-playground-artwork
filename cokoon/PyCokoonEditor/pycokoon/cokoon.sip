@@ -59,6 +59,8 @@ class Document {
 
         Document();
         virtual ~Document();
+        void loadTheme(const QByteArray &data, const QString &path);
+        void loadTheme(const QString &data, const QString &path);
         void loadTheme(const QString &themeFile);
         void clear();
         void drawLayers(int objId,

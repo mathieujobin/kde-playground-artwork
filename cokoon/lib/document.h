@@ -72,12 +72,20 @@ class Q_DECL_EXPORT Document
         virtual ~Document();
 
         /**
-         * Read file @p themeFile and construct a theme document from it.
-         *
-         * Be sure to provide a proper theme specification by subclassing
-         * this class.
+         * Read the XML theme from @p data. @p fileName is used e.g. to determine
+         * relative file references
          */
-        void loadTheme(const QString &themeFile);
+        void loadTheme(const QByteArray &data, const QString &fileName);
+        /**
+         * Read the XML theme from @p data. @p fileName is used e.g. to determine
+         * relative file references
+         */
+        void loadTheme(const QString &data, const QString &fileName);
+
+        /**
+         * Read XML file @p fileName and construct a theme document from it.
+         */
+        void loadTheme(const QString &fileName);
 
         /**
          * Deletes all objects.
