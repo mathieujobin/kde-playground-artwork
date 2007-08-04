@@ -91,6 +91,8 @@ class MainWindow(QtGui.QMainWindow):
 #        self.themeView.setAnimated(True)
         
         self.preview = PreviewWidget(self.themeModel)
+        self.connect(self.themeModel, QtCore.SIGNAL("modelWasModified"), self.preview.update)
+
         self.themeView = DocumentView(self)
         self.editView = AttributeEditWidget(self)
 

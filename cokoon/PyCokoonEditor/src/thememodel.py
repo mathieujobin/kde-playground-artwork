@@ -256,7 +256,7 @@ class ThemeModel(QAbstractItemModel):
   def __init__(self):
     QAbstractItemModel.__init__(self, )
     self.doc = QDomDocument()
-    self.currentFile = None
+    self.currentFileName = None
     self.rootElement = None
     self._modified = False
 
@@ -265,7 +265,7 @@ class ThemeModel(QAbstractItemModel):
 
   def loadFile(self, file):
     '''Loads a theme description file (must be QFile)'''
-    self.currentFile = file
+    self.currentFileName = file.fileName()
     if not self.doc.setContent(file):
       self.clear()
       return False
@@ -302,8 +302,9 @@ class ThemeModel(QAbstractItemModel):
   def setModified(self, mod=True):
     self._modified = True
 
-    if self.doc != None and self.currentFile != None:
-      self.cokoonDoc.loadTheme(self.doc.toString(), self.currentFile)
+    if self.doc != None and self.currentFileName != None:
+      self.cokoonDoc.clear()
+      self.cokoonDoc.loadTheme(self.doc.toString(), self.currentFileName)
 
     self.emit(QtCore.SIGNAL("modelWasModified"), ())
     self.emit(QtCore.SIGNAL("dataChanged(const QModelIndex&,const QModelIndex&)"), QtCore.QModelIndex(),QtCore.QModelIndex())
