@@ -26,10 +26,11 @@ from thememodel import ThemeModel
 class DocumentView(QtGui.QTreeView):
   def __init__(self, parent=None):
     QtGui.QWidget.__init__(self, parent)
+    self.setAllColumnsShowFocus(True)
+    self.setRootIsDecorated(False)
 
   def selectionChanged(self, selected, deselected ):
     print "selectionChanged..."
     modelIndex = selected.indexes()[0]
     themeElement = modelIndex.internalPointer()
     self.emit(QtCore.SIGNAL("themeElementSelected"), (themeElement))
-

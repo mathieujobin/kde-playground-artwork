@@ -257,6 +257,7 @@ class MainWindow(QtGui.QMainWindow):
       QtGui.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
       self.themeModel.loadFile(file)
       self.themeView.setModel(self.themeModel)
+      self.themeView.setExpanded(self.themeModel.index(0,0,QtCore.QModelIndex()),True) # top level item
       self.preview.setThemeModel(self.themeModel)
       QtGui.QApplication.restoreOverrideCursor()
       

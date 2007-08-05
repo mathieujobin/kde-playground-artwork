@@ -29,6 +29,7 @@ import ui_edit_comment
 import ui_edit_expression
 import ui_edit_layout
 import ui_edit_source
+import ui_edit_theme
 
 class AttrEditor(QtGui.QWidget):
   def __init__(self,element,parent=None):
@@ -184,6 +185,8 @@ class AttributeEditWidget(QtGui.QWidget):
         self.widget = LayoutEditor(el,self)
       elif el.tag == "source":
         self.widget = SourceEditor(el,self)
+      elif el.tag == "cokoon_theme":
+        self.widget = ThemeEditor(el,self)
 
 
       if self.widget != None:

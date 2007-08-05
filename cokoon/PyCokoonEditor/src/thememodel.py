@@ -316,8 +316,6 @@ class ThemeModel(QAbstractItemModel):
           return QtCore.QVariant(self.tr("Item"))
       elif section == 1:
           return QtCore.QVariant(self.tr("ID"))
-      elif section == 2:
-          return QtCore.QVariant(self.tr("Value"))
       else:
           return QtCore.QVariant()
     
@@ -339,8 +337,6 @@ class ThemeModel(QAbstractItemModel):
     
     elif index.column() == 1:
       return QtCore.QVariant(item.displayId() )
-    elif index.column() == 2:
-      return QtCore.QVariant(item.displayValue() )
 
     else:
       return QtCore.QVariant()
@@ -348,7 +344,8 @@ class ThemeModel(QAbstractItemModel):
   def index(self, row, column, parent):
     '''reimplemented from QAbstractItemModel'''
     if not parent.isValid():
-      parentItem = self.rootElement
+      return self.createIndex(row, column, self.rootElement)
+#      parentItem = self.rootElement
     else:
       parentItem = parent.internalPointer()
 
@@ -366,19 +363,20 @@ class ThemeModel(QAbstractItemModel):
     childItem = child.internalPointer()
     parentItem = childItem.parent
     
-    if not parentItem or parentItem == self.rootElement:
+    if not parentItem or parentItem==self:
       return QtCore.QModelIndex()
     
     return self.createIndex(parentItem.row, 0, parentItem)
 
   def columnCount(self, parent):
     '''reimplemented from QAbstractItemModel'''
-    return 3
+    return 2
 
   def rowCount(self, parent):
     '''reimplemented from QAbstractItemModel'''
     if not parent.isValid():
-      parentItem = self.rootElement
+      return 1
+#      parentItem = self.rootElement
     else:
       parentItem = parent.internalPointer()
     
