@@ -22,7 +22,8 @@ from PyQt4 import QtCore
 from PyQt4 import QtGui
 
 from thememodel import ThemeModel
-from thememodel import *
+import thememodel
+# from thememodel import *
 import ui_edit_object
 import ui_edit_tile
 import ui_edit_comment
@@ -165,27 +166,24 @@ class AttributeEditWidget(QtGui.QWidget):
 
   def switchThemeElement(self, el):
     if el != None:
-      print el.id()
-
       if self.widget != None:
         self.widgetLayout.removeWidget(self.widget)
         del(self.widget)
         self.widget = None
 
-      print type(el)
-      if el.node.isComment():
+      if el.__class__ == thememodel.CokoonDomComment:
         self.widget = CommentEditor(el,self)
-      elif el.tag == "object":
+      elif el.__class__ == thememodel.CokoonThemeObject:
         self.widget = ObjectEditor(el,self)
-      elif el.tag == "tile":
+      elif el.__class__ == thememodel.CokoonThemeTile:
         self.widget = TileEditor(el,self)
-      elif el.tag == "expression":
+      elif el.__class__ == thememodel.CokoonThemeExpression:
         self.widget = ExpressionEditor(el,self)
-      elif el.tag == "layout":
+      elif el.__class__ == thememodel.CokoonThemeLayout:
         self.widget = LayoutEditor(el,self)
-      elif el.tag == "source":
+      elif el.__class__ == thememodel.CokoonThemeSource:
         self.widget = SourceEditor(el,self)
-      elif el.tag == "cokoon_theme":
+      elif el.__class__ == thememodel.CokoonTheme:
         self.widget = ThemeEditor(el,self)
 
 

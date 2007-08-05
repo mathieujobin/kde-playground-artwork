@@ -125,13 +125,26 @@ class CokoonDomElement(CokoonDomNode):
     self.element.setAttribute(attributeName,text)
     self.setModified()
 
+class CokoonThemeSourceReplace(CokoonDomElement):
+  def __init__(self, node, parent):
+    CokoonDomElement.__init__(self, node, parent, 'replace_style_attr')
+  def element_id(self):   return self._domAttr('element_id')
+  def attr(self): return self._domAttr('attr')
+  def value(self): return self._domAttr('value')
+
 class CokoonThemeSource(CokoonDomElement):
   def __init__(self, node, parent):
     CokoonDomElement.__init__(self, node, parent, 'source')
   def id(self):   return self._domAttr('id')
   def type(self): return self._domAttr('type')
   def file(self): return self._domAttr('file')
-#  TODO: <replace_style_attr element_id="rect2788" attr="fill" value="ColorTitleBar"/>...
+  def createChildNode(self, node):
+    '''reimplemented from CokoonDomNode'''
+    if node.isElement():
+      tag = node.toElement().tagName()
+      if tag=='replace_style_attr':
+        return CokoonThemeSourceReplace(node, self)
+    return CokoonDomElement.createChildNode(self, node)
 
 class CokoonThemeExpression(CokoonDomElement):
   def __init__(self, node, parent):
@@ -156,11 +169,45 @@ class CokoonThemeLayer(CokoonDomElement):
     CokoonDomElement.__init__(self, node, parent, 'layer')
   def layout_id(self):    return self._domAttr('layout_id')
 
+class CokoonThemeLayoutCell(CokoonDomElement):
+  def __init__(self, node, parent):
+    CokoonDomElement.__init__(self, node, parent, 'cell')
+  def type(self):    return self._domAttr('type')
+  def tile_object(self):    return self._domAttr('tile_object')
+  def tile_id(self):    return self._domAttr('tile_id')
+
+class CokoonThemeLayoutColumn(CokoonDomElement):
+  def __init__(self, node, parent):
+    CokoonDomElement.__init__(self, node, parent, 'column')
+  def type(self):    return self._domAttr('type')
+  def fixed_size(self):    return self._domAttr('fixed_size')
+
+class CokoonThemeLayoutRow(CokoonDomElement):
+  def __init__(self, node, parent):
+    CokoonDomElement.__init__(self, node, parent, 'row')
+  def type(self):    return self._domAttr('type')
+  def fixed_size(self):    return self._domAttr('fixed_size')
+  def createChildNode(self, node):
+    '''reimplemented from CokoonDomNode'''
+    if node.isElement():
+      tag = node.toElement().tagName()
+      if tag=='cell':
+        return CokoonThemeLayoutCell(node, self)
+    return CokoonDomElement.createChildNode(self, node)
+
 class CokoonThemeLayout(CokoonDomElement):
   def __init__(self, node, parent):
     CokoonDomElement.__init__(self, node, parent, 'layout')
   def id(self):    return self._domAttr('id')
-#  TODO: column,  row,  cell
+  def createChildNode(self, node):
+    '''reimplemented from CokoonDomNode'''
+    if node.isElement():
+      tag = node.toElement().tagName()
+      if tag=='column':
+        return CokoonThemeLayoutColumn(node, self)
+      elif tag=='row':
+        return CokoonThemeLayoutRow(node, self)
+    return CokoonDomElement.createChildNode(self, node)
 
 class CokoonThemePaint(CokoonDomElement):
   def __init__(self, node, parent):

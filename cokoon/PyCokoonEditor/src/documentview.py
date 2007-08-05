@@ -30,7 +30,6 @@ class DocumentView(QtGui.QTreeView):
     self.setRootIsDecorated(False)
 
   def selectionChanged(self, selected, deselected ):
-    print "selectionChanged..."
     modelIndex = selected.indexes()[0]
     themeElement = modelIndex.internalPointer()
     self.emit(QtCore.SIGNAL("themeElementSelected"), (themeElement))
