@@ -55,7 +55,7 @@ class DoubleSettingWidget(QtGui.QDoubleSpinBox):
 class ColorSettingWidget(QtGui.QPushButton):
   def __init__(self,defaultColorString,parent=None):
     QtGui.QPushButton.__init__(self,parent)
-    if default==None or default=="":
+    if defaultColorString==None or defaultColorString=="":
       self.setValue(QtGui.QColor("#000000"))
     else:
       self.setColor(QtGui.QColor(defaultColorString))
