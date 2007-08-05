@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'edit_layout.ui'
 #
-# Created: Thu Jul 26 23:13:54 2007
+# Created: Sun Aug  5 15:59:25 2007
 #      by: PyQt4 UI code generator 4.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -13,19 +13,16 @@ from PyQt4 import QtCore, QtGui
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(QtCore.QSize(QtCore.QRect(0,0,249,368).size()).expandedTo(Form.minimumSizeHint()))
+        Form.resize(QtCore.QSize(QtCore.QRect(0,0,241,368).size()).expandedTo(Form.minimumSizeHint()))
 
-        self.gridlayout = QtGui.QGridLayout(Form)
-        self.gridlayout.setMargin(9)
-        self.gridlayout.setSpacing(6)
-        self.gridlayout.setObjectName("gridlayout")
+        self.vboxlayout = QtGui.QVBoxLayout(Form)
+        self.vboxlayout.setMargin(9)
+        self.vboxlayout.setSpacing(6)
+        self.vboxlayout.setObjectName("vboxlayout")
 
-        spacerItem = QtGui.QSpacerItem(20,51,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
-        self.gridlayout.addItem(spacerItem,1,1,1,1)
-
-        self.layout = QtGui.QComboBox(Form)
-        self.layout.setObjectName("layout")
-        self.gridlayout.addWidget(self.layout,0,1,1,1)
+        self.label_9 = QtGui.QLabel(Form)
+        self.label_9.setObjectName("label_9")
+        self.vboxlayout.addWidget(self.label_9)
 
         self.label = QtGui.QLabel(Form)
 
@@ -35,7 +32,14 @@ class Ui_Form(object):
         sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
         self.label.setSizePolicy(sizePolicy)
         self.label.setObjectName("label")
-        self.gridlayout.addWidget(self.label,0,0,1,1)
+        self.vboxlayout.addWidget(self.label)
+
+        self.layout = QtGui.QComboBox(Form)
+        self.layout.setObjectName("layout")
+        self.vboxlayout.addWidget(self.layout)
+
+        spacerItem = QtGui.QSpacerItem(180,241,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.vboxlayout.addItem(spacerItem)
         self.label.setBuddy(self.layout)
 
         self.retranslateUi(Form)
@@ -43,5 +47,6 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(QtGui.QApplication.translate("Form", "Form", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_9.setText(QtGui.QApplication.translate("Form", "<b>Layout</b>", None, QtGui.QApplication.UnicodeUTF8))
         self.label.setText(QtGui.QApplication.translate("Form", "&Layout:", None, QtGui.QApplication.UnicodeUTF8))
 

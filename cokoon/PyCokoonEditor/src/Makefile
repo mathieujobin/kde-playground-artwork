@@ -1,6 +1,7 @@
 all: ui
 
-ui: edit_object.ui edit_comment.ui edit_layout.ui edit_source.ui edit_expression.ui edit_tile.ui
+ui: edit_theme.ui edit_object.ui edit_comment.ui edit_layout.ui edit_source.ui edit_expression.ui edit_tile.ui
+	pyuic4 edit_theme.ui > ui_edit_theme.py
 	pyuic4 edit_object.ui > ui_edit_object.py
 	pyuic4 edit_comment.ui > ui_edit_comment.py
 	pyuic4 edit_layout.ui > ui_edit_layout.py

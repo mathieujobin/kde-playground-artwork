@@ -203,23 +203,13 @@ class CokoonThemeObject(CokoonDomElement):
         return CokoonThemePaint(node, self)
     return CokoonDomElement.createChildNode(self, node)
 
-#  def items(self, tagName=''):
-#    items = []
-#    child = self.node.firstChildElement(tagName)
-#    while not child.isNull():
-#      tag = child.tagName()
-#      if tag=='source':
-#        items.append(CokoonThemeSource(child, self))
-#      elif tag=='expression':
-#        items.append(CokoonThemeExpression(child, self) )
-#      elif tag=='tile':
-#        items.append(CokoonThemeTile(child, self))
-#      elif tag=='layout':
-#        items.append(CokoonThemeLayout(child, self))
-#      elif tag=='paint':
-#        items.append(CokoonThemePaint(child, self))
-#      child = child.nextSiblingElement(tagName)
-#    return items 
+  def sources(self):
+    srcs = []
+    children = self.children()
+    for child in children:
+      if child.__class__ == CokoonThemeSource:
+        srcs.append(child)
+    return srcs
 
 class CokoonTheme(CokoonDomElement):
   def __init__(self, node, parent):
@@ -238,13 +228,13 @@ class CokoonTheme(CokoonDomElement):
         return CokoonThemeObject(node, self)
     return CokoonDomElement.createChildNode(self, node)
 
-#  def objects(self):
-#    objs = []
-#    child = self.node.firstChildElement("object")
-#    while not child.isNull():
-#      objs.append(CokoonThemeObject(child, self))
-#      child = child.nextSiblingElement("object")
-#    return objs
+  def objects(self):
+    objs = []
+    for child in self.children():
+      if child.__class__ == CokoonThemeObject:
+        objs.append(child)
+    return objs
+
 #  def object(self, objId):
 #    for o in self.objects():
 #      if o.id == objId:

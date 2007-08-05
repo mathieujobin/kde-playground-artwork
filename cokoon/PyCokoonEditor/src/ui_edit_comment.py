@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'edit_comment.ui'
 #
-# Created: Thu Jul 26 23:13:54 2007
+# Created: Sun Aug  5 15:59:25 2007
 #      by: PyQt4 UI code generator 4.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -27,11 +27,12 @@ class Ui_Form(object):
         self.comment = QtGui.QTextEdit(Form)
         self.comment.setObjectName("comment")
         self.gridlayout.addWidget(self.comment,1,0,1,1)
+        self.label.setBuddy(self.comment)
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(QtGui.QApplication.translate("Form", "Form", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("Form", "&Comment:", None, QtGui.QApplication.UnicodeUTF8))
+        self.label.setText(QtGui.QApplication.translate("Form", "&Comment", None, QtGui.QApplication.UnicodeUTF8))
 

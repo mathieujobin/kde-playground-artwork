@@ -34,47 +34,109 @@ class AttrEditor(QtGui.QWidget):
   def __init__(self,element,parent=None):
     QtGui.QWidget.__init__(self,parent)
     self.el = element
-    self.attrs = []
+    self.attrs = []             # [[attrName,widget],...]
+    self.comboAttrs = []        # [[attrName,widget],...]
   def setUi(self,ui):
     self.ui = ui
     ui.setupUi(self)
-  def setAttrWidget(self,attrName,widget):
+  def setTextAttrMapping(self,attrName,widget):
+    '''associate a line edit widget with a DOM attribute'''
     self.attrs.append([attrName,widget])
     widget.setText(self.el._domAttr(attrName))
-    self.connect(widget, QtCore.SIGNAL("editingFinished()"),self.valueChanged)
-  def valueChanged(self):
+    self.connect(widget, QtCore.SIGNAL("editingFinished()"),self.textValueChanged)
+  def setComboAttrMapping(self,attrName,comboBox,comboValues):
+    '''associate a combo box with a DOM attribute'''
+    self.comboAttrs.append([attrName,comboBox])
+    currentValue = self.el._domAttr(attrName)
+    currentIndex = 0
+    for val in comboValues:
+      comboBox.addItem(val)
+      if val == currentValue:
+        currentIndex = comboBox.count()-1
+    comboBox.setCurrentIndex(currentIndex)
+    self.connect(comboBox, QtCore.SIGNAL("activated(int)"),self.comboValueChanged)
+  def textValueChanged(self):
     for a in self.attrs:
-      self.el._setDomAttr(a[0],a[1].text())
+      attr = a[0]
+      text = a[1].text()
+      if self.el._domAttr(attr) != text:
+        self.el._setDomAttr(attr,text)
+  def comboValueChanged(self):
+    for a in self.comboAttrs:
+      attr = a[0]
+      text = a[1].currentText()
+      if self.el._domAttr(attr) != text:
+        if text.isEmpty():
+          self.el.element.removeAttribute(attr)
+        else:
+          self.el._setDomAttr(attr,text)
+
+
+class ThemeEditor(AttrEditor):
+  def __init__(self,el,parent=None):
+    AttrEditor.__init__(self,el,parent)
+    self.setUi(ui_edit_theme.Ui_Form())
+    self.setTextAttrMapping("name",self.ui.name)
+    self.setTextAttrMapping("version",self.ui.version)
+    self.setTextAttrMapping("spec",self.ui.spec)
 
 class ObjectEditor(AttrEditor):
   def __init__(self,el,parent=None):
     AttrEditor.__init__(self,el,parent)
     self.setUi(ui_edit_object.Ui_Form())
-    self.setAttrWidget("id",self.ui.identifier)
-    self.setAttrWidget("implement",self.ui.implement)
-    self.setAttrWidget("extend",self.ui.extend)
+    self.setTextAttrMapping("id",self.ui.identifier)
+    self.setTextAttrMapping("implement",self.ui.implement)
+    # extend
+    extendObjs = [""]
+    theme = self.el.parent
+    for obj in theme.objects():
+      extendObjs.append(obj.id())
+    self.setComboAttrMapping("extend",self.ui.extend,extendObjs)
+
 
 class TileEditor(AttrEditor):
   def __init__(self,el,parent=None):
     AttrEditor.__init__(self,el,parent)
     self.setUi(ui_edit_tile.Ui_Form())
-    self.setAttrWidget("id",self.ui.identifier)
-    self.setAttrWidget("top",self.ui.top)
-    self.setAttrWidget("left",self.ui.left)
-    self.setAttrWidget("width",self.ui.width)
-    self.setAttrWidget("height",self.ui.height)
+    self.setTextAttrMapping("id",self.ui.identifier)
+    self.setTextAttrMapping("top",self.ui.top)
+    self.setTextAttrMapping("left",self.ui.left)
+    self.setTextAttrMapping("width",self.ui.width)
+    self.setTextAttrMapping("height",self.ui.height)
+
+    # source object/id
+    sourceObjs = [""]
+    sourceIds = []
+    theme = self.el.parent.parent
+    for obj in theme.objects():
+      sourceObjs.append(obj.id())
+      for source in obj.sources():
+        if not (source.id() in sourceIds):
+          sourceIds.append(source.id())
+
+    self.setComboAttrMapping("source_object",self.ui.sourceObject,sourceObjs)
+    self.setComboAttrMapping("source_id",self.ui.sourceId,sourceIds)
+
+    # hor/vert modes
+    modes = [QtCore.QString("normal"),QtCore.QString("centered"),QtCore.QString("tiled"),QtCore.QString("stretched")]
+    self.setComboAttrMapping("mode_hor",self.ui.horizontal,modes)
+    self.setComboAttrMapping("mode_vert",self.ui.vertical,modes)
 
 class CommentEditor(AttrEditor):
   def __init__(self,el,parent=None):
     AttrEditor.__init__(self,el,parent)
     self.setUi(ui_edit_comment.Ui_Form())
+    self.ui.comment.setPlainText(self.el.node.nodeValue())
+    self.connect(self.ui.comment, QtCore.SIGNAL("textChanged()"),self.commentValueChanged)
+  def commentValueChanged(self):
+    c = self.el.node.setNodeValue(self.ui.comment.toPlainText())
 
 class ExpressionEditor(AttrEditor):
   def __init__(self,el,parent=None):
     AttrEditor.__init__(self,el,parent)
     self.setUi(ui_edit_expression.Ui_Form())
-    self.setAttrWidget("id",self.ui.identifier)
-    self.setAttrWidget("value",self.ui.value)
+    self.setTextAttrMapping("id",self.ui.identifier)
+    self.setTextAttrMapping("value",self.ui.value)
 
 class LayoutEditor(AttrEditor):
   def __init__(self,el,parent=None):
@@ -85,8 +147,11 @@ class SourceEditor(AttrEditor):
   def __init__(self,el,parent=None):
     AttrEditor.__init__(self,el,parent)
     self.setUi(ui_edit_source.Ui_Form())
-    self.setAttrWidget("id",self.ui.identifier)
-    self.setAttrWidget("file",self.ui.file)
+    self.setTextAttrMapping("id",self.ui.identifier)
+    self.setTextAttrMapping("file",self.ui.file)
+    types = [QtCore.QString("svg"),QtCore.QString("pixmap"),QtCore.QString("bitmap")]
+    self.setComboAttrMapping("type",self.ui.type,types)
+
 
 class AttributeEditWidget(QtGui.QWidget):
   def __init__(self, parent=None):
