@@ -1,2 +1,2 @@
 #! /bin/sh
-$XGETTEXT *.cpp *.h -o $podir/kstyle_ion_config.pot
+$XGETTEXT *.cpp -o $podir/kstyle_ion_config.pot
