@@ -29,19 +29,67 @@
 #include<QSplitterHandle>
 #include<QTabBar>
 
+#include <KDE/KGlobal>
+#include <KDE/KComponentData>
+#include <KDE/KService>
+#include <KDE/KServiceTypeTrader>
+
 #include "cokoonstyle.h"
+#include <kstandarddirs.h>
 
+class CokoonStyleFactory: public QStylePlugin
+{
+public:
+    KComponentData componentData;
+    CokoonStyleFactory() : componentData("CokoonStyle")
+    {
+    }
 
-K_EXPORT_STYLE("Cokoon", CokoonStyle)
+    QStringList keys() const
+    {
+        KService::List offers =
+            KServiceTypeTrader::self()->query("CokoonStyleTheme");
+
+        QStringList l;
+        foreach(KService::Ptr s, offers) {
+            l << (*s).name();
+        }
+        return l;
+    }
+
+    QStyle* create(const QString& id)
+    {
+        QString lowerId = id.toLower();
+        QStringList names = keys();
+        //check whether included in the keys
+        foreach(const QString &str, names) {
+            if (str.toLower() == lowerId) {
+                return new CokoonStyle(str);
+            }
+        }
+
+        return 0;
+    }
+};
+
+Q_EXPORT_PLUGIN(CokoonStyleFactory)
+
+// K_EXPORT_STYLE("Cokoon", CokoonStyle)
 
 using namespace CokoonStyleSpec;
 
-CokoonStyle::CokoonStyle()
+CokoonStyle::CokoonStyle(const QString &name)
+   : themeName(name)
 {
+    QString res("cokoon/styles/"+themeName+"/"+themeName+".xml");
+    qDebug() << res;
+    QString themeFile = KStandardDirs::locate("data", res);
+    qDebug() << "CokoonStyle: using theme file " << themeFile;
+
     // load theme...
     theme.clear();
     // TODO: !!! locate themes using .desktop file or something...
-    theme.loadTheme("/home/k4dev/src/playground-artwork/cokoon/style/TestTheme/TestTheme.xml");
+    theme.loadTheme(themeFile);
 
     // TODO: only set when they exist...
     const int sObjId = CokoonStyleSpec::LayoutProperties;
@@ -224,12 +272,21 @@ void CokoonStyle::unpolish(QWidget* widget)
        KStyle::unpolish(widget);
 }
 
+
 void CokoonStyle::drawKStylePrimitive(WidgetType widgetType, int primitive,
                                        const QStyleOption* opt,
                                        const QRect &r, const QPalette &pal,
                                        State flags, QPainter* p,
                                        const QWidget* widget,
                                        KStyle::Option* kOpt) const
+// old kdelibs kstyle snapshot
+// void CokoonStyle::drawKStylePrimitive(WidgetType widgetType, int primitive, 
+//                                      const QStyleOption* opt,
+//                                      QRect r, QPalette pal, State flags,
+//                                      QPainter* p, 
+//                                      const QWidget* widget,
+//                                      Option* kOpt) const
+
 {
     bool reverseLayout = opt->direction == Qt::RightToLeft;
 

@@ -29,11 +29,19 @@
 class CokoonStyle : public KStyle
 {
     public:
-        CokoonStyle();
+        CokoonStyle(const QString &themeName);
         virtual ~CokoonStyle();
 
         void polish(QWidget* widget);
         void unpolish(QWidget* widget);
+
+/*     virtual void drawKStylePrimitive(WidgetType widgetType, int primitive,  */
+/*                                      const QStyleOption* opt, */
+/*                                      QRect r, QPalette pal, State flags, */
+/*                                      QPainter* p,  */
+/*                                      const QWidget* widget = 0, */
+/*                                      Option* kOpt    = 0) const; */
+
 
         virtual void drawKStylePrimitive(WidgetType widgetType, int primitive,
                                          const QStyleOption* opt,
@@ -43,6 +51,7 @@ class CokoonStyle : public KStyle
                                          Option* kOpt = 0) const;
 
     protected:
+        QString themeName;
         CokoonStyleSpec::SpecDocument theme;
 };
 
