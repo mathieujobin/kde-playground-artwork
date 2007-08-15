@@ -364,7 +364,7 @@ class SpecDocument : public Cokoon::Document {
 protected:
 int mapToId(Cokoon::Document::DeclarationType type,const QString &str) const {
   switch(type) {
-  case Cokoon::Document::ObjectNameDecl:
+  case Cokoon::Document::ObjectStateDecl:
     if (false) { return -1; }
     else if (str == "LayoutProperties") { return LayoutProperties; }
     else if (str == "GenericFrame") { return GenericFrame; }
@@ -464,7 +464,7 @@ int mapToId(Cokoon::Document::DeclarationType type,const QString &str) const {
 return Cokoon::Document::mapToId(type,str); }
 int customIdMappingBase(Cokoon::Document::DeclarationType type) const {
   switch(type) {
-  case Cokoon::Document::ObjectNameDecl: return Items__Count;
+  case Cokoon::Document::ObjectStateDecl: return Items__Count;
   case Cokoon::Document::VariableDecl:   return Var::Variables__Count;
   case Cokoon::Document::IdentifierDecl: return Identifiers__Count;
   }
@@ -723,6 +723,7 @@ return Cokoon::Document::customIdMappingBase(type); }
         switch(itemId) {
         case LayoutProperties:
             switch(stateLevel) {
+            default: return -1;
             }
             break;
         case GenericFrame:
@@ -738,6 +739,7 @@ return Cokoon::Document::customIdMappingBase(type); }
               if (stateName == "focused") { return GenericFrame1_focused; }
                 else return -1;
              break;
+            default: return -1;
             }
             break;
         case Button:
@@ -754,6 +756,7 @@ return Cokoon::Document::customIdMappingBase(type); }
               if (stateName == "disabled") { return Button1_disabled; }
                 else return -1;
              break;
+            default: return -1;
             }
             break;
         case CheckBox:
@@ -771,6 +774,7 @@ return Cokoon::Document::customIdMappingBase(type); }
               if (stateName == "tristate") { return CheckBox1_tristate; }
                 else return -1;
              break;
+            default: return -1;
             }
             break;
         case RadioButton:
@@ -787,6 +791,7 @@ return Cokoon::Document::customIdMappingBase(type); }
               if (stateName == "off") { return RadioButton1_off; }
                 else return -1;
              break;
+            default: return -1;
             }
             break;
         case LineEdit:
@@ -797,6 +802,7 @@ return Cokoon::Document::customIdMappingBase(type); }
               if (stateName == "disabled") { return LineEdit0_disabled; }
                 else return -1;
              break;
+            default: return -1;
             }
             break;
         case ComboBox:
@@ -813,6 +819,7 @@ return Cokoon::Document::customIdMappingBase(type); }
               if (stateName == "focused") { return ComboBox1_focused; }
                 else return -1;
              break;
+            default: return -1;
             }
             break;
         case SpinBox:
@@ -831,6 +838,7 @@ return Cokoon::Document::customIdMappingBase(type); }
               if (stateName == "focused") { return SpinBox1_focused; }
                 else return -1;
              break;
+            default: return -1;
             }
             break;
         case ScrollBarButton:
@@ -848,6 +856,7 @@ return Cokoon::Document::customIdMappingBase(type); }
               if (stateName == "down") { return ScrollBarButton1_down; }
                 else return -1;
              break;
+            default: return -1;
             }
             break;
         case ScrollBarGroove:
@@ -863,6 +872,7 @@ return Cokoon::Document::customIdMappingBase(type); }
               if (stateName == "vertical") { return ScrollBarGroove1_vertical; }
                 else return -1;
              break;
+            default: return -1;
             }
             break;
         case ScrollBarHandle:
@@ -878,6 +888,7 @@ return Cokoon::Document::customIdMappingBase(type); }
               if (stateName == "vertical") { return ScrollBarHandle1_vertical; }
                 else return -1;
              break;
+            default: return -1;
             }
             break;
         case SliderGroove:
@@ -897,6 +908,7 @@ return Cokoon::Document::customIdMappingBase(type); }
               if (stateName == "focused") { return SliderGroove2_focused; }
                 else return -1;
              break;
+            default: return -1;
             }
             break;
         case SliderHandle:
@@ -918,6 +930,7 @@ return Cokoon::Document::customIdMappingBase(type); }
               if (stateName == "focused") { return SliderHandle2_focused; }
                 else return -1;
              break;
+            default: return -1;
             }
             break;
         case ProgressBarGroove:
@@ -932,6 +945,7 @@ return Cokoon::Document::customIdMappingBase(type); }
               if (stateName == "vertical") { return ProgressBarGroove1_vertical; }
                 else return -1;
              break;
+            default: return -1;
             }
             break;
         case ProgressBarBar:
@@ -946,6 +960,7 @@ return Cokoon::Document::customIdMappingBase(type); }
               if (stateName == "vertical") { return ProgressBarBar1_vertical; }
                 else return -1;
              break;
+            default: return -1;
             }
             break;
         case TabBarTab:
@@ -987,6 +1002,7 @@ return Cokoon::Document::customIdMappingBase(type); }
               if (stateName == "triangular") { return TabBarTab5_triangular; }
                 else return -1;
              break;
+            default: return -1;
             }
             break;
         case Header:
@@ -1017,6 +1033,7 @@ return Cokoon::Document::customIdMappingBase(type); }
               if (stateName == "vertical") { return Header3_vertical; }
                 else return -1;
              break;
+            default: return -1;
             }
             break;
         case ToolBoxTab:
@@ -1032,6 +1049,7 @@ return Cokoon::Document::customIdMappingBase(type); }
               if (stateName == "notSelected") { return ToolBoxTab1_notSelected; }
                 else return -1;
              break;
+            default: return -1;
             }
             break;
         case ToolBarHandle:
@@ -1047,6 +1065,7 @@ return Cokoon::Document::customIdMappingBase(type); }
               if (stateName == "vertical") { return ToolBarHandle1_vertical; }
                 else return -1;
              break;
+            default: return -1;
             }
             break;
         case ToolBarSeparator:
@@ -1056,6 +1075,7 @@ return Cokoon::Document::customIdMappingBase(type); }
               if (stateName == "vertical") { return ToolBarSeparator0_vertical; }
                 else return -1;
              break;
+            default: return -1;
             }
             break;
         case MenuBarItem:
@@ -1066,10 +1086,12 @@ return Cokoon::Document::customIdMappingBase(type); }
               if (stateName == "prelight") { return MenuBarItem0_prelight; }
                 else return -1;
              break;
+            default: return -1;
             }
             break;
         case MenuFrame:
             switch(stateLevel) {
+            default: return -1;
             }
             break;
         case MenuItem:
@@ -1078,10 +1100,12 @@ return Cokoon::Document::customIdMappingBase(type); }
               if (stateName == "prelight") { return MenuItem0_prelight; }
                 else return -1;
              break;
+            default: return -1;
             }
             break;
         case MenuItemSeparator:
             switch(stateLevel) {
+            default: return -1;
             }
             break;
         case ToolButton:
@@ -1093,6 +1117,7 @@ return Cokoon::Document::customIdMappingBase(type); }
               if (stateName == "disabled") { return ToolButton0_disabled; }
                 else return -1;
              break;
+            default: return -1;
             }
             break;
         case Splitter:
@@ -1108,14 +1133,17 @@ return Cokoon::Document::customIdMappingBase(type); }
               if (stateName == "vertical") { return Splitter1_vertical; }
                 else return -1;
              break;
+            default: return -1;
             }
             break;
         case DockWidgetFrame:
             switch(stateLevel) {
+            default: return -1;
             }
             break;
         case DockWidgetTitle:
             switch(stateLevel) {
+            default: return -1;
             }
             break;
         case WindowFrame:
@@ -1125,6 +1153,7 @@ return Cokoon::Document::customIdMappingBase(type); }
               if (stateName == "inactive") { return WindowFrame0_inactive; }
                 else return -1;
              break;
+            default: return -1;
             }
             break;
         case WindowTitle:
@@ -1134,6 +1163,7 @@ return Cokoon::Document::customIdMappingBase(type); }
               if (stateName == "inactive") { return WindowTitle0_inactive; }
                 else return -1;
              break;
+            default: return -1;
             }
             break;
         case WindowButton:
@@ -1158,6 +1188,7 @@ return Cokoon::Document::customIdMappingBase(type); }
               if (stateName == "help") { return WindowButton2_help; }
                 else return -1;
              break;
+            default: return -1;
             }
             break;
         default: return -1;
