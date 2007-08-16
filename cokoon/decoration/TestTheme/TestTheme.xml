@@ -11,7 +11,7 @@
 		<source id="decorationsrc" type="svg" file="testdecoration.svg">
 			<replace_style_attr element_id="rect2788" attr="fill" value="ColorTitleBar"/>
 		</source>
-		<source id="masksrc" type="bitmap" file="TestTheme/windowmask.png"/>
+		<source id="masksrc" type="bitmap" file="windowmask.png"/>
 
 		<expression id="zoom" value="1"/>
 
@@ -207,7 +207,7 @@
 <!--		<expression id="ButtonWidth" value="20"/>
 		<expression id="ButtonHeight" value="18"/>-->
 
-		<source id="iconsrc" type="svg" file="TestTheme/icon_close.svg"/>
+		<source id="iconsrc" type="svg" file="icon_close.svg"/>
 		
 		<tile id="buttonicon" mode_hor="stretched" mode_vert="stretched" source_id="iconsrc" left="0" top="0" width="10" height="10"/>
 
@@ -274,7 +274,7 @@
 	</object>
 
 	<object id="ButtonMaxNormal" implement="Button.maximize.normal.*.*" extend="ButtonCloseNormal">
-		<source id="iconsrc" type="svg" file="TestTheme/icon_maximize.svg"/>
+		<source id="iconsrc" type="svg" file="icon_maximize.svg"/>
 	</object>
 	<object id="ButtonMaxPrelight" implement="Button.maximize.prelight.*.*" extend="ButtonMaxNormal">
 		<paint>
@@ -290,7 +290,7 @@
 	</object>
 
 	<object id="ButtonMaxRestoreNormal" implement="Button.maxRestore.normal.*.*" extend="ButtonCloseNormal">
-		<source id="iconsrc" type="svg" file="TestTheme/icon_max_restore.svg"/>
+		<source id="iconsrc" type="svg" file="icon_max_restore.svg"/>
 	</object>
 	<object id="ButtonMaxRestorePrelight" implement="Button.maxRestore.prelight.*.*" extend="ButtonMaxRestoreNormal">
 		<paint>
@@ -313,7 +313,7 @@
 	<object id="ButtonMaxHorRestorePressed" implement="Button.maxHorRestore.pressed.*.*" extend="ButtonMaxRestoreNormal"/>
 
 	<object id="ButtonHelpNormal" implement="Button.help.normal.*.*" extend="ButtonCloseNormal">
-		<source id="iconsrc" type="svg" file="TestTheme/icon_help.svg"/>
+		<source id="iconsrc" type="svg" file="icon_help.svg"/>
 	</object>
 	<object id="ButtonHelpPrelight" implement="Button.help.prelight.*.*" extend="ButtonHelpNormal">
 		<paint>
@@ -384,7 +384,7 @@
 	</object>
 	
 	<object id="ButtonMinNormal" implement="Button.minimize.normal.*.*" extend="ButtonCloseNormal">
-		<source id="iconsrc" type="svg" file="TestTheme/icon_minimize.svg"/>
+		<source id="iconsrc" type="svg" file="icon_minimize.svg"/>
 	</object>
 	<object id="ButtonMinPrelight" implement="Button.minimize.prelight.*.*" extend="ButtonMinNormal">
 		<paint>
@@ -400,7 +400,7 @@
 	</object>
 
 	<object id="ButtonAboveNormal" implement="Button.above.normal.*.*" extend="ButtonCloseNormal">
-		<source id="iconsrc" type="svg" file="TestTheme/icon_above.svg"/>
+		<source id="iconsrc" type="svg" file="icon_above.svg"/>
 	</object>
 	<object id="ButtonAbovePrelight" implement="Button.above.prelight.*.*" extend="ButtonAboveNormal">
 		<paint>
@@ -416,7 +416,7 @@
 	</object>
 
 	<object id="ButtonBelowNormal" implement="Button.below.normal.*.*" extend="ButtonCloseNormal">
-		<source id="iconsrc" type="svg" file="TestTheme/icon_below.svg"/>
+		<source id="iconsrc" type="svg" file="icon_below.svg"/>
 	</object>
 	<object id="ButtonBelowPrelight" implement="Button.below.prelight.*.*" extend="ButtonBelowNormal">
 		<paint>
@@ -432,7 +432,7 @@
 	</object>
 
 	<object id="ButtonShadeNormal" implement="Button.shade.normal.*.*" extend="ButtonCloseNormal">
-		<source id="iconsrc" type="svg" file="TestTheme/icon_shade.svg"/>
+		<source id="iconsrc" type="svg" file="icon_shade.svg"/>
 	</object>
 	<object id="ButtonShadePrelight" implement="Button.shade.prelight.*.*" extend="ButtonShadeNormal">
 		<paint>
@@ -448,7 +448,7 @@
 	</object>
 
 	<object id="ButtonAllDeskNormal" implement="Button.allDesktops.normal.*.*" extend="ButtonCloseNormal">
-		<source id="iconsrc" type="svg" file="TestTheme/icon_oad.svg"/>
+		<source id="iconsrc" type="svg" file="icon_oad.svg"/>
 	</object>
 	<object id="ButtonAllDeskPrelight" implement="Button.allDesktops.prelight.*.*" extend="ButtonAllDeskNormal">
 		<paint>
@@ -464,7 +464,7 @@
 	</object>
 
 	<object id="ButtonAboveRestoreNormal" implement="Button.aboveRestore.normal.*.*" extend="ButtonCloseNormal">
-		<source id="iconsrc" type="svg" file="TestTheme/icon_above_restore.svg"/>
+		<source id="iconsrc" type="svg" file="icon_above_restore.svg"/>
 	</object>
 	<object id="ButtonAboveRestorePrelight" implement="Button.aboveRestore.prelight.*.*" extend="ButtonAboveRestoreNormal">
 		<paint>
@@ -480,7 +480,7 @@
 	</object>
 	
 	<object id="ButtonBelowRestoreNormal" implement="Button.belowRestore.normal.*.*" extend="ButtonCloseNormal">
-		<source id="iconsrc" type="svg" file="TestTheme/icon_below_restore.svg"/>
+		<source id="iconsrc" type="svg" file="icon_below_restore.svg"/>
 	</object>
 	<object id="ButtonBelowRestorePrelight" implement="Button.belowRestore.prelight.*.*" extend="ButtonBelowRestoreNormal">
 		<paint>
@@ -496,7 +496,7 @@
 	</object>
 	
 	<object id="ButtonShadeRestoreNormal" implement="Button.shadeRestore.normal.*.*" extend="ButtonCloseNormal">
-		<source id="iconsrc" type="svg" file="TestTheme/icon_shade_restore.svg"/>
+		<source id="iconsrc" type="svg" file="icon_shade_restore.svg"/>
 	</object>
 <!--	<object id="ButtonShadeRestoreNormal" implement="Button.shadeRestore.prelight.*.*" extend="ButtonShadeRestoreNormal">
 		<paint>
@@ -512,7 +512,7 @@
 	</object>
 
 	<object id="ButtonAllDeskRestoreNormal" implement="Button.allDesktopsRestore.normal.*.*" extend="ButtonCloseNormal">
-		<source id="iconsrc" type="svg" file="TestTheme/icon_oad_restore.svg"/>
+		<source id="iconsrc" type="svg" file="icon_oad_restore.svg"/>
 	</object>
 	<object id="ButtonAllDeskRestorePrelight" implement="Button.allDesktopsRestore.prelight.*.*" extend="ButtonAllDeskRestoreNormal">
 		<paint>
