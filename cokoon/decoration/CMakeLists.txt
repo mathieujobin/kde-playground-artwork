@@ -24,3 +24,4 @@ install(FILES CokoonDecorationTheme.desktop DESTINATION ${SERVICETYPES_INSTALL_D
 install(FILES CokoonDecorationSpec.xml DESTINATION ${DATA_INSTALL_DIR}/cokoon/specs )
 install(FILES cokoon.desktop DESTINATION ${DATA_INSTALL_DIR}/kwin/  )
 
+add_subdirectory( TestTheme )
