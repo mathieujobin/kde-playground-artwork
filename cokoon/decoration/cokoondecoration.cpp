@@ -28,6 +28,8 @@
 #include <kconfig.h>
 
 #include "cokoondecoration.h"
+#include <kconfiggroup.h>
+#include <kstandarddirs.h>
 
 
 using namespace CokoonDecorationSpec;
@@ -36,6 +38,7 @@ namespace KWinCokoon
 {
 
 Handler::Handler()
+    : componentData("CokoonDecoration")
 {
     reset(0);
 }
@@ -52,10 +55,15 @@ bool Handler::reset(unsigned long changed)
     // read in the configuration
     readConfig();
 
+    QString res("cokoon/decorations/"+themeName+"/"+themeName+".xml");
+    qDebug() << res;
+    QString themeFile = KStandardDirs::locate("data", res);
+    qDebug() << "CokoonStyle: using theme file " << themeFile;
+
     // load theme...
     theme.clear();
     // TODO: locate themes using .desktop file
-    theme.loadTheme("/home/k4dev/src/playground-artwork/cokoon/decoration/TestTheme.xml");
+    theme.loadTheme(themeFile);
 
     // theme settings
     // TODO: WindowTitleShadow: 0 none, 1 normal, perhaps more fancy shadows.
@@ -147,9 +155,9 @@ bool Handler::supports( Ability ability )
 
 void Handler::readConfig()
 {
-//     // create a config object
-//     KConfig config("kwincokoonrc");
-//     config.setGroup("General");
+    KConfig config(componentData);
+    KConfigGroup generalGroup(&config, "General");
+    themeName = generalGroup.readEntry("theme", "TestTheme" );
 }
 
 QList< Handler::BorderSize >

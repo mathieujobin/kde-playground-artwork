@@ -106,7 +106,7 @@ class SpecDocument : public Cokoon::Document {
 protected:
 int mapToId(Cokoon::Document::DeclarationType type,const QString &str) const {
   switch(type) {
-  case Cokoon::Document::ObjectNameDecl:
+  case Cokoon::Document::ObjectStateDecl:
     if (false) { return -1; }
     else if (str == "Settings") { return Settings; }
     else if (str == "Decoration") { return Decoration; }
@@ -160,7 +160,7 @@ int mapToId(Cokoon::Document::DeclarationType type,const QString &str) const {
 return Cokoon::Document::mapToId(type,str); }
 int customIdMappingBase(Cokoon::Document::DeclarationType type) const {
   switch(type) {
-  case Cokoon::Document::ObjectNameDecl: return Items__Count;
+  case Cokoon::Document::ObjectStateDecl: return Items__Count;
   case Cokoon::Document::VariableDecl:   return Var::Variables__Count;
   case Cokoon::Document::IdentifierDecl: return Identifiers__Count;
   }
@@ -205,6 +205,7 @@ return Cokoon::Document::customIdMappingBase(type); }
         switch(itemId) {
         case Settings:
             switch(stateLevel) {
+            default: return -1;
             }
             break;
         case Decoration:
@@ -231,6 +232,7 @@ return Cokoon::Document::customIdMappingBase(type); }
               if (stateName == "shaded") { return Decoration3_shaded; }
                 else return -1;
              break;
+            default: return -1;
             }
             break;
         case Button:
@@ -270,6 +272,7 @@ return Cokoon::Document::customIdMappingBase(type); }
               if (stateName == "tool") { return Button3_tool; }
                 else return -1;
              break;
+            default: return -1;
             }
             break;
         default: return -1;

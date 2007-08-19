@@ -4,6 +4,8 @@ project(cokoon-testdecoration)
 install(FILES TestTheme.desktop DESTINATION ${SERVICES_INSTALL_DIR}/cokoon/decorations)
 install(FILES TestTheme.xml
               windowmask.png
+              testdecoration.svg
+              testdecorationbutton.svg
               icon_above_restore.svg
               icon_above.svg
               icon_below_restore.svg
