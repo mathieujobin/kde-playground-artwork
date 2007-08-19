@@ -109,7 +109,7 @@ class Client : public KCommonDecoration,
         Handler *m_handler;
 
         void updCaption();
-        const QFont &m_titleFont;
+        const QFont m_titleFont;
         QString m_caption;
 };
 
