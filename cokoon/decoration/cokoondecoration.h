@@ -26,8 +26,8 @@
 #include <kdecorationfactory.h>
 #include <kcommondecoration.h>
 
-#include <document.h>
-#include <bridges.h>
+#include <cokoon/document.h>
+#include <cokoon/bridges.h>
 
 #include "CokoonDecorationSpec.h"
 #include <kcomponentdata.h>
