@@ -1,4 +1,4 @@
-project(style-oxygen)
+project(style-oxygen-toys)
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules )
 
 # search packages used by KDE
@@ -11,6 +11,5 @@ add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 include_directories (${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} ${KDE4_INCLUDES})
 
 #add_subdirectory( cmake )
-add_subdirectory(oxygen)
 add_subdirectory(toys)
 
