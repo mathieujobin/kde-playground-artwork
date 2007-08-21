@@ -12,7 +12,7 @@ set(oxygen_PART_SRCS lib/helper.cpp helper.cpp oxygen.cpp tileset.cpp)
 
 kde4_add_plugin(oxygen ${oxygen_PART_SRCS})
 
-target_link_libraries(oxygen  ${KDE4_KDEUI_LIBS} kdefx )
+target_link_libraries(oxygen  ${KDE4_KDEUI_LIBS} )
 
 install(TARGETS oxygen  DESTINATION ${PLUGIN_INSTALL_DIR}/plugins/styles/ )
 
