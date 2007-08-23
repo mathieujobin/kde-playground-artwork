@@ -9,7 +9,7 @@ set(COKOONTEST_LIB_SRCS ../bridges.cpp ../expression.cpp ../document.cpp ../obje
 
 set(cokoontest_SRCS cokoontest.cpp ${COKOONTEST_LIB_SRCS})
 
-
+QT4_ADD_RESOURCES(cokoontest_SRCS cokoontest-resources.qrc)
 
 kde4_add_executable(cokoontest ${cokoontest_SRCS})
 

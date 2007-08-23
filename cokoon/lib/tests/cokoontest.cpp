@@ -174,7 +174,7 @@ void CokoonTest::evaluate()
 void CokoonTest::testCaseTheme()
 {
     CokoonTestSpec::SpecDocument doc;
-    doc.loadTheme("TestCaseTheme.xml");
+    doc.loadTheme(":/res/TestCaseTheme.xml");
 
     ExpressionVariableHash vars;
 
@@ -197,7 +197,7 @@ void CokoonTest::testCaseTheme()
     expression_test_case(CokoonTestSpec::Expressions + CokoonTestSpec::Expressions0_test17);
 
 
-    QImage test1Orig("testdeco1.xpm");
+    QImage test1Orig(":/res/testdeco1.xpm");
     QImage test1Theme(test1Orig.size(), QImage::Format_ARGB32_Premultiplied );
     QPainter p(&test1Theme);
     int objId = CokoonTestSpec::Painting + CokoonTestSpec::Painting0_test01;

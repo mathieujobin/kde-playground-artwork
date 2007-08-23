@@ -56,6 +56,8 @@ public:
 
     Document *m_doc;
 
+    QDir themeDir;
+
     QHash<int, Object*> objIndex;
     QHash<int, Object*> specIndex;
 
@@ -202,8 +204,8 @@ class DocumentHandler : public QXmlDefaultHandler
                 const int sourceId = declareAndGetIdIndex(sourceIdStr);
                 QString sourceType = attributes.value("type");
 
-                const QString fileName = attributes.value("file");
-                if (!checkSourceFile(fileName) ) {
+                QString fileName = attributes.value("file");
+                if (!checkSourceFileAndSetAbsolute(fileName) ) {
                     return false;
                 }
 
@@ -466,13 +468,18 @@ class DocumentHandler : public QXmlDefaultHandler
             }
             return true;
         }
-        bool checkSourceFile(const QString &fileName)
+        bool checkSourceFileAndSetAbsolute(QString &fileName)
         {
+
             QFileInfo fi(fileName);
             if (fi.isAbsolute() ) {
                 qCritical("No absolute file path '%s' allowed.", qPrintable(fileName));
                 return false;
             }
+
+            fileName = m_doc->d->themeDir.absoluteFilePath(fileName);
+            fi = QFileInfo(fileName);
+            qDebug() << "loading file " << fileName;
 
             if (! fi.exists() ) {
                 qCritical("File '%s' does not exist.", qPrintable(fileName) );
@@ -526,7 +533,7 @@ void DocumentPrivate::loadTheme(const QXmlInputSource &data, const QString &file
     reader.setErrorHandler(&handler);
 
     QFileInfo fileInfo(fileName);
-    QDir::setCurrent(fileInfo.absolutePath());
+    themeDir = fileInfo.absoluteDir();
 
     if (! reader.parse(data) ) {
         qCritical("%s: %s", qPrintable(fileName), qPrintable(handler.errorString()) );
