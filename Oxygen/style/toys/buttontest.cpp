@@ -10,6 +10,12 @@
 int r = 224, g = 224, b = 224;
 
 //BEGIN TileCache
+bool lowThreshold(const QColor &color)
+{
+    QColor darker = KColorScheme::shade(color, KColorScheme::MidShade, 0.5);
+    return KColorUtils::luma(darker) > KColorUtils::luma(color);
+}
+
 QColor calcLightColor(const QColor &color)
 {
     return KColorScheme::shade(color, KColorScheme::LightShade, 0.7);
@@ -27,11 +33,24 @@ QColor calcMidColor(const QColor &color)
 
 QColor calcDarkColor(const QColor &color)
 {
-    return KColorScheme::shade(color, KColorScheme::MidShade, 0.7);
+    if (lowThreshold(color))
+        return KColorUtils::mix(color, KColorScheme::shade(color, KColorScheme::LightShade, 0.7), 0.3);
+    else
+        return KColorScheme::shade(color, KColorScheme::MidShade, 0.7);
 }
-//END TileCache
 
-void drawShadow(QPainter &p, int size)
+QColor calcShadowColor(const QColor &color)
+{
+    return KColorScheme::shade(color, KColorScheme::ShadowShade, 0.7);
+}
+
+QColor alphaColor(QColor color, double alpha)
+{
+    color.setAlphaF(alpha);
+    return color;
+}
+
+void drawShadow(QPainter &p, const QColor &color, int size)
 {
     int m = size>>1;
 
@@ -40,10 +59,10 @@ void drawShadow(QPainter &p, int size)
     QRadialGradient shadowGradient(m, m+offset, m, m, m+offset);
     for (int i = 0; i < 8; i++) { // sinusoidal gradient
         double k1 = k0 * double(8 - i) * 0.125 + double(i) * 0.125;
-        int a = int((cos(3.14159 * i * 0.125) + 1.0) * 65.0);
-        shadowGradient.setColorAt(k1, QColor(0,0,0,a));
+        double a = (cos(3.14159 * i * 0.125) + 1.0) * 0.25;
+        shadowGradient.setColorAt(k1, alphaColor(color, a));
     }
-    shadowGradient.setColorAt(1.0, QColor(0,0,0,0));
+    shadowGradient.setColorAt(1.0, alphaColor(color, 0.0));
     p.setBrush(shadowGradient);
     p.drawEllipse(QRectF(0, offset, size, size+offset));
 }
@@ -122,7 +141,7 @@ QPixmap roundSlab(const QColor &color, int size)
     QColor dark = KColorUtils::shade(calcDarkColor(color), shade);
 
     // shadow
-    drawShadow(p, 18);
+    drawShadow(p, calcShadowColor(color), 18);
 
     // bevel, part 1
     qreal y = KColorUtils::luma(base);
@@ -144,7 +163,7 @@ QPixmap roundSlab(const QColor &color, int size)
     p.drawEllipse(QRectF(2.6,2.6,12.8,12.8));
 
     // inside
-    QLinearGradient innerGradient(-12, 0, 0, 18);
+    QLinearGradient innerGradient(0, -18, 0, 18);
     innerGradient.setColorAt(0.0, light);
     innerGradient.setColorAt(1.0, base);
     p.setBrush(innerGradient);
@@ -152,6 +171,7 @@ QPixmap roundSlab(const QColor &color, int size)
 
     return pixmap;
 }
+//END TileCache
 
 //BEGIN Widget
 class Widget : public QWidget
