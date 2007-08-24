@@ -5,6 +5,8 @@
 #include <KColorScheme>
 #include <KColorUtils>
 
+#include <math.h>
+
 int r = 224, g = 224, b = 224;
 
 //BEGIN TileCache
@@ -29,12 +31,30 @@ QColor calcDarkColor(const QColor &color)
 }
 //END TileCache
 
-QPixmap* roundButton(const QColor &color, int size)
+void drawShadow(QPainter &p, int size)
 {
-    QPixmap *pixmap = new QPixmap(size, size);
-    pixmap->fill(QColor(0,0,0,0));
+    int m = size>>1;
 
-    QPainter p(pixmap);
+    const double offset = 0.8;
+    double k0 = (double(m) - 4.0) / double(m);
+    QRadialGradient shadowGradient(m, m+offset, m, m, m+offset);
+    for (int i = 0; i < 8; i++) { // sinusoidal gradient
+        double k1 = k0 * double(8 - i) * 0.125 + double(i) * 0.125;
+        int a = int((cos(3.14159 * i * 0.125) + 1.0) * 65.0);
+        shadowGradient.setColorAt(k1, QColor(0,0,0,a));
+    }
+    shadowGradient.setColorAt(1.0, QColor(0,0,0,0));
+    p.setBrush(shadowGradient);
+    p.drawEllipse(QRectF(0, offset, size, size+offset));
+}
+
+
+QPixmap decoButton(const QColor &color, int size)
+{
+    QPixmap pixmap(size, size);
+    pixmap.fill(QColor(0,0,0,0));
+
+    QPainter p(&pixmap);
     p.setRenderHints(QPainter::Antialiasing);
     p.setPen(Qt::NoPen);
     p.setWindow(0,0,20,20);
@@ -76,12 +96,59 @@ QPixmap* roundButton(const QColor &color, int size)
     p.drawRect(0,0,20,20);
 
     // inside
+    p.setCompositionMode(QPainter::CompositionMode_DestinationOver);
     QLinearGradient innerGradient(0, 0, 0, 20);
     innerGradient.setColorAt(0.0, color);
     innerGradient.setColorAt(1.0, calcLightColor(color));
-    p.setCompositionMode(QPainter::CompositionMode_DestinationOver);
     p.setBrush(innerGradient);
     p.drawEllipse(QRectF(2.5,2.5,15.0,14.8));
+
+    return pixmap;
+}
+
+QPixmap roundSlab(const QColor &color, int size)
+{
+    double shade = 0.0;
+    QPixmap pixmap(size, int(double(size)*10.0/9.0));
+    pixmap.fill(QColor(0,0,0,0));
+
+    QPainter p(&pixmap);
+    p.setRenderHints(QPainter::Antialiasing);
+    p.setPen(Qt::NoPen);
+    p.setWindow(0,0,18,20);
+
+    QColor base = KColorUtils::shade(color, shade);
+    QColor light = KColorUtils::shade(calcLightColor(color), shade);
+    QColor dark = KColorUtils::shade(calcDarkColor(color), shade);
+
+    // shadow
+    drawShadow(p, 18);
+
+    // bevel, part 1
+    qreal y = KColorUtils::luma(base);
+    qreal yl = KColorUtils::luma(light);
+    qreal yd = KColorUtils::luma(light);
+    QLinearGradient bevelGradient1(0, 9, 0, 16);
+    bevelGradient1.setColorAt(0.0, light);
+    bevelGradient1.setColorAt(0.9, dark);
+    if (y < yl && y > yd) // no middle when color is very light/dark
+        bevelGradient1.setColorAt(0.5, base);
+    p.setBrush(bevelGradient1);
+    p.drawEllipse(QRectF(2.0,2.0,14.0,14.0));
+
+    // bevel, part 2
+    QLinearGradient bevelGradient2(0, 6, 0, 26);
+    bevelGradient2.setColorAt(0.0, light);
+    bevelGradient2.setColorAt(0.9, base);
+    p.setBrush(bevelGradient2);
+    p.drawEllipse(QRectF(2.6,2.6,12.8,12.8));
+
+    // inside
+    QLinearGradient innerGradient(-12, 0, 0, 18);
+    innerGradient.setColorAt(0.0, light);
+    innerGradient.setColorAt(1.0, base);
+    p.setBrush(innerGradient);
+    p.drawEllipse(QRectF(3.4,3.4,11.2,11.2));
 
     return pixmap;
 }
@@ -93,7 +160,7 @@ class Widget : public QWidget
 public:
     Widget(QWidget *parent=0) : QWidget(parent) {}
 
-    QSize sizeHint() const { return QSize(100, 100); }
+    QSize sizeHint() const { return QSize(410, 200); }
 
 protected:
     void paintEvent(QPaintEvent *e)
@@ -104,18 +171,18 @@ protected:
         p.setWindow(rect);
         p.setClipRect(rect);
 
-        //p.fillRect(rect, color);
+        p.fillRect(rect, color);
 
-        //* comment/uncomment to switch between zoomed and actual size
-        int x = qMin(rect.height(), rect.width());
-        QPixmap *px = roundButton(color, x);
-        p.drawPixmap(QRect(0,0,x,x), *px);
-        /*/
-        QPixmap *px = roundButton(color, 20);
-        p.drawPixmap(QRect(0,0,20,20), *px);
-        //*/
+        // windeco button
+        p.drawPixmap(QRect(2,2,20,20), decoButton(color, 20));
+        p.drawPixmap(QRect(24,0,200,200), decoButton(color, 200));
 
-        delete px;
+        // radio button
+        p.drawPixmap(QRect(4,32,18,20), roundSlab(color, 18));
+        p.drawPixmap(QRect(224,0,180,200), roundSlab(color, 180));
+
+        // regular button
+        // TODO
     }
 
 };
