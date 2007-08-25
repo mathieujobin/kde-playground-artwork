@@ -68,59 +68,58 @@ void drawShadow(QPainter &p, const QColor &color, int size)
 }
 
 
-QPixmap decoButton(const QColor &color, int size)
+QPixmap windecoButton(const QColor &color, int size)
 {
-    QPixmap pixmap(size, size);
+    QPixmap pixmap(size, (int)ceil(double(size)*10.0/9.0));
     pixmap.fill(QColor(0,0,0,0));
 
     QPainter p(&pixmap);
     p.setRenderHints(QPainter::Antialiasing);
     p.setPen(Qt::NoPen);
-    p.setWindow(0,0,20,20);
+    p.setWindow(0,0,18,20);
+
+    QColor light = calcLightColor(color);
+    QColor dark = calcDarkColor(color);
 
     // shadow
-    QRadialGradient shadowGradient(10, 11, 9, 10, 12);
-    shadowGradient.setColorAt(0.0, QColor(0,0,0,80));
-    shadowGradient.setColorAt(1.0, QColor(0,0,0,0));
-    p.setBrush(shadowGradient);
-    p.drawEllipse(QRectF(0, 0, 20, 20));
-
-    // outline
-    QRadialGradient edgeGradient(10, 10, 9, 10, 10);
-    edgeGradient.setColorAt(0.0, QColor(0,0,0,60));
-    edgeGradient.setColorAt(0.9, QColor(0,0,0,20));
-    edgeGradient.setColorAt(1.0, QColor(0,0,0,0));
-    p.setBrush(edgeGradient);
-    p.drawEllipse(QRectF(0, 0, 20, 20));
-
-    // base (for anti-shadow)
-    p.setBrush(color);
-    p.drawEllipse(QRectF(2.4,2.4,15.2,15.2));
+    drawShadow(p, calcShadowColor(color), 18);
 
     // bevel
-    QLinearGradient bevelGradient(0, 0, 0, 20);
-    bevelGradient.setColorAt(0.45, calcLightColor(color));
-    bevelGradient.setColorAt(0.55, color);
-    bevelGradient.setColorAt(0.65, calcDarkColor(color));
+    qreal y = KColorUtils::luma(color);
+    qreal yl = KColorUtils::luma(light);
+    qreal yd = KColorUtils::luma(light);
+    QLinearGradient bevelGradient(0, 0, 0, 18);
+    bevelGradient.setColorAt(0.45, light);
+    bevelGradient.setColorAt(0.80, dark);
+    if (y < yl && y > yd) // no middle when color is very light/dark
+        bevelGradient.setColorAt(0.55, color);
     p.setBrush(QBrush(bevelGradient));
-    p.drawEllipse(QRectF(2.4,2.4,15.2,15.0));
+    p.drawEllipse(QRectF(2.0,2.0,14.0,14.0));
 
     // inside mask
-    QRadialGradient maskGradient(10,10,7.4,10,10);
-    maskGradient.setColorAt(0.75, QColor(0,0,0,0));
-    maskGradient.setColorAt(0.90, QColor(0,0,0,140));
-    maskGradient.setColorAt(1.00, QColor(0,0,0,255));
+    QRadialGradient maskGradient(9,9,7,9,9);
+    maskGradient.setColorAt(0.70, QColor(0,0,0,0));
+    maskGradient.setColorAt(0.85, QColor(0,0,0,140));
+    maskGradient.setColorAt(0.95, QColor(0,0,0,255));
     p.setCompositionMode(QPainter::CompositionMode_DestinationIn);
     p.setBrush(maskGradient);
     p.drawRect(0,0,20,20);
 
     // inside
-    p.setCompositionMode(QPainter::CompositionMode_DestinationOver);
-    QLinearGradient innerGradient(0, 0, 0, 20);
+    QLinearGradient innerGradient(0, 2, 0, 16);
     innerGradient.setColorAt(0.0, color);
-    innerGradient.setColorAt(1.0, calcLightColor(color));
+    innerGradient.setColorAt(1.0, light);
+    p.setCompositionMode(QPainter::CompositionMode_DestinationOver);
     p.setBrush(innerGradient);
-    p.drawEllipse(QRectF(2.5,2.5,15.0,14.8));
+    p.drawEllipse(QRectF(2.0,2.0,14.0,14.0));
+
+    // anti-shadow
+    QRadialGradient highlightGradient(9,8.5,8,9,8.5);
+    highlightGradient.setColorAt(0.85, alphaColor(light, 0.0));
+    highlightGradient.setColorAt(1.00, light);
+    p.setCompositionMode(QPainter::CompositionMode_SourceOver);
+    p.setBrush(highlightGradient);
+    p.drawEllipse(QRectF(2.0,2.0,14.0,14.0));
 
     return pixmap;
 }
@@ -128,7 +127,7 @@ QPixmap decoButton(const QColor &color, int size)
 QPixmap roundSlab(const QColor &color, int size)
 {
     double shade = 0.0;
-    QPixmap pixmap(size, int(double(size)*10.0/9.0));
+    QPixmap pixmap(size, (int)ceil(double(size)*10.0/9.0));
     pixmap.fill(QColor(0,0,0,0));
 
     QPainter p(&pixmap);
@@ -194,11 +193,11 @@ protected:
         p.fillRect(rect, color);
 
         // windeco button
-        p.drawPixmap(QRect(2,2,20,20), decoButton(color, 20));
-        p.drawPixmap(QRect(24,0,200,200), decoButton(color, 200));
+        p.drawPixmap(QRect(2,2,18,20), windecoButton(color, 18));
+        p.drawPixmap(QRect(24,0,180,200), windecoButton(color, 180));
 
         // radio button
-        p.drawPixmap(QRect(4,32,18,20), roundSlab(color, 18));
+        p.drawPixmap(QRect(2,32,18,20), roundSlab(color, 18));
         p.drawPixmap(QRect(224,0,180,200), roundSlab(color, 180));
 
         // regular button
