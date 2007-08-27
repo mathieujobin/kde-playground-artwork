@@ -1,9 +1,9 @@
 
 project(kstyle-cokoon)
 
-include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_SOURCE_DIR}/lib )
-
 find_package(Cokoon REQUIRED)
+
+include_directories( ${COKOON_INCLUDE_DIR} ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} )
 
 ########### next target ###############
 

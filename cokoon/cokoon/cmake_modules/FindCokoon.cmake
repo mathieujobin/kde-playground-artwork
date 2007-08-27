@@ -11,13 +11,13 @@ set(COKOON_SPEC_EXECUTABLE)
 set( _COKOONSPECIFICATION_COMPILER_DEP cokoonspec_compiler)
 
 if (BOOTSTRAP_COKOON)
-   set(COKOON_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/lib)
+   set(COKOON_INCLUDE_DIR ${CMAKE_SOURCE_DIR})
    set(COKOON_LIBS cokoon)
-   set(COKOON_SPEC_EXECUTABLE "${CMAKE_BINARY_DIR}/lib/cokoonspec_compiler")
+   set(COKOON_SPEC_EXECUTABLE "${CMAKE_BINARY_DIR}/cokoon/cokoonspec_compiler")
 else (BOOTSTRAP_COKOON)
    find_path(COKOON_INCLUDE_DIR NAMES cokoon/document.h cokoon/bridges.h
              PATHS
-             "${CMAKE_SOURCE_DIR}/lib" ${INCLUDE_INSTALL_DIR} )
+             ${CMAKE_SOURCE_DIR} ${INCLUDE_INSTALL_DIR} )
 
 
    find_library(COKOON_LIBS NAMES cokoon
@@ -25,7 +25,7 @@ else (BOOTSTRAP_COKOON)
                 ${LIB_INSTALL_DIR})
 
    find_program(COKOON_SPEC_EXECUTABLE NAME cokoonspec_compiler
-          PATHS "${CMAKE_BINARY_DIR}/lib" ${BIN_INSTALL_DIR} ) # disabled NO_DEFAULT_PATH
+          PATHS "${CMAKE_BINARY_DIR}/cokoon" ${BIN_INSTALL_DIR} ) # disabled NO_DEFAULT_PATH
 endif (BOOTSTRAP_COKOON)
 
 message( STATUS "inc/lib/exec ${COKOON_LIBS} ${COKOON_INCLUDE_DIR} ${COKOON_SPEC_EXECUTABLE}")

@@ -13,9 +13,9 @@ link_directories(${KDE4_LIB_DIR})
 #include(ConfigureChecks.cmake)
 
 set(BOOTSTRAP_COKOON True)
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/lib/cmake_modules/")
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cokoon/cmake_modules/")
 
-add_subdirectory( lib )
+add_subdirectory( cokoon )
 add_subdirectory( decoration )
 add_subdirectory( style )
 
