@@ -12,6 +12,9 @@ link_directories(${KDE4_LIB_DIR})
 #include(ManualStuff.cmake)
 #include(ConfigureChecks.cmake)
 
+set(BOOTSTRAP_COKOON True)
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/lib/cmake_modules/")
+
 add_subdirectory( lib )
 add_subdirectory( decoration )
 add_subdirectory( style )

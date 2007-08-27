@@ -30,6 +30,7 @@
 #include "../tile_p.h"
 #include "../tilesource_p.h"
 #include "../tilelayout_p.h"
+#include "../specification.h"
 
 #include "CokoonTestSpec.h"
 
@@ -213,6 +214,95 @@ void CokoonTest::testCaseTheme()
         }
     }
     QVERIFY(equal);
+
+}
+
+void CokoonTest::testSpec()
+{
+    Cokoon::Specification spec;
+
+    // wether Specification _appears_ to be working.
+    QVERIFY2( spec.loadSpecification(":/res/CokoonTestSpec.xml"), "error loading theme specification" );
+
+    Cokoon::DocumentSpecification docSpec(&spec);
+    CokoonTestSpec::SpecDocument doc;
+
+    QCOMPARE(spec.specName(), QString("CokoonTestSpec") );
+    QVERIFY(!spec.specVersion().isEmpty());
+    QCOMPARE(spec.items().size(), 2);
+
+    // test DocumentSpecification. also see if results are identical to
+    // the compiled specification...
+    QCOMPARE(docSpec.customIdMappingBase(Cokoon::Document::ObjectStateDecl),
+             spec.items().size());
+
+    QCOMPARE(docSpec.customIdMappingBase(Cokoon::Document::ObjectStateDecl),
+             doc.customIdMappingBase(Cokoon::Document::ObjectStateDecl));
+    QCOMPARE(docSpec.customIdMappingBase(Cokoon::Document::VariableDecl),
+             doc.customIdMappingBase(Cokoon::Document::VariableDecl));
+    QCOMPARE(docSpec.customIdMappingBase(Cokoon::Document::IdentifierDecl),
+             doc.customIdMappingBase(Cokoon::Document::IdentifierDecl));
+    foreach(const QString &s, docSpec.identifiers() ) {
+        qDebug() << "id" << s;
+        QCOMPARE(docSpec.mapToId(Cokoon::Document::IdentifierDecl, s), doc.mapToId(Cokoon::Document::IdentifierDecl, s));
+    }
+    foreach(const QString &s, docSpec.variables() ) {
+        qDebug() << "var" << s;
+        QCOMPARE(docSpec.mapToId(Cokoon::Document::VariableDecl, s), doc.mapToId(Cokoon::Document::VariableDecl, s));
+    }
+
+
+    for(int i = 0; i < spec.items().size(); ++i) {
+        Cokoon::SpecificationItem *item = spec.items()[i];
+        QCOMPARE(item->stateLevels.size(), docSpec.itemStateLevels(i));
+
+        for (int l = 0; l < item->stateLevels.size(); ++l) {
+            Cokoon::SpecificationItemStateLevel *lvl = item->stateLevels[l];
+            QCOMPARE(lvl->states.size(), docSpec.itemStateLevelStates(i,l));
+
+            // see wether the compiled specification produces the same result
+            QCOMPARE(docSpec.itemStateLevelStates(i,l), doc.objectStateLevelStates(i,l));
+
+            for (int s = 0; s < lvl->states.size(); ++s) {
+                QString sName = lvl->states[s];
+
+                int id1 = docSpec.mapItemStateToId(i,l,s);
+                int id1_name = docSpec.mapItemStateToId(i,l,sName);
+
+                // id's must be valid
+                QVERIFY(id1 >= 0);
+
+                // access through stateIndex and stateName must have the same result
+                QCOMPARE(id1, id1_name);
+
+                // see wether the compiled specification produces the same result
+//                 qDebug() << "item/level/state" << i << l << s;
+                QCOMPARE(id1, doc.mapObjectStateToId(i,l,s));
+                QCOMPARE(id1, doc.mapObjectStateToId(i,l,sName));
+
+                for (int l2 = 0; l2 < item->stateLevels.size(); ++l2) {
+                    for (int s2 = 0; s2 < lvl->states.size(); ++s2) {
+                        int id2 = docSpec.mapItemStateToId(i,l2,s2);
+                        // id's must be valid
+                        QVERIFY(id2 >= 0);
+
+                        // id's of different states in the same state level must not be equal
+                        if (l==l2 && s!=s2) {
+                            QVERIFY(id1 != id2);
+                        }
+
+                        // Make sure that all state ID's (of different) all
+                        // share no common bits -- this is a requirement so that
+                        // all access ID's (made up of itemId+stateLevel1Id+stateLevel2Id+...)
+                        // are unique.
+                        if (l!=l2) {
+                            QVERIFY((id1&id2)==0);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 }
 

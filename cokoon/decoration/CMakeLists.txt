@@ -1,12 +1,15 @@
 
 #include_directories( ${CMAKE_SOURCE_DIR}/lib ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
-include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_SOURCE_DIR}/lib )
+include_directories( ${CMAKE_SOURCE_DIR}/lib ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} )
 
+find_package(Cokoon REQUIRED)
 
 ########### next target ###############
 
 set(kwin3_cokoon_PART_SRCS cokoondecoration.cpp )
 
+cokoon_add_spec_files(kwin3_cokoon_PART_SRCS CokoonDecorationSpec.xml) 
+#message(STATUS "decoration sources: ${kwin3_cokoon_PART_SRCS}")
 
 kde4_add_plugin(kwin3_cokoon ${kwin3_cokoon_PART_SRCS})
 

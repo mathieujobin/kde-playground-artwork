@@ -27,6 +27,7 @@ Q_OBJECT
     private slots:
         void evaluate();
         void testCaseTheme();
+        void testSpec();
 };
 
 #endif

@@ -3,10 +3,13 @@ project(kstyle-cokoon)
 
 include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_SOURCE_DIR}/lib )
 
+find_package(Cokoon REQUIRED)
+
 ########### next target ###############
 
 set(cokoon_PART_SRCS cokoonstyle.cpp )
 
+cokoon_add_spec_files(cokoon_PART_SRCS CokoonStyleSpec.xml)
 
 kde4_add_plugin(cokoonstyle ${cokoon_PART_SRCS})
 
