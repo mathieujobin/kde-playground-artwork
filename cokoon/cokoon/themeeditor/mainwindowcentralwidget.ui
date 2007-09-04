@@ -1,0 +1,41 @@
+<ui version="4.0" >
+ <author>Sandro Gießl</author>
+ <class>MainWindowCentralWidget</class>
+ <widget class="QWidget" name="MainWindowCentralWidget" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>453</width>
+    <height>423</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" >
+   <item>
+    <widget class="Cokoon::PreviewWidget" native="1" name="preview" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="MinimumExpanding" hsizetype="Preferred" >
+       <horstretch>0</horstretch>
+       <verstretch>1</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="0" />
+ <customwidgets>
+  <customwidget>
+   <class>Cokoon::PreviewWidget</class>
+   <extends>QWidget</extends>
+   <header>previewwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <includes/>
+ <resources/>
+ <connections/>
+</ui>

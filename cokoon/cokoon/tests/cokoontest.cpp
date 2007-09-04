@@ -219,12 +219,11 @@ void CokoonTest::testCaseTheme()
 
 void CokoonTest::testSpec()
 {
-    Cokoon::Specification spec;
+    Cokoon::DocumentSpecification spec;
 
     // wether Specification _appears_ to be working.
     QVERIFY2( spec.loadSpecification(":/res/CokoonTestSpec.xml"), "error loading theme specification" );
 
-    Cokoon::DocumentSpecification docSpec(&spec);
     CokoonTestSpec::SpecDocument doc;
 
     QCOMPARE(spec.specName(), QString("CokoonTestSpec") );
@@ -233,41 +232,41 @@ void CokoonTest::testSpec()
 
     // test DocumentSpecification. also see if results are identical to
     // the compiled specification...
-    QCOMPARE(docSpec.customIdMappingBase(Cokoon::Document::ObjectStateDecl),
+    QCOMPARE(spec.customIdMappingBase(Cokoon::Document::ObjectStateDecl),
              spec.items().size());
 
-    QCOMPARE(docSpec.customIdMappingBase(Cokoon::Document::ObjectStateDecl),
+    QCOMPARE(spec.customIdMappingBase(Cokoon::Document::ObjectStateDecl),
              doc.customIdMappingBase(Cokoon::Document::ObjectStateDecl));
-    QCOMPARE(docSpec.customIdMappingBase(Cokoon::Document::VariableDecl),
+    QCOMPARE(spec.customIdMappingBase(Cokoon::Document::VariableDecl),
              doc.customIdMappingBase(Cokoon::Document::VariableDecl));
-    QCOMPARE(docSpec.customIdMappingBase(Cokoon::Document::IdentifierDecl),
+    QCOMPARE(spec.customIdMappingBase(Cokoon::Document::IdentifierDecl),
              doc.customIdMappingBase(Cokoon::Document::IdentifierDecl));
-    foreach(const QString &s, docSpec.identifiers() ) {
+    foreach(const QString &s, spec.identifiers() ) {
         qDebug() << "id" << s;
-        QCOMPARE(docSpec.mapToId(Cokoon::Document::IdentifierDecl, s), doc.mapToId(Cokoon::Document::IdentifierDecl, s));
+        QCOMPARE(spec.mapToId(Cokoon::Document::IdentifierDecl, s), doc.mapToId(Cokoon::Document::IdentifierDecl, s));
     }
-    foreach(const QString &s, docSpec.variables() ) {
+    foreach(const QString &s, spec.variables() ) {
         qDebug() << "var" << s;
-        QCOMPARE(docSpec.mapToId(Cokoon::Document::VariableDecl, s), doc.mapToId(Cokoon::Document::VariableDecl, s));
+        QCOMPARE(spec.mapToId(Cokoon::Document::VariableDecl, s), doc.mapToId(Cokoon::Document::VariableDecl, s));
     }
 
 
     for(int i = 0; i < spec.items().size(); ++i) {
         Cokoon::SpecificationItem *item = spec.items()[i];
-        QCOMPARE(item->stateLevels.size(), docSpec.itemStateLevels(i));
+        QCOMPARE(item->stateLevels.size(), spec.itemStateLevels(i));
 
         for (int l = 0; l < item->stateLevels.size(); ++l) {
             Cokoon::SpecificationItemStateLevel *lvl = item->stateLevels[l];
-            QCOMPARE(lvl->states.size(), docSpec.itemStateLevelStates(i,l));
+            QCOMPARE(lvl->states.size(), spec.itemStateLevelStates(i,l));
 
             // see wether the compiled specification produces the same result
-            QCOMPARE(docSpec.itemStateLevelStates(i,l), doc.objectStateLevelStates(i,l));
+            QCOMPARE(spec.itemStateLevelStates(i,l), doc.objectStateLevelStates(i,l));
 
             for (int s = 0; s < lvl->states.size(); ++s) {
                 QString sName = lvl->states[s];
 
-                int id1 = docSpec.mapItemStateToId(i,l,s);
-                int id1_name = docSpec.mapItemStateToId(i,l,sName);
+                int id1 = spec.mapItemStateToId(i,l,s);
+                int id1_name = spec.mapItemStateToId(i,l,sName);
 
                 // id's must be valid
                 QVERIFY(id1 >= 0);
@@ -282,7 +281,7 @@ void CokoonTest::testSpec()
 
                 for (int l2 = 0; l2 < item->stateLevels.size(); ++l2) {
                     for (int s2 = 0; s2 < lvl->states.size(); ++s2) {
-                        int id2 = docSpec.mapItemStateToId(i,l2,s2);
+                        int id2 = spec.mapItemStateToId(i,l2,s2);
                         // id's must be valid
                         QVERIFY(id2 >= 0);
 

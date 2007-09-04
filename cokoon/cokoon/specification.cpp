@@ -327,10 +327,8 @@ namespace Cokoon {
         item->stateLevels.append(lvl);
     }
 
-    DocumentSpecification::DocumentSpecification(const Specification *spec)
-        : m_spec(spec)
+    DocumentSpecification::DocumentSpecification()
     {
-        setSpecification(spec);
     }
 
     DocumentSpecification::~DocumentSpecification()
@@ -341,11 +339,10 @@ namespace Cokoon {
 #define _nextColumnExponent(currentLevelId) (int)ceil(LOGN(currentLevelId+1,2))
 #define _columnStateId(n,columnExponent) (int)(n*pow(2,columnExponent))
 
-    void DocumentSpecification::setSpecification(const Specification *spec)
+    bool DocumentSpecification::loadSpecification(const QString &fileName)
     {
-        Q_ASSERT(spec);
-
-        m_spec = spec;
+        if (!Specification::loadSpecification(fileName))
+            return false;
 
         m_itemToId.clear();
         m_idToItem.clear();
@@ -360,7 +357,7 @@ namespace Cokoon {
 
 //         qDebug() << "setSpecification " << spec << "items:" << spec->items();
 
-        foreach(SpecificationItem *i, spec->items()) {
+        foreach(SpecificationItem *i, items()) {
 //             qDebug() << "docSpec item" << i->id;
             foreach(SpecificationItemVariable *v, i->providedVariables) {
                 addVariableMapping(v->id);
@@ -381,7 +378,7 @@ namespace Cokoon {
 
             // item stateLevel exponent mappings...
             QList<int> currentItemExponents;
-            int currentLevelStateId = spec->items().size()-1;
+            int currentLevelStateId = items().size()-1;
             foreach(SpecificationItemStateLevel *stLvl, i->stateLevels) {
 //                 qDebug() << "docSpec item stateLvl";
                 int curExp = _nextColumnExponent(currentLevelStateId);
@@ -394,6 +391,8 @@ namespace Cokoon {
             itemId += 1;
 
         }
+
+        return true;
     }
 
     void DocumentSpecification::addVariableMapping(const QString &id) {
@@ -415,9 +414,7 @@ namespace Cokoon {
 
     int DocumentSpecification::itemStateLevels(int itemId) const
     {
-        Q_ASSERT(m_spec);
-
-        SpecificationItem *i = m_spec->items().value(itemId);
+        SpecificationItem *i = items().value(itemId);
         if (i) {
             return i->stateLevels.size();
         } else {
@@ -426,9 +423,7 @@ namespace Cokoon {
     }
     int DocumentSpecification::itemStateLevelStates(int itemId, int stateLevel) const
     {
-        Q_ASSERT(m_spec);
-
-        SpecificationItem *i = m_spec->items().value(itemId);
+        SpecificationItem *i = items().value(itemId);
         if (i) {
             SpecificationItemStateLevel *lvl = i->stateLevels.value(stateLevel);
             if (lvl) {
@@ -439,9 +434,7 @@ namespace Cokoon {
     }
     int DocumentSpecification::mapItemStateToId(int itemId, int stateLevel, const QString &stateName) const
     {
-        Q_ASSERT(m_spec);
-
-        SpecificationItem *i = m_spec->items().value(itemId);
+        SpecificationItem *i = items().value(itemId);
         QList<int> exps = m_stateLevelIdExponents.value(itemId);
         if (i) {
             SpecificationItemStateLevel *lvl = i->stateLevels.value(stateLevel);
@@ -456,9 +449,7 @@ namespace Cokoon {
     }
     int DocumentSpecification::mapItemStateToId(int itemId, int stateLevel, int stateIndex) const
     {
-        Q_ASSERT(m_spec);
-
-        SpecificationItem *i = m_spec->items().value(itemId);
+        SpecificationItem *i = items().value(itemId);
         QList<int> exps = m_stateLevelIdExponents.value(itemId);
         if (i) {
             SpecificationItemStateLevel *lvl = i->stateLevels.value(stateLevel);
@@ -476,8 +467,7 @@ namespace Cokoon {
     {
         switch(type) {
         case Document::ObjectStateDecl:
-            Q_ASSERT(m_spec);
-            return m_spec->items().size();
+            return items().size();
         case Document::VariableDecl:
             return m_variableToId.size();
         case Document::IdentifierDecl:

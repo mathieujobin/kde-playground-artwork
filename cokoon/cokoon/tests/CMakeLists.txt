@@ -5,7 +5,7 @@ find_package(Cokoon REQUIRED)
 include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
 
 # don't use the shared library so we can access non-EXPORT-ed interfaces...
-set(COKOONTEST_LIB_SRCS ../bridges.cpp ../expression.cpp ../document.cpp ../object.cpp ../tile.cpp ../tilesource.cpp ../tilelayout.cpp ../specification.cpp)
+set(COKOONTEST_LIB_SRCS ../bridges.cpp ../expression.cpp ../document.cpp ../object.cpp ../tile.cpp ../tilesource.cpp ../tilelayout.cpp ../specification.cpp )
 
 ########### next target ###############
 

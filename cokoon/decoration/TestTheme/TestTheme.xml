@@ -1,533 +1,474 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<cokoon_theme name="TestTheme" version="0.1pre" spec="CokoonDecorationSpec">
-	<object id="Settings">
-		<expression id="RespectBorderSizeFactor" value="1"/>
-		<expression id="CustomButtonSize" value="0"/>
-		<expression id="MenuDoubleClickClose" value="0"/>
-		<expression id="WindowTitleAlignment" value="0"/>
-	</object>
-
-	<object id="DecorationActiveNormal" implement="Decoration.active.normal.*.*">
-		<source id="decorationsrc" type="svg" file="testdecoration.svg">
-			<replace_style_attr element_id="rect2788" attr="fill" value="ColorTitleBar"/>
-		</source>
-		<source id="masksrc" type="bitmap" file="windowmask.png"/>
-
-		<expression id="zoom" value="1"/>
-
-		<expression id="srcwidth" value="50"/>
-		<expression id="srcheight" value="50"/>
-		<expression id="edgesize" value="6"/>
-		<expression id="titleheight" value="40-6"/>
-
-		<expression id="bsize" value="BorderSizeFactor*6"/>
-
-		<expression id="BorderLeft" value=".bsize"/>
-		<expression id="BorderRight" value=".bsize"/>
-		<expression id="BorderBottom" value=".bsize"/>
-
-		<expression id="TitleHeight" value="WindowTitleHeight"/>
-		<expression id="TitleEdgeBottom" value="1"/>
-
-		<expression id="TitleEdgeTop" value=".edgesize"/>
-		<expression id="TitleEdgeLeft" value=".bsize"/>
-		<expression id="TitleEdgeRight" value=".bsize"/>
-
-		<expression id="TitleBorders" value="5"/>
-
-		<expression id="ButtonSpacing" value="1"/>
-		<expression id="ExplicitButtonSpacer" value="3"/>
-
-		<expression id="WindowTitleColor" value="ColorFont"/>
-
-		<tile id="WindowMaskTopLeft" source_id="masksrc" mode_hor="normal" mode_vert="normal" left="0" top="0" width="2" height="2"/>
-		<tile id="WindowMaskTopRight" source_id="masksrc" mode_hor="normal" mode_vert="normal" left="1" top="0" width="2" height="2"/>
-		<tile id="WindowMaskBottomLeft" source_id="masksrc" mode_hor="normal" mode_vert="normal" left="0" top="0" width="1" height="1"/>
-		<tile id="WindowMaskBottomRight" source_id="masksrc" mode_hor="normal" mode_vert="normal" left="0" top="0" width="1" height="1"/>
-
-		<tile id="topleft" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left="0" top="0" width=".o.edgesize" height=".o.edgesize"/>
-		<tile id="top" mode_hor="tiled" mode_vert="stretched" source_id="decorationsrc" left="10" top="0" width="2" height=".o.edgesize"/>
-		<tile id="topright" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".o.srcwidth-.o.edgesize" top="0" width=".o.edgesize" height=".o.edgesize"/>
-
-		<tile id="titleleft" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left="0" top=".o.edgesize" width=".o.edgesize" height=".o.titleheight"/>
-		<tile id="title" mode_hor="tiled" mode_vert="stretched" source_id="decorationsrc" left="10" top=".o.edgesize" width="2" height=".o.titleheight"/>
-		<tile id="titleright" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".o.srcwidth-.o.edgesize" top=".o.edgesize" width=".o.edgesize" height=".o.titleheight"/>
-
-		<tile id="titlebottom" mode_hor="tiled" mode_vert="stretched" source_id="decorationsrc" left="10" top=".o.edgesize+.o.titleheight" width="2" height="1"/>
-
-		<tile id="left" mode_hor="stretched" mode_vert="tiled" source_id="decorationsrc" left="0" top=".o.srcheight-.o.edgesize-1" width=".o.edgesize" height="2"/>
-		<tile id="right" mode_hor="stretched" mode_vert="tiled" source_id="decorationsrc" left=".o.srcwidth-.o.edgesize" top=".o.srcheight-.o.edgesize-1" width=".o.edgesize" height="2"/>
-
-		<tile id="bottomleft" mode_hor="stretched" mode_vert="stretched" source_object="" source_id="decorationsrc" left="0" top=".o.srcheight-.o.edgesize" width=".o.edgesize" height=".o.edgesize"/>
-		<tile id="bottom" mode_hor="tiled" mode_vert="stretched" source_id="decorationsrc" left="10" top=".o.srcheight-.o.edgesize" width="2" height=".o.edgesize"/>
-		<tile id="bottomright" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".o.srcwidth-.o.edgesize" top=".o.srcheight-.o.edgesize" width=".o.edgesize" height=".o.edgesize"/>
-		<tile id="center" mode_hor="tiled" mode_vert="stretched" source_id="decorationsrc" left="10" top=".o.edgesize" width="2" height=".o.srcheight-2*.o.edgesize"/>
-		<layout id="bglayout">
-			<column type="fixed" fixed_size=".o.BorderLeft"/>
-			<column type="expanding"/>
-			<column type="fixed" fixed_size=".o.BorderRight"/>
-			<row type="fixed" fixed_size=".o.TitleEdgeTop">
-				<cell type="tile" tile_id="topleft"/>
-				<cell type="tile" tile_id="top"/>
-				<cell type="tile" tile_id="topright"/>
-			</row>
-			<row type="fixed" fixed_size=".o.TitleHeight">
-				<cell type="tile" tile_id="titleleft"/>
-				<cell type="tile" tile_id="title"/>
-				<cell type="tile" tile_id="titleright"/>
-			</row>
-			<row type="fixed" fixed_size=".o.TitleEdgeBottom">
-				<cell type="tile" tile_id="left"/>
-				<cell type="tile" tile_id="titlebottom"/>
-				<cell type="tile" tile_id="right"/>
-			</row>
-			<row type="expanding">
-				<cell type="tile" tile_id="left"/>
-				<cell type="empty"/>
-				<cell type="tile" tile_id="right"/>
-			</row>
-			<row type="fixed" fixed_size=".o.BorderBottom">
-				<cell type="tile" tile_id="bottomleft"/>
-				<cell type="tile" tile_id="bottom"/>
-				<cell type="tile" tile_id="bottomright"/>
-			</row>
-		</layout>
-		<layout id="title">
-			<column type="fixed" fixed_size=".o.TitleEdgeLeft+ButtonGroupLeftWidth+.o.TitleBorders"/>
-			<column type="expanding"/>
-			<column type="fixed" fixed_size=".o.TitleBorders+ButtonGroupRightWidth+.o.TitleEdgeRight"/>
-			<row type="fixed" fixed_size=".o.TitleEdgeTop">
-				<cell type="empty"/>
-				<cell type="empty"/>
-				<cell type="empty"/>
-			</row>
-			<row type="fixed" fixed_size=".o.TitleHeight">
-				<cell type="empty"/>
-				<cell type="special" special_id="WindowTitle"/>
-				<cell type="empty"/>
-			</row>
-		</layout>
-		<paint>
-			<layer layout_id="bglayout"/>
-			<layer layout_id="title"/>
-		</paint>
-	</object>
-
-	<object id="DecorationActiveMax" implement="Decoration.active.max.*.*" extend="DecorationActiveNormal">
-		<expression id="BorderLeft" value="0"/>
-		<expression id="BorderRight" value="0"/>
-		<expression id="BorderBottom" value="0"/>
-
-		<expression id="TitleEdgeTop" value="0"/>
-		<expression id="TitleEdgeLeft" value="0"/>
-		<expression id="TitleEdgeRight" value="0"/>
-
-		<tile id="WindowMaskTopLeft" source_id="masksrc" mode_hor="normal" mode_vert="normal" left="0" top="0" width="0" height="0"/>
-		<tile id="WindowMaskTopRight" source_id="masksrc" mode_hor="normal" mode_vert="normal" left="0" top="0" width="0" height="0"/>
-		<tile id="WindowMaskBottomLeft" source_id="masksrc" mode_hor="normal" mode_vert="normal" left="0" top="0" width="0" height="0"/>
-		<tile id="WindowMaskBottomRight" source_id="masksrc" mode_hor="normal" mode_vert="normal" left="0" top="0" width="0" height="0"/>
-	</object>
-
-<!--	<object id="DecorationActiveRest" implement="Decoration.active.*.*.*" extend="DecorationActiveNormal"/> -->
-
-	<object id="DecorationInactiveNormal" implement="Decoration.inactive.normal.*.*" extend="DecorationActiveNormal">
-	</object>
-	
-	<object id="DecorationInactiveMax" implement="Decoration.inactive.max.*.*" extend="DecorationInactiveNormal">
-		<expression id="BorderLeft" value="0"/>
-		<expression id="BorderRight" value="0"/>
-		<expression id="BorderBottom" value="0"/>
-
-		<expression id="TitleEdgeTop" value="0"/>
-		<expression id="TitleEdgeLeft" value="0"/>
-		<expression id="TitleEdgeRight" value="0"/>
-	</object>
-
-<!--	<object id="DecorationInactiveRest" implement="Decoration.inactive.*.*.*" extend="DecorationInactiveNormal"/> -->
-
-	<object id="button_normal">
-		<source id="decorationsrc" type="svg" file="testdecorationbutton.svg"/>
-		
-		<expression id="zoom" value="1"/>
-		
-		<expression id="srcwidth" value="20"/>
-		<expression id="srcheight" value="20"/>
-		<expression id="edgesize" value="3"/>
-		
-		
-		<tile id="topleft" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left="0" top="0" width=".o.edgesize" height=".o.edgesize"/>
-		<tile id="top" mode_hor="tiled" mode_vert="stretched" source_id="decorationsrc" left="10" top="0" width="2" height=".o.edgesize"/>
-		<tile id="topright" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".o.srcwidth-.o.edgesize" top="0" width=".o.edgesize" height=".o.edgesize"/>
-		
-		<tile id="left" mode_hor="stretched" mode_vert="tiled" source_id="decorationsrc" left="0" top=".o.edgesize+1" width=".o.edgesize" height="2"/>
-		<tile id="center" mode_hor="tiled" mode_vert="tiled" source_id="decorationsrc" left=".o.edgesize+1" top=".o.edgesize+1" width="2" height="2"/>
-		<tile id="right" mode_hor="stretched" mode_vert="tiled" source_id="decorationsrc" left=".o.srcwidth-.o.edgesize" top=".o.edgesize+1" width=".o.edgesize" height="2"/>
-		
-		<tile id="bottomleft" mode_hor="stretched" mode_vert="stretched" source_object="" source_id="decorationsrc" left="0" top=".o.srcheight-.o.edgesize" width=".o.edgesize" height=".o.edgesize"/>
-		<tile id="bottom" mode_hor="tiled" mode_vert="stretched" source_id="decorationsrc" left=".o.edgesize+1" top=".o.srcheight-.o.edgesize" width="2" height=".o.edgesize"/>
-		<tile id="bottomright" mode_hor="stretched" mode_vert="stretched" source_id="decorationsrc" left=".o.srcwidth-.o.edgesize" top=".o.srcheight-.o.edgesize" width=".o.edgesize" height=".o.edgesize"/>
-		<tile id="center" mode_hor="tiled" mode_vert="stretched" source_id="decorationsrc" left=".o.edgesize+1" top=".o.edgesize" width="2" height=".o.srcheight-2*.o.edgesize"/>
-		<layout id="button">
-			<column type="fixed" fixed_size=".o.edgesize*.o.zoom"/>
-			<column type="expanding"/>
-			<column type="fixed" fixed_size=".o.edgesize*.o.zoom"/>
-			<row type="fixed" fixed_size=".o.edgesize*.o.zoom">
-				<cell type="tile" tile_id="topleft"/>
-				<cell type="tile" tile_id="top"/>
-				<cell type="tile" tile_id="topright"/>
-			</row>
-			<row type="expanding">
-				<cell type="tile" tile_id="left"/>
-				<cell type="tile" tile_id="center"/>
-				<cell type="tile" tile_id="right"/>
-			</row>
-			<row type="fixed" fixed_size=".o.edgesize*.o.zoom">
-				<cell type="tile" tile_id="bottomleft"/>
-				<cell type="tile" tile_id="bottom"/>
-				<cell type="tile" tile_id="bottomright"/>
-			</row>
-		</layout>
-	</object>
-
-	<object id="button_prelight" extend="button_normal">
-		<source id="decorationsrc" type="svg" file="testdecorationbutton.svg">
-			<replace_style_attr element_id="rect2788" attr="fill-opacity" value="0.8"/>
-		</source>
-	</object>
-
-	<object id="button_pressed" extend="button_normal">
-		<source id="decorationsrc" type="svg" file="testdecorationbutton.svg">
-			<replace_style_attr element_id="rect2788" attr="fill-opacity" value="0.2"/>
-			<replace_style_attr element_id="rect2788" attr="stroke-opacity" value="0.7"/>
-		</source>
-	</object>
-
-
-	<object id="ButtonCloseNormal" implement="Button.close.normal.*.*">
-<!--		<expression id="ButtonWidth" value="20"/>
+<?xml version='1.0' encoding='UTF-8'?>
+<cokoon_theme version="0.1pre" spec="CokoonDecorationSpec" name="TestTheme" >
+ <object id="Settings" >
+  <expression value="1" id="RespectBorderSizeFactor" />
+  <expression value="0" id="CustomButtonSize" />
+  <expression value="0" id="MenuDoubleClickClose" />
+  <expression value="0" id="WindowTitleAlignment" />
+ </object>
+ <object implement="Decoration.active.normal.*.*" id="DecorationActiveNormal" >
+  <source type="svg" id="decorationsrc" file="testdecoration.svg" >
+   <replace_style_attr attr="fill" element_id="rect2788" value="ColorTitleBar" />
+  </source>
+  <source type="bitmap" id="masksrc" file="windowmask.png" />
+  <expression value="1" id="zoom" />
+  <expression value="50" id="srcwidth" />
+  <expression value="50" id="srcheight" />
+  <expression value="6" id="edgesize" />
+  <expression value="40-6" id="titleheight" />
+  <expression value="BorderSizeFactor*6" id="bsize" />
+  <expression value=".bsize" id="BorderLeft" />
+  <expression value=".bsize" id="BorderRight" />
+  <expression value=".bsize" id="BorderBottom" />
+  <expression value="WindowTitleHeight" id="TitleHeight" />
+  <expression value="1" id="TitleEdgeBottom" />
+  <expression value=".edgesize" id="TitleEdgeTop" />
+  <expression value=".bsize" id="TitleEdgeLeft" />
+  <expression value=".bsize" id="TitleEdgeRight" />
+  <expression value="5" id="TitleBorders" />
+  <expression value="1" id="ButtonSpacing" />
+  <expression value="3" id="ExplicitButtonSpacer" />
+  <expression value="ColorFont" id="WindowTitleColor" />
+  <tile width="2" mode_hor="normal" left="0" height="2" mode_vert="normal" source_id="masksrc" id="WindowMaskTopLeft" top="0" />
+  <tile width="2" mode_hor="normal" left="1" height="2" mode_vert="normal" source_id="masksrc" id="WindowMaskTopRight" top="0" />
+  <tile width="1" mode_hor="normal" left="0" height="1" mode_vert="normal" source_id="masksrc" id="WindowMaskBottomLeft" top="0" />
+  <tile width="1" mode_hor="normal" left="0" height="1" mode_vert="normal" source_id="masksrc" id="WindowMaskBottomRight" top="0" />
+  <tile width=".o.edgesize" mode_hor="stretched" left="0" height=".o.edgesize" mode_vert="stretched" source_id="decorationsrc" id="topleft" top="0" />
+  <tile width="2" mode_hor="tiled" left="10" height=".o.edgesize" mode_vert="stretched" source_id="decorationsrc" id="top" top="0" />
+  <tile width=".o.edgesize" mode_hor="stretched" left=".o.srcwidth-.o.edgesize" height=".o.edgesize" mode_vert="stretched" source_id="decorationsrc" id="topright" top="0" />
+  <tile width=".o.edgesize" mode_hor="stretched" left="0" height=".o.titleheight" mode_vert="stretched" source_id="decorationsrc" id="titleleft" top=".o.edgesize" />
+  <tile width="2" mode_hor="tiled" left="10" height=".o.titleheight" mode_vert="stretched" source_id="decorationsrc" id="title" top=".o.edgesize" />
+  <tile width=".o.edgesize" mode_hor="stretched" left=".o.srcwidth-.o.edgesize" height=".o.titleheight" mode_vert="stretched" source_id="decorationsrc" id="titleright" top=".o.edgesize" />
+  <tile width="2" mode_hor="tiled" left="10" height="1" mode_vert="stretched" source_id="decorationsrc" id="titlebottom" top=".o.edgesize+.o.titleheight" />
+  <tile width=".o.edgesize" mode_hor="stretched" left="0" height="2" mode_vert="tiled" source_id="decorationsrc" id="left" top=".o.srcheight-.o.edgesize-1" />
+  <tile width=".o.edgesize" mode_hor="stretched" left=".o.srcwidth-.o.edgesize" height="2" mode_vert="tiled" source_id="decorationsrc" id="right" top=".o.srcheight-.o.edgesize-1" />
+  <tile width=".o.edgesize" source_object="" mode_hor="stretched" left="0" height=".o.edgesize" mode_vert="stretched" source_id="decorationsrc" id="bottomleft" top=".o.srcheight-.o.edgesize" />
+  <tile width="2" mode_hor="tiled" left="10" height=".o.edgesize" mode_vert="stretched" source_id="decorationsrc" id="bottom" top=".o.srcheight-.o.edgesize" />
+  <tile width=".o.edgesize" mode_hor="stretched" left=".o.srcwidth-.o.edgesize" height=".o.edgesize" mode_vert="stretched" source_id="decorationsrc" id="bottomright" top=".o.srcheight-.o.edgesize" />
+  <tile width="2" mode_hor="tiled" left="10" height=".o.srcheight-2*.o.edgesize" mode_vert="stretched" source_id="decorationsrc" id="center" top=".o.edgesize" />
+  <layout id="bglayout" >
+   <column fixed_size=".o.BorderLeft" type="fixed" />
+   <column type="expanding" />
+   <column fixed_size=".o.BorderRight" type="fixed" />
+   <row fixed_size=".o.TitleEdgeTop" type="fixed" >
+    <cell tile_id="topleft" type="tile" />
+    <cell tile_id="top" type="tile" />
+    <cell tile_id="topright" type="tile" />
+   </row>
+   <row fixed_size=".o.TitleHeight" type="fixed" >
+    <cell tile_id="titleleft" type="tile" />
+    <cell tile_id="title" type="tile" />
+    <cell tile_id="titleright" type="tile" />
+   </row>
+   <row fixed_size=".o.TitleEdgeBottom" type="fixed" >
+    <cell tile_id="left" type="tile" />
+    <cell tile_id="titlebottom" type="tile" />
+    <cell tile_id="right" type="tile" />
+   </row>
+   <row type="expanding" >
+    <cell tile_id="left" type="tile" />
+    <cell type="empty" />
+    <cell tile_id="right" type="tile" />
+   </row>
+   <row fixed_size=".o.BorderBottom" type="fixed" >
+    <cell tile_id="bottomleft" type="tile" />
+    <cell tile_id="bottom" type="tile" />
+    <cell tile_id="bottomright" type="tile" />
+   </row>
+  </layout>
+  <layout id="title" >
+   <column fixed_size=".o.TitleEdgeLeft+ButtonGroupLeftWidth+.o.TitleBorders" type="fixed" />
+   <column type="expanding" />
+   <column fixed_size=".o.TitleBorders+ButtonGroupRightWidth+.o.TitleEdgeRight" type="fixed" />
+   <row fixed_size=".o.TitleEdgeTop" type="fixed" >
+    <cell type="empty" />
+    <cell type="empty" />
+    <cell type="empty" />
+   </row>
+   <row fixed_size=".o.TitleHeight" type="fixed" >
+    <cell type="empty" />
+    <cell special_id="WindowTitle" type="special" />
+    <cell type="empty" />
+   </row>
+  </layout>
+  <paint>
+   <layer layout_id="bglayout" />
+   <layer layout_id="title" />
+  </paint>
+ </object>
+ <object implement="Decoration.active.max.*.*" extend="DecorationActiveNormal" id="DecorationActiveMax" >
+  <expression value="0" id="BorderLeft" />
+  <expression value="0" id="BorderRight" />
+  <expression value="0" id="BorderBottom" />
+  <expression value="0" id="TitleEdgeTop" />
+  <expression value="0" id="TitleEdgeLeft" />
+  <expression value="0" id="TitleEdgeRight" />
+  <tile width="0" mode_hor="normal" left="0" height="0" mode_vert="normal" source_id="masksrc" id="WindowMaskTopLeft" top="0" />
+  <tile width="0" mode_hor="normal" left="0" height="0" mode_vert="normal" source_id="masksrc" id="WindowMaskTopRight" top="0" />
+  <tile width="0" mode_hor="normal" left="0" height="0" mode_vert="normal" source_id="masksrc" id="WindowMaskBottomLeft" top="0" />
+  <tile width="0" mode_hor="normal" left="0" height="0" mode_vert="normal" source_id="masksrc" id="WindowMaskBottomRight" top="0" />
+ </object>
+ <!--	<object id="DecorationActiveRest" implement="Decoration.active.*.*.*" extend="DecorationActiveNormal"/> -->
+ <object implement="Decoration.inactive.normal.*.*" extend="DecorationActiveNormal" id="DecorationInactiveNormal" />
+ <object implement="Decoration.inactive.max.*.*" extend="DecorationInactiveNormal" id="DecorationInactiveMax" >
+  <expression value="0" id="BorderLeft" />
+  <expression value="0" id="BorderRight" />
+  <expression value="0" id="BorderBottom" />
+  <expression value="0" id="TitleEdgeTop" />
+  <expression value="0" id="TitleEdgeLeft" />
+  <expression value="0" id="TitleEdgeRight" />
+ </object>
+ <!--	<object id="DecorationInactiveRest" implement="Decoration.inactive.*.*.*" extend="DecorationInactiveNormal"/> -->
+ <object id="button_normal" >
+  <source type="svg" id="decorationsrc" file="testdecorationbutton.svg" />
+  <expression value="1" id="zoom" />
+  <expression value="20" id="srcwidth" />
+  <expression value="20" id="srcheight" />
+  <expression value="3" id="edgesize" />
+  <tile width=".o.edgesize" mode_hor="stretched" left="0" height=".o.edgesize" mode_vert="stretched" source_id="decorationsrc" id="topleft" top="0" />
+  <tile width="2" mode_hor="tiled" left="10" height=".o.edgesize" mode_vert="stretched" source_id="decorationsrc" id="top" top="0" />
+  <tile width=".o.edgesize" mode_hor="stretched" left=".o.srcwidth-.o.edgesize" height=".o.edgesize" mode_vert="stretched" source_id="decorationsrc" id="topright" top="0" />
+  <tile width=".o.edgesize" mode_hor="stretched" left="0" height="2" mode_vert="tiled" source_id="decorationsrc" id="left" top=".o.edgesize+1" />
+  <tile width="2" mode_hor="tiled" left=".o.edgesize+1" height="2" mode_vert="tiled" source_id="decorationsrc" id="center" top=".o.edgesize+1" />
+  <tile width=".o.edgesize" mode_hor="stretched" left=".o.srcwidth-.o.edgesize" height="2" mode_vert="tiled" source_id="decorationsrc" id="right" top=".o.edgesize+1" />
+  <tile width=".o.edgesize" source_object="" mode_hor="stretched" left="0" height=".o.edgesize" mode_vert="stretched" source_id="decorationsrc" id="bottomleft" top=".o.srcheight-.o.edgesize" />
+  <tile width="2" mode_hor="tiled" left=".o.edgesize+1" height=".o.edgesize" mode_vert="stretched" source_id="decorationsrc" id="bottom" top=".o.srcheight-.o.edgesize" />
+  <tile width=".o.edgesize" mode_hor="stretched" left=".o.srcwidth-.o.edgesize" height=".o.edgesize" mode_vert="stretched" source_id="decorationsrc" id="bottomright" top=".o.srcheight-.o.edgesize" />
+  <tile width="2" mode_hor="tiled" left=".o.edgesize+1" height=".o.srcheight-2*.o.edgesize" mode_vert="stretched" source_id="decorationsrc" id="center" top=".o.edgesize" />
+  <layout id="button" >
+   <column fixed_size=".o.edgesize*.o.zoom" type="fixed" />
+   <column type="expanding" />
+   <column fixed_size=".o.edgesize*.o.zoom" type="fixed" />
+   <row fixed_size=".o.edgesize*.o.zoom" type="fixed" >
+    <cell tile_id="topleft" type="tile" />
+    <cell tile_id="top" type="tile" />
+    <cell tile_id="topright" type="tile" />
+   </row>
+   <row type="expanding" >
+    <cell tile_id="left" type="tile" />
+    <cell tile_id="center" type="tile" />
+    <cell tile_id="right" type="tile" />
+   </row>
+   <row fixed_size=".o.edgesize*.o.zoom" type="fixed" >
+    <cell tile_id="bottomleft" type="tile" />
+    <cell tile_id="bottom" type="tile" />
+    <cell tile_id="bottomright" type="tile" />
+   </row>
+  </layout>
+ </object>
+ <object extend="button_normal" id="button_prelight" >
+  <source type="svg" id="decorationsrc" file="testdecorationbutton.svg" >
+   <replace_style_attr attr="fill-opacity" element_id="rect2788" value="0.8" />
+  </source>
+ </object>
+ <object extend="button_normal" id="button_pressed" >
+  <source type="svg" id="decorationsrc" file="testdecorationbutton.svg" >
+   <replace_style_attr attr="fill-opacity" element_id="rect2788" value="0.2" />
+   <replace_style_attr attr="stroke-opacity" element_id="rect2788" value="0.7" />
+  </source>
+ </object>
+ <object implement="Button.close.normal.*.*" id="ButtonCloseNormal" >
+  <!--		<expression id="ButtonWidth" value="20"/>
 		<expression id="ButtonHeight" value="18"/>-->
-
-		<source id="iconsrc" type="svg" file="icon_close.svg"/>
-		
-		<tile id="buttonicon" mode_hor="stretched" mode_vert="stretched" source_id="iconsrc" left="0" top="0" width="10" height="10"/>
-
-		<expression id="iconMargin" value="4"/>
-
-		<layout id="icon">
-			<column type="fixed" fixed_size=".o.iconMargin"/>
-			<column type="expanding"/>
-			<column type="fixed" fixed_size=".o.iconMargin"/>
-			<row type="fixed" fixed_size=".o.iconMargin">
-				<cell type="empty"/>
-				<cell type="empty"/>
-				<cell type="empty"/>
-			</row>
-			<row type="expanding">
-				<cell type="empty"/>
-				<cell type="tile" tile_id="buttonicon"/>
-				<cell type="empty"/>
-			</row>
-			<row type="fixed" fixed_size=".o.iconMargin">
-				<cell type="empty"/>
-				<cell type="empty"/>
-				<cell type="empty"/>
-			</row>
-		</layout>
-
-		<layout id="icon_sunken">
-			<column type="fixed" fixed_size=".o.iconMargin"/>
-			<column type="expanding"/>
-			<column type="fixed" fixed_size=".o.iconMargin"/>
-			<row type="fixed" fixed_size=".o.iconMargin+1">
-				<cell type="empty"/>
-				<cell type="empty"/>
-				<cell type="empty"/>
-			</row>
-			<row type="expanding">
-				<cell type="empty"/>
-				<cell type="tile" tile_id="buttonicon"/>
-				<cell type="empty"/>
-			</row>
-			<row type="fixed" fixed_size=".o.iconMargin-1">
-				<cell type="empty"/>
-				<cell type="empty"/>
-				<cell type="empty"/>
-			</row>
-		</layout>
-
-		<paint>
-			<layer layout_object="button_normal" layout_id="button"/>
-			<layer layout_id="icon"/>
-		</paint>
-	</object>
-	<object id="ButtonClosePrelight" implement="Button.close.prelight.*.*" extend="ButtonCloseNormal">
-		<paint>
-			<layer layout_object="button_prelight" layout_id="button"/>
-			<layer layout_id="icon"/>
-		</paint>
-	</object>
-	<object id="ButtonClosePressed" implement="Button.close.pressed.*.*" extend="ButtonCloseNormal">
-		<paint>
-			<layer layout_object="button_pressed" layout_id="button"/>
-			<layer layout_id="icon_sunken"/>
-		</paint>
-	</object>
-
-	<object id="ButtonMaxNormal" implement="Button.maximize.normal.*.*" extend="ButtonCloseNormal">
-		<source id="iconsrc" type="svg" file="icon_maximize.svg"/>
-	</object>
-	<object id="ButtonMaxPrelight" implement="Button.maximize.prelight.*.*" extend="ButtonMaxNormal">
-		<paint>
-			<layer layout_object="button_prelight" layout_id="button"/>
-			<layer layout_id="icon"/>
-		</paint>
-	</object>
-	<object id="ButtonMaxPressed" implement="Button.maximize.pressed.*.*" extend="ButtonMaxNormal">
-		<paint>
-			<layer layout_object="button_pressed" layout_id="button"/>
-			<layer layout_id="icon_sunken"/>
-		</paint>
-	</object>
-
-	<object id="ButtonMaxRestoreNormal" implement="Button.maxRestore.normal.*.*" extend="ButtonCloseNormal">
-		<source id="iconsrc" type="svg" file="icon_max_restore.svg"/>
-	</object>
-	<object id="ButtonMaxRestorePrelight" implement="Button.maxRestore.prelight.*.*" extend="ButtonMaxRestoreNormal">
-		<paint>
-			<layer layout_object="button_prelight" layout_id="button"/>
-			<layer layout_id="icon"/>
-		</paint>
-	</object>
-	<object id="ButtonMaxRestorePressed" implement="Button.maxRestore.pressed.*.*" extend="ButtonMaxRestoreNormal">
-		<paint>
-			<layer layout_object="button_pressed" layout_id="button"/>
-			<layer layout_id="icon_sunken"/>
-		</paint>
-	</object>
-
-	<object id="ButtonMaxVertRestoreNormal" implement="Button.maxVertRestore.normal.*.*" extend="ButtonMaxRestoreNormal"/>
-	<object id="ButtonMaxHorRestoreNormal" implement="Button.maxHorRestore.normal.*.*" extend="ButtonMaxRestoreNormal"/>
-	<object id="ButtonMaxVertRestorePrelight" implement="Button.maxVertRestore.prelight.*.*" extend="ButtonMaxRestoreNormal"/>
-	<object id="ButtonMaxHorRestorePrelight" implement="Button.maxHorRestore.prelight.*.*" extend="ButtonMaxRestoreNormal"/>
-	<object id="ButtonMaxVertRestorePressed" implement="Button.maxVertRestore.pressed.*.*" extend="ButtonMaxRestoreNormal"/>
-	<object id="ButtonMaxHorRestorePressed" implement="Button.maxHorRestore.pressed.*.*" extend="ButtonMaxRestoreNormal"/>
-
-	<object id="ButtonHelpNormal" implement="Button.help.normal.*.*" extend="ButtonCloseNormal">
-		<source id="iconsrc" type="svg" file="icon_help.svg"/>
-	</object>
-	<object id="ButtonHelpPrelight" implement="Button.help.prelight.*.*" extend="ButtonHelpNormal">
-		<paint>
-			<layer layout_object="button_prelight" layout_id="button"/>
-			<layer layout_id="icon"/>
-		</paint>
-	</object>
-	<object id="ButtonHelpPressed" implement="Button.help.pressed.*.*" extend="ButtonHelpNormal">
-		<paint>
-			<layer layout_object="button_pressed" layout_id="button"/>
-			<layer layout_id="icon_sunken"/>
-		</paint>
-	</object>
-
-	<object id="ButtonMenuNormal" implement="Button.menu.normal.*.*" extend="ButtonCloseNormal">
-		<layout id="icon">
-			<column type="fixed" fixed_size=".o.iconMargin"/>
-			<column type="expanding"/>
-			<column type="fixed" fixed_size=".o.iconMargin"/>
-			<row type="fixed" fixed_size=".o.iconMargin">
-				<cell type="empty"/>
-				<cell type="empty"/>
-				<cell type="empty"/>
-			</row>
-			<row type="expanding">
-				<cell type="empty"/>
-				<cell type="special" special_id="WindowIcon"/>
-				<cell type="empty"/>
-			</row>
-			<row type="fixed" fixed_size=".o.iconMargin">
-				<cell type="empty"/>
-				<cell type="empty"/>
-				<cell type="empty"/>
-			</row>
-		</layout>
-		<layout id="icon_sunken">
-			<column type="fixed" fixed_size=".o.iconMargin"/>
-			<column type="expanding"/>
-			<column type="fixed" fixed_size=".o.iconMargin"/>
-			<row type="fixed" fixed_size=".o.iconMargin">
-				<cell type="empty"/>
-				<cell type="empty"/>
-				<cell type="empty"/>
-			</row>
-			<row type="expanding">
-				<cell type="empty"/>
-				<cell type="special" special_id="WindowIcon"/>
-				<cell type="empty"/>
-			</row>
-			<row type="fixed" fixed_size=".o.iconMargin">
-				<cell type="empty"/>
-				<cell type="empty"/>
-				<cell type="empty"/>
-			</row>
-		</layout>
-	</object>
-	<object id="ButtonMenuPrelight" implement="Button.menu.prelight.*.*" extend="ButtonMenuNormal">
-		<paint>
-			<layer layout_object="button_prelight" layout_id="button"/>
-			<layer layout_id="icon"/>
-		</paint>
-	</object>
-	<object id="ButtonMenuPressed" implement="Button.menu.pressed.*.*" extend="ButtonMenuNormal">
-		<paint>
-			<layer layout_object="button_pressed" layout_id="button"/>
-			<layer layout_id="icon_sunken"/>
-		</paint>
-	</object>
-	
-	<object id="ButtonMinNormal" implement="Button.minimize.normal.*.*" extend="ButtonCloseNormal">
-		<source id="iconsrc" type="svg" file="icon_minimize.svg"/>
-	</object>
-	<object id="ButtonMinPrelight" implement="Button.minimize.prelight.*.*" extend="ButtonMinNormal">
-		<paint>
-			<layer layout_object="button_prelight" layout_id="button"/>
-			<layer layout_id="icon"/>
-		</paint>
-	</object>
-	<object id="ButtonMinPressed" implement="Button.minimize.pressed.*.*" extend="ButtonMinNormal">
-		<paint>
-			<layer layout_object="button_pressed" layout_id="button"/>
-			<layer layout_id="icon_sunken"/>
-		</paint>
-	</object>
-
-	<object id="ButtonAboveNormal" implement="Button.above.normal.*.*" extend="ButtonCloseNormal">
-		<source id="iconsrc" type="svg" file="icon_above.svg"/>
-	</object>
-	<object id="ButtonAbovePrelight" implement="Button.above.prelight.*.*" extend="ButtonAboveNormal">
-		<paint>
-			<layer layout_object="button_prelight" layout_id="button"/>
-			<layer layout_id="icon"/>
-		</paint>
-	</object>
-	<object id="ButtonAbovePressed" implement="Button.above.pressed.*.*" extend="ButtonAboveNormal">
-		<paint>
-			<layer layout_object="button_pressed" layout_id="button"/>
-			<layer layout_id="icon_sunken"/>
-		</paint>
-	</object>
-
-	<object id="ButtonBelowNormal" implement="Button.below.normal.*.*" extend="ButtonCloseNormal">
-		<source id="iconsrc" type="svg" file="icon_below.svg"/>
-	</object>
-	<object id="ButtonBelowPrelight" implement="Button.below.prelight.*.*" extend="ButtonBelowNormal">
-		<paint>
-			<layer layout_object="button_prelight" layout_id="button"/>
-			<layer layout_id="icon"/>
-		</paint>
-	</object>
-	<object id="ButtonBelowPressed" implement="Button.below.pressed.*.*" extend="ButtonBelowNormal">
-		<paint>
-			<layer layout_object="button_pressed" layout_id="button"/>
-			<layer layout_id="icon_sunken"/>
-		</paint>
-	</object>
-
-	<object id="ButtonShadeNormal" implement="Button.shade.normal.*.*" extend="ButtonCloseNormal">
-		<source id="iconsrc" type="svg" file="icon_shade.svg"/>
-	</object>
-	<object id="ButtonShadePrelight" implement="Button.shade.prelight.*.*" extend="ButtonShadeNormal">
-		<paint>
-			<layer layout_object="button_prelight" layout_id="button"/>
-			<layer layout_id="icon"/>
-		</paint>
-	</object>
-	<object id="ButtonShadePressed" implement="Button.shade.pressed.*.*" extend="ButtonShadeNormal">
-		<paint>
-			<layer layout_object="button_pressed" layout_id="button"/>
-			<layer layout_id="icon_sunken"/>
-		</paint>
-	</object>
-
-	<object id="ButtonAllDeskNormal" implement="Button.allDesktops.normal.*.*" extend="ButtonCloseNormal">
-		<source id="iconsrc" type="svg" file="icon_oad.svg"/>
-	</object>
-	<object id="ButtonAllDeskPrelight" implement="Button.allDesktops.prelight.*.*" extend="ButtonAllDeskNormal">
-		<paint>
-			<layer layout_object="button_prelight" layout_id="button"/>
-			<layer layout_id="icon"/>
-		</paint>
-	</object>
-	<object id="ButtonAllDeskPressed" implement="Button.allDesktops.pressed.*.*" extend="ButtonAllDeskNormal">
-		<paint>
-			<layer layout_object="button_pressed" layout_id="button"/>
-			<layer layout_id="icon_sunken"/>
-		</paint>
-	</object>
-
-	<object id="ButtonAboveRestoreNormal" implement="Button.aboveRestore.normal.*.*" extend="ButtonCloseNormal">
-		<source id="iconsrc" type="svg" file="icon_above_restore.svg"/>
-	</object>
-	<object id="ButtonAboveRestorePrelight" implement="Button.aboveRestore.prelight.*.*" extend="ButtonAboveRestoreNormal">
-		<paint>
-			<layer layout_object="button_prelight" layout_id="button"/>
-			<layer layout_id="icon"/>
-		</paint>
-	</object>
-	<object id="ButtonAboveRestorePressed" implement="Button.aboveRestore.pressed.*.*" extend="ButtonAboveRestoreNormal">
-		<paint>
-			<layer layout_object="button_pressed" layout_id="button"/>
-			<layer layout_id="icon_sunken"/>
-		</paint>
-	</object>
-	
-	<object id="ButtonBelowRestoreNormal" implement="Button.belowRestore.normal.*.*" extend="ButtonCloseNormal">
-		<source id="iconsrc" type="svg" file="icon_below_restore.svg"/>
-	</object>
-	<object id="ButtonBelowRestorePrelight" implement="Button.belowRestore.prelight.*.*" extend="ButtonBelowRestoreNormal">
-		<paint>
-			<layer layout_object="button_prelight" layout_id="button"/>
-			<layer layout_id="icon"/>
-		</paint>
-	</object>
-	<object id="ButtonBelowRestorePressed" implement="Button.belowRestore.pressed.*.*" extend="ButtonBelowRestoreNormal">
-		<paint>
-			<layer layout_object="button_pressed" layout_id="button"/>
-			<layer layout_id="icon_sunken"/>
-		</paint>
-	</object>
-	
-	<object id="ButtonShadeRestoreNormal" implement="Button.shadeRestore.normal.*.*" extend="ButtonCloseNormal">
-		<source id="iconsrc" type="svg" file="icon_shade_restore.svg"/>
-	</object>
-<!--	<object id="ButtonShadeRestoreNormal" implement="Button.shadeRestore.prelight.*.*" extend="ButtonShadeRestoreNormal">
+  <source type="svg" id="iconsrc" file="icon_close.svg" />
+  <tile width="10" mode_hor="stretched" left="0" height="10" mode_vert="stretched" source_id="iconsrc" id="buttonicon" top="0" />
+  <expression value="4" id="iconMargin" />
+  <layout id="icon" >
+   <column fixed_size=".o.iconMargin" type="fixed" />
+   <column type="expanding" />
+   <column fixed_size=".o.iconMargin" type="fixed" />
+   <row fixed_size=".o.iconMargin" type="fixed" >
+    <cell type="empty" />
+    <cell type="empty" />
+    <cell type="empty" />
+   </row>
+   <row type="expanding" >
+    <cell type="empty" />
+    <cell tile_id="buttonicon" type="tile" />
+    <cell type="empty" />
+   </row>
+   <row fixed_size=".o.iconMargin" type="fixed" >
+    <cell type="empty" />
+    <cell type="empty" />
+    <cell type="empty" />
+   </row>
+  </layout>
+  <layout id="icon_sunken" >
+   <column fixed_size=".o.iconMargin" type="fixed" />
+   <column type="expanding" />
+   <column fixed_size=".o.iconMargin" type="fixed" />
+   <row fixed_size=".o.iconMargin+1" type="fixed" >
+    <cell type="empty" />
+    <cell type="empty" />
+    <cell type="empty" />
+   </row>
+   <row type="expanding" >
+    <cell type="empty" />
+    <cell tile_id="buttonicon" type="tile" />
+    <cell type="empty" />
+   </row>
+   <row fixed_size=".o.iconMargin-1" type="fixed" >
+    <cell type="empty" />
+    <cell type="empty" />
+    <cell type="empty" />
+   </row>
+  </layout>
+  <paint>
+   <layer layout_object="button_normal" layout_id="button" />
+   <layer layout_id="icon" />
+  </paint>
+ </object>
+ <object implement="Button.close.prelight.*.*" extend="ButtonCloseNormal" id="ButtonClosePrelight" >
+  <paint>
+   <layer layout_object="button_prelight" layout_id="button" />
+   <layer layout_id="icon" />
+  </paint>
+ </object>
+ <object implement="Button.close.pressed.*.*" extend="ButtonCloseNormal" id="ButtonClosePressed" >
+  <paint>
+   <layer layout_object="button_pressed" layout_id="button" />
+   <layer layout_id="icon_sunken" />
+  </paint>
+ </object>
+ <object implement="Button.maximize.normal.*.*" extend="ButtonCloseNormal" id="ButtonMaxNormal" >
+  <source type="svg" id="iconsrc" file="icon_maximize.svg" />
+ </object>
+ <object implement="Button.maximize.prelight.*.*" extend="ButtonMaxNormal" id="ButtonMaxPrelight" >
+  <paint>
+   <layer layout_object="button_prelight" layout_id="button" />
+   <layer layout_id="icon" />
+  </paint>
+ </object>
+ <object implement="Button.maximize.pressed.*.*" extend="ButtonMaxNormal" id="ButtonMaxPressed" >
+  <paint>
+   <layer layout_object="button_pressed" layout_id="button" />
+   <layer layout_id="icon_sunken" />
+  </paint>
+ </object>
+ <object implement="Button.maxRestore.normal.*.*" extend="ButtonCloseNormal" id="ButtonMaxRestoreNormal" >
+  <source type="svg" id="iconsrc" file="icon_max_restore.svg" />
+ </object>
+ <object implement="Button.maxRestore.prelight.*.*" extend="ButtonMaxRestoreNormal" id="ButtonMaxRestorePrelight" >
+  <paint>
+   <layer layout_object="button_prelight" layout_id="button" />
+   <layer layout_id="icon" />
+  </paint>
+ </object>
+ <object implement="Button.maxRestore.pressed.*.*" extend="ButtonMaxRestoreNormal" id="ButtonMaxRestorePressed" >
+  <paint>
+   <layer layout_object="button_pressed" layout_id="button" />
+   <layer layout_id="icon_sunken" />
+  </paint>
+ </object>
+ <object implement="Button.maxVertRestore.normal.*.*" extend="ButtonMaxRestoreNormal" id="ButtonMaxVertRestoreNormal" />
+ <object implement="Button.maxHorRestore.normal.*.*" extend="ButtonMaxRestoreNormal" id="ButtonMaxHorRestoreNormal" />
+ <object implement="Button.maxVertRestore.prelight.*.*" extend="ButtonMaxRestoreNormal" id="ButtonMaxVertRestorePrelight" />
+ <object implement="Button.maxHorRestore.prelight.*.*" extend="ButtonMaxRestoreNormal" id="ButtonMaxHorRestorePrelight" />
+ <object implement="Button.maxVertRestore.pressed.*.*" extend="ButtonMaxRestoreNormal" id="ButtonMaxVertRestorePressed" />
+ <object implement="Button.maxHorRestore.pressed.*.*" extend="ButtonMaxRestoreNormal" id="ButtonMaxHorRestorePressed" />
+ <object implement="Button.help.normal.*.*" extend="ButtonCloseNormal" id="ButtonHelpNormal" >
+  <source type="svg" id="iconsrc" file="icon_help.svg" />
+ </object>
+ <object implement="Button.help.prelight.*.*" extend="ButtonHelpNormal" id="ButtonHelpPrelight" >
+  <paint>
+   <layer layout_object="button_prelight" layout_id="button" />
+   <layer layout_id="icon" />
+  </paint>
+ </object>
+ <object implement="Button.help.pressed.*.*" extend="ButtonHelpNormal" id="ButtonHelpPressed" >
+  <paint>
+   <layer layout_object="button_pressed" layout_id="button" />
+   <layer layout_id="icon_sunken" />
+  </paint>
+ </object>
+ <object implement="Button.menu.normal.*.*" extend="ButtonCloseNormal" id="ButtonMenuNormal" >
+  <layout id="icon" >
+   <column fixed_size=".o.iconMargin" type="fixed" />
+   <column type="expanding" />
+   <column fixed_size=".o.iconMargin" type="fixed" />
+   <row fixed_size=".o.iconMargin" type="fixed" >
+    <cell type="empty" />
+    <cell type="empty" />
+    <cell type="empty" />
+   </row>
+   <row type="expanding" >
+    <cell type="empty" />
+    <cell special_id="WindowIcon" type="special" />
+    <cell type="empty" />
+   </row>
+   <row fixed_size=".o.iconMargin" type="fixed" >
+    <cell type="empty" />
+    <cell type="empty" />
+    <cell type="empty" />
+   </row>
+  </layout>
+  <layout id="icon_sunken" >
+   <column fixed_size=".o.iconMargin" type="fixed" />
+   <column type="expanding" />
+   <column fixed_size=".o.iconMargin" type="fixed" />
+   <row fixed_size=".o.iconMargin" type="fixed" >
+    <cell type="empty" />
+    <cell type="empty" />
+    <cell type="empty" />
+   </row>
+   <row type="expanding" >
+    <cell type="empty" />
+    <cell special_id="WindowIcon" type="special" />
+    <cell type="empty" />
+   </row>
+   <row fixed_size=".o.iconMargin" type="fixed" >
+    <cell type="empty" />
+    <cell type="empty" />
+    <cell type="empty" />
+   </row>
+  </layout>
+ </object>
+ <object implement="Button.menu.prelight.*.*" extend="ButtonMenuNormal" id="ButtonMenuPrelight" >
+  <paint>
+   <layer layout_object="button_prelight" layout_id="button" />
+   <layer layout_id="icon" />
+  </paint>
+ </object>
+ <object implement="Button.menu.pressed.*.*" extend="ButtonMenuNormal" id="ButtonMenuPressed" >
+  <paint>
+   <layer layout_object="button_pressed" layout_id="button" />
+   <layer layout_id="icon_sunken" />
+  </paint>
+ </object>
+ <object implement="Button.minimize.normal.*.*" extend="ButtonCloseNormal" id="ButtonMinNormal" >
+  <source type="svg" id="iconsrc" file="icon_minimize.svg" />
+ </object>
+ <object implement="Button.minimize.prelight.*.*" extend="ButtonMinNormal" id="ButtonMinPrelight" >
+  <paint>
+   <layer layout_object="button_prelight" layout_id="button" />
+   <layer layout_id="icon" />
+  </paint>
+ </object>
+ <object implement="Button.minimize.pressed.*.*" extend="ButtonMinNormal" id="ButtonMinPressed" >
+  <paint>
+   <layer layout_object="button_pressed" layout_id="button" />
+   <layer layout_id="icon_sunken" />
+  </paint>
+ </object>
+ <object implement="Button.above.normal.*.*" extend="ButtonCloseNormal" id="ButtonAboveNormal" >
+  <source type="svg" id="iconsrc" file="icon_above.svg" />
+ </object>
+ <object implement="Button.above.prelight.*.*" extend="ButtonAboveNormal" id="ButtonAbovePrelight" >
+  <paint>
+   <layer layout_object="button_prelight" layout_id="button" />
+   <layer layout_id="icon" />
+  </paint>
+ </object>
+ <object implement="Button.above.pressed.*.*" extend="ButtonAboveNormal" id="ButtonAbovePressed" >
+  <paint>
+   <layer layout_object="button_pressed" layout_id="button" />
+   <layer layout_id="icon_sunken" />
+  </paint>
+ </object>
+ <object implement="Button.below.normal.*.*" extend="ButtonCloseNormal" id="ButtonBelowNormal" >
+  <source type="svg" id="iconsrc" file="icon_below.svg" />
+ </object>
+ <object implement="Button.below.prelight.*.*" extend="ButtonBelowNormal" id="ButtonBelowPrelight" >
+  <paint>
+   <layer layout_object="button_prelight" layout_id="button" />
+   <layer layout_id="icon" />
+  </paint>
+ </object>
+ <object implement="Button.below.pressed.*.*" extend="ButtonBelowNormal" id="ButtonBelowPressed" >
+  <paint>
+   <layer layout_object="button_pressed" layout_id="button" />
+   <layer layout_id="icon_sunken" />
+  </paint>
+ </object>
+ <object implement="Button.shade.normal.*.*" extend="ButtonCloseNormal" id="ButtonShadeNormal" >
+  <source type="svg" id="iconsrc" file="icon_shade.svg" />
+ </object>
+ <object implement="Button.shade.prelight.*.*" extend="ButtonShadeNormal" id="ButtonShadePrelight" >
+  <paint>
+   <layer layout_object="button_prelight" layout_id="button" />
+   <layer layout_id="icon" />
+  </paint>
+ </object>
+ <object implement="Button.shade.pressed.*.*" extend="ButtonShadeNormal" id="ButtonShadePressed" >
+  <paint>
+   <layer layout_object="button_pressed" layout_id="button" />
+   <layer layout_id="icon_sunken" />
+  </paint>
+ </object>
+ <object implement="Button.allDesktops.normal.*.*" extend="ButtonCloseNormal" id="ButtonAllDeskNormal" >
+  <source type="svg" id="iconsrc" file="icon_oad.svg" />
+ </object>
+ <object implement="Button.allDesktops.prelight.*.*" extend="ButtonAllDeskNormal" id="ButtonAllDeskPrelight" >
+  <paint>
+   <layer layout_object="button_prelight" layout_id="button" />
+   <layer layout_id="icon" />
+  </paint>
+ </object>
+ <object implement="Button.allDesktops.pressed.*.*" extend="ButtonAllDeskNormal" id="ButtonAllDeskPressed" >
+  <paint>
+   <layer layout_object="button_pressed" layout_id="button" />
+   <layer layout_id="icon_sunken" />
+  </paint>
+ </object>
+ <object implement="Button.aboveRestore.normal.*.*" extend="ButtonCloseNormal" id="ButtonAboveRestoreNormal" >
+  <source type="svg" id="iconsrc" file="icon_above_restore.svg" />
+ </object>
+ <object implement="Button.aboveRestore.prelight.*.*" extend="ButtonAboveRestoreNormal" id="ButtonAboveRestorePrelight" >
+  <paint>
+   <layer layout_object="button_prelight" layout_id="button" />
+   <layer layout_id="icon" />
+  </paint>
+ </object>
+ <object implement="Button.aboveRestore.pressed.*.*" extend="ButtonAboveRestoreNormal" id="ButtonAboveRestorePressed" >
+  <paint>
+   <layer layout_object="button_pressed" layout_id="button" />
+   <layer layout_id="icon_sunken" />
+  </paint>
+ </object>
+ <object implement="Button.belowRestore.normal.*.*" extend="ButtonCloseNormal" id="ButtonBelowRestoreNormal" >
+  <source type="svg" id="iconsrc" file="icon_below_restore.svg" />
+ </object>
+ <object implement="Button.belowRestore.prelight.*.*" extend="ButtonBelowRestoreNormal" id="ButtonBelowRestorePrelight" >
+  <paint>
+   <layer layout_object="button_prelight" layout_id="button" />
+   <layer layout_id="icon" />
+  </paint>
+ </object>
+ <object implement="Button.belowRestore.pressed.*.*" extend="ButtonBelowRestoreNormal" id="ButtonBelowRestorePressed" >
+  <paint>
+   <layer layout_object="button_pressed" layout_id="button" />
+   <layer layout_id="icon_sunken" />
+  </paint>
+ </object>
+ <object implement="Button.shadeRestore.normal.*.*" extend="ButtonCloseNormal" id="ButtonShadeRestoreNormal" >
+  <source type="svg" id="iconsrc" file="icon_shade_restore.svg" />
+ </object>
+ <!--	<object id="ButtonShadeRestoreNormal" implement="Button.shadeRestore.prelight.*.*" extend="ButtonShadeRestoreNormal">
 		<paint>
 			<layer layout_object="button_prelight" layout_id="button"/>
 			<layer layout_id="icon"/>
 		</paint>
 	</object> -->
-	<object id="ButtonShadeRestorePressed" implement="Button.shadeRestore.pressed.*.*" extend="ButtonShadeRestoreNormal">
-		<paint>
-			<layer layout_object="button_pressed" layout_id="button"/>
-			<layer layout_id="icon_sunken"/>
-		</paint>
-	</object>
-
-	<object id="ButtonAllDeskRestoreNormal" implement="Button.allDesktopsRestore.normal.*.*" extend="ButtonCloseNormal">
-		<source id="iconsrc" type="svg" file="icon_oad_restore.svg"/>
-	</object>
-	<object id="ButtonAllDeskRestorePrelight" implement="Button.allDesktopsRestore.prelight.*.*" extend="ButtonAllDeskRestoreNormal">
-		<paint>
-			<layer layout_object="button_prelight" layout_id="button"/>
-			<layer layout_id="icon"/>
-		</paint>
-	</object>
-	<object id="ButtonAllDeskRestorePressed" implement="Button.allDesktopsRestore.pressed.*.*" extend="ButtonAllDeskRestoreNormal">
-		<paint>
-			<layer layout_object="button_pressed" layout_id="button"/>
-			<layer layout_id="icon_sunken"/>
-		</paint>
-	</object>
-
-
+ <object implement="Button.shadeRestore.pressed.*.*" extend="ButtonShadeRestoreNormal" id="ButtonShadeRestorePressed" >
+  <paint>
+   <layer layout_object="button_pressed" layout_id="button" />
+   <layer layout_id="icon_sunken" />
+  </paint>
+ </object>
+ <object implement="Button.allDesktopsRestore.normal.*.*" extend="ButtonCloseNormal" id="ButtonAllDeskRestoreNormal" >
+  <source type="svg" id="iconsrc" file="icon_oad_restore.svg" />
+ </object>
+ <object implement="Button.allDesktopsRestore.prelight.*.*" extend="ButtonAllDeskRestoreNormal" id="ButtonAllDeskRestorePrelight" >
+  <paint>
+   <layer layout_object="button_prelight" layout_id="button" />
+   <layer layout_id="icon" />
+  </paint>
+ </object>
+ <object implement="Button.allDesktopsRestore.pressed.*.*" extend="ButtonAllDeskRestoreNormal" id="ButtonAllDeskRestorePressed" >
+  <paint>
+   <layer layout_object="button_pressed" layout_id="button" />
+   <layer layout_id="icon_sunken" />
+  </paint>
+ </object>
 </cokoon_theme>
-
 <!-- kate: tab-width 4;-->

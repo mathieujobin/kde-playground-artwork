@@ -3,6 +3,7 @@
 #find_package(Qt4 REQUIRED)
 
 add_subdirectory( tests )
+add_subdirectory( themeeditor )
 
 include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
 

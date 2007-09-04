@@ -1,5 +1,5 @@
-/* This file is part of the coKoon theme library
- * Copyright (C) 2006 Sandro Giessl <giessl@kde.org>
+/* This file is part of the Cokoon theme library
+ * Copyright (C) 2007 Sandro Giessl <giessl@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -97,7 +97,7 @@ class Q_DECL_EXPORT Specification : protected QXmlStreamReader
     /**
      * Read XML file @p fileName and construct a theme specification from it.
      */
-    bool loadSpecification(const QString &fileName);
+    virtual bool loadSpecification(const QString &fileName);
 
     /**
      * Deletes all items.
@@ -146,20 +146,20 @@ class Q_DECL_EXPORT Specification : protected QXmlStreamReader
  *
  * @author Sandro Giessl <giessl@kde.org>
  */
-class Q_DECL_EXPORT DocumentSpecification
+class Q_DECL_EXPORT DocumentSpecification : public Specification
 {
  public:
 
     /**
      * Construct.
      */
-    DocumentSpecification(const Specification *spec);
+    DocumentSpecification();
     /**
      * Destruct.
      */
     virtual ~DocumentSpecification();
 
-    void setSpecification(const Specification *spec);
+    virtual bool loadSpecification(const QString &fileName);
 
     const QStringList &variables() const;
     const QStringList &identifiers() const;
