@@ -7,5 +7,5 @@ kde4_add_executable(oxybgtest bgtest.cpp)
 target_link_libraries(oxybgtest ${KDE4_KDEUI_LIBS})
 
 # buttontest
-kde4_add_executable(oxybuttontest buttontest.cpp)
+kde4_add_executable(oxybuttontest buttontest.cpp tileset.cpp)
 target_link_libraries(oxybuttontest ${KDE4_KDEUI_LIBS})

@@ -7,6 +7,8 @@
 
 #include <math.h>
 
+#include "tileset.h"
+
 int r = 224, g = 224, b = 224;
 
 //BEGIN TileCache
@@ -67,7 +69,6 @@ void drawShadow(QPainter &p, const QColor &color, int size)
     p.drawEllipse(QRectF(0, offset, size, size+offset));
 }
 
-
 QPixmap windecoButton(const QColor &color, int size)
 {
     QPixmap pixmap(size, (int)ceil(double(size)*10.0/9.0));
@@ -103,10 +104,10 @@ QPixmap windecoButton(const QColor &color, int size)
     maskGradient.setColorAt(0.95, QColor(0,0,0,255));
     p.setCompositionMode(QPainter::CompositionMode_DestinationIn);
     p.setBrush(maskGradient);
-    p.drawRect(0,0,20,20);
+    p.drawRect(0,0,18,20);
 
     // inside
-    QLinearGradient innerGradient(0, 2, 0, 16);
+    QLinearGradient innerGradient(0, 3, 0, 15);
     innerGradient.setColorAt(0.0, color);
     innerGradient.setColorAt(1.0, light);
     p.setCompositionMode(QPainter::CompositionMode_DestinationOver);
@@ -170,7 +171,80 @@ QPixmap roundSlab(const QColor &color, int size)
 
     return pixmap;
 }
+
+TileSet slab(const QColor &color, int size)
+{
+    int s = size/2;
+    double shade = 0.0;
+    QPixmap pixmap(size & -2, (int)ceil(double(size)*14.0/12.0));
+    pixmap.fill(QColor(0,0,0,0));
+
+    QPainter p(&pixmap);
+    p.setRenderHints(QPainter::Antialiasing);
+    p.setPen(Qt::NoPen);
+    p.setWindow(0,0,12,14);
+
+    QColor base = KColorUtils::shade(color, shade);
+    QColor light = KColorUtils::shade(calcLightColor(color), shade);
+    QColor dark = KColorUtils::shade(calcDarkColor(color), shade);
+
+    // shadow
+    drawShadow(p, calcShadowColor(color), 12);
+
+    // bevel, part 1
+    qreal y = KColorUtils::luma(base);
+    qreal yl = KColorUtils::luma(light);
+    qreal yd = KColorUtils::luma(light);
+    QLinearGradient bevelGradient1(0, 6, 0, 10);
+    bevelGradient1.setColorAt(0.0, light);
+    bevelGradient1.setColorAt(0.9, dark);
+    if (y < yl && y > yd) // no middle when color is very light/dark
+        bevelGradient1.setColorAt(0.5, base);
+    p.setBrush(bevelGradient1);
+    p.drawEllipse(QRectF(2.0,2.0,8.0,8.0));
+
+    // bevel, part 2
+    QLinearGradient bevelGradient2(0, 5, 0, 18);
+    bevelGradient2.setColorAt(0.0, light);
+    bevelGradient2.setColorAt(0.9, base);
+    p.setBrush(bevelGradient2);
+    p.drawEllipse(QRectF(2.6,2.6,6.8,6.8));
+
+    // inside mask
+    QRadialGradient maskGradient(6,6,2.56,6,6);
+    maskGradient.setColorAt(0.99, QColor(0,0,0,0));
+    maskGradient.setColorAt(1.0, QColor(0,0,0,255));
+    p.setCompositionMode(QPainter::CompositionMode_DestinationIn);
+    p.setBrush(maskGradient);
+    p.drawRect(0,0,12,14);
+
+    return TileSet(pixmap, s-1, s, 2, 1);
+}
+
 //END TileCache
+
+//BEGIN Render
+void renderSlab(QPainter &p, const QRect &rect, const QColor &color, int size, double shade = 0.0)
+{
+    TileSet tileset = slab(color, size);
+    int s1 = size/4;
+    int s2 = s1 + (int)ceil(double(size)*2.0/14.0);
+
+    p.save();
+
+    QLinearGradient innerGradient(0, rect.top() - rect.height(), 0, rect.bottom());
+    innerGradient.setColorAt(0.0, KColorUtils::shade(calcLightColor(color), shade));
+    innerGradient.setColorAt(1.0, color);
+    p.setPen(Qt::NoPen);
+    p.setBrush(/*innerGradient*/QBrush(Qt::red));
+    p.drawRect(rect/*.adjusted(s1, s1, -s1, -s2)*/);
+
+    p.setCompositionMode(QPainter::CompositionMode_SourceOver);
+    tileset.render(rect, p);
+
+    p.restore();
+}
+//END Render
 
 //BEGIN Widget
 class Widget : public QWidget
@@ -179,7 +253,7 @@ class Widget : public QWidget
 public:
     Widget(QWidget *parent=0) : QWidget(parent) {}
 
-    QSize sizeHint() const { return QSize(410, 200); }
+    QSize sizeHint() const { return QSize(610, 200); }
 
 protected:
     void paintEvent(QPaintEvent *e)
@@ -201,6 +275,8 @@ protected:
         p.drawPixmap(QRect(224,0,180,200), roundSlab(color, 180));
 
         // regular button
+        renderSlab(p, QRect(2,62,18,20), color, 12);
+        renderSlab(p, QRect(424,0,180,200), color, 120);
         // TODO
     }
 
