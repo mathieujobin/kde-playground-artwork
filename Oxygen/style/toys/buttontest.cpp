@@ -122,6 +122,8 @@ QPixmap windecoButton(const QColor &color, int size)
     p.setBrush(highlightGradient);
     p.drawEllipse(QRectF(2.0,2.0,14.0,14.0));
 
+    p.end();
+
     return pixmap;
 }
 
@@ -169,6 +171,8 @@ QPixmap roundSlab(const QColor &color, int size)
     p.setBrush(innerGradient);
     p.drawEllipse(QRectF(3.4,3.4,11.2,11.2));
 
+    p.end();
+
     return pixmap;
 }
 
@@ -211,12 +215,11 @@ TileSet slab(const QColor &color, int size)
     p.drawEllipse(QRectF(2.6,2.6,6.8,6.8));
 
     // inside mask
-    QRadialGradient maskGradient(6,6,2.56,6,6);
-    maskGradient.setColorAt(0.99, QColor(0,0,0,0));
-    maskGradient.setColorAt(1.0, QColor(0,0,0,255));
-    p.setCompositionMode(QPainter::CompositionMode_DestinationIn);
-    p.setBrush(maskGradient);
-    p.drawRect(0,0,12,14);
+    p.setCompositionMode(QPainter::CompositionMode_DestinationOut);
+    p.setBrush(QBrush(Qt::black));
+    p.drawEllipse(QRectF(3.4,3.4,5.2,5.2));
+
+    p.end();
 
     return TileSet(pixmap, s-1, s, 2, 1);
 }
@@ -229,6 +232,8 @@ void renderSlab(QPainter &p, const QRect &rect, const QColor &color, int size, d
     TileSet tileset = slab(color, size);
     int s1 = size/4;
     int s2 = s1 + (int)ceil(double(size)*2.0/14.0);
+    int rx = (50*size) / rect.width();
+    int ry = (50*size) / rect.height();
 
     p.save();
 
@@ -236,8 +241,8 @@ void renderSlab(QPainter &p, const QRect &rect, const QColor &color, int size, d
     innerGradient.setColorAt(0.0, KColorUtils::shade(calcLightColor(color), shade));
     innerGradient.setColorAt(1.0, color);
     p.setPen(Qt::NoPen);
-    p.setBrush(/*innerGradient*/QBrush(Qt::red));
-    p.drawRect(rect/*.adjusted(s1, s1, -s1, -s2)*/);
+    p.setBrush(innerGradient);
+    p.drawRoundRect(rect.adjusted(s1, s1, -s1, -s2), rx, ry);
 
     p.setCompositionMode(QPainter::CompositionMode_SourceOver);
     tileset.render(rect, p);
@@ -277,7 +282,6 @@ protected:
         // regular button
         renderSlab(p, QRect(2,62,18,20), color, 12);
         renderSlab(p, QRect(424,0,180,200), color, 120);
-        // TODO
     }
 
 };
