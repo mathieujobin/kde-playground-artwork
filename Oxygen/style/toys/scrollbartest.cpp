@@ -54,7 +54,7 @@ QColor alphaColor(QColor color, double alpha)
 
 TileSet vertical(const QColor &color, int size, int width, int offset)
 {
-    offset %= size * 10;
+    offset %= (size * 10);
 
     int s = size/2;
     int length = s*22;
@@ -71,16 +71,16 @@ TileSet vertical(const QColor &color, int size, int width, int offset)
     QRectF rect(0, 0, w, h);
     p.setWindow(0, 0, w, h);
 
-    // TODO whole color set needs to be rethought for dark/light
-    const QColor highlight = Qt::white; // TODO
-    const QColor shine = KColorUtils::lighten(color, 0.7); // TODO
+    const QColor highlight = Qt::white;
+    const QColor shine = KColorScheme::shade(color, KColorScheme::LightShade, 0.7);
     const QColor light = KColorScheme::shade(color, KColorScheme::MidlightShade, 0.7);
+    const QColor mid = KColorScheme::shade(color, KColorScheme::MidShade, 0.7);
     const QColor dark = KColorScheme::shade(color, KColorScheme::DarkShade, 0.7);
     const QColor shadow = KColorScheme::shade(color, KColorScheme::ShadowShade, 0.7);
 
     // base (don't draw anything more than this, ever, hence SourceAtop)
     QLinearGradient baseGradient(0, 0, w*0.6, 0);
-    baseGradient.setColorAt(0.0, light);
+    baseGradient.setColorAt(0.0, color);
     baseGradient.setColorAt(1.0, dark);
     p.setBrush(baseGradient);
     p.drawRoundRect(rect, int(1200.0/w), 12);
@@ -88,8 +88,9 @@ TileSet vertical(const QColor &color, int size, int width, int offset)
 
     // shine
     QLinearGradient shineGradient(0, 0, w*2.0, 0);
-    shineGradient.setColorAt(0.0, alphaColor(shine, 0.0));
-    shineGradient.setColorAt(1.0, alphaColor(shine, 1.0));
+    shineGradient.setColorAt(0.0, light);
+    shineGradient.setColorAt(0.5, alphaColor(color, 0.5));
+    shineGradient.setColorAt(1.0, color);
     p.setBrush(shineGradient);
     p.drawRoundRect(QRectF(w*0.4, 0, w*0.6, h), int(2000.0/w), 12);
     p.setClipping(false);
@@ -133,8 +134,7 @@ TileSet vertical(const QColor &color, int size, int width, int offset)
         // mask
         bp.setCompositionMode(QPainter::CompositionMode_DestinationOut);
         bp.setBrush(Qt::black);
-        bp.drawRoundRect(rect.adjusted(1, 2, -1, -2), int(1400.0/w), 12);
-        bp.drawRoundRect(QRectF(w-3, 7, 2, h-14), 100, 5);
+        bp.drawRoundRect(rect.adjusted(1, 2, -1, -2), int(1400.0/w), 9);
 
         bp.end();
     }
