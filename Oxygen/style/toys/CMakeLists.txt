@@ -10,6 +10,10 @@ target_link_libraries(oxybgtest ${KDE4_KDEUI_LIBS})
 kde4_add_executable(oxybuttontest buttontest.cpp tileset.cpp)
 target_link_libraries(oxybuttontest ${KDE4_KDEUI_LIBS})
 
+# scrollbartest
+kde4_add_executable(oxyscrollbartest scrollbartest.cpp tileset.cpp)
+target_link_libraries(oxyscrollbartest ${KDE4_KDEUI_LIBS})
+
 # scrollbardemo
 set(scrollbardemo_SRCS scrollbardemo.cpp)
 kde4_add_ui_files(scrollbardemo_SRCS scrollbar.ui)
