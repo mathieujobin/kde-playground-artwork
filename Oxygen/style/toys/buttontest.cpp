@@ -244,7 +244,6 @@ void renderSlab(QPainter &p, const QRect &rect, const QColor &color, int size, d
     p.setBrush(innerGradient);
     p.drawRoundRect(rect.adjusted(s1, s1, -s1, -s2), rx, ry);
 
-    p.setCompositionMode(QPainter::CompositionMode_SourceOver);
     tileset.render(rect, p);
 
     p.restore();
@@ -347,7 +346,7 @@ public:
 int main(int argc, char **argv)
 {
     KAboutData about("oxybuttontest", 0, ki18n("oxybuttontest"), "0.1",
-                     ki18n("Oxygen style background test application"),
+                     ki18n("Oxygen style button test application"),
                      KAboutData::License_GPL, ki18n("(C) 2007 Matthew Woehlke"));
     about.addAuthor( ki18n("Matthew Woehlke"), KLocalizedString(), "mw_triad@users.sourceforge.net" );
     KCmdLineArgs::init(argc, argv, &about);
