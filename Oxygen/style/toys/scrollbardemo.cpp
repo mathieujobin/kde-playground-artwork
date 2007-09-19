@@ -16,7 +16,7 @@ public:
     }
 };
 
-#include "scrollbartest.moc"
+#include "scrollbardemo.moc"
 
 int main(int argc, char **argv)
 {
