@@ -78,13 +78,25 @@ TileSet vertical(const QColor &color, int size, int width, int offset)
     const QColor dark = KColorScheme::shade(color, KColorScheme::DarkShade, 0.7);
     const QColor shadow = KColorScheme::shade(color, KColorScheme::ShadowShade, 0.7);
 
-    // base (don't draw anything more than this, ever, hence SourceAtop)
+    // mask; never draw outside this, hence SourceAtop
+    // drawRoundRect is too bloody hard to control to get the corners perfectly
+    // square (i.e. circles not ellipses), so draw the mask in parts with real
+    // circles
+    p.setBrush(Qt::black); // color doesn't matter
+    p.drawRect(rect.adjusted(7,0,-7,0));
+    p.drawRect(rect.adjusted(0,7,0,-7));
+    p.drawEllipse(QRectF(0,0,14,14));
+    p.drawEllipse(QRectF(w-14,0,14,14));
+    p.drawEllipse(QRectF(0,h-14,14,14));
+    p.drawEllipse(QRectF(w-14,h-14,14,14));
+    p.setCompositionMode(QPainter::CompositionMode_SourceAtop);
+
+    // base
     QLinearGradient baseGradient(0, 0, w*0.6, 0);
     baseGradient.setColorAt(0.0, color);
     baseGradient.setColorAt(1.0, dark);
     p.setBrush(baseGradient);
-    p.drawRoundRect(rect, int(1200.0/w), 12);
-    p.setCompositionMode(QPainter::CompositionMode_SourceAtop);
+    p.drawRect(rect);
 
     // shine
     QLinearGradient shineGradient(0, 0, w*2.0, 0);
@@ -171,11 +183,11 @@ protected:
         int offset = (o * size) / 8;
 
         TileSet ts1 = vertical(color, size, width, offset);
-        p.setClipRect(rect.adjusted(0, 0, 0, -l+1));
+        p.setClipRect(rect.adjusted(0, 0, 0, -l));
         ts1.render(rect, p);
 
         TileSet ts2 = vertical(color, size, width, offset+rect.height());
-        p.setClipRect(rect.left(), rect.bottom() - l + 1, rect.width(), l+2);
+        p.setClipRect(rect.left(), rect.bottom() - l + 1, rect.width(), l+1);
         ts2.render(rect, p);
 
         p.restore();
