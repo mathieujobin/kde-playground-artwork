@@ -73,7 +73,6 @@ TileSet vertical(const QColor &color, int size, int width, int offset)
 
     const QColor highlight = Qt::white;
     const QColor light = KColorScheme::shade(color, KColorScheme::MidlightShade, 0.7);
-    const QColor mid = KColorScheme::shade(color, KColorScheme::MidShade, 0.7);
     const QColor dark = KColorScheme::shade(color, KColorScheme::DarkShade, 0.7);
     const QColor shadow = KColorScheme::shade(color, KColorScheme::ShadowShade, 0.7);
 
