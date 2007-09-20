@@ -54,7 +54,7 @@ QColor alphaColor(QColor color, double alpha)
 
 TileSet vertical(const QColor &color, int size, int width, int offset)
 {
-    offset %= (size * 10);
+    offset %= (size * 12);
 
     int s = size/2;
     int length = s*22;
@@ -105,8 +105,8 @@ TileSet vertical(const QColor &color, int size, int width, int offset)
     p.drawRoundRect(QRectF(w*0.4, 0, w*0.6, h), int(2000.0/w), 12);
     p.setClipping(false);
 
-    // shimmer - should tile every 60 units, with 1:3 slope
-    QLinearGradient shimmerGradient(0, o, 72.0/10.4, 216.0/10.4 + o);
+    // shimmer - should tile every 48 units, with 1:3 slope
+    QLinearGradient shimmerGradient(0, o, 14.4/2.0, 43.2/2.0 + o);
     shimmerGradient.setSpread(QGradient::ReflectSpread);
     shimmerGradient.setColorAt(0.0, alphaColor(dark, 0.40));
     shimmerGradient.setColorAt(0.6, alphaColor(dark, 0.10));
@@ -155,8 +155,9 @@ TileSet vertical(const QColor &color, int size, int width, int offset)
     p.setWindow(0, 0, w, h);
 
     // highlight
-    p.setBrush(alphaColor(highlight, 0.5));
+    p.setBrush(alphaColor(highlight, 0.2));
     p.drawRoundRect(QRectF(w-3, 7, 1.5, h-14), 100, 5);
+    p.drawRoundRect(QRectF(1.5, 7, 1.5, h-14), 100, 5);
 
     return TileSet(pixmap, 1, s*3, width-2, s*16);
 }
@@ -170,7 +171,7 @@ class Widget : public QWidget
 public:
     Widget(QWidget *parent=0) : QWidget(parent) {}
 
-    QSize sizeHint() const { return QSize(600, 400); }
+    QSize sizeHint() const { return QSize(600, 800); }
 
 protected:
     void renderVertical(QPainter &p, const QColor &color, int size, int width, QRect rect)
@@ -184,7 +185,7 @@ protected:
         p.setClipRect(rect.adjusted(0, 0, 0, -l));
         ts1.render(rect, p);
 
-        TileSet ts2 = vertical(color, size, width, offset+rect.height());
+        TileSet ts2 = vertical(color, size, width, offset+(rect.height()+size)*3);
         p.setClipRect(rect.left(), rect.bottom() - l + 1, rect.width(), l+1);
         ts2.render(rect, p);
 
@@ -202,8 +203,8 @@ protected:
         //p.fillRect(rect, color);
 
         // vertical
-        renderVertical(p, color, 8, 14, QRect(2, 2, 14, 100));
-        renderVertical(p, color, 80, 140, QRect(32, 2, 140, 396));
+        renderVertical(p, color, 8, 14, QRect(2, 2, 14, 200));
+        renderVertical(p, color, 80, 140, QRect(32, 2, 140, 766));
     }
 
 };
@@ -232,7 +233,7 @@ public:
         s[0] = new QSpinBox; s[0]->setRange(0, 255); s[0]->setValue(r);
         s[1] = new QSpinBox; s[1]->setRange(0, 255); s[1]->setValue(g);
         s[2] = new QSpinBox; s[2]->setRange(0, 255); s[2]->setValue(b);
-        s[3] = new QSpinBox; s[3]->setRange(0, 64); s[3]->setValue(o);
+        s[3] = new QSpinBox; s[3]->setRange(0, 100); s[3]->setValue(o);
         connect(s[0], SIGNAL(valueChanged(int)), this, SLOT(   redChanged(int)));
         connect(s[1], SIGNAL(valueChanged(int)), this, SLOT( greenChanged(int)));
         connect(s[2], SIGNAL(valueChanged(int)), this, SLOT(  blueChanged(int)));
