@@ -118,8 +118,8 @@ TileSet vertical(const QColor &color, int size, int width, int offset)
     QLinearGradient dimGradient(0, 0, 0, h/2);
     dimGradient.setSpread(QGradient::ReflectSpread);
     dimGradient.setColorAt(0.00, alphaColor(dark, 1.0));
-    dimGradient.setColorAt(0.16, alphaColor(dark, 0.3));
-    dimGradient.setColorAt(0.25, alphaColor(dark, 0.0));
+    dimGradient.setColorAt(0.19, alphaColor(dark, 0.3));
+    dimGradient.setColorAt(0.27, alphaColor(dark, 0.0));
     p.setBrush(dimGradient);
     p.drawRect(rect);
 
@@ -133,12 +133,26 @@ TileSet vertical(const QColor &color, int size, int width, int offset)
         bp.setPen(Qt::NoPen);
         bp.setWindow(0, 0, w, h);
 
+        // anti-highlight
+        QLinearGradient ahGradient(0, 0, 0, 8);
+        ahGradient.setColorAt(0.0, dark);
+        ahGradient.setColorAt(0.9, dark);
+        ahGradient.setColorAt(1.0, shadow);
+        bp.setBrush(ahGradient);
+        bp.drawRect(rect);
+
+        // anti-highlight mask
+        bp.setCompositionMode(QPainter::CompositionMode_DestinationOut);
+        bp.setBrush(Qt::black);
+        bp.drawRoundRect(rect.adjusted(0, 1, 0, -1), int(1400.0/w), 9);
+
         // bevel
         QLinearGradient bevelGradient(0, 0, 0, 8);
         bevelGradient.setColorAt(0.0, alphaColor(highlight, 0.4));
         bevelGradient.setColorAt(0.9, alphaColor(highlight, 0.4));
         bevelGradient.setColorAt(1.0, alphaColor(shadow, 0.8));
         bp.setBrush(bevelGradient);
+        bp.setCompositionMode(QPainter::CompositionMode_DestinationOver);
         bp.drawRect(rect);
 
         // mask
