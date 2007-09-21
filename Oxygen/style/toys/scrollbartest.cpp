@@ -149,7 +149,7 @@ TileSet vertical(const QColor &color, int size, int width, int offset)
         // bevel
         QLinearGradient bevelGradient(0, 0, 0, 8);
         bevelGradient.setColorAt(0.0, alphaColor(highlight, 0.4));
-        bevelGradient.setColorAt(0.9, alphaColor(highlight, 0.4));
+        bevelGradient.setColorAt(0.6, alphaColor(highlight, 0.4));
         bevelGradient.setColorAt(1.0, alphaColor(shadow, 0.8));
         bp.setBrush(bevelGradient);
         bp.setCompositionMode(QPainter::CompositionMode_DestinationOver);
