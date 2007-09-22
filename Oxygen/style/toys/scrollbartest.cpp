@@ -62,7 +62,13 @@ public:
     TileSet vertical(int size, int width, int offset) const;
 
 private:
-    QLinearGradient shimmerGradient() const;
+    void mask(QPainter &p, const QRectF &rect) const;
+
+    QLinearGradient baseGradient(double width, Qt::Orientation orient) const;
+    QLinearGradient shineGradient(double width, Qt::Orientation orient) const;
+    QLinearGradient shimmerGradient(double offset, Qt::Orientation orient) const;
+    QLinearGradient dimGradient(double height, Qt::Orientation orient) const;
+
     QPixmap bevel(int width, int height, double w, double h, int rx, int ry) const;
 
     QColor color;
@@ -80,6 +86,100 @@ OxygenScrollbar::OxygenScrollbar(const QColor &c) : color(c),
 {
 }
 
+void OxygenScrollbar::mask(QPainter &p, const QRectF &rect) const
+{
+    double w = rect.width();
+    double h = rect.height();
+
+    // drawRoundRect is too bloody hard to control to get the corners perfectly
+    // square (i.e. circles not ellipses), so draw the mask in parts with real
+    // circles
+    p.setBrush(Qt::black); // color doesn't matter
+    p.drawRect(rect.adjusted(7,0,-7,0));
+    p.drawRect(rect.adjusted(0,7,0,-7));
+    p.drawEllipse(QRectF(0,0,14,14));
+    p.drawEllipse(QRectF(w-14,0,14,14));
+    p.drawEllipse(QRectF(0,h-14,14,14));
+    p.drawEllipse(QRectF(w-14,h-14,14,14));
+
+    // never draw outside the mask
+    p.setCompositionMode(QPainter::CompositionMode_SourceAtop);
+}
+
+QLinearGradient OxygenScrollbar::baseGradient(double width, Qt::Orientation orient) const
+{
+    double x = 0.0, y = 0.0;
+    width *= 0.6;
+    if (orient == Qt::Vertical)
+        x = width;
+    else
+        y = width;
+
+    QLinearGradient gradient(0, 0, x, y);
+    gradient.setColorAt(0.0, color);
+    gradient.setColorAt(1.0, dark);
+
+    return gradient;
+}
+
+QLinearGradient OxygenScrollbar::shineGradient(double width, Qt::Orientation orient) const
+{
+    double x = 0.0, y = 0.0;
+    width *= 2.0;
+    if (orient == Qt::Vertical)
+        x = width;
+    else
+        y = width;
+
+    QLinearGradient gradient(0, 0, x, y);
+    gradient.setColorAt(0.0, light);
+    gradient.setColorAt(0.5, alphaColor(color, 0.5));
+    gradient.setColorAt(1.0, color);
+
+    return gradient;
+}
+
+QLinearGradient OxygenScrollbar::shimmerGradient(double offset, Qt::Orientation orient) const
+{
+    double x = 0.0, y = 0.0, xo = 0.0, yo = 0.0;
+    if (orient == Qt::Vertical) {
+        yo = offset;
+        x = 14.4/2.0;
+        y = 43.2/2.0;
+    } else {
+        xo = offset;
+        x = 43.2/2.0;
+        y = -14.4/2.0;
+    }
+
+    // should tile every 48 units, with 1:3 slope
+    QLinearGradient gradient(xo, yo, x+xo, y+yo);
+    gradient.setSpread(QGradient::ReflectSpread);
+    gradient.setColorAt(0.0, alphaColor(dark, 0.40));
+    gradient.setColorAt(0.6, alphaColor(dark, 0.10));
+    gradient.setColorAt(1.0, alphaColor(dark, 0.00));
+
+    return gradient;
+}
+
+QLinearGradient OxygenScrollbar::dimGradient(double height, Qt::Orientation orient) const
+{
+    double x = 0.0, y = 0.0;
+    height *= 0.5;
+    if (orient == Qt::Vertical)
+        y = height;
+    else
+        x = height;
+
+    QLinearGradient gradient(0, 0, x, y);
+    gradient.setSpread(QGradient::ReflectSpread);
+    gradient.setColorAt(0.00, alphaColor(dark, 1.0));
+    gradient.setColorAt(0.19, alphaColor(dark, 0.3));
+    gradient.setColorAt(0.27, alphaColor(dark, 0.0));
+
+    return gradient;
+}
+
 QPixmap OxygenScrollbar::bevel(int width, int height, double w, double h, int rx, int ry) const
 {
     QPixmap pixmap(width, height);
@@ -88,7 +188,7 @@ QPixmap OxygenScrollbar::bevel(int width, int height, double w, double h, int rx
     QPainter p(&pixmap);
     p.setRenderHint(QPainter::Antialiasing);
     p.setPen(Qt::NoPen);
-    p.setWindow(0, 0, w, h);
+    p.setWindow(0, 0, int(w), int(h));
 
     QRectF rect(0, 0, w, h);
 
@@ -125,12 +225,12 @@ QPixmap OxygenScrollbar::bevel(int width, int height, double w, double h, int rx
 
 TileSet OxygenScrollbar::vertical(int size, int width, int offset) const
 {
-    offset %= (size * 12);
+    offset %= (size * 4);
 
     int s = size/2;
     int length = s*22;
     double w = 12.0 * double(width)/double(s*2);
-    double o = -4.0 * double(offset) / double(size);
+    double o = -12.0 * double(offset) / double(size);
     const int h = 6*22;
 
     QPixmap pixmap(width, length);
@@ -139,60 +239,33 @@ TileSet OxygenScrollbar::vertical(int size, int width, int offset) const
     QPainter p(&pixmap);
     p.setRenderHint(QPainter::Antialiasing);
     p.setPen(Qt::NoPen);
+    p.setWindow(0, 0, int(w), int(h));
     QRectF rect(0, 0, w, h);
-    p.setWindow(0, 0, w, h);
 
-    // mask; never draw outside this, hence SourceAtop
-    // drawRoundRect is too bloody hard to control to get the corners perfectly
-    // square (i.e. circles not ellipses), so draw the mask in parts with real
-    // circles
-    p.setBrush(Qt::black); // color doesn't matter
-    p.drawRect(rect.adjusted(7,0,-7,0));
-    p.drawRect(rect.adjusted(0,7,0,-7));
-    p.drawEllipse(QRectF(0,0,14,14));
-    p.drawEllipse(QRectF(w-14,0,14,14));
-    p.drawEllipse(QRectF(0,h-14,14,14));
-    p.drawEllipse(QRectF(w-14,h-14,14,14));
-    p.setCompositionMode(QPainter::CompositionMode_SourceAtop);
+    // mask; never draw outside this, hence mask() sets SourceAtop
+    mask(p, rect);
 
     // base
-    QLinearGradient baseGradient(0, 0, w*0.6, 0);
-    baseGradient.setColorAt(0.0, color);
-    baseGradient.setColorAt(1.0, dark);
-    p.setBrush(baseGradient);
+    p.setBrush(baseGradient(w, Qt::Vertical));
     p.drawRect(rect);
 
     // shine
-    QLinearGradient shineGradient(0, 0, w*2.0, 0);
-    shineGradient.setColorAt(0.0, light);
-    shineGradient.setColorAt(0.5, alphaColor(color, 0.5));
-    shineGradient.setColorAt(1.0, color);
-    p.setBrush(shineGradient);
+    p.setBrush(shineGradient(w, Qt::Vertical));
     p.drawRoundRect(QRectF(w*0.4, 0, w*0.6, h), int(2000.0/w), 12);
     p.setClipping(false);
 
-    // shimmer - should tile every 48 units, with 1:3 slope
-    QLinearGradient shimmerGradient(0, o, 14.4/2.0, 43.2/2.0 + o);
-    shimmerGradient.setSpread(QGradient::ReflectSpread);
-    shimmerGradient.setColorAt(0.0, alphaColor(dark, 0.40));
-    shimmerGradient.setColorAt(0.6, alphaColor(dark, 0.10));
-    shimmerGradient.setColorAt(1.0, alphaColor(dark, 0.00));
-    p.setBrush(shimmerGradient);
+    // shimmer
+    p.setBrush(shimmerGradient(o, Qt::Vertical));
     p.drawRect(rect);
 
     // dim edges
-    QLinearGradient dimGradient(0, 0, 0, h/2);
-    dimGradient.setSpread(QGradient::ReflectSpread);
-    dimGradient.setColorAt(0.00, alphaColor(dark, 1.0));
-    dimGradient.setColorAt(0.19, alphaColor(dark, 0.3));
-    dimGradient.setColorAt(0.27, alphaColor(dark, 0.0));
-    p.setBrush(dimGradient);
+    p.setBrush(dimGradient(h, Qt::Vertical));
     p.drawRect(rect);
 
     // bevel
     p.setWindow(0, 0, width, length);
     p.drawPixmap(0, 0, bevel(width, length, w, h, int(1400.0/w), 9));
-    p.setWindow(0, 0, w, h);
+    p.setWindow(0, 0, int(w), int(h));
 
     // highlight
     p.setBrush(alphaColor(highlight, 0.2));
@@ -215,7 +288,7 @@ class Widget : public QWidget
 public:
     Widget(QWidget *parent=0) : QWidget(parent) {}
 
-    QSize sizeHint() const { return QSize(600, 800); }
+    QSize sizeHint() const { return QSize(600, 400); }
 
 protected:
     void renderVertical(QPainter &p, const QColor &color, int size, int width, QRect rect)
@@ -229,7 +302,7 @@ protected:
         p.setClipRect(rect.adjusted(0, 0, 0, -l));
         ts1.render(rect, p);
 
-        TileSet ts2 = vertical(color, size, width, offset+(rect.height()+size)*3);
+        TileSet ts2 = vertical(color, size, width, offset+(rect.height()+size));
         p.setClipRect(rect.left(), rect.bottom() - l + 1, rect.width(), l+1);
         ts2.render(rect, p);
 
@@ -248,7 +321,7 @@ protected:
 
         // vertical
         renderVertical(p, color, 8, 14, QRect(2, 2, 14, 200));
-        renderVertical(p, color, 80, 140, QRect(32, 2, 140, 766));
+        renderVertical(p, color, 80, 140, QRect(32, 2, 140, 366));
     }
 
 };
