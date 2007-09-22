@@ -239,7 +239,7 @@ TileSet OxygenScrollbar::vertical(int size, int width, int offset) const
     QPainter p(&pixmap);
     p.setRenderHint(QPainter::Antialiasing);
     p.setPen(Qt::NoPen);
-    p.setWindow(0, 0, int(w), int(h));
+    p.setWindow(0, 0, int(w), h);
     QRectF rect(0, 0, w, h);
 
     // mask; never draw outside this, hence mask() sets SourceAtop
@@ -265,7 +265,7 @@ TileSet OxygenScrollbar::vertical(int size, int width, int offset) const
     // bevel
     p.setWindow(0, 0, width, length);
     p.drawPixmap(0, 0, bevel(width, length, w, h, int(1400.0/w), 9));
-    p.setWindow(0, 0, int(w), int(h));
+    p.setWindow(0, 0, int(w), h);
 
     // highlight
     p.setBrush(alphaColor(highlight, 0.2));
