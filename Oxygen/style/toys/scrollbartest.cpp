@@ -73,17 +73,24 @@ private:
 
     QColor color;
     QColor light;
+    QColor mid;
     QColor dark;
     QColor shadow;
     QColor highlight;
 };
 
 OxygenScrollbar::OxygenScrollbar(const QColor &c) : color(c),
-    light(KColorScheme::shade(c, KColorScheme::MidlightShade, 0.7)),
-    dark(KColorScheme::shade(c, KColorScheme::DarkShade, 0.7)),
+    light(KColorScheme::shade(c, KColorScheme::LightShade, 0.2)),
+    mid(KColorScheme::shade(c, KColorScheme::MidShade, 0.7)),
+    dark(KColorScheme::shade(c, KColorScheme::DarkShade, 0.2)),
     shadow(KColorScheme::shade(c, KColorScheme::ShadowShade, 0.7)),
     highlight(Qt::white)
 {
+    double y = KColorUtils::luma(color);
+    if (y > KColorUtils::luma(light)) {
+        light = Qt::white;
+        dark = KColorScheme::shade(c, KColorScheme::DarkShade, 0.7);
+    }
 }
 
 void OxygenScrollbar::mask(QPainter &p, const QRectF &rect) const
@@ -116,7 +123,7 @@ QLinearGradient OxygenScrollbar::baseGradient(double width, Qt::Orientation orie
 
     QLinearGradient gradient(0, y1, x, y2);
     gradient.setColorAt(0.0, color);
-    gradient.setColorAt(1.0, dark);
+    gradient.setColorAt(1.0, mid);
 
     return gradient;
 }
