@@ -11,7 +11,7 @@
 
 int r = 0, g = 128, b = 0, o = 0;
 
-//BEGIN TileCache
+//BEGIN Helpers
 bool lowThreshold(const QColor &color)
 {
     QColor darker = KColorScheme::shade(color, KColorScheme::MidShade, 0.5);
@@ -51,8 +51,79 @@ QColor alphaColor(QColor color, double alpha)
     color.setAlphaF(alpha);
     return color;
 }
+//END Helpers
 
-TileSet vertical(const QColor &color, int size, int width, int offset)
+//BEGIN OxygenScrollbar
+class OxygenScrollbar {
+public:
+    OxygenScrollbar(const QColor&);
+
+    TileSet horizontal(int size, int width, int offset) const;
+    TileSet vertical(int size, int width, int offset) const;
+
+private:
+    QLinearGradient shimmerGradient() const;
+    QPixmap bevel(int width, int height, double w, double h, int rx, int ry) const;
+
+    QColor color;
+    QColor light;
+    QColor dark;
+    QColor shadow;
+    QColor highlight;
+};
+
+OxygenScrollbar::OxygenScrollbar(const QColor &c) : color(c),
+    light(KColorScheme::shade(c, KColorScheme::MidlightShade, 0.7)),
+    dark(KColorScheme::shade(c, KColorScheme::DarkShade, 0.7)),
+    shadow(KColorScheme::shade(c, KColorScheme::ShadowShade, 0.7)),
+    highlight(Qt::white)
+{
+}
+
+QPixmap OxygenScrollbar::bevel(int width, int height, double w, double h, int rx, int ry) const
+{
+    QPixmap pixmap(width, height);
+    pixmap.fill(Qt::transparent);
+
+    QPainter p(&pixmap);
+    p.setRenderHint(QPainter::Antialiasing);
+    p.setPen(Qt::NoPen);
+    p.setWindow(0, 0, w, h);
+
+    QRectF rect(0, 0, w, h);
+
+    // anti-highlight
+    QLinearGradient ahGradient(0, 0, 0, 8);
+    ahGradient.setColorAt(0.0, dark);
+    ahGradient.setColorAt(0.9, dark);
+    ahGradient.setColorAt(1.0, shadow);
+    p.setBrush(ahGradient);
+    p.drawRect(rect);
+
+    // anti-highlight mask
+    p.setCompositionMode(QPainter::CompositionMode_DestinationOut);
+    p.setBrush(Qt::black);
+    p.drawRoundRect(rect.adjusted(0, 1, 0, -1), rx, ry);
+
+    // bevel
+    QLinearGradient bevelGradient(0, 0, 0, 8);
+    bevelGradient.setColorAt(0.0, alphaColor(highlight, 0.4));
+    bevelGradient.setColorAt(0.6, alphaColor(highlight, 0.4));
+    bevelGradient.setColorAt(1.0, alphaColor(shadow, 0.8));
+    p.setBrush(bevelGradient);
+    p.setCompositionMode(QPainter::CompositionMode_DestinationOver);
+    p.drawRect(rect);
+
+    // mask
+    p.setCompositionMode(QPainter::CompositionMode_DestinationOut);
+    p.setBrush(Qt::black);
+    p.drawRoundRect(rect.adjusted(1, 2, -1, -2), rx, ry);
+
+    p.end();
+    return pixmap;
+}
+
+TileSet OxygenScrollbar::vertical(int size, int width, int offset) const
 {
     offset %= (size * 12);
 
@@ -70,11 +141,6 @@ TileSet vertical(const QColor &color, int size, int width, int offset)
     p.setPen(Qt::NoPen);
     QRectF rect(0, 0, w, h);
     p.setWindow(0, 0, w, h);
-
-    const QColor highlight = Qt::white;
-    const QColor light = KColorScheme::shade(color, KColorScheme::MidlightShade, 0.7);
-    const QColor dark = KColorScheme::shade(color, KColorScheme::DarkShade, 0.7);
-    const QColor shadow = KColorScheme::shade(color, KColorScheme::ShadowShade, 0.7);
 
     // mask; never draw outside this, hence SourceAtop
     // drawRoundRect is too bloody hard to control to get the corners perfectly
@@ -123,49 +189,9 @@ TileSet vertical(const QColor &color, int size, int width, int offset)
     p.setBrush(dimGradient);
     p.drawRect(rect);
 
-
-    // pixmap for bevel
-    QPixmap bevelPixmap(width, length);
-    bevelPixmap.fill(Qt::transparent);
-    {
-        QPainter bp(&bevelPixmap);
-        bp.setRenderHint(QPainter::Antialiasing);
-        bp.setPen(Qt::NoPen);
-        bp.setWindow(0, 0, w, h);
-
-        // anti-highlight
-        QLinearGradient ahGradient(0, 0, 0, 8);
-        ahGradient.setColorAt(0.0, dark);
-        ahGradient.setColorAt(0.9, dark);
-        ahGradient.setColorAt(1.0, shadow);
-        bp.setBrush(ahGradient);
-        bp.drawRect(rect);
-
-        // anti-highlight mask
-        bp.setCompositionMode(QPainter::CompositionMode_DestinationOut);
-        bp.setBrush(Qt::black);
-        bp.drawRoundRect(rect.adjusted(0, 1, 0, -1), int(1400.0/w), 9);
-
-        // bevel
-        QLinearGradient bevelGradient(0, 0, 0, 8);
-        bevelGradient.setColorAt(0.0, alphaColor(highlight, 0.4));
-        bevelGradient.setColorAt(0.6, alphaColor(highlight, 0.4));
-        bevelGradient.setColorAt(1.0, alphaColor(shadow, 0.8));
-        bp.setBrush(bevelGradient);
-        bp.setCompositionMode(QPainter::CompositionMode_DestinationOver);
-        bp.drawRect(rect);
-
-        // mask
-        bp.setCompositionMode(QPainter::CompositionMode_DestinationOut);
-        bp.setBrush(Qt::black);
-        bp.drawRoundRect(rect.adjusted(1, 2, -1, -2), int(1400.0/w), 9);
-
-        bp.end();
-    }
-
     // bevel
     p.setWindow(0, 0, width, length);
-    p.drawPixmap(0, 0, bevelPixmap);
+    p.drawPixmap(0, 0, bevel(width, length, w, h, int(1400.0/w), 9));
     p.setWindow(0, 0, w, h);
 
     // highlight
@@ -176,7 +202,11 @@ TileSet vertical(const QColor &color, int size, int width, int offset)
     return TileSet(pixmap, 1, s*3, width-2, s*16);
 }
 
-//END TileCache
+TileSet vertical(const QColor &color, int size, int width, int offset)
+{
+    return OxygenScrollbar(color).vertical(size, width, offset);
+}
+//END OxygenScrollbar
 
 //BEGIN Widget
 class Widget : public QWidget
