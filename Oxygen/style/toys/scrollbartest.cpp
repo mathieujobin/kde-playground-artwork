@@ -67,7 +67,7 @@ private:
     QLinearGradient baseGradient(double width, Qt::Orientation orient) const;
     QLinearGradient shineGradient(double width, Qt::Orientation orient) const;
     QLinearGradient shimmerGradient(double offset, Qt::Orientation orient) const;
-    QLinearGradient dimGradient(double height, Qt::Orientation orient) const;
+    QLinearGradient dimGradient(Qt::Orientation orient) const;
 
     QPixmap bevel(int width, int height, double w, double h, int rx, int ry) const;
 
@@ -108,14 +108,13 @@ void OxygenScrollbar::mask(QPainter &p, const QRectF &rect) const
 
 QLinearGradient OxygenScrollbar::baseGradient(double width, Qt::Orientation orient) const
 {
-    double x = 0.0, y = 0.0;
-    width *= 0.6;
+    double x = 0.0, y1 = width, y2 = width;
     if (orient == Qt::Vertical)
-        x = width;
+        x = width * 0.6;
     else
-        y = width;
+        y2 = width * 0.4;
 
-    QLinearGradient gradient(0, 0, x, y);
+    QLinearGradient gradient(0, y1, x, y2);
     gradient.setColorAt(0.0, color);
     gradient.setColorAt(1.0, dark);
 
@@ -124,14 +123,13 @@ QLinearGradient OxygenScrollbar::baseGradient(double width, Qt::Orientation orie
 
 QLinearGradient OxygenScrollbar::shineGradient(double width, Qt::Orientation orient) const
 {
-    double x = 0.0, y = 0.0;
-    width *= 2.0;
+    double x = 0.0, y1 = -width, y2 = -width;
     if (orient == Qt::Vertical)
-        x = width;
+        x = width * 2.0;
     else
-        y = width;
+        y1 = width;
 
-    QLinearGradient gradient(0, 0, x, y);
+    QLinearGradient gradient(0, y1, x, y2);
     gradient.setColorAt(0.0, light);
     gradient.setColorAt(0.5, alphaColor(color, 0.5));
     gradient.setColorAt(1.0, color);
@@ -162,14 +160,13 @@ QLinearGradient OxygenScrollbar::shimmerGradient(double offset, Qt::Orientation 
     return gradient;
 }
 
-QLinearGradient OxygenScrollbar::dimGradient(double height, Qt::Orientation orient) const
+QLinearGradient OxygenScrollbar::dimGradient(Qt::Orientation orient) const
 {
-    double x = 0.0, y = 0.0;
-    height *= 0.5;
+    int x = 0, y = 0;
     if (orient == Qt::Vertical)
-        y = height;
+        y = 3*22;
     else
-        x = height;
+        x = 3*22;
 
     QLinearGradient gradient(0, 0, x, y);
     gradient.setSpread(QGradient::ReflectSpread);
@@ -217,7 +214,7 @@ QPixmap OxygenScrollbar::bevel(int width, int height, double w, double h, int rx
     // mask
     p.setCompositionMode(QPainter::CompositionMode_DestinationOut);
     p.setBrush(Qt::black);
-    p.drawRoundRect(rect.adjusted(1, 2, -1, -2), rx, ry);
+    p.drawRoundRect(rect.adjusted(1, 2.5, -1, -2.5), rx, ry);
 
     p.end();
     return pixmap;
@@ -259,25 +256,75 @@ TileSet OxygenScrollbar::vertical(int size, int width, int offset) const
     p.drawRect(rect);
 
     // dim edges
-    p.setBrush(dimGradient(h, Qt::Vertical));
+    p.setBrush(dimGradient(Qt::Vertical));
     p.drawRect(rect);
-
-    // bevel
-    p.setWindow(0, 0, width, length);
-    p.drawPixmap(0, 0, bevel(width, length, w, h, int(1400.0/w), 9));
-    p.setWindow(0, 0, int(w), h);
 
     // highlight
     p.setBrush(alphaColor(highlight, 0.2));
     p.drawRoundRect(QRectF(w-3, 7, 1.5, h-14), 100, 5);
     p.drawRoundRect(QRectF(1.5, 7, 1.5, h-14), 100, 5);
 
+    // bevel
+    p.setWindow(0, 0, width, length);
+    p.drawPixmap(0, 0, bevel(width, length, w, h, int(1400.0/w), 9));
+
     return TileSet(pixmap, 1, s*3, width-2, s*16);
+}
+
+TileSet OxygenScrollbar::horizontal(int size, int width, int offset) const
+{
+    offset %= (size * 4);
+
+    int s = size/2;
+    int length = s*22;
+    double h = 12.0 * double(width)/double(s*2);
+    double o = -12.0 * double(offset) / double(size);
+    const int w = 6*22;
+
+    QPixmap pixmap(length, width);
+    pixmap.fill(Qt::transparent);
+
+    QPainter p(&pixmap);
+    p.setRenderHint(QPainter::Antialiasing);
+    p.setPen(Qt::NoPen);
+    p.setWindow(0, 0, w, int(h));
+    QRectF rect(0, 0, w, h);
+
+    // mask; never draw outside this, hence mask() sets SourceAtop
+    mask(p, rect);
+
+    // base
+    p.setBrush(baseGradient(h, Qt::Horizontal));
+    p.drawRect(rect);
+
+    // shine
+    p.setBrush(shineGradient(h, Qt::Horizontal));
+    p.drawRoundRect(QRectF(0, 0, w, h*0.6), 12, int(2000.0/h));
+    p.setClipping(false);
+
+    // shimmer
+    p.setBrush(shimmerGradient(o, Qt::Horizontal));
+    p.drawRect(rect);
+
+    // dim edges
+    p.setBrush(dimGradient(Qt::Horizontal));
+    p.drawRect(rect);
+
+    // bevel
+    p.setWindow(0, 0, length, width);
+    p.drawPixmap(0, 0, bevel(length, width, w, h, 9, int(1400.0/h)));
+
+    return TileSet(pixmap, s*3, 1, s*16, width-2);
 }
 
 TileSet vertical(const QColor &color, int size, int width, int offset)
 {
     return OxygenScrollbar(color).vertical(size, width, offset);
+}
+
+TileSet horizontal(const QColor &color, int size, int width, int offset)
+{
+    return OxygenScrollbar(color).horizontal(size, width, offset);
 }
 //END OxygenScrollbar
 
@@ -295,7 +342,7 @@ protected:
     {
         p.save();
 
-        int l = ceil(double(size)*1.5);
+        int l = int(ceil(double(size)*1.5));
         int offset = (o * size) / 8;
 
         TileSet ts1 = vertical(color, size, width, offset);
@@ -304,6 +351,24 @@ protected:
 
         TileSet ts2 = vertical(color, size, width, offset+(rect.height()+size));
         p.setClipRect(rect.left(), rect.bottom() - l + 1, rect.width(), l+1);
+        ts2.render(rect, p);
+
+        p.restore();
+    }
+
+    void renderHorizontal(QPainter &p, const QColor &color, int size, int width, QRect rect)
+    {
+        p.save();
+
+        int l = int(ceil(double(size)*1.5));
+        int offset = (o * size) / 8;
+
+        TileSet ts1 = horizontal(color, size, width, offset);
+        p.setClipRect(rect.adjusted(0, 0, -l, 0));
+        ts1.render(rect, p);
+
+        TileSet ts2 = horizontal(color, size, width, offset+(rect.width()+size));
+        p.setClipRect(rect.right() - l + 1, rect.top(), l+1, rect.height());
         ts2.render(rect, p);
 
         p.restore();
@@ -322,6 +387,10 @@ protected:
         // vertical
         renderVertical(p, color, 8, 14, QRect(2, 2, 14, 200));
         renderVertical(p, color, 80, 140, QRect(32, 2, 140, 366));
+
+        // horizontal
+        renderHorizontal(p, color, 8, 14, QRect(200, 2, 200, 14));
+        renderHorizontal(p, color, 80, 140, QRect(200, 32, 366, 140));
     }
 
 };
