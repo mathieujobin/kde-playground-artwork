@@ -21,19 +21,19 @@
   Boston, MA  02110-1301  USA.
  */
 
-#include <kpixmap.h>
-#include <kpixmapeffect.h>
+//#include <kpixmap.h>
+//#include <kpixmapeffect.h>
 
-#include <qcolor.h>
-#include <qimage.h>
-#include <qpainter.h>
+#include <QColor>
+#include <QImage>
+#include <QPainter>
 
 #include "misc.h"
 
 QColor hsvRelative(QColor& baseColor, int relativeH, int relativeS, int relativeV)
 {
     int h, s, v;
-    baseColor.hsv(&h, &s, &v);
+    baseColor.getHsv(&h, &s, &v);
 
     h += relativeH;
     s += relativeS;
@@ -70,8 +70,7 @@ QColor alphaBlendColors(const QColor &bgColor, const QColor &fgColor, const int 
 }
 
 QImage recolorImage(QImage *img, QColor color) {
-    QImage destImg(img->width(),img->height(),32);
-    destImg.setAlphaBuffer(true);
+    QImage destImg(img->width(),img->height(),QImage::Format_ARGB32);
     for (int x = 0; x < img->width(); x++) {
         for (int y = 0; y < img->height(); y++) {
             if(img->pixel(x,y) == qRgb(0,0,0)) {

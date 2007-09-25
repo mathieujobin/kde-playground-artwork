@@ -25,52 +25,57 @@
 
 //#include <kdebug.h>
 
-#include <qbuttongroup.h>
-#include <qcheckbox.h>
-#include <qradiobutton.h>
-#include <qslider.h>
-#include <qspinbox.h>
-#include <qwhatsthis.h>
-#include <qimage.h>
-#include <qlabel.h>
-#include <qcombobox.h>
+#include <QGroupBox>
+#include <QCheckBox>
+#include <QRadioButton>
+#include <QButtonGroup>
+#include <QSpinBox>
+#include <QImage>
+#include <QLabel>
+#include <QComboBox>
+#include <QPixmap>
 
-#include <kdeversion.h>
 #include <kconfig.h>
 #include <klocale.h>
 #include <kglobal.h>
-#include <kurlrequester.h>
 #include <kstandarddirs.h>
 #include <kurl.h>
 #include <kfiledialog.h>
-#include <knuminput.h>
 #include <kfileitem.h>
 #include <kcolorbutton.h>
 
 #include "config.h"
-#include "configdialog.h"
 
-SUSE2Config::SUSE2Config(KConfig *config, QWidget *parent)
+SUSE2Config::SUSE2Config(KConfig *, QWidget *parent)
     : QObject(parent), m_config(0), m_dialog(0)
 {
     m_parent = parent;
     // create the configuration object
     m_config = new KConfig("kwinSUSE2rc");
-    KGlobal::locale()->insertCatalogue("kwin_clients");
-    KGlobal::locale()->insertCatalogue("kwin_SUSE2");
+    KConfigGroup cg(m_config, "General");
+
+//    KGlobal::locale()->insertCatalog("kwin_SUSE2");
 
     // create and show the configuration dialog
     m_dialog = new ConfigDialog(parent);
 
+    alignGroup = new QButtonGroup();
+    QList<QRadioButton *> alignButtons = m_dialog->titleAlign->findChildren<QRadioButton *>();
+    foreach (QRadioButton *button, alignButtons) alignGroup->addButton(button);
+
+    roundGroup = new QButtonGroup();
+    QList<QRadioButton *> roundButtons = m_dialog->roundedCorners->findChildren<QRadioButton *>();
+    foreach (QRadioButton *button, roundButtons) roundGroup->addButton(button);
+
     m_dialog->show();
 
     // load the configuration
-    load(config);
+    load(cg);
     toggleIconSettings(m_dialog->useTitleProps->isChecked());
 
     // setup the connections
-    connect(m_dialog->titleAlign, SIGNAL(clicked(int)), SIGNAL(changed()));
-    connect(m_dialog->roundCorners, SIGNAL(clicked(int)), SIGNAL(changed()));
+    connect(alignGroup, SIGNAL(buttonClicked(int)), SIGNAL(changed()));
+    connect(roundGroup, SIGNAL(buttonClicked(int)), SIGNAL(changed()));
     connect(m_dialog->menuClose, SIGNAL(toggled(bool)), SIGNAL(changed()));
     connect(m_dialog->titleShadow, SIGNAL(toggled(bool)), SIGNAL(changed()));
     connect(m_dialog->addSpace, SIGNAL(valueChanged(int)), SIGNAL(changed()));
@@ -102,127 +107,126 @@ SUSE2Config::~SUSE2Config()
     if (m_config) delete m_config;
 }
 
-void SUSE2Config::load(KConfig *)
+void SUSE2Config::load(const KConfigGroup &)
 {
-    m_config->setGroup("General");
+    KConfigGroup configGroup(m_config, "General");
 
-    QString alignValue = m_config->readEntry("TitleAlignment", "AlignLeft");
-    QRadioButton *alignButton = (QRadioButton*)m_dialog->titleAlign->child(alignValue.latin1());
+    QString alignValue = configGroup.readEntry("TitleAlignment", "AlignLeft");
+    QRadioButton *alignButton = m_dialog->titleAlign->findChild<QRadioButton *>(alignValue.toLatin1());
     if (alignButton) alignButton->setChecked(true);
 
-    QString roundValue = m_config->readEntry("RoundCorners", "NotMaximized");
-    QRadioButton *roundButton = (QRadioButton*)m_dialog->roundCorners->child(roundValue.latin1());
+    QString roundValue = configGroup.readEntry("RoundedCorners", "NotMaximized");
+    QRadioButton *roundButton = m_dialog->roundedCorners->findChild<QRadioButton *>(roundValue.toLatin1());
     if (roundButton) roundButton->setChecked(true);
 
-    bool menuClose = m_config->readBoolEntry("CloseOnMenuDoubleClick", false);
-    m_dialog->menuClose->setChecked(menuClose);
+    bool closeMenu = configGroup.readEntry("CloseOnMenuDoubleClick", false);
+    m_dialog->menuClose->setChecked(closeMenu);
 
-    bool titleShadow = m_config->readBoolEntry("TitleShadow", true);
+    bool titleShadow = configGroup.readEntry("TitleShadow", true);
     m_dialog->titleShadow->setChecked(titleShadow);
 
-    int addSpace = m_config->readNumEntry("AddSpace", 4);
+    int addSpace = configGroup.readEntry("AddSpace", 4);
     m_dialog->addSpace->setValue(addSpace);
 
-    int titlebarStyle = m_config->readNumEntry("TitleBarStyle", 0);
-    m_dialog->titlebarStyle->setCurrentItem(titlebarStyle);
+    int titlebarStyle = configGroup.readEntry("TitleBarStyle", 0);
+    m_dialog->titlebarStyle->setCurrentIndex(titlebarStyle);
 
-    int titleButtonType = m_config->readNumEntry("TitleBarButtonType", 2);
-    m_dialog->buttonType->setCurrentItem(titleButtonType);
+    int titleButtonType = configGroup.readEntry("TitleBarButtonType", 2);
+    m_dialog->buttonType->setCurrentIndex(titleButtonType);
 
-    bool customColors = m_config->readBoolEntry("CustomColors", false);
+    bool customColors = configGroup.readEntry("CustomColors", false);
     m_dialog->customColors->setChecked(customColors);
 
-    bool useTitleProps = m_config->readBoolEntry("UseTitleProps", true);
+    bool useTitleProps = configGroup.readEntry("UseTitleProps", true);
     m_dialog->useTitleProps->setChecked(useTitleProps);
 
-    bool animateButtons = m_config->readBoolEntry("AnimateButtons", true);
+    bool animateButtons = configGroup.readEntry("AnimateButtons", true);
     m_dialog->animateButtons->setChecked(animateButtons);
 
-    bool redCloseButton = m_config->readBoolEntry("RedCloseButton", false);
+    bool redCloseButton = configGroup.readEntry("RedCloseButton", false);
     m_dialog->redCloseButton->setChecked(redCloseButton);
 
-    int iconSize = m_config->readNumEntry("IconSize", 45);
+    int iconSize = configGroup.readEntry("IconSize", 45);
     m_dialog->iconSize->setValue(iconSize);
 
-    bool customIconColors = m_config->readBoolEntry("CustomIconColors", false);
+    bool customIconColors = configGroup.readEntry("CustomIconColors", false);
     m_dialog->customIconColors->setChecked(customIconColors);
 
     QColor afgcolor = QColor(10, 20, 40);
-    QColor aFgColor = m_config->readColorEntry("AFgColor", &afgcolor);
+    QColor aFgColor = configGroup.readEntry("AFgColor", afgcolor);
     m_dialog->activeFgColor->setColor(aFgColor);
 
     QColor abgcolor = QColor(210, 220, 240);
-    QColor aBgColor = m_config->readColorEntry("ABgColor", &abgcolor);
+    QColor aBgColor = configGroup.readEntry("ABgColor", abgcolor);
     m_dialog->activeBgColor->setColor(aBgColor);
 
     QColor ifgcolor = QColor(40, 40, 40);
-    QColor iFgColor = m_config->readColorEntry("IFgColor", &ifgcolor);
+    QColor iFgColor = configGroup.readEntry("IFgColor", ifgcolor);
     m_dialog->inactiveFgColor->setColor(iFgColor);
 
     QColor ibgcolor = QColor(240, 240, 240);
-    QColor iBgColor = m_config->readColorEntry("AFgColor", &ibgcolor);
+    QColor iBgColor = configGroup.readEntry("AFgColor", ibgcolor);
     m_dialog->inactiveBgColor->setColor(iBgColor);
 
-    bool iconShadow = m_config->readBoolEntry("IconShadow", true);
+    bool iconShadow = configGroup.readEntry("IconShadow", true);
     m_dialog->iconShadow->setChecked(iconShadow);
 
-    bool titleBarLogo = m_config->readBoolEntry("TitleBarLogo", false);
+    bool titleBarLogo = configGroup.readEntry("TitleBarLogo", false);
     m_dialog->titleBarLogo->setChecked(titleBarLogo);
 
-    int titleBarLogoOffset = m_config->readNumEntry("TitleBarLogoOffset", 3);
+    int titleBarLogoOffset = configGroup.readEntry("TitleBarLogoOffset", 3);
     m_dialog->titleBarLogoOffset->setValue(titleBarLogoOffset);
 
-    QString titleBarImage = locate("data", "kwin/pics/titlebar_decor.png");
-    titlebarLogoURL = m_config->readEntry("TitleBarLogoURL", titleBarImage);
+    QString titleBarImage = KStandardDirs::locate("data", "kwin/pics/titlebar_decor.png");
+    titlebarLogoURL = configGroup.readEntry("TitleBarLogoURL", titleBarImage);
     QImage tmpLogo = QImage::QImage(titlebarLogoURL);
-    m_dialog->logoImage->setPixmap(QPixmap(tmpLogo.smoothScale(120, 20, QImage::ScaleMin)));
-
+    m_dialog->logoImage->setPixmap(QPixmap::fromImage(tmpLogo.scaledToHeight(20, Qt::SmoothTransformation)));
 }
 
-void SUSE2Config::save(KConfig *) const
+void SUSE2Config::save(KConfigGroup &) const
 {
-    m_config->setGroup("General");
+    KConfigGroup configGroup(m_config, "General");
 
-    QRadioButton *alignButton = (QRadioButton*)m_dialog->titleAlign->selected();
-    if (alignButton) m_config->writeEntry("TitleAlignment", QString(alignButton->name()));
-    QRadioButton *roundButton = (QRadioButton*)m_dialog->roundCorners->selected();
-    if (roundButton) m_config->writeEntry("RoundCorners", QString(roundButton->name()));
-    m_config->writeEntry("CloseOnMenuDoubleClick", m_dialog->menuClose->isChecked());
-    m_config->writeEntry("TitleShadow", m_dialog->titleShadow->isChecked());
-    m_config->writeEntry("AddSpace", m_dialog->addSpace->value());
-    m_config->writeEntry("TitleBarStyle", m_dialog->titlebarStyle->currentItem());
+    QRadioButton *alignButton = (QRadioButton *)alignGroup->checkedButton();
+    if (alignButton) configGroup.writeEntry("TitleAlignment", QString(alignButton->objectName()));
+    QRadioButton *roundButton = (QRadioButton *)roundGroup->checkedButton();
+    if (roundButton) configGroup.writeEntry("RoundedCorners", QString(roundButton->objectName()));
+    configGroup.writeEntry("CloseOnMenuDoubleClick", m_dialog->menuClose->isChecked());
+    configGroup.writeEntry("TitleShadow", m_dialog->titleShadow->isChecked());
+    configGroup.writeEntry("AddSpace", m_dialog->addSpace->value());
+    configGroup.writeEntry("TitleBarStyle", m_dialog->titlebarStyle->currentIndex());
 
-    m_config->writeEntry("TitleBarButtonType", m_dialog->buttonType->currentItem());
-    m_config->writeEntry("CustomColors", m_dialog->customColors->isChecked());
-    m_config->writeEntry("UseTitleProps", m_dialog->useTitleProps->isChecked());
-    m_config->writeEntry("AnimateButtons", m_dialog->animateButtons->isChecked());
-    m_config->writeEntry("RedCloseButton", m_dialog->redCloseButton->isChecked());
-    m_config->writeEntry("IconSize", m_dialog->iconSize->value());
-    m_config->writeEntry("CustomIconColors", m_dialog->customIconColors->isChecked());
-    m_config->writeEntry("AFgColor", m_dialog->activeFgColor->color());
-    m_config->writeEntry("ABgColor", m_dialog->activeBgColor->color());
-    m_config->writeEntry("IFgColor", m_dialog->inactiveFgColor->color());
-    m_config->writeEntry("IBgColor", m_dialog->inactiveBgColor->color());
-    m_config->writeEntry("IconShadow", m_dialog->iconShadow->isChecked());
+    configGroup.writeEntry("TitleBarButtonType", m_dialog->buttonType->currentIndex());
+    configGroup.writeEntry("CustomColors", m_dialog->customColors->isChecked());
+    configGroup.writeEntry("UseTitleProps", m_dialog->useTitleProps->isChecked());
+    configGroup.writeEntry("AnimateButtons", m_dialog->animateButtons->isChecked());
+    configGroup.writeEntry("RedCloseButton", m_dialog->redCloseButton->isChecked());
+    configGroup.writeEntry("IconSize", m_dialog->iconSize->value());
+    configGroup.writeEntry("CustomIconColors", m_dialog->customIconColors->isChecked());
+    configGroup.writeEntry("AFgColor", m_dialog->activeFgColor->color());
+    configGroup.writeEntry("ABgColor", m_dialog->activeBgColor->color());
+    configGroup.writeEntry("IFgColor", m_dialog->inactiveFgColor->color());
+    configGroup.writeEntry("IBgColor", m_dialog->inactiveBgColor->color());
+    configGroup.writeEntry("IconShadow", m_dialog->iconShadow->isChecked());
 
-    m_config->writeEntry("TitleBarLogo", m_dialog->titleBarLogo->isChecked());
-    m_config->writeEntry("TitleBarLogoOffset", m_dialog->titleBarLogoOffset->value());
-    m_config->writeEntry("TitleBarLogoURL", QString(titlebarLogoURL));
+    configGroup.writeEntry("TitleBarLogo", m_dialog->titleBarLogo->isChecked());
+    configGroup.writeEntry("TitleBarLogoOffset", m_dialog->titleBarLogoOffset->value());
+    configGroup.writeEntry("TitleBarLogoURL", titlebarLogoURL);
     m_config->sync();
 }
 
 void SUSE2Config::defaults()
 {
-    QRadioButton *alignButton = (QRadioButton*)m_dialog->titleAlign->child("AlignLeft");
+    QRadioButton *alignButton = m_dialog->titleAlign->findChild<QRadioButton *>("AlignLeft");
     if (alignButton) alignButton->setChecked(true);
-    QRadioButton *roundButton = (QRadioButton*)m_dialog->roundCorners->child("NotMaximized");
+    QRadioButton *roundButton = m_dialog->roundedCorners->findChild<QRadioButton *>("NotMaximized");
     if (roundButton) roundButton->setChecked(true);
     m_dialog->menuClose->setChecked(false);
     m_dialog->titleShadow->setChecked(true);
     m_dialog->addSpace->setValue(4);
-    m_dialog->titlebarStyle->setCurrentItem(0);
+    m_dialog->titlebarStyle->setCurrentIndex(0);
 
-    m_dialog->buttonType->setCurrentItem(2);
+    m_dialog->buttonType->setCurrentIndex(2);
     m_dialog->customColors->setChecked(false);
     m_dialog->useTitleProps->setChecked(true);
     m_dialog->animateButtons->setChecked(true);
@@ -237,9 +241,9 @@ void SUSE2Config::defaults()
 
     m_dialog->titleBarLogo->setChecked(false);
     m_dialog->titleBarLogoOffset->setValue(3);
-    titlebarLogoURL = locate("data", "kwin/pics/titlebar_decor.png");
+    titlebarLogoURL = KStandardDirs::locate("data", "kwin/pics/titlebar_decor.png");
     QImage tmpLogo = QImage::QImage(titlebarLogoURL);
-    m_dialog->logoImage->setPixmap(QPixmap(tmpLogo.smoothScale(120, 20, QImage::ScaleMin)));
+    m_dialog->logoImage->setPixmap(QPixmap::fromImage(tmpLogo.scaledToHeight(20, Qt::SmoothTransformation)));
 }
 
 void SUSE2Config::toggleIconSettings(bool checked) const
@@ -258,12 +262,12 @@ void SUSE2Config::toggleIconSettings(bool checked) const
 
 void SUSE2Config::selectImage()
 {
-    KURL logoURL = KFileDialog::getImageOpenURL(titlebarLogoURL, m_parent, i18n("Select Logo Image"));
+    KUrl logoURL = KFileDialog::getImageOpenUrl(KUrl::fromPath(titlebarLogoURL), m_parent, i18n("Select Logo Image"));
     KFileItem tmpFileItem = KFileItem(KFileItem::Unknown, KFileItem::Unknown, logoURL);
     if (!logoURL.isEmpty() && tmpFileItem.isFile() && tmpFileItem.isReadable()) {
         titlebarLogoURL = logoURL.path();
         QImage tmpLogo = QImage::QImage(titlebarLogoURL);
-        m_dialog->logoImage->setPixmap(QPixmap(tmpLogo.smoothScale(120, 20, QImage::ScaleMin)));
+        m_dialog->logoImage->setPixmap(QPixmap::fromImage(tmpLogo.scaledToHeight(20, Qt::SmoothTransformation)));
         emit changed();
     }
 }

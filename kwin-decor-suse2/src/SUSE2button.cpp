@@ -26,15 +26,18 @@
 
 #include <math.h>
 
-#include <qbitmap.h>
-#include <qcursor.h>
-#include <qimage.h>
-#include <qpainter.h>
-#include <qpixmap.h>
-#include <qtooltip.h>
-#include <qtimer.h>
+#include <QBitmap>
+#include <QCursor>
+#include <QImage>
+#include <QPainter>
+#include <QPixmap>
+#include <QToolTip>
+#include <QTimer>
+#include <QEvent>
+#include <QStyle>
+#include <QColor>
+#include <QPainterPath>
 
-#include <kpixmap.h>
 #include <kpixmapeffect.h>
 #include <kdecoration.h>
 
@@ -53,18 +56,18 @@
 namespace KWinSUSE2
 {
 
-SUSE2Button::SUSE2Button(ButtonType type, SUSE2Client *parent, const char *name)
-    : KCommonDecorationButton(type, parent, name),
+SUSE2Button::SUSE2Button(ButtonType type, SUSE2Client *parent)
+    : KCommonDecorationButton(type, parent),
     m_client(parent),
     m_iconType(NumButtonIcons),
     hover(false)
 {
     memset(lipstikCache, 0, sizeof(QPixmap*)*(8 + 3*(ANIMATIONSTEPS+1))*2); // set elements to 0
 
-    setBackgroundMode(NoBackground);
+    setAttribute(Qt::WA_NoSystemBackground);
 
     animTmr = new QTimer(this);
-    connect(animTmr, SIGNAL(timeout() ), this, SLOT(animate() ) );
+    connect(animTmr, SIGNAL(timeout()), this, SLOT(animate()));
     animProgress = 0;
 }
 
@@ -89,35 +92,35 @@ void SUSE2Button::reset(unsigned long changed)
                 m_iconType = MinIcon;
                 break;
             case MaxButton:
-                if (isOn()) {
+                if (isChecked()) {
                     m_iconType = MaxRestoreIcon;
                 } else {
                     m_iconType = MaxIcon;
                 }
                 break;
             case OnAllDesktopsButton:
-                if (isOn()) {
+                if (isChecked()) {
                     m_iconType = NotOnAllDesktopsIcon;
                 } else {
                     m_iconType = OnAllDesktopsIcon;
                 }
                 break;
             case ShadeButton:
-                if (isOn()) {
+                if (isChecked()) {
                     m_iconType = UnShadeIcon;
                 } else {
                     m_iconType = ShadeIcon;
                 }
                 break;
             case AboveButton:
-                if (isOn()) {
+                if (isChecked()) {
                     m_iconType = NoKeepAboveIcon;
                 } else {
                     m_iconType = KeepAboveIcon;
                 }
                 break;
             case BelowButton:
-                if (isOn()) {
+                if (isChecked()) {
                     m_iconType = NoKeepBelowIcon;
                 } else {
                     m_iconType = KeepBelowIcon;
@@ -147,43 +150,47 @@ void SUSE2Button::animate()
 
     if(hover) {
         if(animProgress < ANIMATIONSTEPS) {
-            if (Handler()->animateButtons() ) {
+            if (Handler()->animateButtons()) {
                 animProgress++;
             } else {
                 animProgress = ANIMATIONSTEPS;
             }
-            animTmr->start(TIMERINTERVAL, true); // single-shot
+            animTmr->start(TIMERINTERVAL); // single-shot
         }
     } else {
         if(animProgress > 0) {
-            if (Handler()->animateButtons() ) {
+            if (Handler()->animateButtons()) {
                 animProgress--;
             } else {
                 animProgress = 0;
             }
-            animTmr->start(TIMERINTERVAL, true); // single-shot
+            animTmr->start(TIMERINTERVAL); // single-shot
         }
     }
 
-    repaint(false);
+    repaint();
 }
 
 void SUSE2Button::enterEvent(QEvent *e)
 {
-    QButton::enterEvent(e);
+    QAbstractButton::enterEvent(e);
 
     hover = true;
     animate();
-//     repaint(false);
 }
 
 void SUSE2Button::leaveEvent(QEvent *e)
 {
-    QButton::leaveEvent(e);
+    QAbstractButton::leaveEvent(e);
 
     hover = false;
     animate();
-//     repaint(false);
+}
+
+void SUSE2Button::paintEvent(QPaintEvent *)
+{
+    QPainter p(this);
+    drawButton(&p);
 }
 
 void SUSE2Button::drawButton(QPainter *painter)
@@ -212,8 +219,8 @@ void SUSE2Button::drawPlastikBtn(QPainter *painter)
 
     bool active = m_client->isActive();
     bool down = isDown();
-    KPixmap backgroundTile = m_client->getTitleBarTile(active);
-    KPixmap tempKPixmap;
+    QPixmap backgroundTile = m_client->getTitleBarTile(active);
+    QPixmap tempKPixmap;
 
     QColor highlightColor;
     if(type() == CloseButton) {
@@ -222,14 +229,10 @@ void SUSE2Button::drawPlastikBtn(QPainter *painter)
         highlightColor = Qt::white;
     }
 
-    QColor contourTop = alphaBlendColors(Handler()->getColor(TitleGradientFrom, active),
-            Qt::black, 220);
-    QColor contourBottom = alphaBlendColors(Handler()->getColor(TitleGradientTo, active),
-            Qt::black, 220);
-    QColor surfaceTop = alphaBlendColors(Handler()->getColor(TitleGradientFrom, active),
-            Qt::white, 220);
-    QColor surfaceBottom = alphaBlendColors(Handler()->getColor(TitleGradientTo, active),
-            Qt::white, 220);
+    QColor contourTop = alphaBlendColors(Handler()->getColor(TitleGradientFrom, active), Qt::black, 220);
+    QColor contourBottom = alphaBlendColors(Handler()->getColor(TitleGradientTo, active), Qt::black, 220);
+    QColor surfaceTop = alphaBlendColors(Handler()->getColor(TitleGradientFrom, active), Qt::white, 220);
+    QColor surfaceBottom = alphaBlendColors(Handler()->getColor(TitleGradientTo, active), Qt::white, 220);
 
     if (type() == CloseButton && active && Handler()->redCloseButton()) {
         contourTop = QColor(170,70,70);
@@ -259,17 +262,16 @@ void SUSE2Button::drawPlastikBtn(QPainter *painter)
         surfaceBottom = alphaBlendColors(surfaceBottom, Qt::black, 200);
     }
 
-    KPixmap buffer;
-    buffer.resize(width(), height());
+    QPixmap buffer(width(), height());
     QPainter bP(&buffer);
 
     // fill with the titlebar background
     bP.drawTiledPixmap(0, 0, width(), width(), backgroundTile, 0, TOPMARGIN);
 
     if (type() == MenuButton) {
-        KPixmap menuIcon(m_client->icon().pixmap( QIconSet::Small, QIconSet::Normal));
+        QPixmap menuIcon(m_client->icon().pixmap( style()->pixelMetric( QStyle::PM_SmallIconSize ) ));
         if (width() < menuIcon.width() || height() < menuIcon.height() ) {
-            menuIcon.convertFromImage( menuIcon.convertToImage().smoothScale(width(), height()));
+            menuIcon = menuIcon.scaled(width(), height());
         }
         double fade = animProgress * 0.09;
         KPixmapEffect::fade(menuIcon, fade, QColor(240, 240, 240));
@@ -285,7 +287,7 @@ void SUSE2Button::drawPlastikBtn(QPainter *painter)
         bP.drawPoint(r.x()+1, r.bottom()-1);
         bP.drawPoint(r.right()-1, r.bottom()-1);
         // sides of the contour
-        tempKPixmap.resize(1, r.height()-2*2);
+        tempKPixmap = QPixmap(1, r.height()-2*2);
         KPixmapEffect::gradient(tempKPixmap,
                                 contourTop,
                                 contourBottom,
@@ -293,14 +295,12 @@ void SUSE2Button::drawPlastikBtn(QPainter *painter)
         bP.drawPixmap(r.x(), r.y()+2, tempKPixmap);
         bP.drawPixmap(r.right(), r.y()+2, tempKPixmap);
         // sort of anti-alias for the contour
-        bP.setPen(alphaBlendColors(Handler()->getColor(TitleGradientFrom, active),
-                contourTop, 150) );
+        bP.setPen(alphaBlendColors(Handler()->getColor(TitleGradientFrom, active), contourTop, 150));
         bP.drawPoint(r.x()+1, r.y());
         bP.drawPoint(r.right()-1, r.y());
         bP.drawPoint(r.x(), r.y()+1);
         bP.drawPoint(r.right(), r.y()+1);
-        bP.setPen(alphaBlendColors(Handler()->getColor(TitleGradientTo, active),
-                contourBottom, 150) );
+        bP.setPen(alphaBlendColors(Handler()->getColor(TitleGradientTo, active), contourBottom, 150));
         bP.drawPoint(r.x()+1, r.bottom());
         bP.drawPoint(r.right()-1, r.bottom());
         bP.drawPoint(r.x(), r.bottom()-1);
@@ -309,46 +309,48 @@ void SUSE2Button::drawPlastikBtn(QPainter *painter)
         // surface
         // fill top and bottom
         if (Handler()->buttonType() == PLASTIK_FLAT) {
-		bP.setPen(surfaceTop);
-		bP.drawLine(r.x()+2, r.y()+1, r.right()-2, r.y()+1 );
-		bP.setPen(surfaceBottom);
-		bP.drawLine(r.x()+2, r.bottom()-1, r.right()-2, r.bottom()-1 );
+            bP.setPen(surfaceTop);
+            bP.drawLine(r.x()+2, r.y()+1, r.right()-2, r.y()+1 );
+            bP.setPen(surfaceBottom);
+            bP.drawLine(r.x()+2, r.bottom()-1, r.right()-2, r.bottom()-1 );
         } else if (Handler()->buttonType() == LIPSTIK_FLAT || down) {
-		bP.setPen(surfaceBottom);
-		bP.drawLine(r.x()+2, r.y()+1, r.right()-2, r.y()+1 );
-		bP.setPen(surfaceTop);
-		bP.drawLine(r.x()+2, r.bottom()-1, r.right()-2, r.bottom()-1 );
+            bP.setPen(surfaceBottom);
+            bP.drawLine(r.x()+2, r.y()+1, r.right()-2, r.y()+1 );
+            bP.setPen(surfaceTop);
+            bP.drawLine(r.x()+2, r.bottom()-1, r.right()-2, r.bottom()-1 );
         } else {
-		bP.setPen(surfaceBottom.light(117));
-		bP.drawLine(r.x()+2, r.y()+1, r.right()-2, r.y()+1 );
-		bP.setPen(surfaceTop.dark(122));
-		bP.drawLine(r.x()+2, r.bottom()-1, r.right()-2, r.bottom()-1 );
-	}
+            bP.setPen(surfaceBottom.light(117));
+            bP.drawLine(r.x()+2, r.y()+1, r.right()-2, r.y()+1 );
+            bP.setPen(surfaceTop.dark(122));
+            bP.drawLine(r.x()+2, r.bottom()-1, r.right()-2, r.bottom()-1 );
+        }
 
         // fill the rest! :)
-        tempKPixmap.resize(1, r.height()-2*2);
+        tempKPixmap = QPixmap(1, r.height()-2*2);
         if (Handler()->buttonType() == PLASTIK_FLAT) {
-		KPixmapEffect::gradient(tempKPixmap,
-					surfaceTop,
-					surfaceBottom,
-					KPixmapEffect::VerticalGradient);
+            KPixmapEffect::gradient(tempKPixmap,
+                                    surfaceTop,
+                                    surfaceBottom,
+                                    KPixmapEffect::VerticalGradient);
         } else {
-		KPixmapEffect::gradient(tempKPixmap,
-					surfaceBottom,
-					surfaceTop,
-					KPixmapEffect::VerticalGradient);
+            KPixmapEffect::gradient(tempKPixmap,
+                                    surfaceBottom,
+                                    surfaceTop,
+                                    KPixmapEffect::VerticalGradient);
         }
         bP.drawTiledPixmap(r.x()+1, r.y()+2, r.width()-2, r.height()-4, tempKPixmap);
 
         int dX,dY;
-        KPixmap deco;
+        QPixmap deco;
         int s = lroundf(r.height()*Handler()->iconSize());
         if ((s + r.height())%2 != 0) --s;
 
         if (down) {
-            deco = active ? Handler()->buttonPixmap(m_iconType, s, ActiveDown) : Handler()->buttonPixmap(m_iconType, s, InactiveDown);
+            deco = active ? Handler()->buttonPixmap(m_iconType, s, ActiveDown)
+                          : Handler()->buttonPixmap(m_iconType, s, InactiveDown);
         } else {
-            deco = active ? Handler()->buttonPixmap(m_iconType, s, ActiveUp) : Handler()->buttonPixmap(m_iconType, s, InactiveUp);
+            deco = active ? Handler()->buttonPixmap(m_iconType, s, ActiveUp)
+                          : Handler()->buttonPixmap(m_iconType, s, InactiveUp);
         }
         dX = r.x()+(r.width()-deco.width())/2;
         dY = r.y()+(r.height()-deco.height())/2;
@@ -374,10 +376,9 @@ void SUSE2Button::drawLipstikBtn(QPainter *painter)
 
     bool active = m_client->isActive();
     bool down = isDown();
-    KPixmap backgroundTile = m_client->getTitleBarTile(active);
+    QPixmap backgroundTile = m_client->getTitleBarTile(active);
 
-    KPixmap buffer;
-    buffer.resize(width(), height());
+    QPixmap buffer(width(), height());
     QPainter bP(&buffer);
 
     // fill with the titlebar background
@@ -385,9 +386,9 @@ void SUSE2Button::drawLipstikBtn(QPainter *painter)
 
     if (type() == MenuButton)
     {
-        KPixmap menuIcon(m_client->icon().pixmap( QIconSet::Small, QIconSet::Normal));
-        if (width() < menuIcon.width() || height() < menuIcon.height() ) {
-            menuIcon.convertFromImage( menuIcon.convertToImage().smoothScale(width(), height()));
+        QPixmap menuIcon(m_client->icon().pixmap( style()->pixelMetric( QStyle::PM_SmallIconSize) ));
+        if (width() < menuIcon.width() || height() < menuIcon.height()) {
+            menuIcon = menuIcon.scaled(width(), height());
         }
         double fade = animProgress * 0.09;
         KPixmapEffect::fade(menuIcon, fade, QColor(240, 240, 240));
@@ -416,14 +417,16 @@ void SUSE2Button::drawLipstikBtn(QPainter *painter)
         }
 
         int dX,dY;
-        KPixmap deco;
+        QPixmap deco;
         int s = lroundf(r.height() * Handler()->iconSize());
         if ((s + r.height())%2 != 0) --s;
 
         if (down) {
-            deco = active ? Handler()->buttonPixmap(m_iconType, s, ActiveDown) : Handler()->buttonPixmap(m_iconType, s, InactiveDown);
+            deco = active ? Handler()->buttonPixmap(m_iconType, s, ActiveDown)
+                          : Handler()->buttonPixmap(m_iconType, s, InactiveDown);
         } else {
-            deco = active ? Handler()->buttonPixmap(m_iconType, s, ActiveUp) : Handler()->buttonPixmap(m_iconType, s, InactiveUp);
+            deco = active ? Handler()->buttonPixmap(m_iconType, s, ActiveUp)
+                          : Handler()->buttonPixmap(m_iconType, s, InactiveUp);
         }
 
         dX = r.x()+(r.width()-deco.width())/2;
@@ -509,8 +512,7 @@ void SUSE2Button::renderBtnSurface(QPainter *p, const QRect &r)
     } else {
         backgroundColor = Handler()->getColor(TitleGradientFrom, active);
         if (!active)
-            backgroundColor = alphaBlendColors(backgroundColor,
-                    Handler()->getColor(TitleGradientTo, active), 128);
+            backgroundColor = alphaBlendColors(backgroundColor, Handler()->getColor(TitleGradientTo, active), 128);
         backgroundColor = alphaBlendColors(backgroundColor, Qt::black, 220);
     }
 
@@ -573,10 +575,9 @@ void SUSE2Button::renderPixel(QPainter *p, const QPoint &pos, const int alpha, c
         p->drawPixmap(pos, *(lipstikCache[pixelPos][active]));
     } else {
         QRgb rgb = color.rgb();
-        QImage aImg(1,1,32); // 1x1
-        aImg.setAlphaBuffer(true);
-        aImg.setPixel(0,0,qRgba(qRed(rgb),qGreen(rgb),qBlue(rgb),alpha));
-        QPixmap *result = new QPixmap(aImg);
+        QImage aImg(1, 1, QImage::Format_ARGB32); // 1x1
+        aImg.setPixel(0, 0, qRgba(qRed(rgb), qGreen(rgb), qBlue(rgb), alpha));
+        QPixmap *result = new QPixmap(QPixmap::fromImage(aImg));
 
         p->drawPixmap(pos, *result);
 
@@ -600,7 +601,7 @@ void SUSE2Button::renderGradient(QPainter *painter, const QRect &rect, const QCo
 
         int r_h = result->rect().height();
         int r_x, r_y, r_x2, r_y2;
-        result->rect().coords(&r_x, &r_y, &r_x2, &r_y2);
+        result->rect().getCoords(&r_x, &r_y, &r_x2, &r_y2);
 
         int rDiff, gDiff, bDiff;
         int rc, gc, bc;
@@ -619,8 +620,6 @@ void SUSE2Button::renderGradient(QPainter *painter, const QRect &rect, const QCo
         int gdelta = ((1<<16) / r_h) * gDiff;
         int bdelta = ((1<<16) / r_h) * bDiff;
 
-        // these for-loops could be merged, but the if's in the inner loop
-        // would make it slow
         for ( y = 0; y < r_h; y++ ) {
             rl += rdelta;
             gl += gdelta;
@@ -883,7 +882,7 @@ QBitmap IconEngine::icon(ButtonIcon icon, int size)
                 lw2 = 1;
             }
 
-            int h = QMAX( (r.width()/2), (lw1+2*lw2) );
+            int h = qMax( (r.width()/2), (lw1+2*lw2) );
 
             // horizontal bars
             drawObject(p, HorizontalLine, r.x(), r.y(), r.width(), lw1);

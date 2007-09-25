@@ -29,6 +29,8 @@
 
 #include "shadow.h"
 #include <qcolor.h>
+//Added by qt3to4:
+#include <QPixmap>
 
 ShadowEngine::ShadowEngine()
 {
@@ -58,18 +60,18 @@ QImage ShadowEngine::makeShadow(const QPixmap& textPixmap, const QColor &bgColor
   /*
    *	This is the source pixmap
    */
-  QImage img = textPixmap.convertToImage().convertDepth(32);
+  QImage img = textPixmap.toImage();
 
   /*
    *	Resize the image if necessary
    */
   if ((result.width() != w) || (result.height() != h))
   {
-    result.create(w, h, 32);
+    result = QImage(w, h, QImage::Format_ARGB32);
   }
 
   result.fill(0); // all black
-  result.setAlphaBuffer(true);
+//  result.setAlphaBuffer(true);
 
   for (int i = thickness_; i < w - thickness_; i++)
   {

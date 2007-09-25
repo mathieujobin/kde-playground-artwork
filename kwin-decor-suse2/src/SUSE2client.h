@@ -27,6 +27,8 @@
 #include <kcommondecoration.h>
 
 #include "SUSE2.h"
+#include <QPixmap>
+#include <QPaintEvent>
 
 namespace KWinSUSE2 {
 

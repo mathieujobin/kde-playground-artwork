@@ -24,12 +24,21 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include <qobject.h>
+#include <QObject>
+#include "ui_configdialog.h"
 
 class QButtonGroup;
 class QGroupBox;
 class KConfig;
 class ConfigDialog;
+
+class ConfigDialog : public QWidget, public Ui::ConfigDialog
+{
+public:
+    ConfigDialog( QWidget *parent ) : QWidget( parent ) {
+        setupUi( this );
+    }
+};
 
 class SUSE2Config : public QObject
 {
@@ -43,8 +52,8 @@ signals:
     void changed();
 
 public slots:
-    void load(KConfig *config);
-    void save(KConfig *config) const;
+    void load(const KConfigGroup &);
+    void save(KConfigGroup &) const;
     void defaults();
 
 private:
@@ -52,6 +61,7 @@ private:
     KConfig *m_config;
     ConfigDialog *m_dialog;
     QString titlebarLogoURL;
+    QButtonGroup *alignGroup, *roundGroup;
 
 private slots:
     void toggleIconSettings(bool) const;

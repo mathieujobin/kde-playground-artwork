@@ -24,7 +24,8 @@
 #ifndef SUSE2_H
 #define SUSE2_H
 
-#include <qfont.h>
+#include <QFont>
+#include <QPixmap>
 
 #include <kdecoration.h>
 #include <kdecorationfactory.h>
@@ -66,9 +67,8 @@ enum ColorType {
     BtnBg
 };
 
-class SUSE2Handler: public QObject, public KDecorationFactory
+class SUSE2Handler: public KDecorationFactory
 {
-    Q_OBJECT
 public:
     SUSE2Handler();
     ~SUSE2Handler();
@@ -77,7 +77,7 @@ public:
     virtual KDecoration *createDecoration( KDecorationBridge * );
     virtual bool supports( Ability ability ) const;
 
-    const KPixmap &buttonPixmap(ButtonIcon type, int size, ButtonStatus status);
+    const QPixmap &buttonPixmap(ButtonIcon type, int size, ButtonStatus status);
 
     int  titleHeight() const { return m_titleHeight; }
     int  titleHeightTool() const { return m_titleHeightTool; }
@@ -97,11 +97,11 @@ public:
     float iconSize() const { return m_iconSize; }
     bool iconShadow() const { return m_iconShadow; }
     bool menuClose() const { return m_menuClose; }
-    Qt::AlignmentFlags titleAlign() const { return m_titleAlign; }
+    Qt::AlignmentFlag titleAlign() const { return m_titleAlign; }
     int roundCorners() const { return m_roundCorners; }
     bool reverseLayout() const { return m_reverse; }
     QColor getColor(KWinSUSE2::ColorType type, const bool active = true) const;
-    QValueList< SUSE2Handler::BorderSize >  borderSizes() const;
+    QList< SUSE2Handler::BorderSize >  borderSizes() const;
 
 private:
     void readConfig();
@@ -128,13 +128,13 @@ private:
     int  m_titleHeightTool;
     QFont m_titleFont;
     QFont m_titleFontTool;
-    Qt::AlignmentFlags m_titleAlign;
+    Qt::AlignmentFlag m_titleAlign;
     int m_roundCorners;
     int m_titleLogoOffset;
     QString m_titleLogoURL;
     bool m_useTitleProps;
 
-    KPixmap *m_pixmaps[NumButtonStatus][NumButtonIcons];
+    QPixmap *m_pixmaps[NumButtonStatus][NumButtonIcons];
 };
 
 SUSE2Handler* Handler();

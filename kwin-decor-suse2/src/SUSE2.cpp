@@ -24,19 +24,20 @@
 
 //#include <kdebug.h>
 
-#include <qpainter.h>
-#include <qbitmap.h>
+#include <QPainter>
+#include <QBitmap>
+#include <QList>
+#include <QPixmap>
+#include <QApplication>
 
 #include <kconfig.h>
 #include <klocale.h>
 #include <kglobal.h>
 #include <kstandarddirs.h>
-#include <kpixmap.h>
 
 #include "misc.h"
 #include "shadow.h"
 #include "SUSE2.h"
-#include "SUSE2.moc"
 #include "SUSE2client.h"
 #include "SUSE2button.h"
 
@@ -47,8 +48,8 @@ SUSE2Handler::SUSE2Handler()
 {
     memset(m_pixmaps, 0, sizeof(QPixmap *) * NumButtonStatus * NumButtonIcons); // set elements to 0
 
-    KGlobal::locale()->insertCatalogue("kwin_clients");
-    KGlobal::locale()->insertCatalogue("kwin_SUSE2");
+//    KGlobal::locale()->insertCatalogue("kwin_clients");
+//    KGlobal::locale()->insertCatalogue("kwin_SUSE2");
 
     reset(0);
 }
@@ -92,7 +93,7 @@ bool SUSE2Handler::reset(unsigned long /*changed*/)
     }
 
     // check if we are in reverse layout mode
-    m_reverse = QApplication::reverseLayout();
+    m_reverse = QApplication::isRightToLeft();
 
     // read in the configuration
     readConfig();
@@ -140,8 +141,8 @@ bool SUSE2Handler::supports( Ability ability ) const
 void SUSE2Handler::readConfig()
 {
     // create a config object
-    KConfig config("kwinSUSE2rc");
-    config.setGroup("General");
+    KConfig configFile("kwinSUSE2rc");
+    const KConfigGroup config(&configFile, "General");
 
     // grab settings
     QString alignValue = config.readEntry("TitleAlignment", "AlignLeft");
@@ -149,44 +150,44 @@ void SUSE2Handler::readConfig()
     else if (alignValue == "AlignHCenter") m_titleAlign = Qt::AlignHCenter;
     else if (alignValue == "AlignRight")   m_titleAlign = Qt::AlignRight;
 
-    QString roundValue = config.readEntry("RoundCorners", "NotMaximized");
+    QString roundValue = config.readEntry("RoundedCorners", "NotMaximized");
     if (roundValue == "RoundAlways")       m_roundCorners = 1;
     else if (roundValue == "NotMaximized") m_roundCorners = 2;
     else if (roundValue == "RoundNever")   m_roundCorners = 3;
 
-    m_menuClose = config.readBoolEntry("CloseOnMenuDoubleClick", true);
-    m_titleShadow = config.readBoolEntry("TitleShadow", true);
+    m_menuClose = config.readEntry("CloseOnMenuDoubleClick", true);
+    m_titleShadow = config.readEntry("TitleShadow", true);
 
     QFontMetrics fm(m_titleFont);  // active font = inactive font
-    int addSpace = config.readNumEntry("AddSpace", 4);
+    int addSpace = config.readEntry("AddSpace", 4);
     // The title should stretch with bigger font sizes!
-    m_titleHeight = QMAX(16, fm.height() + addSpace);
+    m_titleHeight = qMax(16, fm.height() + addSpace);
 
     fm = QFontMetrics(m_titleFontTool);  // active font = inactive font
-    m_titleHeightTool = QMAX(13, fm.height() ); // don't care about the shadow etc.
+    m_titleHeightTool = qMax(13, fm.height() ); // don't care about the shadow etc.
 
-    m_titlebarStyle = config.readNumEntry("TitleBarStyle", 0);
+    m_titlebarStyle = config.readEntry("TitleBarStyle", 0);
 
-    m_buttonType = config.readNumEntry("TitleBarButtonType", 2);
-    m_customColors = config.readBoolEntry("CustomColors", false);
-    m_useTitleProps = config.readBoolEntry("UseTitleProps", true);
-    m_animateButtons = config.readBoolEntry("AnimateButtons", true);
-    m_redCloseButton = config.readBoolEntry("RedCloseButton", false);
-    m_iconSize = (config.readNumEntry("IconSize", 45))/100.0;
-    m_customIconColors = config.readBoolEntry("CustomIconColors", false);
+    m_buttonType = config.readEntry("TitleBarButtonType", 2);
+    m_customColors = config.readEntry("CustomColors", false);
+    m_useTitleProps = config.readEntry("UseTitleProps", false);
+    m_animateButtons = config.readEntry("AnimateButtons", true);
+    m_redCloseButton = config.readEntry("RedCloseButton", false);
+    m_iconSize = (config.readEntry("IconSize", 45))/100.0;
+    m_customIconColors = config.readEntry("CustomIconColors", false);
     QColor afgcolor = QColor(10, 20, 40);
-    m_aFgColor = config.readColorEntry("AFgColor", &afgcolor);
+    m_aFgColor = config.readEntry("AFgColor", afgcolor);
     QColor abgcolor = QColor(210, 220, 240);
-    m_aBgColor = config.readColorEntry("ABgColor", &abgcolor);
+    m_aBgColor = config.readEntry("ABgColor", abgcolor);
     QColor ifgcolor = QColor(40, 40, 40);
-    m_iFgColor = config.readColorEntry("IFgColor", &ifgcolor);
+    m_iFgColor = config.readEntry("IFgColor", ifgcolor);
     QColor ibgcolor = QColor(240, 240, 240);
-    m_iBgColor = config.readColorEntry("IBgColor", &ibgcolor);
-    m_iconShadow = config.readBoolEntry("IconShadow", true);
+    m_iBgColor = config.readEntry("IBgColor", ibgcolor);
+    m_iconShadow = config.readEntry("IconShadow", false);
 
-    m_titleLogo      = config.readBoolEntry("TitleBarLogo", false);
-    m_titleLogoOffset = config.readNumEntry("TitleBarLogoOffset", 3);
-    m_titleLogoURL   = config.readEntry("TitleBarLogoURL", locate("data", "kwin/pics/titlebar_decor.png"));
+    m_titleLogo      = config.readEntry("TitleBarLogo", false);
+    m_titleLogoOffset = config.readEntry("TitleBarLogoOffset", 3);
+    m_titleLogoURL   = config.readEntry("TitleBarLogoURL", KStandardDirs::locate("data", "kwin/pics/titlebar_decor.png"));
 }
 
 QColor SUSE2Handler::getColor(KWinSUSE2::ColorType type, const bool active) const
@@ -213,7 +214,7 @@ QColor SUSE2Handler::getColor(KWinSUSE2::ColorType type, const bool active) cons
     }
 }
 
-const KPixmap &SUSE2Handler::buttonPixmap(ButtonIcon type, int size, ButtonStatus status)
+const QPixmap &SUSE2Handler::buttonPixmap(ButtonIcon type, int size, ButtonStatus status)
 {
     if (m_pixmaps[status][type]) {
         if (status != Shadow && m_pixmaps[status][type]->size() == QSize(size, size))
@@ -239,14 +240,14 @@ const KPixmap &SUSE2Handler::buttonPixmap(ButtonIcon type, int size, ButtonStatu
         iDecoFgLight = m_iBgColor;
     }
 
-    KPixmap icon = IconEngine::icon(type, size);
-    QImage img = icon.convertToImage();
+    QPixmap icon = IconEngine::icon(type, size);
+    QImage img = icon.toImage();
 
-    KPixmap *pixmap;
+    QPixmap *pixmap;
     QImage tmpImage;
     ShadowEngine se;
     QPainter painter;
-    KPixmap tmpShadow;
+    QPixmap tmpShadow;
     switch (status) {
         case ActiveUp:
             if (m_useTitleProps)
@@ -254,7 +255,7 @@ const KPixmap &SUSE2Handler::buttonPixmap(ButtonIcon type, int size, ButtonStatu
             else
                 tmpImage = recolorImage(&img, aDecoFgDark);
 
-            pixmap = new KPixmap(tmpImage);
+            pixmap = new QPixmap(QPixmap::fromImage(tmpImage));
             break;
         case ActiveDown:
             if (m_useTitleProps)
@@ -262,7 +263,7 @@ const KPixmap &SUSE2Handler::buttonPixmap(ButtonIcon type, int size, ButtonStatu
             else
                 tmpImage = recolorImage(&img, aDecoFgLight);
 
-            pixmap = new KPixmap(tmpImage);
+            pixmap = new QPixmap(QPixmap::fromImage(tmpImage));
             break;
         case InactiveUp:
             if (m_useTitleProps)
@@ -270,7 +271,7 @@ const KPixmap &SUSE2Handler::buttonPixmap(ButtonIcon type, int size, ButtonStatu
             else
                 tmpImage = recolorImage(&img, iDecoFgDark);
 
-            pixmap = new KPixmap(tmpImage);
+            pixmap = new QPixmap(QPixmap::fromImage(tmpImage));
             break;
         case InactiveDown:
             if (m_useTitleProps)
@@ -278,7 +279,7 @@ const KPixmap &SUSE2Handler::buttonPixmap(ButtonIcon type, int size, ButtonStatu
             else
                 tmpImage = recolorImage(&img, iDecoFgLight);
 
-            pixmap = new KPixmap(tmpImage);
+            pixmap = new QPixmap(QPixmap::fromImage(tmpImage));
             break;
         case Shadow:
             // prepare shadow
@@ -286,25 +287,25 @@ const KPixmap &SUSE2Handler::buttonPixmap(ButtonIcon type, int size, ButtonStatu
             tmpShadow.fill(QColor(0,0,0));
             tmpShadow.setMask(tmpShadow.createHeuristicMask(true));
             painter.begin(&tmpShadow);
-            painter.setPen(white);
+            painter.setPen(Qt::white);
             painter.drawPixmap(0,0, icon);
             painter.end();
             tmpImage = se.makeShadow(tmpShadow, QColor(0, 0, 0));
-            pixmap = new KPixmap(tmpImage);
+            pixmap = new QPixmap(QPixmap::fromImage(tmpImage));
             break;
         default:
-            pixmap = new KPixmap();
+            pixmap = new QPixmap();
     }
 
     m_pixmaps[status][type] = pixmap;
     return *pixmap;
 }
 
-QValueList< SUSE2Handler::BorderSize >
+QList< SUSE2Handler::BorderSize >
 SUSE2Handler::borderSizes() const
 {
     // the list must be sorted
-    return QValueList< BorderSize >() << BorderTiny << BorderNormal <<
+    return QList< BorderSize >() << BorderTiny << BorderNormal <<
         BorderLarge << BorderVeryLarge <<  BorderHuge <<
         BorderVeryHuge << BorderOversized;
 }

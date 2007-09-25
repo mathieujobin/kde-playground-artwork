@@ -24,8 +24,9 @@
 #ifndef SUSE2BUTTON_H
 #define SUSE2BUTTON_H
 
-#include <qbutton.h>
-#include <qpixmap.h>
+#include <QAbstractButton>
+#include <QPixmap>
+#include <QEvent>
 
 #include <kcommondecoration.h>
 
@@ -44,7 +45,7 @@ class SUSE2Button : public KCommonDecorationButton
 {
     Q_OBJECT
 public:
-    SUSE2Button(ButtonType type, SUSE2Client *parent, const char *name);
+    SUSE2Button(ButtonType type, SUSE2Client *parent);
     ~SUSE2Button();
 
     void reset(unsigned long changed);
@@ -52,6 +53,9 @@ public:
 
 protected slots:
     void animate();
+
+protected:
+    void paintEvent(QPaintEvent *);
 
 private:
     void enterEvent(QEvent *e);

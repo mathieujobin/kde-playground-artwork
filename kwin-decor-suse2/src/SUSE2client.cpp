@@ -23,21 +23,21 @@
 */
 
 #include <klocale.h>
-#include <kpixmap.h>
 #include <kimageeffect.h>
 #include <kpixmapeffect.h>
 #include <kstandarddirs.h>
 #include <kdecoration.h>
 
-#include <qbitmap.h>
-#include <qdatetime.h>
-#include <qfontmetrics.h>
-#include <qimage.h>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qpainter.h>
-#include <qpixmap.h>
-#include <qimage.h>
+#include <QBitmap>
+#include <QDateTime>
+#include <QFontMetrics>
+#include <QImage>
+#include <QLabel>
+#include <QLayout>
+#include <QPainter>
+#include <QPixmap>
+#include <QPaintEvent>
+#include <QLinearGradient>
 
 #include "SUSE2client.h"
 #include "SUSE2button.h"
@@ -66,7 +66,7 @@ SUSE2Client::~SUSE2Client()
 // pure virtual methods from KCommonDecoration
 QString SUSE2Client::visibleName() const
 {
-    return i18n("SUSE2 (Version %1)").arg("0.4.1");
+    return i18n("SUSE2 (Version %1)", QString("0.4.90"));
 }
 
 QString SUSE2Client::defaultButtonsLeft() const
@@ -97,31 +97,31 @@ KCommonDecorationButton *SUSE2Client::createButton(ButtonType type)
 {
     switch (type) {
         case MenuButton:
-            return new SUSE2Button(MenuButton, this, "menu");
+            return new SUSE2Button(MenuButton, this);
 
         case OnAllDesktopsButton:
-            return new SUSE2Button(OnAllDesktopsButton, this, "on_all_desktops");
+            return new SUSE2Button(OnAllDesktopsButton, this);
 
         case HelpButton:
-            return new SUSE2Button(HelpButton, this, "help");
+            return new SUSE2Button(HelpButton, this);
 
         case MinButton:
-            return new SUSE2Button(MinButton, this, "minimize");
+            return new SUSE2Button(MinButton, this);
 
         case MaxButton:
-            return new SUSE2Button(MaxButton, this, "maximize");
+            return new SUSE2Button(MaxButton, this);
 
         case CloseButton:
-            return new SUSE2Button(CloseButton, this, "close");
+            return new SUSE2Button(CloseButton, this);
 
         case AboveButton:
-            return new SUSE2Button(AboveButton, this, "above");
+            return new SUSE2Button(AboveButton, this);
 
         case BelowButton:
-            return new SUSE2Button(BelowButton, this, "below");
+            return new SUSE2Button(BelowButton, this);
 
         case ShadeButton:
-            return new SUSE2Button(ShadeButton, this, "shade");
+            return new SUSE2Button(ShadeButton, this);
 
         default:
             return 0;
@@ -191,9 +191,7 @@ int SUSE2Client::layoutMetric(LayoutMetric lm, bool respectWindowState, const KC
 
 void SUSE2Client::init()
 {
-    s_titleFont = isToolWindow() ?
-                  Handler()->titleFontTool()
-                  : Handler()->titleFont();
+    s_titleFont = isToolWindow() ? Handler()->titleFontTool() : Handler()->titleFont();
 
     create_pixmaps();
 
@@ -269,7 +267,7 @@ void SUSE2Client::paintEvent(QPaintEvent *e)
 
     int r_w = r.width();
     int r_x, r_y, r_x2, r_y2;
-    r.coords(&r_x, &r_y, &r_x2, &r_y2);
+    r.getCoords(&r_x, &r_y, &r_x2, &r_y2);
     const int borderLeft = layoutMetric(LM_BorderLeft);
     const int borderRight = layoutMetric(LM_BorderRight);
     const int borderBottom = layoutMetric(LM_BorderBottom);
@@ -452,20 +450,20 @@ void SUSE2Client::paintEvent(QPaintEvent *e)
 
         if(tW > 0) {
             if (titleBfrPtr->width()+2*titleMargin > Rtitle.width()) {
-                QPixmap *tmp = new QPixmap(30, Rtitle.height());
-                QPainter fade;
-                fade.begin(tmp);
-                fade.drawPixmap(0, 0, *titleBfrPtr, Rtitle.right()-30-2*titleMargin-Rtitle.left(), 0);
-                QImage background = (active ? *aTitleBarTile : *iTitleBarTile).convertToImage();
-                QImage tmpImg = tmp->convertToImage();
-                QImage blended = KImageEffect::blend(tmpImg, background, gradient, KImageEffect::Red);
+                QImage *tmp = new QImage(30, Rtitle.height(), QImage::Format_ARGB32);
+                QPainter fade(tmp);
+//                fade.begin(tmp);
+                fade.drawPixmap(0, 0, *titleBfrPtr, Rtitle.right()-30-2*titleMargin-Rtitle.left(), 0, 0, 0);
+                QImage background = (active ? *aTitleBarTile : *iTitleBarTile).toImage();
+//                QImage tmpImg = tmp->toImage();
+                QImage blended = KImageEffect::blend(*tmp, background, gradient, KImageEffect::Red);
 
                 painter.drawPixmap(tX, Rtitle.top() - TOPMARGIN + btnMarginTop+2, *titleBfrPtr,
                                    0, 2, tW - 2* titleMargin, -1);
                 painter.drawImage(Rtitle.right()-30-titleMargin, Rtitle.top() - TOPMARGIN + btnMarginTop+2,
                                   blended, 0, 2);
             } else {
-                painter.drawPixmap(tX, Rtitle.top() - TOPMARGIN + btnMarginTop+2, *titleBfrPtr, 0, 2);
+                painter.drawPixmap(tX, Rtitle.top() - TOPMARGIN + btnMarginTop+2, *titleBfrPtr, 0, 2, 0, 0);
             }
         }
     }
@@ -596,40 +594,33 @@ void SUSE2Client::create_pixmaps()
     if(pixmaps_created)
         return;
 
-    KPixmap tempPixmap;
-    QPainter painter;
-
     const int titleHeight = layoutMetric(LM_TitleHeight);
 
+    QPixmap tempPixmap(30, titleHeight + TOPMARGIN + DECOHEIGHT);
+    QPainter painter;
+
     // aTitleBarTile
-    tempPixmap.resize(30, titleHeight + TOPMARGIN + DECOHEIGHT);
-    KPixmapEffect::gradient(tempPixmap,
-                            Handler()->getColor(TitleGradientFrom, true),
-                            Handler()->getColor(TitleGradientTo, true),
-                            KPixmapEffect::VerticalGradient);
-    aTitleBarTile = new QPixmap(30, titleHeight + TOPMARGIN + DECOHEIGHT);
-    painter.begin(aTitleBarTile);
-    painter.drawPixmap(0, 0, tempPixmap);
+//    tempPixmap.resize(30, titleHeight + TOPMARGIN + DECOHEIGHT);
+//     KPixmapEffect::gradient(tempPixmap,
+//                             Handler()->getColor(TitleGradientFrom, true),
+//                             Handler()->getColor(TitleGradientTo, true),
+//                             KPixmapEffect::VerticalGradient);
+     aTitleBarTile = new QPixmap(30, titleHeight + TOPMARGIN + DECOHEIGHT);
+     painter.begin(aTitleBarTile);
+//     painter.drawPixmap(0, 0, tempPixmap);
 
     QImage t;
     if (Handler()->titlebarStyle() == 0) { // new, Toplight
-        t = QImage(30, (titleHeight + TOPMARGIN + DECOHEIGHT)/3 + 1, 32 );
-        t = KImageEffect::gradient(QSize(30, t.height()),
-                                Handler()->getColor(TitleGradientFrom, true).light(130),
-                                Handler()->getColor(TitleGradientTo, true),
-                                KImageEffect::VerticalGradient/*, 100, 100*/);
-        painter.drawImage(0, 2, t, 0, 0, -1, tempPixmap.height()-2);
-        t.create(t.width(), t.height()*2, t.depth());
-        t = KImageEffect::unbalancedGradient(QSize(30, t.height()),
-                                Handler()->getColor(TitleGradientTo, true),
-                                Handler()->getColor(TitleGradientFrom, true),
-                                KImageEffect::VerticalGradient, 100, 100);
-        painter.drawImage(0, t.height()/2, t, 0, 0, -1, t.height());
+        QLinearGradient g(15, 0, 15, titleHeight + TOPMARGIN + DECOHEIGHT);
+        g.setColorAt(0, Handler()->getColor(TitleGradientFrom, true).lighter(140));
+        g.setColorAt(0.35, Handler()->getColor(TitleGradientTo, true).lighter(110));
+        g.setColorAt(1, Handler()->getColor(TitleGradientTo, true));
+        painter.fillRect(aTitleBarTile->rect(), g);
     } else { // older, Balanced
-        t = QImage(30, (titleHeight + TOPMARGIN + DECOHEIGHT)/2 + 1, 32 );
+        t = QImage(30, (titleHeight + TOPMARGIN + DECOHEIGHT)/2 + 1, QImage::Format_ARGB32);
         t = KImageEffect::gradient(QSize(30, t.height()),
-                                Handler()->getColor(TitleGradientFrom, true).light(150),
-                                Handler()->getColor(TitleGradientTo, true).light(110),
+                                Handler()->getColor(TitleGradientFrom, true).lighter(150),
+                                Handler()->getColor(TitleGradientTo, true).lighter(110),
                                 KImageEffect::VerticalGradient);
         painter.drawImage(0, 2, t, 0, 0, -1, tempPixmap.height()-2);
         t = KImageEffect::gradient(QSize(30, t.height()),
@@ -642,20 +633,23 @@ void SUSE2Client::create_pixmaps()
     painter.end();
 
     // iTitleBarTile
-    tempPixmap.resize(30, titleHeight + TOPMARGIN + DECOHEIGHT);
-    KPixmapEffect::gradient(tempPixmap,
+//    tempPixmap.resize(30, titleHeight + TOPMARGIN + DECOHEIGHT);
+/*    KPixmapEffect::gradient(tempPixmap,
                             Handler()->getColor(TitleGradientFrom, false),
                             Handler()->getColor(TitleGradientTo, false),
-                            KPixmapEffect::VerticalGradient);
+                            KPixmapEffect::VerticalGradient);*/
     iTitleBarTile = new QPixmap(30, titleHeight + TOPMARGIN + DECOHEIGHT);
+    QLinearGradient i(15, 0, 15, titleHeight + TOPMARGIN + DECOHEIGHT);
+    i.setColorAt(0, Handler()->getColor(TitleGradientFrom, false));
+    i.setColorAt(1, Handler()->getColor(TitleGradientTo, false));
     painter.begin(iTitleBarTile);
-    painter.drawPixmap(0, 0, tempPixmap);
+    painter.fillRect(iTitleBarTile->rect(), i);
     painter.end();
 
-    QImage aTempImage = aTitleBarTile->convertToImage();
+    QImage aTempImage = aTitleBarTile->toImage();
     aGradientBottom = QColor::QColor(aTempImage.pixel(0, aTempImage.height()-1));
     aAntialiasBase = QColor::QColor(aTempImage.pixel(0, 2));
-    QImage iTempImage = iTitleBarTile->convertToImage();
+    QImage iTempImage = iTitleBarTile->toImage();
     iGradientBottom = QColor::QColor(iTempImage.pixel(0, iTempImage.height()-1));
     iAntialiasBase = QColor::QColor(iTempImage.pixel(0, 2));
 
@@ -681,7 +675,7 @@ void SUSE2Client::delete_pixmaps()
 
 void SUSE2Client::update_captionBuffer()
 {
-    const uint maxCaptionLength = 110; // truncate captions longer than this!
+    const int maxCaptionLength = 110; // truncate captions longer than this!
     QString c(caption());
     if (c.length() > maxCaptionLength) {
         QString tmpLeft = c.left(50);
@@ -699,7 +693,7 @@ void SUSE2Client::update_captionBuffer()
         logoWidth = logo.width() + logoOffset;
         captionWidth += logoWidth;
         if (logo.height()+1 > fm.height())
-            logo.scaleHeight(fm.height()-1);
+            logo.scaledToHeight(fm.height()-1);
     }
 
     const int titleEdgeTop = layoutMetric(LM_TitleEdgeTop);
@@ -714,16 +708,16 @@ void SUSE2Client::update_captionBuffer()
         textPixmap.setMask(textPixmap.createHeuristicMask(true));
         painter.begin(&textPixmap);
         painter.setFont(s_titleFont);
-        painter.setPen(white);
+        painter.setPen(Qt::white);
         if (Handler()->titleLogo()) {
             painter.drawText(textPixmap.rect().left(), textPixmap.rect().top()+titleEdgeTop,
                              textPixmap.rect().width()-logo.width() - logoOffset, textPixmap.rect().height()-titleEdgeTop-titleEdgeBottom,
-                             AlignCenter, c);
+                             Qt::AlignCenter, c);
             painter.drawImage(captionWidth - logo.width(), textPixmap.rect().top() + TOPMARGIN, logo);
         } else {
             painter.drawText(textPixmap.rect().left(), textPixmap.rect().top()+titleEdgeTop,
                              textPixmap.rect().width(), textPixmap.rect().height()-titleEdgeTop-titleEdgeBottom,
-                             AlignCenter, c);
+                             Qt::AlignCenter, c);
         }
         painter.end();
     }
@@ -732,7 +726,7 @@ void SUSE2Client::update_captionBuffer()
     ShadowEngine se;
 
     // active
-    aCaptionBuffer->resize(captionWidth+4, titleHeight + TOPMARGIN + DECOHEIGHT); // 4 px shadow
+    aCaptionBuffer = new QPixmap(captionWidth+4, titleHeight + TOPMARGIN + DECOHEIGHT); // 4 px shadow
     painter.begin(aCaptionBuffer);
     painter.drawTiledPixmap(aCaptionBuffer->rect(), *aTitleBarTile);
     if(Handler()->titleShadow()) {
@@ -743,20 +737,20 @@ void SUSE2Client::update_captionBuffer()
     painter.setPen(Handler()->getColor(TitleFont,true));
     painter.drawText(aCaptionBuffer->rect().left(), aCaptionBuffer->rect().top() + titleEdgeTop,
             aCaptionBuffer->rect().width()-logoWidth, aCaptionBuffer->rect().height() - titleEdgeTop-titleEdgeBottom,
-            AlignCenter, c);
+            Qt::AlignCenter, c);
     if (Handler()->titleLogo())
         painter.drawImage(captionWidth - logo.width(), aCaptionBuffer->rect().top() + TOPMARGIN, logo);
     painter.end();
 
     // inactive -> no shadow and no logo
-    iCaptionBuffer->resize(captionWidth+4, titleHeight + TOPMARGIN + DECOHEIGHT);
+    iCaptionBuffer = new QPixmap(captionWidth+4, titleHeight + TOPMARGIN + DECOHEIGHT);
     painter.begin(iCaptionBuffer);
     painter.drawTiledPixmap(iCaptionBuffer->rect(), *iTitleBarTile);
     painter.setFont(s_titleFont);
     painter.setPen(Handler()->getColor(TitleFont,false));
     painter.drawText(iCaptionBuffer->rect().left(), iCaptionBuffer->rect().top() + titleEdgeTop,
                      iCaptionBuffer->rect().width() - logoWidth, iCaptionBuffer->rect().height() - titleEdgeTop - titleEdgeBottom,
-                     AlignCenter, c);
+                     Qt::AlignCenter, c);
     painter.end();
 
     captionBufferDirty = false;
