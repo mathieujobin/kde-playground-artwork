@@ -27,7 +27,7 @@
 int main(int argc, char **argv)
 {
     KAboutData about("uidemo", 0, ki18n("uidemo"), "0.1",
-                     ki18n("uidemo"),
+                     ki18n("UI demo application"),
                      KAboutData::License_GPL, ki18n("Copyright 2007 Thomas Lübking"));
     about.addAuthor( ki18n("Thomas Lübking"), KLocalizedString(), "thomas.luebking@web.de" );
     KCmdLineArgs::init(argc, argv, &about);

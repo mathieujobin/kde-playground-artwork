@@ -372,9 +372,9 @@ int main(int argc, char **argv)
     KAboutData about("oxybgtest", 0, ki18n("oxybgtest"), "0.1",
                      ki18n("Oxygen style background test application"),
                      KAboutData::License_GPL, ki18n(
-                     "(C) 2007 Matthew Woehlke, "
-                     "(C) 2007 Casper Boemann, "
-                     "(C) 2007 Fredrik Höglund"));
+                     "Copyright 2007 Matthew Woehlke, "
+                     "Copyright 2007 Casper Boemann, "
+                     "Copyright 2007 Fredrik Höglund"));
     about.addAuthor( ki18n("Matthew Woehlke"), KLocalizedString(), "mw_triad@users.sourceforge.net" );
     about.addAuthor( ki18n("Casper Boemann"),  KLocalizedString(), "cbr@boemann.dk" );
     about.addAuthor( ki18n("Fredrik Höglund"), KLocalizedString(), "<fredrik@kde.org>" );
