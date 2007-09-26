@@ -19,3 +19,9 @@ set(scrollbardemo_SRCS scrollbardemo.cpp)
 kde4_add_ui_files(scrollbardemo_SRCS scrollbar.ui)
 kde4_add_executable(scrollbardemo ${scrollbardemo_SRCS})
 target_link_libraries(scrollbardemo ${KDE4_KDEUI_LIBS})
+
+# uidemo
+set(uidemo_SRCS uidemo.cpp)
+kde4_add_ui_files(uidemo_SRCS uidemo.ui)
+kde4_add_executable(uidemo ${uidemo_SRCS})
+target_link_libraries(uidemo ${KDE4_KDEUI_LIBS})
