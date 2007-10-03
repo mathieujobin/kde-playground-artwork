@@ -20,7 +20,6 @@
 #define COKOONEDITOR_MAINWINDOW_H
 
 #include <KDE/KXmlGuiWindow>
-#include "ui_mainwindowcentralwidget.h"
 #include "thememodel.h"
 
 class QCloseEvent;
@@ -31,6 +30,7 @@ namespace Cokoon {
     class SpecificationStateSelector;
     class PreviewVariableEditor;
     class ThemeAttributeEditor;
+    class PreviewDialog;
 
     class MainWindow : public KXmlGuiWindow
     {
@@ -48,18 +48,22 @@ Q_OBJECT
         bool maybeSave();
         bool loadFile(const QString &fileName);
         void quit();
+        void undo();
+        void redo();
+
+        void nodeUp();
+        void nodeDown();
+        void nodeDelete();
 
         void documentWasModified();
     private:
         void setupActions();
 
         ThemeModel m_model;
-        ThemeItemTreeModel m_itemViewModel;
-        Ui_MainWindowCentralWidget m_cwUi;
         ThemeItemView *m_themeView;
-        SpecificationStateSelector *m_specSelector;
-        PreviewVariableEditor *m_previewVars;
         ThemeAttributeEditor *m_attrEditor;
+
+        PreviewDialog *m_previewDialog;
     };
 
 

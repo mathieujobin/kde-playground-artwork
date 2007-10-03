@@ -22,6 +22,7 @@
 
 #include "thememodel.h"
 #include "themeattributeeditor.h"
+#include "commands.h"
 
 namespace Cokoon {
 
@@ -75,23 +76,32 @@ namespace Cokoon {
     void EditWidget::textValueChanged()
     {
         foreach(const TextAttrMapping &m,m_textAttrs) {
-            const QString &name = m.first;
-            const QString &text = m.second->text();
+            const QString name = m.first;
+            const QString text = m.second->text();
             if (m_element->getAttr(name)!=text) {
-                m_element->setAttr(name,text);
+                EditAttributeCommand *c =
+                    new EditAttributeCommand(m_element->themeModel(),m_element->nodePath(),
+                                             name, text);
+                c->model()->undoStack().push(c);
             }
         }
     }
     void EditWidget::comboValueChanged()
     {
         foreach(const SelectAttrMapping &m,m_selectAttrs) {
-            const QString &name = m.first;
-            const QString &text = m.second->currentText();
+            const QString name = m.first;
+            const QString text = m.second->currentText();
             if (m_element->getAttr(name)!=text) {
                 if (text.isEmpty()) {
-                    m_element->removeAttr(name);
+                    RemoveAttributeCommand *c =
+                        new RemoveAttributeCommand(m_element->themeModel(),m_element->nodePath(),
+                                                   name);
+                    c->model()->undoStack().push(c);
                 } else {
-                    m_element->setAttr(name,text);
+                    EditAttributeCommand *c =
+                        new EditAttributeCommand(m_element->themeModel(),m_element->nodePath(),
+                                                 name, text);
+                    c->model()->undoStack().push(c);
                 }
             }
         }
@@ -208,7 +218,7 @@ namespace Cokoon {
     }
 
     ThemeAttributeEditor::ThemeAttributeEditor(QWidget *parent)
-        : QWidget(parent), m_currentElement(0), m_currentWidget(0)
+        : QWidget(parent), m_currentWidget(0), m_model(0)
     {
         m_layout = new QHBoxLayout(this);
     }
@@ -219,21 +229,51 @@ namespace Cokoon {
 
     void ThemeAttributeEditor::clear()
     {
-        if (m_currentWidget)
+        if (m_currentWidget) {
             m_layout->removeWidget(m_currentWidget);
-        delete m_currentWidget;
+            m_currentWidget->hide();
+            m_currentWidget->deleteLater();
+        }
         m_currentWidget = 0;
+    }
+
+    void ThemeAttributeEditor::setModel(ThemeModel *model)
+    {
+        if (m_model) {
+            disconnect(m_model,SIGNAL(themeNodeEdited(const QString&)),
+                       this,SLOT(themeElementModified(const QString&)));
+        }
+        connect(model,SIGNAL(themeNodeEdited(const QString&)),
+                this,SLOT(themeElementModified(const QString&)));
+        m_model = model;
+    }
+
+    void ThemeAttributeEditor::themeElementModified(const QString &domNodePath)
+    {
+        if (domNodePath == m_currentNodePath) {
+            setThemeElement(domNodePath);
+        }
+    }
+
+    void ThemeAttributeEditor::setThemeElement(const QString &domNodePath)
+    {
+        if (!m_model)
+            return;
+
+        setThemeElement(m_model->getThemeElement(domNodePath));
     }
 
     void ThemeAttributeEditor::setThemeElement(ThemeDomNode *element)
     {
-        qDebug() << "ThemeAttributeEditor::set" << element;
+        qDebug() << "ThemeAttributeEditor::set" << element << element->nodePath();
 
         clear();
 
         if (!element) {
             return;
         }
+
+        m_currentNodePath = element->nodePath();
 
         if (ThemeComment *c = dynamic_cast<ThemeComment*>(element)) {
             m_currentWidget = new CommentEditor(c,this);

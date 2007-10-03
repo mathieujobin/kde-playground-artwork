@@ -37,6 +37,7 @@ class QLineEdit;
 namespace Cokoon {
 
     class ThemeDomElement;
+    class ThemeModel;
 
     class EditWidget : public QWidget
     {
@@ -92,13 +93,18 @@ class Q_DECL_EXPORT ThemeAttributeEditor : public QWidget
     virtual ~ThemeAttributeEditor();
 
  public slots:
+    void setModel(ThemeModel *model);
+    void setThemeElement(const QString &domNodePath);
     void setThemeElement(ThemeDomNode *element);
+    void themeElementModified(const QString &domNodePath);
 
  private:
     void clear();
     QHBoxLayout *m_layout;
     ThemeDomNode *m_currentElement;
+    QString m_currentNodePath;
     QWidget *m_currentWidget;
+    ThemeModel *m_model;
 };
 
 }

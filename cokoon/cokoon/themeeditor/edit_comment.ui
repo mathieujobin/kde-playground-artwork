@@ -31,7 +31,7 @@
    <item row="0" column="0" >
     <widget class="QLabel" name="label" >
      <property name="text" >
-      <string>&amp;Comment</string>
+      <string>&lt;b>&amp;Comment&lt;/b></string>
      </property>
      <property name="buddy" >
       <cstring>comment</cstring>
@@ -39,7 +39,14 @@
     </widget>
    </item>
    <item row="1" column="0" >
-    <widget class="QTextEdit" name="comment" />
+    <widget class="QTextEdit" name="comment" >
+     <property name="undoRedoEnabled" >
+      <bool>false</bool>
+     </property>
+     <property name="acceptRichText" >
+      <bool>false</bool>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

@@ -153,6 +153,9 @@ namespace Cokoon {
         m_ui.setupUi(this);
         m_ui.variables->verticalHeader()->hide();
 //         m_ui.variables->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+
+        connect(m_ui.width, SIGNAL(valueChanged(int)), this, SIGNAL(sizeValueChanged()));
+        connect(m_ui.height, SIGNAL(valueChanged(int)), this, SIGNAL(sizeValueChanged()));
     }
 
     PreviewVariableEditor::~PreviewVariableEditor()
@@ -171,6 +174,10 @@ namespace Cokoon {
         setCurrentItem(0);
     }
 
+    QSize PreviewVariableEditor::size() const {
+        return QSize(m_ui.width->value(),m_ui.height->value());
+    }
+
     QVariant PreviewVariableEditor::getVariableValue(int idx) const
     {
         return m_varValues.value(idx);
@@ -183,6 +190,9 @@ namespace Cokoon {
         clear();
         m_currentItem = m_spec->items().value(itemIndex);
         if(m_currentItem) {
+            m_ui.width->setValue(m_currentItem->previewDefaultWidth);
+            m_ui.height->setValue(m_currentItem->previewDefaultHeight);
+
             QList<SpecificationItemVariable*> vars = m_currentItem->providedVariables;
             foreach(SpecificationItemVariable *v, vars) {
                 QString valueString = v->previewDefaultValue;

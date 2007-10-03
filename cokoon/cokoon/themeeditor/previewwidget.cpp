@@ -54,9 +54,9 @@ namespace Cokoon {
         qDebug() << "paintEvent" << m_doc << m_id;
         if (m_doc && m_id>=0) {
             QPainter p(this);
-            int w = 100;
-            int h = 100;
-            m_doc->drawLayers(m_id,&p,0,0,w,h,m_vars);
+            int w = m_vars->size().width();
+            int h = m_vars->size().height();
+            m_doc->drawLayers(m_id,&p,(width()-w)/2,(height()-h)/2,w,h,m_vars);
         } else {
             QWidget::paintEvent(event);
         }

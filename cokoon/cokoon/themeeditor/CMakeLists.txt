@@ -13,9 +13,11 @@ set(themeeditor_SRCS
    specificationstateselector.cpp
    previewvariableeditor.cpp
    previewwidget.cpp
+   previewdialog.cpp
    thememodel.cpp
    themeitemview.cpp
    themeattributeeditor.cpp
+   commands.cpp
    mainwindow.cpp
    main.cpp)
 
@@ -23,8 +25,8 @@ set(themeeditor_UIS
         specificationstateselector.ui
         specificationstateselectorstate.ui
         previewvariableeditor.ui
+        previewdialog.ui
         themeitemview.ui
-        mainwindowcentralwidget.ui
         edit_comment.ui edit_layout.ui edit_source.ui edit_tile.ui
         edit_expression.ui edit_object.ui edit_theme.ui)
 
@@ -36,8 +38,8 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 kde4_add_executable(cokoonthemeeditor ${themeeditor_SRCS})
 
-target_link_libraries(cokoonthemeeditor cokoon ${KDE4_KDEUI_LIBS} ${QT_QTSVG_LIBRARY} ${QT_LIBRARIES} )
+target_link_libraries(cokoonthemeeditor cokoon ${KDE4_KDEUI_LIBS} ${KDE4_KIO_LIBS} ${QT_QTSVG_LIBRARY} ${QT_LIBRARIES} )
 
 ########### install files ###############
 
-install( FILES CokoonThemeEditorui.rc DESTINATION  ${DATA_INSTALL_DIR}/cokoonthemeeditor )
+install( FILES cokoonthemeeditorui.rc DESTINATION  ${DATA_INSTALL_DIR}/cokoonthemeeditor )

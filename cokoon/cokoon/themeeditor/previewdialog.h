@@ -16,29 +16,33 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef COKOON_THEMEITEMVIEW_H
-#define COKOON_THEMEITEMVIEW_H
+#ifndef COKOON_PREVIEWDIALOG_H
+#define COKOON_PREVIEWDIALOG_H
 
-#import <QTreeView>
+#import <QWidget>
+#import "ui_previewdialog.h"
 
 namespace Cokoon {
 
-    class ThemeItemTreeModel;
-    class ThemeDomNode;
+    class DocumentSpecification;
+    class Document;
 
-    class ThemeItemView : public QTreeView
+    class PreviewDialog : public QWidget
     {
 Q_OBJECT
     public:
-        ThemeItemView(QWidget *parent = 0);
-        virtual ~ThemeItemView();
-        ThemeDomNode *currentNode() const;
-    private slots:
-/*         void dataChanged ( const QModelIndex & topLeft, const QModelIndex & bottomRight ); */
-        void selectionChanged(const QItemSelection & selected, const QItemSelection & deselected);
-    signals:
-        void themeElementChanged(ThemeDomNode *el);
+        PreviewDialog(QWidget *parent = 0);
+        virtual ~PreviewDialog();
+
+    public slots:
+        void setSpecification(const DocumentSpecification *spec);
+        void setCokoonDocument(const Document *doc);
+
+    private:
+        Ui_PreviewDialog m_ui;
     };
+
+
 }
 
 #endif

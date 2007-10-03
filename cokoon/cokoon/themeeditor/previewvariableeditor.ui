@@ -9,20 +9,42 @@
     <height>285</height>
    </rect>
   </property>
-  <layout class="QVBoxLayout" >
-   <property name="leftMargin" >
-    <number>0</number>
-   </property>
-   <property name="topMargin" >
-    <number>0</number>
-   </property>
-   <property name="rightMargin" >
-    <number>0</number>
-   </property>
-   <property name="bottomMargin" >
-    <number>0</number>
-   </property>
-   <item>
+  <layout class="QGridLayout" >
+   <item row="0" column="0" >
+    <widget class="QLabel" name="label" >
+     <property name="text" >
+      <string>&amp;Width:</string>
+     </property>
+     <property name="buddy" >
+      <cstring>width</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" >
+    <widget class="QSpinBox" name="width" >
+     <property name="maximum" >
+      <number>1000</number>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2" >
+    <widget class="QLabel" name="label_2" >
+     <property name="text" >
+      <string>&amp;Height:</string>
+     </property>
+     <property name="buddy" >
+      <cstring>height</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="3" >
+    <widget class="QSpinBox" name="height" >
+     <property name="maximum" >
+      <number>1000</number>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="4" >
     <widget class="QTableView" name="variables" >
      <property name="alternatingRowColors" >
       <bool>true</bool>

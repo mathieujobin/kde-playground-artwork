@@ -1,0 +1,76 @@
+<ui version="4.0" >
+ <class>PreviewDialog</class>
+ <widget class="QWidget" name="PreviewDialog" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>426</width>
+    <height>346</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" >
+   <item row="0" column="0" >
+    <widget class="QSplitter" name="splitter_2" >
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <widget class="Cokoon::SpecificationStateSelector" native="1" name="specSelector" >
+      <property name="sizePolicy" >
+       <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+     </widget>
+     <widget class="QSplitter" name="splitter" >
+      <property name="orientation" >
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="Cokoon::PreviewVariableEditor" native="1" name="varEditor" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Maximum" hsizetype="Maximum" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+      <widget class="Cokoon::PreviewWidget" native="1" name="preview" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Cokoon::PreviewWidget</class>
+   <extends>QWidget</extends>
+   <header>previewwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Cokoon::SpecificationStateSelector</class>
+   <extends>QWidget</extends>
+   <header>specificationstateselector.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Cokoon::PreviewVariableEditor</class>
+   <extends>QWidget</extends>
+   <header>previewvariableeditor.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

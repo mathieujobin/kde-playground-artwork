@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE kpartgui SYSTEM "kpartgui.dtd">
-<gui name="cokoonthemeeditor" version="1">
+<gui name="cokoonthemeeditor" version="2">
  
   <ToolBar name="mainToolBar" >
     <text>Main Toolbar</text>
-    <Action name="clear" />
+    <Action name="deleteNode" />
     <ActionList name="dynamicActionlist" />
   </ToolBar>
-  <MenuBar>
+<!--  <MenuBar>
     <Menu name="file" >
       <text>&amp;File</text>
       <Action name="clear" />
+    </Menu>
+  </MenuBar> -->
+  <MenuBar>
+    <Menu name="edit" >
+      <text>&amp;Edit</text>
+      <Action name="deleteNode" />
     </Menu>
   </MenuBar>
 </gui>

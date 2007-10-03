@@ -28,16 +28,37 @@ namespace Cokoon {
     ThemeItemView::ThemeItemView(QWidget *parent)
         : QTreeView(parent)
     {
+//         setRootIsDecorated(false);
+        setSelectionBehavior(QAbstractItemView::SelectRows);
+        setSelectionMode(QAbstractItemView::SingleSelection);
+        setAllColumnsShowFocus(true);
     }
     ThemeItemView::~ThemeItemView()
     {
     }
+
+//     void ThemeItemView::dataChanged ( const QModelIndex & topLeft, const QModelIndex & bottomRight )
+//     {
+//         qDebug() << "dataChanged...";
+//         setExpanded(model()->index(0,0,QModelIndex()),true); // top level item;
+//     }
 
     void ThemeItemView::selectionChanged(const QItemSelection & selected, const QItemSelection & deselected)
     {
         QModelIndex index = selected.indexes()[0];
         ThemeDomNode *el = static_cast<ThemeDomNode*>(index.internalPointer());
         emit themeElementChanged(el);
+    }
+
+    ThemeDomNode *ThemeItemView::currentNode() const
+    {
+        if (selectedIndexes().size()>0) {
+            ThemeDomNode *el =
+                static_cast<ThemeDomNode*>(selectedIndexes().first().internalPointer());
+            return el;
+        } else {
+            return 0;
+        }
     }
 }
 

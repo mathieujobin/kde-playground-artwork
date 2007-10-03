@@ -21,9 +21,9 @@
 #include <QtAlgorithms>
 
 #include "mainwindow.h"
+#include "commands.h"
 #include "themeitemview.h"
-#include "specificationstateselector.h"
-#include "previewvariableeditor.h"
+#include "previewdialog.h"
 #include "themeattributeeditor.h"
 
 #include <kstandarddirs.h>
@@ -39,52 +39,31 @@
 #include <QMessageBox>
 #include <QApplication>
 #include <QDockWidget>
+#include <QKeySequence>
+#include <kshortcut.h>
+#include <kaction.h>
 
 namespace Cokoon {
 
     MainWindow::MainWindow()
     {
-        QWidget *cw = new QWidget(this);
-        m_cwUi.setupUi(cw);
-        setCentralWidget(cw);
-
         // Dock widgets
         m_themeView = new ThemeItemView(this);
-        m_themeView->setModel(&m_itemViewModel);
+        m_themeView->setModel(&m_model);
         QDockWidget *dock = new QDockWidget(i18n("Theme"),this);
         dock->setAllowedAreas(Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea);
         dock->setWidget(m_themeView);
         addDockWidget(Qt::RightDockWidgetArea,dock);
 
-        m_specSelector = new SpecificationStateSelector(this);
-        dock = new QDockWidget(i18n("Preview Selector"),this);
-        dock->setAllowedAreas(Qt::TopDockWidgetArea|Qt::BottomDockWidgetArea);
-        dock->setWidget(m_specSelector);
-        addDockWidget(Qt::TopDockWidgetArea,dock);
-
-        m_previewVars = new PreviewVariableEditor(this);
-        dock = new QDockWidget(i18n("Preview Variables"),this);
-        dock->setAllowedAreas(Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea|Qt::TopDockWidgetArea|Qt::BottomDockWidgetArea);
-        dock->setWidget(m_previewVars);
-        addDockWidget(Qt::LeftDockWidgetArea,dock);
-
         m_attrEditor = new ThemeAttributeEditor(this);
-        dock = new QDockWidget(i18n("Theme Attributes"),this);
-        dock->setAllowedAreas(Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea);
-        dock->setWidget(m_attrEditor);
-        addDockWidget(Qt::RightDockWidgetArea,dock);
+        setCentralWidget(m_attrEditor);
+
+        m_previewDialog = new PreviewDialog(0);
+        m_previewDialog->show();
 
         // Connections
-        m_itemViewModel.setModel(&m_model);
+        m_attrEditor->setModel(&m_model);
         connect(&m_model,SIGNAL(modelModified()),this,SLOT(documentWasModified()));
-
-        m_cwUi.preview->setVariableEditor(m_previewVars);
-        connect(m_specSelector,SIGNAL(currentItemChanged(int)),
-                m_previewVars,SLOT(setCurrentItem(int)));
-        connect(m_previewVars,SIGNAL(variableValueChanged(int)),
-                m_cwUi.preview,SLOT(update()));
-        connect(m_specSelector,SIGNAL(objectIdChanged(int)),
-                m_cwUi.preview,SLOT(setObjectId(int)));
 
         connect(m_themeView,SIGNAL(themeElementChanged(ThemeDomNode *)),
                 m_attrEditor,SLOT(setThemeElement(ThemeDomNode *)));
@@ -95,6 +74,8 @@ namespace Cokoon {
 
     MainWindow::~MainWindow()
     {
+        m_previewDialog->close();
+        delete m_previewDialog;
     }
 
     void MainWindow::closeEvent ( QCloseEvent * event )
@@ -145,6 +126,10 @@ namespace Cokoon {
 
     void MainWindow::documentWasModified()
     {
+        // update actions
+        // TODO
+
+        // update window state, title etc.
         setWindowModified(m_model.modified());
 
         QString showFileName = m_model.currentFileName();
@@ -161,6 +146,14 @@ namespace Cokoon {
         KStandardAction::saveAs(this, SLOT(saveAs()), actionCollection());
         KStandardAction::save(this, SLOT(save()), actionCollection());
         KStandardAction::quit(this, SLOT(quit()), actionCollection());
+
+        KStandardAction::undo(this, SLOT(undo()), actionCollection());
+        KStandardAction::redo(this, SLOT(redo()), actionCollection());
+
+        KAction *deleteNode = new KAction(KIcon("edit-delete"), i18n("&Delete Node"), this);
+        deleteNode->setShortcut(KShortcut(QKeySequence(QKeySequence::Delete)));
+        actionCollection()->addAction("deleteNode",deleteNode);
+        connect(deleteNode, SIGNAL(triggered(bool)), SLOT(nodeDelete()));
 
         setupGUI();
     }
@@ -191,9 +184,8 @@ namespace Cokoon {
         }
         QApplication::restoreOverrideCursor();
         documentWasModified();
-        m_cwUi.preview->setCokoonDocument(m_model.cokoonDocument());
-        m_previewVars->setSpecification(m_model.specification());
-        m_specSelector->setSpecification(m_model.specification());
+        m_previewDialog->setCokoonDocument(m_model.cokoonDocument());
+        m_previewDialog->setSpecification(m_model.specification());
         return true;
     }
 
@@ -203,6 +195,45 @@ namespace Cokoon {
             close();
         }
     }
+
+    void MainWindow::undo()
+    {
+        m_model.undoStack().undo();
+    }
+
+    void MainWindow::redo()
+    {
+        m_model.undoStack().redo();
+    }
+
+    void MainWindow::nodeUp()
+    {
+        ThemeDomNode *n = m_themeView->currentNode();
+        if (n) {
+            m_model.moveNodeUp(n->nodePath());
+        }
+    }
+    void MainWindow::nodeDown()
+    {
+        ThemeDomNode *n = m_themeView->currentNode();
+        if (n) {
+            m_model.moveNodeDown(n->nodePath());
+        }
+    }
+    void MainWindow::nodeDelete()
+    {
+        ThemeDomNode *n = m_themeView->currentNode();
+        qDebug() << "nodeDelete" << n;
+        if (n) {
+            DeleteNodeCommand *c =
+                new DeleteNodeCommand(&m_model,n->nodePath());
+            m_model.undoStack().push(c);
+
+            // TODO
+//             m_model.deleteNode(n->nodePath());
+        }
+    }
+
 
 }
 

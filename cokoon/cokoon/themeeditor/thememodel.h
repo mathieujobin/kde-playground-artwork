@@ -23,6 +23,7 @@
 #include <QDomElement>
 #include <QDomDocument>
 #include <QAbstractItemModel>
+#include <qundostack.h>
 
 namespace Cokoon {
 
@@ -35,22 +36,31 @@ namespace Cokoon {
     class ThemeDomNode
 {
  public:
-    ThemeDomNode(const QDomNode &node, ThemeDomNode *parent, ThemeModel *themeModel);
-    ThemeDomNode(const QDomNode &node, ThemeDomNode *parent);
+    ThemeDomNode(const QDomNode &node, const ThemeDomNode *parent, ThemeModel *themeModel);
+    ThemeDomNode(const QDomNode &node, const ThemeDomNode *parent);
     virtual ~ThemeDomNode();
-    QList<ThemeDomNode*> children();
+    QList<ThemeDomNode*> children() const;
     virtual QDomNode domNode() const;
-    ThemeDomNode *parent() const;
+    const ThemeDomNode *parent() const;
     ThemeModel *themeModel() const;
     virtual QString displayText() const = 0;
     virtual QString displayId() const;
-    virtual ThemeDomNode *createChildNode(const QDomNode &node);
+    /**
+     * Factory method for subclasses
+     */
+    virtual ThemeDomNode *createChildNode(const QDomNode &node) const;
 
-    int itemModelRow;
+    int childIndex() const;
+    QString nodePath() const;
+    QModelIndex modelIndex(int column = 0) const;
+
+    QDomNode deleteChild(int index);
+    bool insertChild(int index, const QDomNode &node);
 
  private:
+    void invalidateCache();
     QDomNode m_node;
-    ThemeDomNode *m_parent;
+    const ThemeDomNode *m_parent;
     ThemeModel *m_theme;
     mutable QList<ThemeDomNode*> m_children;
 };
@@ -58,8 +68,8 @@ namespace Cokoon {
  class ThemeDomElement : public ThemeDomNode
 {
  public:
-    ThemeDomElement(const QDomNode &node, ThemeDomNode *parent, ThemeModel *themeModel, const QString &tag);
-    ThemeDomElement(const QDomNode &node, ThemeDomNode *parent, const QString &tag);
+    ThemeDomElement(const QDomNode &node, const ThemeDomNode *parent, ThemeModel *themeModel, const QString &tag);
+    ThemeDomElement(const QDomNode &node, const ThemeDomNode *parent, const QString &tag);
     QString displayText() const;
     QString displayId() const;
 
@@ -67,12 +77,14 @@ namespace Cokoon {
     void setAttr(const QString &attrName, const QString &value);
     void removeAttr(const QString &attrName);
     virtual QDomElement domElement() const;
+
+    ThemeDomElement *getElement(const QString &nodePath) const;
 };
 
  class ThemeComment : public ThemeDomNode
 {
  public:
-    ThemeComment(const QDomNode &node, ThemeDomNode *parent);
+    ThemeComment(const QDomNode &node, const ThemeDomNode *parent);
     QString displayText() const {
         return "# Comment";
     }
@@ -81,86 +93,86 @@ namespace Cokoon {
  class ThemeSourceReplace : public ThemeDomElement
 {
  public:
-    ThemeSourceReplace(const QDomNode &node, ThemeDomNode *parent);
+    ThemeSourceReplace(const QDomNode &node, const ThemeDomNode *parent);
 };
 
  class ThemeSource : public ThemeDomElement
 {
  public:
-    ThemeSource(const QDomNode &node, ThemeDomNode *parent);
-    virtual ThemeDomNode *createChildNode(const QDomNode &node);
+    ThemeSource(const QDomNode &node, const ThemeDomNode *parent);
+    virtual ThemeDomNode *createChildNode(const QDomNode &node) const;
 };
 
  class ThemeExpression : public ThemeDomElement
 {
  public:
-    ThemeExpression(const QDomNode &node, ThemeDomNode *parent);
+    ThemeExpression(const QDomNode &node, const ThemeDomNode *parent);
 };
 
  class ThemeTile : public ThemeDomElement
 {
  public:
-    ThemeTile(const QDomNode &node, ThemeDomNode *parent);
+    ThemeTile(const QDomNode &node, const ThemeDomNode *parent);
 };
 
  class ThemeLayer : public ThemeDomElement
 {
  public:
-    ThemeLayer(const QDomNode &node, ThemeDomNode *parent);
+    ThemeLayer(const QDomNode &node, const ThemeDomNode *parent);
 };
 
  class ThemeLayoutCell : public ThemeDomElement
 {
  public:
-    ThemeLayoutCell(const QDomNode &node, ThemeDomNode *parent);
+    ThemeLayoutCell(const QDomNode &node, const ThemeDomNode *parent);
 };
 
  class ThemeLayoutColumn : public ThemeDomElement
 {
  public:
-    ThemeLayoutColumn(const QDomNode &node, ThemeDomNode *parent);
+    ThemeLayoutColumn(const QDomNode &node, const ThemeDomNode *parent);
 };
 
  class ThemeLayoutRow : public ThemeDomElement
 {
  public:
-    ThemeLayoutRow(const QDomNode &node, ThemeDomNode *parent);
-    virtual ThemeDomNode *createChildNode(const QDomNode &node);
+    ThemeLayoutRow(const QDomNode &node, const ThemeDomNode *parent);
+    virtual ThemeDomNode *createChildNode(const QDomNode &node) const;
 };
 
  class ThemeLayout : public ThemeDomElement
 {
  public:
-    ThemeLayout(const QDomNode &node, ThemeDomNode *parent);
-    virtual ThemeDomNode *createChildNode(const QDomNode &node);
+    ThemeLayout(const QDomNode &node, const ThemeDomNode *parent);
+    virtual ThemeDomNode *createChildNode(const QDomNode &node) const;
 };
 
  class ThemePaint : public ThemeDomElement
 {
  public:
-    ThemePaint(const QDomNode &node, ThemeDomNode *parent);
-    ThemeDomNode *createChildNode(const QDomNode &node);
+    ThemePaint(const QDomNode &node, const ThemeDomNode *parent);
+    ThemeDomNode *createChildNode(const QDomNode &node) const;
 };
 
  class ThemeObject : public ThemeDomElement
 {
  public:
-    ThemeObject(const QDomNode &node, ThemeDomNode *parent);
-    ThemeDomNode *createChildNode(const QDomNode &node);
+    ThemeObject(const QDomNode &node, const ThemeDomNode *parent);
+    ThemeDomNode *createChildNode(const QDomNode &node) const;
 };
 
  class Theme : public ThemeDomElement
 {
  public:
     Theme(const QDomNode &node, ThemeModel *model);
-    virtual ThemeDomNode *createChildNode(const QDomNode &node);
+    virtual ThemeDomNode *createChildNode(const QDomNode &node) const;
     QString name() { return getAttr("name"); }
     QString spec() { return getAttr("spec"); }
     QString version() { return getAttr("version"); }
     QStringList objects();
 };
 
-    class ThemeModel : public QObject
+    class ThemeModel : public QAbstractItemModel
 {
     Q_OBJECT
  public:
@@ -171,31 +183,29 @@ namespace Cokoon {
     bool save(const QString &fileName);
     const QString &currentFileName() const;
 
-    Theme *theme();
+    Theme *theme() const;
+    ThemeDomNode *getThemeNode(const QString &nodePath) const;
+    ThemeDomElement *getThemeElement(const QString &nodePath) const;
+    QModelIndex getNodeModelIndex(const QString &nodePath) const;
+
     DocumentSpecification *specification();
     Document *cokoonDocument();
 
     bool modified() const;
-    void setModified(bool modified = true);
- signals:
-    void modelModified();
- protected:
-    bool m_modified;
-    Theme *m_theme;
-    DocumentSpecification *m_themeSpecification;
-    DocumentSpecificationDocument *m_cokoonDocument;
-    QDomDocument m_domDocument;
-    QString m_currentFileName;
-};
+    void setModified(bool modified);
+    void setThemeNodeEdited(const QString &domNodePath);
 
- class ThemeItemTreeModel : public QAbstractItemModel
-{
-Q_OBJECT
- public:
-    ThemeItemTreeModel();
-    virtual ~ThemeItemTreeModel();
+    QUndoStack &undoStack();
 
-    void setModel(ThemeModel *model);
+    // theme modification...
+    QDomNode deleteChild(int index);
+    /**
+     * Deletes a theme item. Keeps undo information.
+     * @returns The child's old QDomNode representation
+     */
+    bool deleteNode(const QString &domNodePath);
+    bool moveNodeUp(const QString &domNodePath);
+    bool moveNodeDown(const QString &domNodePath);
 
     // QAbstractItemModel interface...
     virtual QVariant headerData ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
@@ -205,10 +215,35 @@ Q_OBJECT
     virtual QModelIndex parent ( const QModelIndex & index ) const;
     virtual int columnCount ( const QModelIndex & parent = QModelIndex() ) const;
     virtual int rowCount ( const QModelIndex & parent = QModelIndex() ) const;
- public slots:
-    void slotReset();
- private:
-    ThemeModel *m_theme;
+
+ signals:
+    void modelModified();
+    void themeNodeEdited(const QString &domNodePath);
+    void themeNodeInserted(const QString &parentDomNodePath,int index);
+    void themeNodeDeleted(const QString &parentDomNodePath,int index);
+ protected slots:
+    void currentFileModifiedOnDisk(const QString &path);
+ protected:
+    friend class DeleteNodeCommand;
+    friend class InsertNodeCommand;
+    friend class ThemeDomNode;
+
+    void activateDirWatch();
+    void deactivateDirWatch();
+
+/*     QDomNode deleteNodeChild(const QString &parentNodePath, int childIndex); */
+/*     bool insertNodeChild(const QString &parentNodePath, int childIndex, QDomNode node); */
+
+    bool m_modified;
+    Theme *m_theme;
+    DocumentSpecification *m_themeSpecification;
+    DocumentSpecificationDocument *m_cokoonDocument;
+    QDomDocument m_domDocument;
+    QString m_currentFileName;
+
+    QString m_dirWatchFile;
+
+    QUndoStack m_undoStack;
 };
 
 }

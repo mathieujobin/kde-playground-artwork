@@ -55,7 +55,10 @@ class Q_DECL_EXPORT PreviewVariableEditor : public QWidget, public ExpressionVar
      */
     virtual QVariant getVariableValue(int idx) const;
 
+    QSize size() const;
+
  signals:
+    void sizeValueChanged();
     void variableValueChanged(int variableIndex);
 
  public slots:
