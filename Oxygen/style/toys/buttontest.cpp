@@ -9,7 +9,7 @@
 
 #include "tileset.h"
 
-int r = 224, g = 224, b = 224;
+QColor *colors;
 
 //BEGIN TileCache
 bool lowThreshold(const QColor &color)
@@ -360,41 +360,40 @@ public:
 protected:
     void paintEvent(QPaintEvent *e)
     {
-        QColor color(r, g, b);
         QPainter p(this);
         QRect rect = e->rect();
         p.setWindow(rect);
         p.setClipRect(rect);
 
-        p.fillRect(rect, color);
+        p.fillRect(rect, colors[0]);
 
         // windeco button
-        p.drawPixmap(QRect(2,2,20,20), windecoButton(color, 10));
-        p.drawPixmap(QRect(44,0,200,200), windecoButton(color, 100));
+        p.drawPixmap(QRect(2,2,20,20), windecoButton(colors[1], 10));
+        p.drawPixmap(QRect(44,0,200,200), windecoButton(colors[1], 100));
 
         // radio button
-        p.drawPixmap(QRect(2,32,21,21), roundSlab(color, 7));
-        p.drawPixmap(QRect(244,0,210,210), roundSlab(color, 70));
+        p.drawPixmap(QRect(2,32,21,21), roundSlab(colors[1], 7));
+        p.drawPixmap(QRect(244,0,210,210), roundSlab(colors[1], 70));
 
         // glowing radio button (TODO)
-        p.drawPixmap(QRect(24,32,21,21), roundSlab(color, 7));
-        p.drawPixmap(QRect(248,210,210,210), roundSlab(color, 70));
+        p.drawPixmap(QRect(24,32,21,21), roundSlab(colors[1], 7));
+        p.drawPixmap(QRect(248,210,210,210), roundSlab(colors[1], 70));
 
         // regular button
-        renderFilledTileset(p, QRect(2,62,21,21), slab(color, 7), color, 7);
-        renderFilledTileset(p, QRect(458,0,210,210), slab(color, 70), color, 70);
+        renderFilledTileset(p, QRect(2,62,21,21), slab(colors[1], 7), colors[1], 7);
+        renderFilledTileset(p, QRect(458,0,210,210), slab(colors[1], 70), colors[1], 70);
 
         // glowing button (TODO)
-        renderFilledTileset(p, QRect(24,62,21,21), slab(color, 7), color, 7);
-        renderFilledTileset(p, QRect(458,210,210,210), slab(color, 70), color, 70);
+        renderFilledTileset(p, QRect(24,62,21,21), slab(colors[1], 7), colors[1], 7);
+        renderFilledTileset(p, QRect(458,210,210,210), slab(colors[1], 70), colors[1], 70);
 
         // sunken button
-        renderFilledTileset(p, QRect(2,92,21,21), sunkenSlab(color, 7), color, 7);
-        renderFilledTileset(p, QRect(658,0,210,210), sunkenSlab(color, 70), color, 70);
+        renderFilledTileset(p, QRect(2,92,21,21), sunkenSlab(colors[1], 7), colors[1], 7);
+        renderFilledTileset(p, QRect(658,0,210,210), sunkenSlab(colors[1], 70), colors[1], 70);
 
         // inverted button
-        renderTileset(p, QRect(24,92,21,21), inverseSlab(color, 7));
-        renderTileset(p, QRect(658,210,210,210), inverseSlab(color, 70));
+        renderTileset(p, QRect(24,92,21,21), inverseSlab(colors[1], 7));
+        renderTileset(p, QRect(658,210,210,210), inverseSlab(colors[1], 70));
     }
 
 };
@@ -403,11 +402,14 @@ protected:
 Widget *w;
 
 //BEGIN Picker
-class Picker : public QWidget
+class Picker : public QGroupBox
 {
     Q_OBJECT
+protected:
+    QColor *_color;
 public:
-    Picker(QWidget *parent=0) : QWidget(parent)
+    Picker(QString text, QColor &color, QWidget *parent=0)
+    : QGroupBox(text, parent), _color(&color)
     {
         QGridLayout *l = new QGridLayout;
         QLabel *c[3];
@@ -418,9 +420,9 @@ public:
         l->addWidget(c[1], 1, 0);
         l->addWidget(c[2], 2, 0);
         QSpinBox *s[3];
-        s[0] = new QSpinBox; s[0]->setRange(0, 255); s[0]->setValue(r);
-        s[1] = new QSpinBox; s[1]->setRange(0, 255); s[1]->setValue(g);
-        s[2] = new QSpinBox; s[2]->setRange(0, 255); s[2]->setValue(b);
+        s[0] = new QSpinBox; s[0]->setRange(0, 255); s[0]->setValue(_color->red());
+        s[1] = new QSpinBox; s[1]->setRange(0, 255); s[1]->setValue(_color->green());
+        s[2] = new QSpinBox; s[2]->setRange(0, 255); s[2]->setValue(_color->blue());
         connect(s[0], SIGNAL(valueChanged(int)), this, SLOT(  redChanged(int)));
         connect(s[1], SIGNAL(valueChanged(int)), this, SLOT(greenChanged(int)));
         connect(s[2], SIGNAL(valueChanged(int)), this, SLOT( blueChanged(int)));
@@ -431,9 +433,9 @@ public:
     }
 
 public slots:
-    void   redChanged(int value) { r = value; w->update(); }
-    void greenChanged(int value) { g = value; w->update(); }
-    void  blueChanged(int value) { b = value; w->update(); }
+    void   redChanged(int value) { _color->setRed  (value); w->update(); }
+    void greenChanged(int value) { _color->setGreen(value); w->update(); }
+    void  blueChanged(int value) { _color->setBlue (value); w->update(); }
 };
 //END Picker
 
@@ -446,8 +448,15 @@ public:
     {
         w = new Widget; // needed by Picker
 
-        QHBoxLayout *l = new QHBoxLayout;
-        l->addWidget(new Picker);
+        QVBoxLayout *l = new QVBoxLayout;
+        QWidget *c = new QWidget;
+        QHBoxLayout *v = new QHBoxLayout;
+        v->addWidget(new Picker("Background", colors[0]));
+        v->addWidget(new Picker("Base", colors[1]));
+        v->addWidget(new Picker("Glow 1", colors[2]));
+        v->addWidget(new Picker("Glow 2", colors[3]));
+        c->setLayout(v);
+        l->addWidget(c);
         l->addWidget(w);
         setLayout(l);
         w->update();
@@ -459,23 +468,37 @@ public:
 
 int main(int argc, char **argv)
 {
+    colors = new QColor[4];
+    colors[0].setRgb(224, 224, 224);
+    colors[1].setRgb(224, 224, 224);
+    colors[2].setRgb( 80, 224,  80);
+    colors[3].setRgb(224, 160,  80);
+
     KAboutData about("oxybuttontest", 0, ki18n("oxybuttontest"), "0.1",
                      ki18n("Oxygen style button test application"),
                      KAboutData::License_GPL, ki18n("Copyright 2007 Matthew Woehlke"));
     about.addAuthor( ki18n("Matthew Woehlke"), KLocalizedString(), "mw_triad@users.sourceforge.net" );
     KCmdLineArgs::init(argc, argv, &about);
     KCmdLineOptions options;
-    options.add("+[red]", ki18n("Red component of color"));
-    options.add("+[green]", ki18n("Green component of color"));
-    options.add("+[blue]", ki18n("Blue component of color"));
+    options.add("+[red]", ki18n("Red component of base color"));
+    options.add("+[green]", ki18n("Green component of base color"));
+    options.add("+[blue]", ki18n("Blue component of base color"));
+    options.add("+[red]", ki18n("Red component of background color"));
+    options.add("+[green]", ki18n("Green component of background color"));
+    options.add("+[blue]", ki18n("Blue component of background color"));
     KCmdLineArgs::addCmdLineOptions(options);
     KApplication app;
     KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 
     if (args->count() > 2) {
-        r = args->arg(0).toInt();
-        g = args->arg(1).toInt();
-        b = args->arg(2).toInt();
+        colors[1].setRed(args->arg(0).toInt());
+        colors[1].setGreen(args->arg(1).toInt());
+        colors[1].setBlue(args->arg(2).toInt());
+    }
+    if (args->count() > 5) {
+        colors[0].setRed(args->arg(3).toInt());
+        colors[0].setGreen(args->arg(4).toInt());
+        colors[0].setBlue(args->arg(5).toInt());
     }
 
     MyLayout l;
