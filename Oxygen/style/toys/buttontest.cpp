@@ -76,7 +76,7 @@ void drawInverseShadow(QPainter &p, const QColor &color,
 
     const double offset = 0.8;
     double k0 = (m-2.0) / double(m+2.0);
-    QRadialGradient shadowGradient(pad+m, pad+m+offset, m+2);
+    QRadialGradient shadowGradient(pad+m, pad+m+offset, m+2.0);
     for (int i = 0; i < 8; i++) { // sinusoidal gradient
         double k1 = (double(8 - i) + k0 * double(i)) * 0.125;
         double a = (cos(3.14159 * i * 0.125) + 1.0) * 0.25;
@@ -106,7 +106,7 @@ QPixmap windecoButton(const QColor &color, int size)
     // bevel
     qreal y = KColorUtils::luma(color);
     qreal yl = KColorUtils::luma(light);
-    qreal yd = KColorUtils::luma(light);
+    qreal yd = KColorUtils::luma(dark);
     QLinearGradient bevelGradient(0, 1, 0, 19);
     bevelGradient.setColorAt(0.45, light);
     bevelGradient.setColorAt(0.80, dark);
@@ -166,7 +166,7 @@ QPixmap roundSlab(const QColor &color, int size)
     // bevel, part 1
     qreal y = KColorUtils::luma(base);
     qreal yl = KColorUtils::luma(light);
-    qreal yd = KColorUtils::luma(light);
+    qreal yd = KColorUtils::luma(dark);
     QLinearGradient bevelGradient1(0, 10, 0, 18);
     bevelGradient1.setColorAt(0.0, light);
     bevelGradient1.setColorAt(0.9, dark);
@@ -294,7 +294,7 @@ TileSet inverseSlab(const QColor &color, int size)
     // bevel, part 1
     qreal y = KColorUtils::luma(base);
     qreal yl = KColorUtils::luma(light);
-    qreal yd = KColorUtils::luma(light);
+    qreal yd = KColorUtils::luma(dark);
     QLinearGradient bevelGradient1(0, 7, 0, 4);
     bevelGradient1.setColorAt(0.0, light);
     bevelGradient1.setColorAt(0.9, dark);
