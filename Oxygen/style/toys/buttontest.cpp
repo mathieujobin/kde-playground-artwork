@@ -244,7 +244,7 @@ TileSet slab(const QColor &color, int size)
 
     p.end();
 
-    return TileSet(pixmap, size-1, size, 2, 1);
+    return TileSet(pixmap, size, size, size, size, size-1, size, 2, 1);
 }
 
 TileSet sunkenSlab(const QColor &color, int size)
@@ -266,7 +266,7 @@ TileSet sunkenSlab(const QColor &color, int size)
 
     p.end();
 
-    return TileSet(pixmap, size-1, size, 2, 1);
+    return TileSet(pixmap, size, size, size, size, size-1, size, 2, 1);
 }
 
 TileSet inverseSlab(const QColor &color, int size)
@@ -314,7 +314,7 @@ TileSet inverseSlab(const QColor &color, int size)
 
     p.end();
 
-    return TileSet(pixmap, size-1, size, 2, 1);
+    return TileSet(pixmap, size, size, size, size, size-1, size, 2, 1);
 }
 //END TileCache
 
