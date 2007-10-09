@@ -82,9 +82,34 @@ void drawInverseShadow(QPainter &p, const QColor &color,
         double a = (cos(3.14159 * i * 0.125) + 1.0) * 0.25;
         shadowGradient.setColorAt(k1, alphaColor(color, a));
     }
-    shadowGradient.setColorAt(1.0, color);
+    shadowGradient.setColorAt(k0, alphaColor(color, 0.0));
     p.setBrush(shadowGradient);
     p.drawEllipse(QRectF(pad-fuzz, pad-fuzz, size+fuzz*2.0, size+fuzz*2.0));
+}
+
+void drawGlow(QPainter &p, const QColor &color, int size)
+{
+    QRectF r(0, 0, size, size);
+    double m = double(size)*0.5;
+
+    const double width = 3.0;
+    double k0 = (m-width) / m;
+    QRadialGradient glowGradient(m, m, m+0.3);
+    for (int i = 0; i < 8; i++) { // sinusoidal gradient
+        double k1 = (k0 * double(8 - i) + double(i)) * 0.125;
+        double a = (cos(3.14159 * i * 0.125) + 1.0) * 0.25;
+        glowGradient.setColorAt(k1, alphaColor(color, a));
+    }
+    glowGradient.setColorAt(1.0, alphaColor(color, 0.0));
+
+    // glow
+    p.setBrush(glowGradient);
+    p.drawEllipse(r);
+
+    // mask
+    p.setCompositionMode(QPainter::CompositionMode_DestinationOut);
+    p.setBrush(QBrush(Qt::black));
+    p.drawEllipse(r.adjusted(width, width, -width, -width));
 }
 
 QPixmap windecoButton(const QColor &color, int size)
@@ -188,6 +213,24 @@ QPixmap roundSlab(const QColor &color, int size)
     innerGradient.setColorAt(1.0, base);
     p.setBrush(innerGradient);
     p.drawEllipse(QRectF(4.4,4.4,12.2,12.2));
+
+    p.end();
+
+    return pixmap;
+}
+
+QPixmap roundSlabGlow(const QColor &color, int size)
+{
+    QPixmap pixmap(size*3, size*3);
+    pixmap.fill(QColor(0,0,0,0));
+
+    QPainter p(&pixmap);
+    p.setRenderHints(QPainter::Antialiasing);
+    p.setPen(Qt::NoPen);
+    p.setWindow(0,0,21,21);
+
+    // glow
+    drawGlow(p, color, 21);
 
     p.end();
 
@@ -316,6 +359,24 @@ TileSet inverseSlab(const QColor &color, int size)
 
     return TileSet(pixmap, size, size, size, size, size-1, size, 2, 1);
 }
+
+TileSet slabGlow(const QColor &color, int size)
+{
+    QPixmap pixmap(size*2, size*2);
+    pixmap.fill(QColor(0,0,0,0));
+
+    QPainter p(&pixmap);
+    p.setRenderHints(QPainter::Antialiasing);
+    p.setPen(Qt::NoPen);
+    p.setWindow(0,0,14,14);
+
+    // glow
+    drawGlow(p, color, 14);
+
+    p.end();
+
+    return TileSet(pixmap, size, size, size, size, size-1, size, 2, 1);
+}
 //END TileCache
 
 //BEGIN Render
@@ -348,6 +409,44 @@ void renderFilledTileset(QPainter &p, const QRect &rect,
 }
 //END Render
 
+enum CombineMode {
+    Paint,
+    Overlay,
+    Tint,
+    FadeLuma
+};
+
+static QPainter::CompositionMode comp;
+static CombineMode combine;
+static double amount;
+
+static QColor combinedColor()
+{
+    switch (combine) { // TODO
+        case Overlay:
+            if (comp == QPainter::CompositionMode_SourceOver) {
+                return KColorUtils::mix(colors[3], colors[2], amount);
+            }
+            return KColorUtils::overlayColors(colors[3], colors[2], comp);
+        case Tint:
+            return KColorUtils::tint(colors[3], colors[2], amount);
+            case FadeLuma: {
+                QColor mixed = KColorUtils::mix(colors[3], colors[2], amount);
+                double y2 = KColorUtils::luma(colors[2]);
+                double y3 = KColorUtils::luma(colors[3]);
+                double yr = KColorUtils::luma(mixed);
+                return KColorUtils::shade(mixed, qMax(y2, y3) - yr);
+            }
+        default:
+            return QColor();
+    }
+}
+
+static QPainter::CompositionMode compositionMode()
+{
+    return (combine == Paint ? comp : QPainter::CompositionMode_SourceOver);
+}
+
 //BEGIN Widget
 class Widget : public QWidget
 {
@@ -371,21 +470,43 @@ protected:
         p.drawPixmap(QRect(2,2,21,21), windecoButton(colors[1], 7));
         p.drawPixmap(QRect(44,0,210,210), windecoButton(colors[1], 70));
 
+        // glowing windeco button (ok to use roundSlabGlow)
+        p.drawPixmap(QRect(24,2,21,21), windecoButton(colors[1], 7));
+        p.drawPixmap(QRect(24,2,21,21), roundSlabGlow(colors[2], 7));
+        p.drawPixmap(QRect(44,210,210,210), windecoButton(colors[1], 70));
+        p.drawPixmap(QRect(44,210,210,210), roundSlabGlow(colors[2], 70));
+
         // radio button
         p.drawPixmap(QRect(2,32,21,21), roundSlab(colors[1], 7));
         p.drawPixmap(QRect(244,0,210,210), roundSlab(colors[1], 70));
 
-        // glowing radio button (TODO)
+        // glowing radio button
         p.drawPixmap(QRect(24,32,21,21), roundSlab(colors[1], 7));
+        p.drawPixmap(QRect(24,32,21,21), roundSlabGlow(colors[3], 7));
         p.drawPixmap(QRect(248,210,210,210), roundSlab(colors[1], 70));
+        p.drawPixmap(QRect(248,210,210,210), roundSlabGlow(colors[3], 70));
 
         // regular button
         renderFilledTileset(p, QRect(2,62,21,21), slab(colors[1], 7), colors[1], 7);
         renderFilledTileset(p, QRect(458,0,210,210), slab(colors[1], 70), colors[1], 70);
 
-        // glowing button (TODO)
+        // glowing button
         renderFilledTileset(p, QRect(24,62,21,21), slab(colors[1], 7), colors[1], 7);
         renderFilledTileset(p, QRect(458,210,210,210), slab(colors[1], 70), colors[1], 70);
+
+        p.setCompositionMode(compositionMode());
+        QColor mixed = combinedColor();
+
+        if (mixed.isValid()) {
+            renderTileset(p, QRect(24,62,21,21), slabGlow(mixed, 7));
+            renderTileset(p, QRect(458,210,210,210), slabGlow(mixed, 70));
+        }
+        else {
+            renderTileset(p, QRect(24,62,21,21), slabGlow(colors[2], 7));
+            renderTileset(p, QRect(458,210,210,210), slabGlow(colors[2], 70));
+            renderTileset(p, QRect(24,62,21,21), slabGlow(colors[3], 7));
+            renderTileset(p, QRect(458,210,210,210), slabGlow(colors[3], 70));
+        }
 
         // sunken button
         renderFilledTileset(p, QRect(2,92,21,21), sunkenSlab(colors[1], 7), colors[1], 7);
@@ -439,6 +560,92 @@ public slots:
 };
 //END Picker
 
+//BEGIN CompPicker
+class CompPicker : public QGroupBox
+{
+    Q_OBJECT
+protected:
+
+public:
+    CompPicker(QWidget *parent=0)
+    : QGroupBox("Composition", parent)
+    {
+        QGridLayout *l = new QGridLayout;
+        QLabel *n[3];
+        n[0] = new QLabel("Combining Mode");
+        n[1] = new QLabel("Blending Mode");
+        n[2] = new QLabel("Combine Amount");
+        l->addWidget(n[0], 0, 0);
+        l->addWidget(n[1], 1, 0);
+        l->addWidget(n[2], 2, 0);
+
+        QComboBox *m[2];
+        m[0] = new QComboBox; m[0]->setEditable(false);
+        m[0]->addItem("Paint");
+        m[0]->addItem("Overlay");
+        m[0]->addItem("Tint");
+        m[0]->addItem("Fade (keep luma)");
+        connect(m[0], SIGNAL(currentIndexChanged(int)), this, SLOT(combineChanged(int)));
+        combine = Paint;
+
+        m[1] = new QComboBox; m[1]->setEditable(false);
+        m[1]->addItem("Normal");
+        m[1]->addItem("Plus");
+        m[1]->addItem("Screen");
+        m[1]->addItem("Hard Light");
+        m[1]->addItem("Soft Light");
+        connect(m[1], SIGNAL(currentIndexChanged(int)), this, SLOT(blendChanged(int)));
+        comp = QPainter::CompositionMode_SourceOver;
+
+        l->addWidget(m[0], 0, 1);
+        l->addWidget(m[1], 1, 1);
+
+        // TODO amount slider
+        amount = 0.5;
+
+        setLayout(l);
+    }
+
+public slots:
+    void blendChanged(int mode) {
+        switch (mode) {
+            case 1: // Plus
+                comp = QPainter::CompositionMode_Plus;
+                break;
+            case 2: // Screen
+                comp = QPainter::CompositionMode_Screen;
+                break;
+            case 3: // Hard Light
+                comp = QPainter::CompositionMode_HardLight;
+                break;
+            case 6: // Soft Light
+                comp = QPainter::CompositionMode_SoftLight;
+                break;
+            default: // must be Normal
+                comp = QPainter::CompositionMode_SourceOver;
+        }
+        w->update();
+    }
+
+    void combineChanged(int mode) {
+        switch (mode) {
+            case 1: // Overlay
+                combine = Overlay;
+                break;
+            case 2: // Tint
+                combine = Tint;
+                break;
+            case 3: // Fade
+                combine = FadeLuma;
+                break;
+            default: // must be Paint
+                combine = Paint;
+        }
+        w->update();
+    }
+};
+//END CompPicker
+
 //BEGIN MyLayout
 class MyLayout : public QWidget
 {
@@ -455,6 +662,7 @@ public:
         v->addWidget(new Picker("Base", colors[1]));
         v->addWidget(new Picker("Glow 1", colors[2]));
         v->addWidget(new Picker("Glow 2", colors[3]));
+        v->addWidget(new CompPicker());
         c->setLayout(v);
         l->addWidget(c);
         l->addWidget(w);
