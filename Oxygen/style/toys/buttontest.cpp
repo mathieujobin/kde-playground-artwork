@@ -93,11 +93,12 @@ void drawGlow(QPainter &p, const QColor &color, int size)
     double m = double(size)*0.5;
 
     const double width = 3.0;
-    double k0 = (m-width) / m;
-    QRadialGradient glowGradient(m, m, m+0.3);
-    for (int i = 0; i < 8; i++) { // sinusoidal gradient
+    const double fuzz = 0.2;
+    double k0 = (m-width+0.5) / m;
+    QRadialGradient glowGradient(m, m, m);
+    for (int i = 0; i < 8; i++) { // inverse parabolic gradient
         double k1 = (k0 * double(8 - i) + double(i)) * 0.125;
-        double a = (cos(3.14159 * i * 0.125) + 1.0) * 0.25;
+        double a = 1.0 - sqrt(i * 0.125);
         glowGradient.setColorAt(k1, alphaColor(color, a));
     }
     glowGradient.setColorAt(1.0, alphaColor(color, 0.0));
@@ -109,7 +110,7 @@ void drawGlow(QPainter &p, const QColor &color, int size)
     // mask
     p.setCompositionMode(QPainter::CompositionMode_DestinationOut);
     p.setBrush(QBrush(Qt::black));
-    p.drawEllipse(r.adjusted(width, width, -width, -width));
+    p.drawEllipse(r.adjusted(width+fuzz, width+fuzz, -width-fuzz, -width-fuzz));
 }
 
 QPixmap windecoButton(const QColor &color, int size)
@@ -425,7 +426,10 @@ static QColor combinedColor()
     switch (combine) { // TODO
         case Overlay:
             if (comp == QPainter::CompositionMode_SourceOver) {
-                return KColorUtils::mix(colors[3], colors[2], amount);
+                QColor temp1 = KColorUtils::mix(colors[3], colors[2], amount);
+                QColor temp2 = KColorUtils::overlayColors(colors[3], colors[2],
+                                QPainter::CompositionMode_Screen);
+                return KColorUtils::mix(temp1, temp2, 0.7);
             }
             return KColorUtils::overlayColors(colors[3], colors[2], comp);
         case Tint:
@@ -586,7 +590,8 @@ public:
         m[0]->addItem("Tint");
         m[0]->addItem("Fade (keep luma)");
         connect(m[0], SIGNAL(currentIndexChanged(int)), this, SLOT(combineChanged(int)));
-        combine = Paint;
+        combine = Overlay;
+        m[0]->setCurrentIndex(1);
 
         m[1] = new QComboBox; m[1]->setEditable(false);
         m[1]->addItem("Normal");
