@@ -2,10 +2,6 @@ project(oxytoys)
 
 include_directories (${KDE4_INCLUDES} ${QT_INCLUDES})
 
-# fadeguess
-kde4_add_executable(fadeguess fadeguess.cpp)
-target_link_libraries(fadeguess ${KDE4_KDEUI_LIBS})
-
 # bgtest
 kde4_add_executable(oxybgtest bgtest.cpp)
 target_link_libraries(oxybgtest ${KDE4_KDEUI_LIBS})
