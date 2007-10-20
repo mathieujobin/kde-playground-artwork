@@ -488,10 +488,11 @@ void renderFilledTileset(QPainter &p, const QRect &rect,
                          const TileSet &tileset, const QColor &color,
                          int size, double shade = 0.0)
 {
-    int s = int(floor(double(size)*4.0/7.0));
-    QRect r = rect.adjusted(s, s, -s, -s);
-    int rx = (86*size) / r.width(); // 86 = 2*(7-4)/7
-    int ry = (86*size) / r.height();
+    double s = floor(double(size)*3.6/7.0);
+    QRectF r = rect;
+    r.adjust(s, s, -s, -s);
+    int rx = (int)floor((97*size) / r.width()); // 97 = 2*(7-3.6)/7
+    int ry = (int)floor((97*size) / r.height());
 
     p.save();
 
