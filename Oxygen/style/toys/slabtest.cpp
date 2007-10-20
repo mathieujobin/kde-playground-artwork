@@ -263,13 +263,15 @@ void drawHole(QPainter &p, const QColor &color)
     QColor base = KColorUtils::shade(color, shade);
     QColor light = KColorUtils::shade(calcLightColor(color), shade);
     QColor dark = KColorUtils::shade(calcDarkColor(color), shade);
+    QColor mid = KColorUtils::shade(calcMidColor(color), shade);
 
     // bevel
     qreal y = KColorUtils::luma(base);
     qreal yl = KColorUtils::luma(light);
     qreal yd = KColorUtils::luma(dark);
     QLinearGradient bevelGradient1(0, 2, 0, 12);
-    bevelGradient1.setColorAt(0.0, dark);
+    bevelGradient1.setColorAt(0.2, dark);
+    bevelGradient1.setColorAt(0.5, mid);
     bevelGradient1.setColorAt(1.0, light);
     if (y < yl && y > yd) // no middle when color is very light/dark
         bevelGradient1.setColorAt(0.6, base);
