@@ -39,7 +39,7 @@ public:
 protected:
     void initPixmap(int s, const QPixmap&, int w, int h, const QRect &region);
     QPixmap _pixmap[9];
-    int _w1, _w3, _h1, _h3;
+    int _w1, _h1, _w3, _h3;
 };
 
 #endif //TILESET_H

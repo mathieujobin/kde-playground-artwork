@@ -113,6 +113,25 @@ void drawGlow(QPainter &p, const QColor &color, int size)
     p.drawEllipse(r.adjusted(width+fuzz, width+fuzz, -width-fuzz, -width-fuzz));
 }
 
+void drawInverseGlow(QPainter &p, const QColor &color, int pad, int size)
+{
+    QRectF r(pad, pad, size, size);
+    double m = double(size)*0.5;
+
+    const double width = 3.0;
+    const double bias = 0.5;
+    double k0 = (m-width) / (m-bias);
+    QRadialGradient glowGradient(pad+m, pad+m, m-bias);
+    for (int i = 0; i < 8; i++) { // inverse parabolic gradient
+        double k1 = (k0 * double(i) + double(8 - i)) * 0.125;
+        double a = 1.0 - sqrt(i * 0.125);
+        glowGradient.setColorAt(k1, alphaColor(color, a));
+    }
+    glowGradient.setColorAt(k0, alphaColor(color, 0.0));
+    p.setBrush(glowGradient);
+    p.drawEllipse(r);
+}
+
 QPixmap windecoButton(const QColor &color, int size)
 {
     QPixmap pixmap(size*3, size*3);
@@ -213,7 +232,7 @@ QPixmap roundSlab(const QColor &color, int size)
     innerGradient.setColorAt(0.0, light);
     innerGradient.setColorAt(1.0, base);
     p.setBrush(innerGradient);
-    p.drawEllipse(QRectF(4.4,4.4,12.2,12.2));
+    p.drawEllipse(QRectF(4.0,4.0,13.0,13.0));
 
     p.end();
 
@@ -236,6 +255,36 @@ QPixmap roundSlabGlow(const QColor &color, int size)
     p.end();
 
     return pixmap;
+}
+
+void drawHole(QPainter &p, const QColor &color)
+{
+    double shade = 0.0;
+    QColor base = KColorUtils::shade(color, shade);
+    QColor light = KColorUtils::shade(calcLightColor(color), shade);
+    QColor dark = KColorUtils::shade(calcDarkColor(color), shade);
+
+    // bevel
+    qreal y = KColorUtils::luma(base);
+    qreal yl = KColorUtils::luma(light);
+    qreal yd = KColorUtils::luma(dark);
+    QLinearGradient bevelGradient1(0, 2, 0, 12);
+    bevelGradient1.setColorAt(0.0, dark);
+    bevelGradient1.setColorAt(1.0, light);
+    if (y < yl && y > yd) // no middle when color is very light/dark
+        bevelGradient1.setColorAt(0.6, base);
+    p.setBrush(bevelGradient1);
+    p.drawEllipse(2,2,10,10);
+
+    // mask
+    QRadialGradient maskGradient(7,7,5);
+    maskGradient.setColorAt(0.80, QColor(0,0,0,255));
+    maskGradient.setColorAt(0.90, QColor(0,0,0,140));
+    maskGradient.setColorAt(1.00, QColor(0,0,0,0));
+    p.setCompositionMode(QPainter::CompositionMode_DestinationIn);
+    p.setBrush(maskGradient);
+    p.drawRect(0,0,14,14);
+    p.setCompositionMode(QPainter::CompositionMode_SourceOver);
 }
 
 void drawSlab(QPainter &p, const QColor &color)
@@ -267,7 +316,7 @@ void drawSlab(QPainter &p, const QColor &color)
     // inside mask
     p.setCompositionMode(QPainter::CompositionMode_DestinationOut);
     p.setBrush(QBrush(Qt::black));
-    p.drawEllipse(QRectF(4.4,4.4,5.2,5.2));
+    p.drawEllipse(QRectF(4.0,4.0,6.0,6.0));
 }
 
 TileSet slab(const QColor &color, int size)
@@ -300,6 +349,9 @@ TileSet sunkenSlab(const QColor &color, int size)
     p.setRenderHints(QPainter::Antialiasing);
     p.setPen(Qt::NoPen);
     p.setWindow(0,0,14,14);
+
+    // hole
+    drawHole(p, color);
 
     // slab
     drawSlab(p, color);
@@ -373,6 +425,50 @@ TileSet slabGlow(const QColor &color, int size)
 
     // glow
     drawGlow(p, color, 14);
+
+    p.end();
+
+    return TileSet(pixmap, size, size, size, size, size-1, size, 2, 1);
+}
+
+TileSet hole(const QColor &color, int size)
+{
+    QPixmap pixmap(size*2, size*2);
+    pixmap.fill(QColor(0,0,0,0));
+
+    QPainter p(&pixmap);
+    p.setRenderHints(QPainter::Antialiasing);
+    p.setPen(Qt::NoPen);
+    p.setWindow(0,0,14,14);
+
+    // hole
+    drawHole(p, color);
+
+    // hole mask
+    p.setCompositionMode(QPainter::CompositionMode_SourceOver);
+    p.setBrush(color);
+    p.drawEllipse(3,3,8,8);
+
+    // shadow
+    drawInverseShadow(p, calcShadowColor(color), 3, 8, 0.0);
+
+    p.end();
+
+    return TileSet(pixmap, size, size, size, size, size-1, size, 2, 1);
+}
+
+TileSet holeGlow(const QColor &color, int size)
+{
+    QPixmap pixmap(size*2, size*2);
+    pixmap.fill(QColor(0,0,0,0));
+
+    QPainter p(&pixmap);
+    p.setRenderHints(QPainter::Antialiasing);
+    p.setPen(Qt::NoPen);
+    p.setWindow(0,0,14,14);
+
+    // glow
+    drawInverseGlow(p, color, 3, 8);
 
     p.end();
 
@@ -458,7 +554,7 @@ class Widget : public QWidget
 public:
     Widget(QWidget *parent=0) : QWidget(parent) {}
 
-    QSize sizeHint() const { return QSize(860, 420); }
+    QSize sizeHint() const { return QSize(1060, 420); }
 
 protected:
     void paintEvent(QPaintEvent *e)
@@ -487,38 +583,48 @@ protected:
         // glowing radio button
         p.drawPixmap(QRect(24,32,21,21), roundSlab(colors[1], 7));
         p.drawPixmap(QRect(24,32,21,21), roundSlabGlow(colors[3], 7));
-        p.drawPixmap(QRect(248,210,210,210), roundSlab(colors[1], 70));
-        p.drawPixmap(QRect(248,210,210,210), roundSlabGlow(colors[3], 70));
+        p.drawPixmap(QRect(244,210,210,210), roundSlab(colors[1], 70));
+        p.drawPixmap(QRect(244,210,210,210), roundSlabGlow(colors[3], 70));
 
         // regular button
         renderFilledTileset(p, QRect(2,62,21,21), slab(colors[1], 7), colors[1], 7);
-        renderFilledTileset(p, QRect(458,0,210,210), slab(colors[1], 70), colors[1], 70);
+        renderFilledTileset(p, QRect(454,0,210,210), slab(colors[1], 70), colors[1], 70);
 
         // glowing button
         renderFilledTileset(p, QRect(24,62,21,21), slab(colors[1], 7), colors[1], 7);
-        renderFilledTileset(p, QRect(458,210,210,210), slab(colors[1], 70), colors[1], 70);
+        renderFilledTileset(p, QRect(454,210,210,210), slab(colors[1], 70), colors[1], 70);
 
         p.setCompositionMode(compositionMode());
         QColor mixed = combinedColor();
 
         if (mixed.isValid()) {
             renderTileset(p, QRect(24,62,21,21), slabGlow(mixed, 7));
-            renderTileset(p, QRect(458,210,210,210), slabGlow(mixed, 70));
+            renderTileset(p, QRect(454,210,210,210), slabGlow(mixed, 70));
         }
         else {
             renderTileset(p, QRect(24,62,21,21), slabGlow(colors[2], 7));
-            renderTileset(p, QRect(458,210,210,210), slabGlow(colors[2], 70));
+            renderTileset(p, QRect(454,210,210,210), slabGlow(colors[2], 70));
             renderTileset(p, QRect(24,62,21,21), slabGlow(colors[3], 7));
-            renderTileset(p, QRect(458,210,210,210), slabGlow(colors[3], 70));
+            renderTileset(p, QRect(454,210,210,210), slabGlow(colors[3], 70));
         }
 
         // sunken button
         renderFilledTileset(p, QRect(2,92,21,21), sunkenSlab(colors[1], 7), colors[1], 7);
-        renderFilledTileset(p, QRect(658,0,210,210), sunkenSlab(colors[1], 70), colors[1], 70);
+        renderFilledTileset(p, QRect(644,0,210,210), sunkenSlab(colors[1], 70), colors[1], 70);
 
         // inverted button
         renderTileset(p, QRect(24,92,21,21), inverseSlab(colors[1], 7));
-        renderTileset(p, QRect(658,210,210,210), inverseSlab(colors[1], 70));
+        renderTileset(p, QRect(644,210,210,210), inverseSlab(colors[1], 70));
+
+        // hole
+        renderTileset(p, QRect(2,122,21,21), hole(colors[1], 7));
+        renderTileset(p, QRect(834,0,210,210), hole(colors[1], 70));
+
+        // glowing hole
+        renderTileset(p, QRect(24,122,21,21), hole(colors[1], 7));
+        renderTileset(p, QRect(24,122,21,21), holeGlow(colors[2], 7));
+        renderTileset(p, QRect(834,210,210,210), hole(colors[1], 70));
+        renderTileset(p, QRect(834,210,210,210), holeGlow(colors[2], 70));
     }
 
 };
@@ -677,7 +783,7 @@ public:
 };
 //END MyLayout
 
-#include "buttontest.moc"
+#include "slabtest.moc"
 
 int main(int argc, char **argv)
 {

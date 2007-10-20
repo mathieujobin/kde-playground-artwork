@@ -2,13 +2,17 @@ project(oxytoys)
 
 include_directories (${KDE4_INCLUDES} ${QT_INCLUDES})
 
+# fadeguess
+kde4_add_executable(fadeguess fadeguess.cpp)
+target_link_libraries(fadeguess ${KDE4_KDEUI_LIBS})
+
 # bgtest
 kde4_add_executable(oxybgtest bgtest.cpp)
 target_link_libraries(oxybgtest ${KDE4_KDEUI_LIBS})
 
-# buttontest
-kde4_add_executable(oxybuttontest buttontest.cpp tileset.cpp)
-target_link_libraries(oxybuttontest ${KDE4_KDEUI_LIBS})
+# slabtest
+kde4_add_executable(oxyslabtest slabtest.cpp tileset.cpp)
+target_link_libraries(oxyslabtest ${KDE4_KDEUI_LIBS})
 
 # scrollbartest
 kde4_add_executable(oxyscrollbartest scrollbartest.cpp tileset.cpp)
