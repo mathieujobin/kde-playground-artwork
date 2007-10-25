@@ -38,7 +38,8 @@
 #include <QColor>
 #include <QPainterPath>
 
-#include <kpixmapeffect.h>
+#include <qimageblitz.h>
+
 #include <kdecoration.h>
 
 #include "misc.h"
@@ -220,7 +221,7 @@ void SUSE2Button::drawPlastikBtn(QPainter *painter)
     bool active = m_client->isActive();
     bool down = isDown();
     QPixmap backgroundTile = m_client->getTitleBarTile(active);
-    QPixmap tempKPixmap;
+    QImage tmpImage;
 
     QColor highlightColor;
     if(type() == CloseButton) {
@@ -273,9 +274,9 @@ void SUSE2Button::drawPlastikBtn(QPainter *painter)
         if (width() < menuIcon.width() || height() < menuIcon.height() ) {
             menuIcon = menuIcon.scaled(width(), height());
         }
-        double fade = animProgress * 0.09;
-        KPixmapEffect::fade(menuIcon, fade, QColor(240, 240, 240));
-        bP.drawPixmap((width()-menuIcon.width())/2, (height()-menuIcon.height())/2, menuIcon);
+        float fade = animProgress * 0.09;
+        tmpImage = menuIcon.toImage();
+        bP.drawImage((width()-menuIcon.width())/2, (height()-menuIcon.height())/2, Blitz::fade(tmpImage, fade, QColor(240, 240, 240)));
     } else {
         // contour
         bP.setPen(contourTop);
@@ -287,13 +288,9 @@ void SUSE2Button::drawPlastikBtn(QPainter *painter)
         bP.drawPoint(r.x()+1, r.bottom()-1);
         bP.drawPoint(r.right()-1, r.bottom()-1);
         // sides of the contour
-        tempKPixmap = QPixmap(1, r.height()-2*2);
-        KPixmapEffect::gradient(tempKPixmap,
-                                contourTop,
-                                contourBottom,
-                                KPixmapEffect::VerticalGradient);
-        bP.drawPixmap(r.x(), r.y()+2, tempKPixmap);
-        bP.drawPixmap(r.right(), r.y()+2, tempKPixmap);
+        tmpImage = Blitz::gradient(QSize(1, r.height()-2*2), contourTop, contourBottom, Blitz::VerticalGradient);
+        bP.drawImage(r.x(), r.y()+2, tmpImage);
+        bP.drawImage(r.right(), r.y()+2, tmpImage);
         // sort of anti-alias for the contour
         bP.setPen(alphaBlendColors(Handler()->getColor(TitleGradientFrom, active), contourTop, 150));
         bP.drawPoint(r.x()+1, r.y());
@@ -326,19 +323,13 @@ void SUSE2Button::drawPlastikBtn(QPainter *painter)
         }
 
         // fill the rest! :)
-        tempKPixmap = QPixmap(1, r.height()-2*2);
         if (Handler()->buttonType() == PLASTIK_FLAT) {
-            KPixmapEffect::gradient(tempKPixmap,
-                                    surfaceTop,
-                                    surfaceBottom,
-                                    KPixmapEffect::VerticalGradient);
+            tmpImage = Blitz::gradient(QSize(1, r.height()-2*2), surfaceTop, surfaceBottom, Blitz::VerticalGradient);
         } else {
-            KPixmapEffect::gradient(tempKPixmap,
-                                    surfaceBottom,
-                                    surfaceTop,
-                                    KPixmapEffect::VerticalGradient);
+            tmpImage = Blitz::gradient(QSize(1, r.height()-2*2), surfaceBottom, surfaceTop, Blitz::VerticalGradient);
         }
-        bP.drawTiledPixmap(r.x()+1, r.y()+2, r.width()-2, r.height()-4, tempKPixmap);
+        QPixmap tmpPixmap = QPixmap::fromImage(tmpImage);
+        bP.drawTiledPixmap(r.x()+1, r.y()+2, r.width()-2, r.height()-4, tmpPixmap);
 
         int dX,dY;
         QPixmap deco;
@@ -390,9 +381,9 @@ void SUSE2Button::drawLipstikBtn(QPainter *painter)
         if (width() < menuIcon.width() || height() < menuIcon.height()) {
             menuIcon = menuIcon.scaled(width(), height());
         }
-        double fade = animProgress * 0.09;
-        KPixmapEffect::fade(menuIcon, fade, QColor(240, 240, 240));
-        bP.drawPixmap((width()-menuIcon.width())/2, (height()-menuIcon.height())/2, menuIcon);
+        float fade = animProgress * 0.09;
+        QImage tmpImage = menuIcon.toImage();
+        bP.drawImage((width()-menuIcon.width())/2, (height()-menuIcon.height())/2, Blitz::fade(tmpImage, fade, QColor(240, 240, 240)));
     } else {
         renderBtnContour(&bP, r);
         if (down) {

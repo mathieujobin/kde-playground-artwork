@@ -11,13 +11,13 @@ set(kwin3_SUSE2_PART_SRCS
 
 kde4_add_plugin(kwin3_SUSE2 ${kwin3_SUSE2_PART_SRCS})
 
-target_link_libraries(kwin3_SUSE2 kdecorations ${KDE4_KDEUI_LIBS} ${KDE4_KDECORE_LIBS} ${KDE4_KDEFX_LIBS})
+target_link_libraries(kwin3_SUSE2 kdecorations ${KDE4_KDEUI_LIBS} ${KDE4_KDECORE_LIBS} ${KDE4_KDEFX_LIBS} ${BLITZ_LIBRARIES})
 
 install(TARGETS kwin3_SUSE2  DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 ########### install files ###############
 
 install( FILES SUSE2.desktop  DESTINATION  ${DATA_INSTALL_DIR}/kwin/ )
-install( FILES SUSE2.kcsrc  DESTINATION  ${DATA_INSTALL_DIR}/kdisplay/color-schemes/ )
+install( FILES SUSE2  DESTINATION  ${DATA_INSTALL_DIR}/color-schemes/ )
 install( FILES titlebar_decor.png  DESTINATION  ${DATA_INSTALL_DIR}/kwin/pics/ )
 

@@ -31,6 +31,7 @@
 #include <QApplication>
 
 #include <kconfig.h>
+#include <kconfiggroup.h>
 #include <klocale.h>
 #include <kglobal.h>
 #include <kstandarddirs.h>
@@ -200,8 +201,7 @@ QColor SUSE2Handler::getColor(KWinSUSE2::ColorType type, const bool active) cons
             return KDecoration::options()->color(ColorTitleBlend, active);
             break;
         case WindowContour:
-        case Border:
-            return KDecoration::options()->color(ColorFrame, active);
+            return KDecoration::options()->color(ColorTitleBar, active).dark(200);
             break;
         case TitleFont:
             return KDecoration::options()->color(ColorFont, active);
