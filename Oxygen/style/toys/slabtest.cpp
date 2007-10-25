@@ -48,21 +48,23 @@ QColor calcShadowColor(const QColor &color)
 
 QColor alphaColor(QColor color, double alpha)
 {
-    color.setAlphaF(alpha);
+    color.setAlphaF(qMax(0.0, qMin(1.0, alpha)));
     return color;
 }
+
+const double shadowGain = 1.5;
+const double shadowOffset = 0.8;
 
 void drawShadow(QPainter &p, const QColor &color, int size)
 {
     double m = double(size-2)*0.5;
 
-    const double offset = 0.8;
     double k0 = (m-4.0) / m;
-    QRadialGradient shadowGradient(m+1.0, m+offset+1.0, m);
+    QRadialGradient shadowGradient(m+1.0, m+shadowOffset+1.0, m);
     for (int i = 0; i < 8; i++) { // sinusoidal gradient
         double k1 = (k0 * double(8 - i) + double(i)) * 0.125;
         double a = (cos(3.14159 * i * 0.125) + 1.0) * 0.25;
-        shadowGradient.setColorAt(k1, alphaColor(color, a));
+        shadowGradient.setColorAt(k1, alphaColor(color, a*shadowGain));
     }
     shadowGradient.setColorAt(1.0, alphaColor(color, 0.0));
     p.setBrush(shadowGradient);
@@ -74,13 +76,12 @@ void drawInverseShadow(QPainter &p, const QColor &color,
 {
     double m = double(size)*0.5;
 
-    const double offset = 0.8;
     double k0 = (m-2.0) / double(m+2.0);
-    QRadialGradient shadowGradient(pad+m, pad+m+offset, m+2.0);
+    QRadialGradient shadowGradient(pad+m, pad+m+shadowOffset, m+2.0);
     for (int i = 0; i < 8; i++) { // sinusoidal gradient
         double k1 = (double(8 - i) + k0 * double(i)) * 0.125;
         double a = (cos(3.14159 * i * 0.125) + 1.0) * 0.25;
-        shadowGradient.setColorAt(k1, alphaColor(color, a));
+        shadowGradient.setColorAt(k1, alphaColor(color, a*shadowGain));
     }
     shadowGradient.setColorAt(k0, alphaColor(color, 0.0));
     p.setBrush(shadowGradient);
