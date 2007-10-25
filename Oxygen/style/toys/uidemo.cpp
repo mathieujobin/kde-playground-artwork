@@ -33,8 +33,8 @@ int main(int argc, char **argv)
     KCmdLineArgs::init(argc, argv, &about);
     KApplication app;
 
-    QDialog *window = new QDialog;
-    Ui::Dialog ui;
+    QMainWindow *window = new QMainWindow;
+    Ui::MainWindow ui;
     ui.setupUi(window);
     window->show();
 
