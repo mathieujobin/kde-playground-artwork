@@ -88,14 +88,15 @@ void drawInverseShadow(QPainter &p, const QColor &color,
     p.drawEllipse(QRectF(pad-fuzz, pad-fuzz, size+fuzz*2.0, size+fuzz*2.0));
 }
 
-void drawGlow(QPainter &p, const QColor &color, int size)
+void drawGlow(QPainter &p, const QColor &color, int size, int rsize)
 {
     QRectF r(0, 0, size, size);
     double m = double(size)*0.5;
 
     const double width = 3.0;
     const double fuzz = 0.2;
-    double k0 = (m-width+0.5) / m;
+    const double bias = 0.5 * 7.0 / double(rsize);
+    double k0 = (m-width+bias) / m;
     QRadialGradient glowGradient(m, m, m);
     for (int i = 0; i < 8; i++) { // inverse parabolic gradient
         double k1 = (k0 * double(8 - i) + double(i)) * 0.125;
@@ -114,13 +115,13 @@ void drawGlow(QPainter &p, const QColor &color, int size)
     p.drawEllipse(r.adjusted(width+fuzz, width+fuzz, -width-fuzz, -width-fuzz));
 }
 
-void drawInverseGlow(QPainter &p, const QColor &color, int pad, int size)
+void drawInverseGlow(QPainter &p, const QColor &color, int pad, int size, int rsize)
 {
     QRectF r(pad, pad, size, size);
     double m = double(size)*0.5;
 
     const double width = 3.0;
-    const double bias = 0.5;
+    const double bias = 0.5 * 7.0 / double(rsize);
     double k0 = (m-width) / (m-bias);
     QRadialGradient glowGradient(pad+m, pad+m, m-bias);
     for (int i = 0; i < 8; i++) { // inverse parabolic gradient
@@ -251,7 +252,7 @@ QPixmap roundSlabGlow(const QColor &color, int size)
     p.setWindow(0,0,21,21);
 
     // glow
-    drawGlow(p, color, 21);
+    drawGlow(p, color, 21, size);
 
     p.end();
 
@@ -427,7 +428,7 @@ TileSet slabGlow(const QColor &color, int size)
     p.setWindow(0,0,14,14);
 
     // glow
-    drawGlow(p, color, 14);
+    drawGlow(p, color, 14, size);
 
     p.end();
 
@@ -471,7 +472,7 @@ TileSet holeGlow(const QColor &color, int size)
     p.setWindow(0,0,14,14);
 
     // glow
-    drawInverseGlow(p, color, 3, 8);
+    drawInverseGlow(p, color, 3, 8, size);
 
     p.end();
 
