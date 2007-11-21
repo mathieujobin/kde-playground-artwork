@@ -1,0 +1,39 @@
+body {
+  background-color: black;
+  color: white;
+  text-align: center;
+  margin: 0px;
+}
+
+body.phase3 {
+  background-color: #4d4d4d;
+  background-image:url(phase3_background.png);
+  background-repeat: no-repeat;
+  background-position: center top;
+}
+
+div.top {
+  height: 240px;
+}
+
+div.mountains {
+  height: 133px;
+  background-image:url(phase3_mountains.png)
+}
+
+div.content {
+  background-color: black;
+}
+
+div.black {
+  background-color: black;
+  height: 100%  
+}
+
+td {
+  padding: 10px;
+}
+
+table {
+  margin: 0 auto;
+}
