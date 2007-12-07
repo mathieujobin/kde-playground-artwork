@@ -36,6 +36,10 @@ int main(int argc, char **argv)
     QMainWindow *window = new QMainWindow;
     Ui::MainWindow ui;
     ui.setupUi(window);
+    ui.label_13->setBackgroundRole(QPalette::Base);
+    ui.label_14->setBackgroundRole(QPalette::Base);
+    ui.label_15->setBackgroundRole(QPalette::Base);
+    ui.label_16->setBackgroundRole(QPalette::Base);
     window->show();
 
     return app.exec();
