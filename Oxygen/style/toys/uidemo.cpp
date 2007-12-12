@@ -40,6 +40,11 @@ int main(int argc, char **argv)
     ui.label_14->setBackgroundRole(QPalette::Base);
     ui.label_15->setBackgroundRole(QPalette::Base);
     ui.label_16->setBackgroundRole(QPalette::Base);
+    QActionGroup *ag = new QActionGroup(window);
+    ag->addAction(ui.actionIcons);
+    ag->addAction(ui.actionList);
+    ag->addAction(ui.actionDetails);
+    ui.actionIcons->setChecked(true);
     window->show();
 
     return app.exec();
