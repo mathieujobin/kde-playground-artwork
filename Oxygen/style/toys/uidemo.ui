@@ -14,7 +14,7 @@
     <item row="0" column="0" >
      <widget class="QTabWidget" name="tabWidget" >
       <property name="currentIndex" >
-       <number>0</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="tab" >
        <attribute name="title" >
@@ -768,6 +768,14 @@
            <property name="text" >
             <string/>
            </property>
+          </item>
+          <item>
+           <property name="text" >
+            <string>New Item</string>
+           </property>
+           <property name="text" >
+            <string/>
+           </property>
            <item>
             <property name="text" >
              <string>New Sub Item</string>
@@ -837,14 +845,6 @@
               <property name="text" >
                <string/>
               </property>
-             </item>
-             <item>
-              <property name="text" >
-               <string>New Item</string>
-              </property>
-              <property name="text" >
-               <string/>
-              </property>
               <item>
                <property name="text" >
                 <string>New Sub Item</string>
@@ -878,6 +878,14 @@
                </property>
               </item>
              </item>
+             <item>
+              <property name="text" >
+               <string>New Item</string>
+              </property>
+              <property name="text" >
+               <string/>
+              </property>
+             </item>
             </item>
             <item>
              <property name="text" >
@@ -888,14 +896,6 @@
              </property>
             </item>
            </item>
-          </item>
-          <item>
-           <property name="text" >
-            <string>New Item</string>
-           </property>
-           <property name="text" >
-            <string/>
-           </property>
           </item>
           <item>
            <property name="text" >
@@ -1491,7 +1491,7 @@
      <x>0</x>
      <y>0</y>
      <width>457</width>
-     <height>29</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile" >
@@ -1586,5 +1586,70 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>horizontalSlider_2</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>progressBar</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>195</x>
+     <y>331</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>81</x>
+     <y>279</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSlider_2</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>progressBar_3</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>219</x>
+     <y>333</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>99</x>
+     <y>212</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSlider_2</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>progressBar_2</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>237</x>
+     <y>328</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>275</x>
+     <y>243</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSlider_2</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>progressBar_4</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>300</x>
+     <y>335</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>327</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
