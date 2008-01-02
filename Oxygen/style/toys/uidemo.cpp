@@ -45,6 +45,7 @@ int main(int argc, char **argv)
     ag->addAction(ui.actionList);
     ag->addAction(ui.actionDetails);
     ui.actionIcons->setChecked(true);
+    ui.checkBox_3->setCheckState(Qt::PartiallyChecked);
     window->show();
 
     return app.exec();
