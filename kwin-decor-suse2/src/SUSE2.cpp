@@ -113,9 +113,9 @@ bool SUSE2Handler::reset(unsigned long /*changed*/)
     return true;
 }
 
-KDecoration* SUSE2Handler::createDecoration( KDecorationBridge* bridge )
+KDecoration *SUSE2Handler::createDecoration( KDecorationBridge *bridge )
 {
-        return new SUSE2Client( bridge, this );
+        return (new SUSE2Client( bridge, this ))->decoration();
 }
 
 bool SUSE2Handler::supports( Ability ability ) const
