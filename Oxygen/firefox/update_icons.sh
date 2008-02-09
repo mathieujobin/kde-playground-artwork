@@ -28,3 +28,6 @@ cp ${ICONPATH}/16x16/actions/dialog-close.png Oxygen/browser/safebrowsing/close1
 cp ${ICONPATH}/16x16/status/dialog-error.png Oxygen/global/console/bullet-error.png
 
 cp ${ICONPATH}/32x32/status/dialog-information.png Oxygen/global/icons/Question.png
+
+# cp ${ICONPATH}/32x32s/actions/edit-clear.png Oxygen/mozapps/downloads/downloadCleanup.png
+# echo "edit Oxygen/mozapps/downloads/downloadCleanupDisabled.png !!!!"
