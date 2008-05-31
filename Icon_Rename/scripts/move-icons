@@ -1,0 +1,65 @@
+#! /bin/bash
+
+icon_file=$1
+
+icon_type=$2
+
+current_dir=`pwd`
+
+for j in `find -name $icon_type` ; do
+
+	cd $current_dir
+
+	cd $j
+
+for i in  `cat $icon_file` ; do
+
+	old_name=`echo $i | sed s/\<.*\>//`
+
+echo $old_name
+
+	l_old_name=${#old_name}
+	new_name=`echo ${i:l_old_name} | sed s/\<// | sed s/\>//`
+
+echo $new_name
+
+if [ -f $old_name.png ]; then
+	if [ ! $new_name == "" ]; then
+		echo "MOVE $old_name.png TO $new_name.png"
+		svn mv $old_name.png $new_name.png
+	else 
+		echo "REMOVE $old_name.png"
+		svn remove $old_name.png
+	fi
+fi
+
+if [ -f $old_name.svg ]; then
+	if [ ! $new_name == "" ]; then
+		echo "MOVE $old_name.svg TO $new_name.svg"
+		svn mv $old_name.svg $new_name.svg
+	else 
+		echo "REMOVE $old_name.svg"
+		svn remove $old_name.svg
+	fi
+fi
+
+if [ -f $old_name.svgz ]; then
+	if [ ! $new_name == "" ]; then
+		echo "MOVE $old_name.svgz TO $new_name.svgz"
+		svn mv $old_name.svgz $new_name.svgz
+	else 
+		echo "REMOVE $old_name.svgz"
+		svn remove $old_name.svgz
+	fi
+fi
+
+echo
+
+done
+
+done
+
+
+
+
+ 
