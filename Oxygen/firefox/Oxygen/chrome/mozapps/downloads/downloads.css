@@ -1,0 +1,112 @@
+#downloadManager {
+  background-color: ThreeDFace;
+}
+
+/* Download View */
+#downloadView {
+  -moz-appearance: none !important;
+  margin: 0;
+  border-bottom: 2px solid;
+  -moz-border-bottom-colors: ThreeDHighlight ThreeDLightShadow;
+}
+
+/* Download View Items */
+richlistitem[type="download"] {
+  padding: 4px 8px 4px 4px;
+  min-height: 46px;
+}
+
+richlistitem[type="download"][selected="true"] {
+  background-image: url(chrome://mozapps/skin/extensions/itemEnabledFader.png);
+}
+
+richlistitem[type="download"][alternate="true"]:not([selected="true"]) {
+  background-color: -moz-oddtreerow;
+}
+
+richlistitem[type="download"] .name {
+  font-size: larger;
+}
+
+richlistitem[type="download"] .dateTime {
+  font-size: smaller;
+}
+
+.mini-button {
+  -moz-appearance: none;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+  min-height: 0;
+}
+
+.mini-button > .button-box {
+  padding: 0 !important;
+}
+
+menuitem:not([type]) {
+  -moz-binding: url("chrome://global/content/bindings/menu.xml#menuitem-iconic");
+}
+
+.cancel,
+#menuitem_cancel {
+  list-style-image: url("chrome://browser/skin/icons/16/dialog-cancel.png");
+}
+
+#menuitem_open {
+  list-style-image: url("chrome://browser/skin/icons/16/document-open.png");
+}
+#menuitem_open[disabled="true"] {
+  list-style-image: url("chrome://browser/skin/icons/16-disabled/document-open.png");
+}
+
+.pause,
+#menuitem_pause {
+  list-style-image: url("chrome://browser/skin/icons/16/media-playback-pause.png");
+}
+
+.pause[disabled="true"],
+#menuitem_pause[disabled="true"] {
+  list-style-image: url("chrome://browser/skin/icons/16-disabled/media-playback-pause.png");
+}
+
+.resume,
+#menuitem_resume {
+  list-style-image: url("chrome://browser/skin/icons/16/media-playback-start.png");
+}
+
+.retry,
+#menuitem_retry {
+  list-style-image: url("chrome://browser/skin/icons/16/edit-redo.png");
+}
+
+#menuitem_removeFromList {
+  list-style-image: url("chrome://browser/skin/icons/16/list-remove.png");
+}
+
+#menuitem_copyLocation {
+  list-style-image: url("chrome://browser/skin/icons/16/edit-copy.png");
+}
+
+.blockedIcon {
+  list-style-image: url("chrome://browser/skin/icons/16/dialog-error");
+  width: 32px;
+  height: 32px;
+}
+
+/* prevent flickering when changing states */
+.downloadTypeIcon {
+  min-height: 32px;
+  min-width: 32px;
+}
+
+#clearListButton {
+  list-style-image: url("chrome://browser/skin/icons/16/edit-clear.png");
+  margin-top: 3px;
+}
+
+#clearListButton[disabled="true"] {
+  list-style-image: url("chrome://browser/skin/icons/16-disabled/edit-clear.png");
+}

@@ -1,0 +1,27 @@
+/* ..... page navigation ..... */
+
+.home-arrow {
+  list-style-image: url("chrome://browser/skin/icons/16/go-first.png");
+}
+
+.end-arrow {
+  list-style-image: url("chrome://browser/skin/icons/16/go-last.png");
+}
+
+.left-arrow {
+  list-style-image: url("chrome://browser/skin/icons/16/go-previous.png");
+}
+
+.right-arrow {
+  list-style-image: url("chrome://browser/skin/icons/16/go-next.png");
+}
+
+/* ..... orientation ..... */
+
+.toolbar-portrait-page {
+  list-style-image: url("moz-icon://stock/gtk-orientation-portrait?size=button");
+}
+
+.toolbar-landscape-page {
+  list-style-image: url("moz-icon://stock/gtk-orientation-landscape?size=button");
+}
