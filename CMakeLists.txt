@@ -12,6 +12,8 @@ include(MacroOptionalAddSubdirectory)
 add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} ${KDE4_INCLUDES})
 
+add_subdirectory(cursors)
+
 macro_optional_add_subdirectory( Oxygen/style )
 #macro_optional_add_subdirectory( cokoon )
 
