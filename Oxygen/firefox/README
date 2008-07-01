@@ -1,11 +1,13 @@
-1) Drag and drop oxygen.jar onto the extensions dialog in firefox
-2) Restart Firefox
+Use/Develop the SVN directory:
+1) Copy oxygen-firefox-theme@oxygen-icons.org to your firefox profile's
+   extension directory (e.g. /home/me/.mozilla/firefox/xxxxx.default/extensions)
+2) Edit the file and add the path where the firefox/Oxygen/ folder is stored
+3) Restart Firefox
 
-
-Update the jar:
+Create a jar:
 $ cd Oxygen
 $ zip -r ../oxygen.jar *
 
-Note that before you commit an update, make sure the jar doesn't include
-Oxygen's .svn folders.
-
+Create a release tarball:
+run the release script with the tarball version
+$ ./release.rb 1.0

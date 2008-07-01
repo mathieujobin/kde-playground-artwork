@@ -4,10 +4,8 @@
      xmlns:em="http://www.mozilla.org/2004/em-rdf#">
 
   <Description about="urn:mozilla:install-manifest">
-    <!-- Unique Theme ID -->
     <em:id>oxygen-firefox-theme@oxygen-icons.org</em:id>
-    <!-- Theme Version Number -->
-    <em:version>0.1</em:version>
+    <em:version>1.0</em:version>
 
     <!-- Target Application this extension can install into, 
          with minimum and maximum supported versions. --> 
@@ -21,9 +19,8 @@
     </em:targetApplication>
     
     <!-- Front End MetaData -->
-    <!-- Oxygen -->
-    <em:name>Oxygen Theme</em:name>
-    <em:description>Oxygen Icons for Mozilla Firefox</em:description>
+    <em:name>Oxygen</em:name>
+    <em:description>Oxygen for Mozilla Firefox</em:description>
     <em:creator>Harald Sitter</em:creator>
     <em:contributor>The Oxygen Artwork Team</em:contributor>
     <em:contributor>David Vignoni</em:contributor>
@@ -33,8 +30,6 @@
     <em:contributor>Johann Ollivier Lapeyre</em:contributor>
     <em:contributor>David Miller</em:contributor>
     <em:homepageURL>http://www.oxygen-icons.org</em:homepageURL>
-    <!-- <em:updateURL> Url_of_Update_Location </em:updateURL>
-    <em:aboutURL>chrome://Oxygen/mozapps/extensions/about.css</em:aboutURL> -->
     
     <!-- Front End Integration Hooks (used by Theme Manager)-->
     <em:internalName>oxygen</em:internalName>
