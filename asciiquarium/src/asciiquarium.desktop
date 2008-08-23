@@ -1,0 +1,22 @@
+[Desktop Entry]
+Name=KDE Asciiquarium
+Exec=kdeasciiquarium.kss -caption "%c"
+Icon=preferences-desktop-screensaver
+Type=Service
+X-KDE-ServiceTypes=ScreenSaver
+Actions=InWindow;Root;Setup;
+
+[Desktop Action InWindow]
+Name=Display in specified window
+Exec=kdeasciiquarium.kss -window-id %w
+NoDisplay=true
+
+[Desktop Action Root]
+Name=Display in root window
+Exec=kdeasciiquarium.kss -root
+NoDisplay=true
+
+[Desktop Action Setup]
+Name=Display setup dialog
+Exec=kdeasciiquarium.kss -setup
+Icon=kscreensaver
