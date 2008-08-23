@@ -110,7 +110,7 @@ void Screen::paint(QRegion r)
     foreach(const QRect &r, r.rects()) {
         p.drawPixmap(r.topLeft(), m_backBuffer, r);
     }
-};
+}
 
 /**
  * Utility type used to faciliate sorting of the Sprite list in order to
