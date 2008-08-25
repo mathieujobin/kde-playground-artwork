@@ -15,6 +15,4 @@ include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} ${KDE4_INCLUDES})
 macro_optional_add_subdirectory( Oxygen/style )
 #macro_optional_add_subdirectory( cokoon )
 
-macro_optional_add_subdirectory( asciiquarium )
-
 macro_display_feature_log()
