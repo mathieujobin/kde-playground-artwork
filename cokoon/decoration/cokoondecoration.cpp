@@ -129,10 +129,10 @@ bool Handler::reset(unsigned long changed)
 
 KDecoration* Handler::createDecoration( KDecorationBridge* bridge )
 {
-        return new Client( bridge, this );
+        return (new Client( bridge, this ))->decoration();
 }
 
-bool Handler::supports( Ability ability )
+bool Handler::supports( Ability ability ) const
 {
     switch( ability )
     {

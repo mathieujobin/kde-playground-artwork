@@ -13,7 +13,7 @@ cokoon_add_spec_files(cokoon_PART_SRCS CokoonStyleSpec.xml)
 
 kde4_add_plugin(cokoonstyle ${cokoon_PART_SRCS})
 
-target_link_libraries(cokoonstyle ${KDE4_KDEFX_LIBS} ${KDE4_KDECORE_LIBS} cokoon )
+target_link_libraries(cokoonstyle ${KDE4_KDEUI_LIBS} ${KDE4_KDECORE_LIBS} cokoon )
 
 
 install(TARGETS cokoonstyle DESTINATION ${PLUGIN_INSTALL_DIR}/plugins/styles/ )

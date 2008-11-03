@@ -48,7 +48,7 @@ public:
     virtual bool reset( unsigned long changed );
 
     virtual KDecoration* createDecoration( KDecorationBridge* );
-    virtual bool supports( Ability ability );
+    virtual bool supports( Ability ability ) const;
 
     bool reverseLayout() { return m_reverse; }
 
