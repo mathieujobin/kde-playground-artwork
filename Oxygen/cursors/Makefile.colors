@@ -68,13 +68,13 @@ darkerColor = \#930000
 endif
 
 oxygen-cursors-$(COLOR).tar.bz2: theme
-	( cd cursors; tar -jcf ../$@ oxy-$(COLOR); )
+	tar --strip-components=1 -jcf $@ cursors/$(COLOR)
 
 theme: theme-$(COLOR)
 
-theme-$(COLOR): $(addprefix cursors/oxy-$(COLOR)/cursors/,$(notdir $(patsubst %.in,%,$(wildcard configs/*.in)))) cursors/oxy-$(COLOR)/index.theme
+theme-$(COLOR): $(addprefix cursors/$(COLOR)/,$(notdir $(patsubst %.in,%,$(wildcard configs/*.in)))) cursors/$(COLOR)/index.theme
 
-cursors/oxy-$(COLOR)/cursors:
+cursors/$(COLOR):
 	mkdir -p $@
 
 svgs/$(COLOR):
@@ -88,17 +88,17 @@ svgs/$(COLOR)/%.svg: svgs/white/%.svg svgs/$(COLOR)
 	$(SED) \
 		-e 's:#ffffff;:$(lighterColor);:g' \
 		-e 's:#d3d7cf:$(mediumColor):g' \
-		-e 's:#000000:$(darkerColor):g' \
+		-e 's:#000100:$(darkerColor):g' \
 		$< > $@
 endif
 
 pngs/$(COLOR)/%.png: svgs/$(COLOR)/%.svg pngs/$(COLOR)
 	inkscape --without-gui --export-dpi=90 --export-png=$@ $<
 
-cursors/oxy-$(COLOR)/cursors/%: configs/%.in cursors/oxy-$(COLOR)/cursors
+cursors/$(COLOR)/%: configs/%.in cursors/$(COLOR)
 	xcursorgen -p pngs/$(COLOR) $< $@
 
-cursors/oxy-$(COLOR)/index.theme: index.theme.in cursors/oxy-$(COLOR)/cursors
+cursors/$(COLOR)/index.theme: index.theme.in
 	$(SED) -e 's:@COLOR@:$(COLOR):' $< > $@
 
 include .depend
