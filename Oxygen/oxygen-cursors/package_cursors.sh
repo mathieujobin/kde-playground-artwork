@@ -3,7 +3,6 @@
 echo "Running generate_WORLD.sh..."
 
 cd svgs
-./create-baselayout.sh
 ./generate_WORLD.sh
 cd ..
 
