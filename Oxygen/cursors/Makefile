@@ -7,17 +7,14 @@ themes:
 tarballs:
 
 .colorrules: Makefile
-	( \
+	-rm .colorrules
 	for color in $(colors); do \
-		for rule in theme-$$color oxygen-cursors-$$color.tar.bz2; do \
-			echo "$$rule: .depend"; \
-			echo "	\$$(MAKE) -f Makefile.colors COLOR=$$color $$rule"; \
-		done; \
-		echo ".PHONY: theme-$$color"; \
-		echo "themes: theme-$$color"; \
-		echo "tarballs: oxygen-cursors-$$color.tar.bz2"; \
+	for rule in theme-$$color oxygen-cursors-$$color.tar.bz2; do \
+		echo -e "$$rule: .depend\n\t\$$(MAKE) -f Makefile.colors COLOR=$$color $$rule" \
+		>> .colorrules; \
 	done; \
-	) > .colorrules
+	echo -e ".PHONY: theme-$$color \nthemes: theme-$$color \ntarballs: oxygen-cursors-$$color.tar.bz2" >> .colorrules; \
+	done
 
 .depend: $(patsubst %.in,%.dep,$(wildcard configs/*.in))
 	cat $^ > $@
