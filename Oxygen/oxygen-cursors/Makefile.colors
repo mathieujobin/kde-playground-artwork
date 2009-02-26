@@ -1,4 +1,4 @@
-.PHONY: theme theme-$(COLOR)
+.PHONY: theme
 
 SED=sed
 
@@ -57,14 +57,16 @@ else ifeq "$(COLOR)" "grey"
 lighterColor = \#eeeeec
 mediumColor = \#555753
 darkerColor = \#2e3436
+else ifeq "$(COLOR)" "black"
+lighterColor = \#999999
+mediumColor = \#000000
+darkerColor = \#000000
 endif
 
 oxygen-cursors-$(COLOR).tar.bz2: theme
 	tar --strip-components=1 -jcf $@ cursors/$(COLOR)
 
-theme: theme-$(COLOR)
-
-theme-$(COLOR): $(addprefix cursors/$(COLOR)/,$(notdir $(patsubst %.in,%,$(wildcard configs/*.in)))) cursors/$(COLOR)/index.theme
+theme: $(addprefix cursors/$(COLOR)/,$(notdir $(patsubst %.in,%,$(wildcard configs/*.in)))) cursors/$(COLOR)/index.theme
 
 cursors/$(COLOR):
 	mkdir -p $@
