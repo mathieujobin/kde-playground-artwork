@@ -16,4 +16,6 @@ macro_optional_add_subdirectory( Oxygen/style )
 #macro_optional_add_subdirectory( cokoon )
 macro_optional_add_subdirectory( dekorator )
 
-macro_display_feature_log()
+if(CMAKE_SOURCE_DIR STREQUAL "${CMAKE_CURRENT_SOURCE_DIR}")
+    macro_display_feature_log()
+endif(CMAKE_SOURCE_DIR STREQUAL "${CMAKE_CURRENT_SOURCE_DIR}")
