@@ -32,6 +32,22 @@
      id="defs5">
     <linearGradient
        inkscape:collect="always"
+       xlink:href="#linearGradient4837"
+       id="linearGradient2648"
+       gradientUnits="userSpaceOnUse"
+       x1="34.843121"
+       y1="40.500919"
+       x2="37.685322"
+       y2="43.606422" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 27.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="72 : 27.5 : 1"
+       inkscape:persp3d-origin="36 : 18.333333 : 1"
+       id="perspective226" />
+    <linearGradient
+       inkscape:collect="always"
        id="linearGradient8518">
       <stop
          style="stop-color:#ffee80;stop-opacity:1"
@@ -345,15 +361,6 @@
        x2="37.685322"
        y2="47.040367"
        gradientUnits="userSpaceOnUse" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient4837"
-       id="linearGradient6131"
-       gradientUnits="userSpaceOnUse"
-       x1="34.843121"
-       y1="40.500919"
-       x2="37.685322"
-       y2="43.606422" />
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient6141"
@@ -672,6 +679,15 @@
        y1="40"
        x2="72"
        y2="40" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4837"
+       id="linearGradient3156"
+       gradientUnits="userSpaceOnUse"
+       x1="34.843121"
+       y1="40.500919"
+       x2="37.685322"
+       y2="43.606422" />
   </defs>
   <sodipodi:namedview
      inkscape:window-height="1151"
@@ -691,7 +707,7 @@
      inkscape:cy="22.902299"
      inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:current-layer="svg2">
+     inkscape:current-layer="g3333">
     <inkscape:grid
        type="xygrid"
        id="grid3263" />
@@ -855,52 +871,6 @@
        d="M 29.59266,13.451377 C 29.59266,13.451377 27.3758,16.290905 27.412843,18.07523 C 27.597476,26.968785 24.345569,28.179635 23.911926,28.049542"
        style="opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible"
        sodipodi:nodetypes="csc" />
-  </g>
-  <g
-     id="g3434"
-     transform="translate(0.4623853,-1.453211)">
-    <g
-       transform="translate(-0.4293578,1.4321095)"
-       id="g3426">
-      <path
-         sodipodi:type="arc"
-         style="opacity:1;fill:url(#linearGradient6131);fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.20000000000000001;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible"
-         id="path3418"
-         sodipodi:cx="35.306423"
-         sodipodi:cy="41.161469"
-         sodipodi:rx="2.2788992"
-         sodipodi:ry="2.344954"
-         d="M 37.585322,41.161469 A 2.2788992,2.344954 0 1 1 33.027524,41.161469 A 2.2788992,2.344954 0 1 1 37.585322,41.161469 z" />
-      <use
-         x="0"
-         y="0"
-         xlink:href="#use3420"
-         id="use3422"
-         transform="translate(-2.840367,19.540368)"
-         width="72"
-         height="55" />
-    </g>
-    <g
-       transform="translate(-0.3963303,18.033028)"
-       id="g3430">
-      <use
-         x="0"
-         y="0"
-         xlink:href="#path3418"
-         id="use3420"
-         transform="translate(2.840367,-13.661469)"
-         width="72"
-         height="55" />
-      <use
-         x="0"
-         y="0"
-         xlink:href="#use3422"
-         id="use3424"
-         transform="translate(-2.906422,-19.540368)"
-         width="72"
-         height="55"
-         style="fill-opacity:1;fill:url(#linearGradient4835)" />
-    </g>
   </g>
   <g
      id="g3377">
@@ -1371,6 +1341,54 @@
          transform="matrix(1,0,0,0.8865723,-1.7834862,5.0410395)"
          width="72"
          height="55" />
+    </g>
+  </g>
+  <g
+     id="g3434"
+     transform="translate(0.2831963,-1.405628)">
+    <g
+       id="g2638"
+       transform="translate(-0.2754517,0.167124)">
+      <path
+         transform="translate(-0.3141678,1.4321095)"
+         sodipodi:type="arc"
+         style="fill:url(#linearGradient3156);fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible"
+         id="path3418"
+         sodipodi:cx="35.306423"
+         sodipodi:cy="41.161469"
+         sodipodi:rx="2.2788992"
+         sodipodi:ry="2.344954"
+         d="M 37.585322,41.161469 A 2.2788992,2.344954 0 1 1 33.027524,41.161469 A 2.2788992,2.344954 0 1 1 37.585322,41.161469 z" />
+      <path
+         d="M 37.585322,41.161469 A 2.2788992,2.344954 0 1 1 33.027524,41.161469 A 2.2788992,2.344954 0 1 1 37.585322,41.161469 z"
+         sodipodi:ry="2.344954"
+         sodipodi:rx="2.2788992"
+         sodipodi:cy="41.161469"
+         sodipodi:cx="35.306423"
+         id="path2632"
+         style="fill:url(#linearGradient2648);fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible"
+         sodipodi:type="arc"
+         transform="translate(-0.3141678,7.4219895)" />
+    </g>
+    <g
+       id="g2642"
+       transform="translate(-0.11519,-0.23038)">
+      <use
+         x="0"
+         y="0"
+         xlink:href="#path3418"
+         id="use3420"
+         transform="translate(2.7896067,3.450039)"
+         width="72"
+         height="55" />
+      <use
+         height="55"
+         width="72"
+         transform="translate(-3.11013,3.450039)"
+         id="use2630"
+         xlink:href="#path3418"
+         y="0"
+         x="0" />
     </g>
   </g>
 </svg>
