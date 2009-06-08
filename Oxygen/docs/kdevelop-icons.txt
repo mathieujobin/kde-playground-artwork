@@ -22,15 +22,88 @@ Legend:
 
 Icons are listed as '<icon name>' [("<action name, if different>")]
 
+generic needs (referenced later)
+-------------
+	- 'code block'
+		Something representing a block of code
+		IDEAS: some stacked building blocks
+		
+	- 'context'
+		Similar to code block, but more specific - it refers to all code within
+		a set of brackts {}
+		IDEAS: a pair of brackets {}
+
+navigation
+----------
+	- 'quick open'
+		A dialog which allows for navigation to another point in the project(s) 
+		open, via a search function.  The specialty 'quick open' actions are
+		the same as the main quick open dialog with some filters applied.
+		IDEAS: code block on a slant, with horizontal marks to the left
+		       indicating that it is moving quickly
+
+	- 'quick open file'
+		A dialog which allows for navigation to another file in the project(s) 
+		open, via a search function.
+		IDEAS: open file icon on a slant, with horizontal marks to the left
+		       indicating that it is moving quickly
+
+	- 'quick open class'
+		A dialog which allows for navigation to another class in the project(s) 
+		open, via a search function.
+		IDEAS: class icon (described below) on a slant, with horizontal marks
+		       to the left indicating that it is moving quickly
+
+	- 'quick open function'
+		A dialog which allows for navigation to another class in the project(s) 
+		open, via a search function.
+		IDEAS: function icon (described below) on a slant, with horizontal
+		       marks to the left indicating that it is moving quickly
+
+	- 'outline'
+		A dialog which shows a list of declared objects in a file, and allows
+		quick navigation via a search function.
+		IDEAS: a sketch or edge drawing of a file, class, etc.
+
+	- 'jump to declaration'
+		An action which finds the declaration of the current object and opens
+		or switches to that file, and places the cursor at the declaration.
+		IDEAS: a curved arrow pointing left to a flag (or something else)
+
+	- 'jump to definition'
+		An action which finds the definition of the current object and opens
+		or switches to that file, and places the cursor at the declaration.
+		IDEAS: a curved arrow pointing right to a code block
+
+	- 'previous visited context'
+		An action which navigates to the code context which was previously
+		being edited
+		IDEAS: a straight arrow pointing left to a context
+
+	- 'next visited context'
+		An action which navigates back to the code context which was
+		originally being edited before 'previous visited context' was used
+		IDEAS: a straight arrow pointing right to a context
+
+	- 'previous use'
+		An action which navigates to the previous use of a declaration (ie.,
+		class, function, variable etc.)
+		IDEAS: a straight arrow pointing left to a variable (described below)
+
+	- 'next use'
+		An action which navigates to the next use of a declaration (ie.,
+		class, function, variable etc.)
+		IDEAS: a straight arrow pointing right to a variable (described below)
+
 project
 -------
 	+ 'project'
 		IDEAS: a simple window
 
-	- 'new project'
+	+ 'new project'
 		SHOULD-BE: 'project' with 'new' sparkle
 
-	- 'open project'
+	+ 'open project'
 		SHOULD-BE: 'project' with small folder overlayed
 
 	i 'subproject'
@@ -45,15 +118,15 @@ project
 		a specific portion of an application to build (for example, 'Kexi' would
 		be a target in KOffice).
 		IDEAS: a target i.e. a bulls-eye
-	
-	? 'conditional scope'
-		A section in a makefile that's only used if the given condition is true.
-		Mainly used as 16x16 icon in a list view.
-		IDEAS: a question mark. or maybe a question mark enclosed in braces.
 
-	? 'create conditional scope'
-		Used on the button that creates conditional scopes.
-		SHOULD-BE: the 'conditional scope' icon with a 'new' sparkle.
+	- 'close project'
+		Closes the current project.
+		IDEAS: project icon with the close icon overlaid
+
+	- 'close all projects'
+		Closes all open projects.
+		IDEAS: project icons with the close icon overlaid
+
 
 build
 -----
@@ -81,22 +154,19 @@ build
 	- 'clean'
 		Deletes built files ('$ make clean')
 		IDEAS: broom
+		
+	- 'prune'
+		Deletes built files and buildsystem files (eg '$ make distclean')
+		IDEAS: three brooms
 
-	? 'distclean'
-		Deletes maintainer-generated files, such as "configure", "Makefile", etc.
-		('$ make distclean')
-		IDEAS: broom over 'configure' icon
-
-	? 'configure'
+	+ 'configure'
 		Generates makefiles out of the high-level build information, so that the
 		project can be built by a low-level build tool like 'make'
 		IDEAS: like 'build' but with a gear/wrench also
 
-	? 'run autotools'
-		IDEAS: like 'configure'?
-
-	? 'install'
+	+ 'install'
 		Copies files to their final location (i.e. "installs" the package)
+		IDEAS: A cardboard box with an arrow indicating it is to be opened (installed)
 
 	? 'install as root'
 		IDEAS: 'install' plus whatever is used to represent root privileges
@@ -107,32 +177,35 @@ debug
 	i 'run', 'break', 'stop', 'restart', 'run to cursor'
 		WILL-USE: media-playback-*
 
-	? 'resume'
+	+ 'resume'
 		opposite of 'pause' (i.e. 'not restart')
 		IDEAS: pause with circle+slash (should become 'media-playback-resume')
 
-	- 'step'
-		Executes one line of code, then stops
+	- 'step over'
+		Executes one complete line of code, then stops
 
-	- 'step instruction'
-		Executes exactly one machine instruction, then stops
+	- 'step over instruction'
+		Executes the next instruction for the current line of code, then stops
+
+	- 'step into'
+		Executes one complete line of code, stopping if a function is entered
+		or once the line is finished
+
+	- 'step into instruction'
+		Executes the next instruction for the current line of code, stopping 
+		if a function is entered or once the instruction is finished
 
 	- 'step out'
-		Completes execution of the current function, stopping when the function
-		returns
+		Executes code until the current function returns, then stops.
 
-	- 'step over'
-
-	- 'set next'
-		Changes the instruction-pointer to the line of code under the cursor
+	- 'set execution point to cursor'
+		Changes the instruction-pointer to the line of code under the cursor,
+		ie. make the next executed code be the code at the cursor position.
 
 	- 'breakpoint'
 		indicates a line where the debugger will halt execution (action is to
 		toggle)
-		WILL-USE: process-stop
-		NOTE: not marked 'i' because we might want to consider making a copy of
-		process-stop with a different name due to 'clear breakpoints' icon
-		(unless we support defining the latter as process-stop plus some overlay)
+		IDEAS: traffic stop sign
 
 	- 'clear breakpoints'
 		IDEAS: 'breakpoint' with a broom over it
@@ -142,11 +215,17 @@ misc
 	- 'sync to folder'
 		Used in places where the user selects a path to set the path to the
 		'working directory' (usually the location of the active document)
+		Already requested via 'missing oxygen icons' page it seems.
 		IDEAS: folder with an arrow pointing into it, e.g.
 		       http://lists.kde.org/?l=kde-artists&m=116889123829485&q=p3
 
 	- 'find in files'
 		IDEAS: folder with magnifying glass, folder with binnoculars
+
+	- 'documentation'
+		A tool view which shows documentation for code objects as they are
+		selected.
+		IDEAS: an open book
 
 code structure icons
 --------------------
