@@ -9,7 +9,7 @@
 # published by the Free Software Foundation; either version 2 of
 # the License or (at your option) version 3 or any later version
 # accepted by the membership of KDE e.V. (or its successor approved
-# by the membership of KDE e.V.), which shall act as a proxy 
+# by the membership of KDE e.V.), which shall act as a proxy
 # defined in Section 14 of version 3 of the license.
 #
 # This program is distributed in the hope that it will be useful,
@@ -29,6 +29,7 @@ else
     version = $*[0]
 end
 
+jar = "Oxygen-#{version}.jar"
 releasedir = "release-#{version}"
 system("svn export Oxygen #{releasedir}")
 
@@ -42,11 +43,18 @@ str.sub!( /<em:version>.*<\/em:version>/, "<em:version>#{version}</em:version>" 
 file << str
 file.close()
 
-system("zip -r ../Oxygen-#{version}.jar *")
+system("zip -r ../#{jar} *")
 Dir.chdir("../")
 
 FileUtils.rm_r(releasedir)
 
-system("sha1sum Oxygen-#{version}.jar")
+hash = %x[sha1sum #{jar}].chomp!
+puts hash
+hash = hash.split(" ")[0]
+
+c = File.open("install.html").read
+c = c.gsub(/a href=\".*\"/, "a href=\"#{jar}\"")
+c = c.gsub(/hash=\"sha1:.*\"/,"hash=\"sha1:#{hash}\"")
+File.new("install.html","w").print(c)
 
 exit 0
