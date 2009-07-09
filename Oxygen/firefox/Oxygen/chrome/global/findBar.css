@@ -1,56 +1,50 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
 .findbar-closebutton {
-  list-style-image: url("chrome://browser/skin/icons/16/dialog-close.png");
+  list-style-image: url("moz-icon://stock/gtk-close?size=menu");
 }
 
 findbar {
-  -moz-appearance: none !important;
   border-top: 2px solid;
-  -moz-border-top-colors: ThreeDShadow ThreeDHighlight !important;
-  border-bottom: 1px solid;
-  -moz-border-bottom-colors: transparent;
+  -moz-border-top-colors: ThreeDShadow ThreeDHighlight;
+  padding-bottom: 1px;
   min-width: 1px;
-}
-
-.find-buttons-container {
-  -moz-box-direction: reverse;
 }
 
 /* find-next button */
 
 .findbar-find-next {
-  list-style-image: url("chrome://browser/skin/icons/16/go-next.png");
+  list-style-image: url("moz-icon://stock/gtk-go-forward-ltr?size=menu");
 }
 
 .findbar-find-next[disabled="true"] {
-  list-style-image: url("chrome://browser/skin/icons/16-disabled/go-next.png");
+  list-style-image: url("moz-icon://stock/gtk-go-forward-ltr?size=menu&state=disabled");
 }
 
 .findbar-find-next[chromedir="rtl"] {
-  list-style-image: url("chrome://browser/skin/icons/16/go-previous.png");
+  list-style-image: url("moz-icon://stock/gtk-go-forward-rtl?size=menu");
 }
 
 .findbar-find-next[disabled="true"][chromedir="rtl"] {
-  list-style-image: url("chrome://browser/skin/icons/16-disabled/go-previous.png");
+  list-style-image: url("moz-icon://stock/gtk-go-forward-rtl?size=menu&state=disabled");
 }
 
 /* find-previous button */
 
 .findbar-find-previous {
-  list-style-image: url("chrome://browser/skin/icons/16/go-previous.png");
+  list-style-image: url("moz-icon://stock/gtk-go-back-ltr?size=menu");
 }
 
 .findbar-find-previous[disabled="true"] {
-  list-style-image: url("chrome://browser/skin/icons/16-disabled/go-previous.png");
+  list-style-image: url("moz-icon://stock/gtk-go-back-ltr?size=menu&state=disabled");
 }
 
 .findbar-find-previous[chromedir="rtl"] {
-  list-style-image: url("chrome://browser/skin/icons/16/go-next.png");
+  list-style-image: url("moz-icon://stock/gtk-go-back-rtl?size=menu");
 }
 
 .findbar-find-previous[disabled="true"][chromedir="rtl"] {
-  list-style-image: url("chrome://browser/skin/icons/16-disabled/go-next.png");
+  list-style-image: url("moz-icon://stock/gtk-go-back-rtl?size=menu&state=disabled");
 }
 
 /* highlight button */
@@ -83,7 +77,7 @@ findbar {
 }
 
 .find-status-icon[status="notfound"] {
-  list-style-image: url("chrome://browser/skin/icons/16/dialog-error.png");
+  list-style-image: url("moz-icon://stock/gtk-dialog-error?size=menu");
 }
 
 .findbar-textbox {

@@ -50,7 +50,7 @@
 
 #exclam
 {
-  list-style-image: url("chrome://browser/skin/icons/16/dialog-warning.png");
+  list-style-image: url("moz-icon://stock/gtk-dialog-warning?size=dialog");
   -moz-margin-end: 3em;
 }
 
