@@ -37,7 +37,7 @@ treechildren::-moz-tree-image(title, separator) {
 }
 
 treechildren::-moz-tree-image(title, container) {
-  list-style-image: url("chrome://browser/skin/icons/16/folder.png");
+  list-style-image: url("moz-icon://stock/gtk-directory?size=menu");
 }
 
 treechildren::-moz-tree-image(title, container, livemark) {
@@ -71,7 +71,7 @@ treechildren::-moz-tree-image(title, query) {
 }
 
 treechildren::-moz-tree-image(title, query, tagContainer),
-treechildren::-moz-tree-image(container, OrganizerQuery_Tags) {
+treechildren::-moz-tree-image(query, OrganizerQuery_Tags) {
   list-style-image: url("chrome://mozapps/skin/places/tagContainerIcon.png");
 }
 
@@ -81,21 +81,22 @@ treechildren::-moz-tree-image(title, query, dayContainer) {
 }
 
 treechildren::-moz-tree-image(title, query, hostContainer) {
-  list-style-image: url("chrome://browser/skin/icons/16/folder.png");
+  list-style-image: url("moz-icon://stock/gtk-directory?size=menu");
 }
 
 treechildren::-moz-tree-image(title, query, hostContainer, open) {
-  list-style-image: url("chrome://browser/skin/icons/16/folder.png");
+  list-style-image: url("moz-icon://stock/gtk-directory?size=menu");
 }
 
 treechildren::-moz-tree-image(title, query, OrganizerQuery_History) {
-  list-style-image: url("chrome://browser/skin/icons/16/view-history.png");
+  list-style-image: url("chrome://browser/skin/Toolbar-small.png");
+  -moz-image-region: rect(0px 32px 16px 16px);
 }
 
 /* We want some queries to look like ordinary folders. This must come
    after the (title, query) selector, or it would get overridden. */
 treechildren::-moz-tree-image(title, query, folder) {
-  list-style-image: url("chrome://browser/skin/icons/16/folder.png");
+  list-style-image: url("moz-icon://stock/gtk-directory?size=menu");
 }
 
 treechildren::-moz-tree-row(session-start) {
@@ -114,90 +115,90 @@ menuitem:not([type]) {
 
 menuitem[command="cmd_cut"],
 menuitem[cmd="cmd_cut"] {
-  list-style-image: url("chrome://browser/skin/icons/16/edit-cut.png");
+  list-style-image: url("moz-icon://stock/gtk-cut?size=menu");
 }
 
 menuitem[command="cmd_cut"][disabled],
 menuitem[cmd="cmd_cut"][disabled] {
-  list-style-image: url("chrome://browser/skin/icons/16-disabled/edit-cut.png");
+  list-style-image: url("moz-icon://stock/gtk-cut?size=menu&state=disabled");
 }
 
 menuitem[command="cmd_copy"],
 menuitem[cmd="cmd_copy"] {
-  list-style-image: url("chrome://browser/skin/icons/16/edit-copy.png");
+  list-style-image: url("moz-icon://stock/gtk-copy?size=menu");
 }
 
 menuitem[command="cmd_copy"][disabled],
 menuitem[cmd="cmd_copy"][disabled] {
-  list-style-image: url("chrome://browser/skin/icons/16-disabled/edit-copy.png");
+  list-style-image: url("moz-icon://stock/gtk-copy?size=menu&state=disabled");
 }
 
 menuitem[command="cmd_paste"],
 menuitem[cmd="cmd_paste"] {
-  list-style-image: url("chrome://browser/skin/icons/16/edit-paste.png");
+  list-style-image: url("moz-icon://stock/gtk-paste?size=menu");
 }
 
 menuitem[command="cmd_paste"][disabled],
 menuitem[cmd="cmd_paste"][disabled] {
-  list-style-image: url("chrome://browser/skin/icons/16-disabled/edit-paste.png");
+  list-style-image: url("moz-icon://stock/gtk-paste?size=menu&state=disabled");
 }
 
 menuitem[command="cmd_delete"],
 menuitem[cmd="cmd_delete"] {
-  list-style-image: url("chrome://browser/skin/icons/16/edit-delete.png");
+  list-style-image: url("moz-icon://stock/gtk-delete?size=menu");
 }
 
 menuitem[command="cmd_delete"][disabled],
 menuitem[cmd="cmd_delete"][disabled] {
-  list-style-image: url("chrome://browser/skin/icons/16-disabled/edit-delete.png");
+  list-style-image: url("moz-icon://stock/gtk-delete?size=menu&state=disabled");
 }
 
 menuitem[command="cmd_undo"],
 menuitem[cmd="cmd_undo"] {
-  list-style-image: url("chrome://browser/skin/icons/16/edit-undo.png");
+  list-style-image: url("moz-icon://stock/gtk-undo?size=menu");
 }
 
 menuitem[command="cmd_undo"][disabled],
 menuitem[cmd="cmd_undo"][disabled] {
-  list-style-image: url("chrome://browser/skin/icons/16-disabled/edit-undo.png");
+  list-style-image: url("moz-icon://stock/gtk-undo?size=menu&state=disabled");
 }
 
 menuitem[command="cmd_redo"] {
-  list-style-image: url("chrome://browser/skin/icons/16/edit-redo.png");
+  list-style-image: url("moz-icon://stock/gtk-redo?size=menu");
 }
 
 menuitem[command="cmd_redo"][disabled] {
-  list-style-image: url("chrome://browser/skin/icons/16-disabled/edit-redo.png");
+  list-style-image: url("moz-icon://stock/gtk-redo?size=menu&state=disabled");
 }
 
 menuitem[command="cmd_selectAll"],
 menuitem[cmd="cmd_selectAll"] {
-  list-style-image: url("chrome://browser/skin/icons/16/edit-select-all.png");
+  list-style-image: url("moz-icon://stock/gtk-select-all?size=menu");
 }
 
 menuitem[command="cmd_selectAll"][disabled],
 menuitem[cmd="cmd_selectAll"][disabled] {
-  list-style-image: url("chrome://browser/skin/icons/16-disabled/edit-select-all.png");
+  list-style-image: url("moz-icon://stock/gtk-select-all?size=menu&state=disabled");
 }
 
 #placesContext_open\:newwindow,
 menuitem[command="placesCmd_open:window"] {
-  list-style-image: url("chrome://browser/skin/icons/16/window-new.png");
+  list-style-image: url("chrome://browser/skin/Toolbar-small.png");
   -moz-image-region: rect(0px 80px 16px 64px);
 }
 
 #placesContext_open\:newtab,
 menuitem[command="placesCmd_open:tab"] {
-  list-style-image: url("chrome://browser/skin/icons/16/tab-new.png");
+  list-style-image: url("chrome://browser/skin/Toolbar-small.png");
   -moz-image-region: rect(0px 64px 16px 48px);
 }
 
 #placesContext_show\:info,
 menuitem[command="placesCmd_show:info"] {
-  list-style-image: url("chrome://browser/skin/icons/16/dialog-information.png");
+  list-style-image: url("moz-icon://stock/gtk-properties?size=menu");
 }
 
 #placesContext_reload,
 #placesContext_reloadMicrosummary {
-  list-style-image: url("chrome://browser/skin/icons/16/view-refresh.png");
+  list-style-image: url("moz-icon://stock/gtk-refresh?size=menu");
 }

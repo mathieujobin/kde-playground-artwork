@@ -86,10 +86,6 @@ textbox[disabled] {
 #generalPanel > #titletext {
   -moz-margin-start: 5px;
 }
-#metaTags > .groupbox-body {
-  -moz-margin-start: 5px;
-  -moz-margin-end: 1px;
-}
 
 groupbox.collapsable caption .caption-icon { 
   width: 9px;
@@ -115,6 +111,8 @@ groupbox tree {
 }
 
 groupbox.treebox .groupbox-body { 
+  -moz-margin-start: 5px;
+  -moz-margin-end: 1px;
   padding-top: 0;
 }
 
@@ -251,9 +249,9 @@ menuitem:not([type]) {
 }
 
 #menu_selectall {
-  list-style-image: url("chrome://browser/skin/icons/16/edit-select-all.png");
+  list-style-image: url("moz-icon://stock/gtk-select-all?size=menu");
 }
 
 #menu_copy {
-  list-style-image: url("chrome://browser/skin/icons/16/edit-copy.png");
+  list-style-image: url("moz-icon://stock/gtk-copy?size=menu");
 }
