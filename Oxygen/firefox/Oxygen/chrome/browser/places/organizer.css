@@ -7,14 +7,14 @@
 /* back button */
 
 #back-button {
-  list-style-image: url("moz-icon://stock/gtk-go-back-ltr?size=toolbar");
+  list-style-image: url("chrome://browser/skin/icons/24/go-previous.png");
 }
 #back-button[disabled="true"] {
   list-style-image: url("moz-icon://stock/gtk-go-back-ltr?size=toolbar&state=disabled");
 }
 
 #back-button[chromedir="rtl"] {
-  list-style-image: url("moz-icon://stock/gtk-go-back-rtl?size=toolbar");
+  list-style-image: url("chrome://browser/skin/icons/24/go-next.png");
 }
 #back-button[disabled="true"][chromedir="rtl"] {
   list-style-image: url("moz-icon://stock/gtk-go-back-rtl?size=toolbar&state=disabled");
@@ -23,14 +23,14 @@
 /* forward button */
 
 #forward-button {
-  list-style-image: url("moz-icon://stock/gtk-go-forward-ltr?size=toolbar");
+  list-style-image: url("chrome://browser/skin/icons/24/go-next.png");
 }
 #forward-button[disabled="true"] {
   list-style-image: url("moz-icon://stock/gtk-go-forward-ltr?size=toolbar&state=disabled");
 }
 
 #forward-button[chromedir="rtl"] {
-  list-style-image: url("moz-icon://stock/gtk-go-forward-rtl?size=toolbar");
+  list-style-image: url("chrome://browser/skin/icons/24/go-previous.png");
 }
 #forward-button[disabled="true"][chromedir="rtl"] {
   list-style-image: url("moz-icon://stock/gtk-go-forward-rtl?size=toolbar&state=disabled");
@@ -106,18 +106,18 @@
 }
 
 #saveSearch {
-  list-style-image: url("moz-icon://stock/gtk-save?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/document-save.png");
 }
 
 /**** menuitem stock icons ****/
 #orgClose {
-  list-style-image: url("moz-icon://stock/gtk-close?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/dialog-close.png");
 }
 
 #fileImport {
-  list-style-image: url("moz-icon://stock/gtk-revert-to-saved?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/document-revert.png");
 }
 
 #fileExport {
-  list-style-image: url("moz-icon://stock/gtk-save-as?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/document-export.png");
 }

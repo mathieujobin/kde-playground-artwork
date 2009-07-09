@@ -135,50 +135,50 @@ menuitem:not([type]) {
 }
 
 menuitem[cmd="cmd_undo"] {
-  list-style-image: url("moz-icon://stock/gtk-undo?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/edit-undo.png");
 }
 
 menuitem[cmd="cmd_undo"][disabled] {
-  list-style-image: url("moz-icon://stock/gtk-undo?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/edit-undo.png");
 }
 
 menuitem[cmd="cmd_cut"] {
-  list-style-image: url("moz-icon://stock/gtk-cut?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/edit-cut.png");
 }
 
 menuitem[cmd="cmd_cut"][disabled] {
-  list-style-image: url("moz-icon://stock/gtk-cut?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/edit-cut.png");
 }
 
 menuitem[cmd="cmd_copy"] {
-  list-style-image: url("moz-icon://stock/gtk-copy?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/edit-copy.png");
 }
 
 menuitem[cmd="cmd_copy"][disabled] {
-  list-style-image: url("moz-icon://stock/gtk-copy?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/edit-copy.png");
 }
 
 menuitem[cmd="cmd_paste"] {
-  list-style-image: url("moz-icon://stock/gtk-paste?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/edit-paste.png");
 }
 
 menuitem[cmd="cmd_paste"][disabled] {
-  list-style-image: url("moz-icon://stock/gtk-paste?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/edit-paste.png");
 }
 
 menuitem[cmd="cmd_delete"] {
-  list-style-image: url("moz-icon://stock/gtk-delete?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/edit-delete.png");
 }
 
 menuitem[cmd="cmd_delete"][disabled] {
-  list-style-image: url("moz-icon://stock/gtk-delete?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/edit-delete.png");
 }
 
 menuitem[cmd="cmd_selectAll"] {
-  list-style-image: url("moz-icon://stock/gtk-select-all?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/edit-select-all.png");
 }
 
 menuitem[cmd="cmd_selectAll"][disabled] {
-  list-style-image: url("moz-icon://stock/gtk-select-all?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/edit-select-all.png");
 }
 

@@ -128,7 +128,7 @@ menuitem.bookmark-item {
 }
 
 .bookmark-item[container] {
-  list-style-image: url("moz-icon://stock/gtk-directory?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/folder.png");
 }
 
 .bookmark-item[container][livemark] { 
@@ -152,11 +152,11 @@ menuitem.bookmark-item {
 }
 
 .bookmark-item[query][hostContainer] {
-  list-style-image: url("moz-icon://stock/gtk-directory?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/folder.png");
 }
 
 .bookmark-item[query][hostContainer][open] {
-  list-style-image: url("moz-icon://stock/gtk-directory?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/folder.png");
 }
 
 /* Stock icons for the menu bar items */
@@ -182,21 +182,21 @@ menuitem:not([type]) {
 }
 
 #menu_openFile {
-  list-style-image: url("moz-icon://stock/gtk-open?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/document-open.png");
 }
 
 #menu_close {
   /*XXX Avoiding size=menu as some themes (e.g. Human) don't provide the icon
         at 16*16px (bug 426930), and upscaled images are ugly (bug 422179). */
-  list-style-image: url("moz-icon://stock/gtk-close?size=toolbar");
+  list-style-image: url("chrome://browser/skin/icons/24/dialog-close.png");
 }
 
 #context-media-play {
-  list-style-image: url("moz-icon://stock/gtk-media-play?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/media-playback-play.png");
 }
 
 #context-media-pause {
-  list-style-image: url("moz-icon://stock/gtk-media-pause?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/media-playback-pause.png");
 }
 
 #menu_savePage,
@@ -206,7 +206,7 @@ menuitem:not([type]) {
 #context-saveaudio,
 #context-savepage,
 #context-saveframe {
-  list-style-image: url("moz-icon://stock/gtk-save-as?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/document-export.png");
 }
 
 #menu_printPreview {
@@ -215,7 +215,7 @@ menuitem:not([type]) {
 
 #menu_print,
 #context-printframe {
-  list-style-image: url("moz-icon://stock/gtk-print?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/document-print.png");
 }
 
 #menu_FileQuitItem {
@@ -224,16 +224,16 @@ menuitem:not([type]) {
 
 #menu_undo,
 #context-undo {
-  list-style-image: url("moz-icon://stock/gtk-undo?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/edit-undo.png");
 }
 
 #menu_undo[disabled],
 #context-undo[disabled] {
-  list-style-image: url("moz-icon://stock/gtk-undo?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/edit-undo.png");
 }
 
 #menu_redo {
-  list-style-image: url("moz-icon://stock/gtk-redo?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/edit-redo.png");
 }
 
 #menu_redo[disabled] {
@@ -243,13 +243,13 @@ menuitem:not([type]) {
 #menu_cut,
 #placesContext_cut,
 #context-cut {
-  list-style-image: url("moz-icon://stock/gtk-cut?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/edit-cut.png");
 }
 
 #menu_cut[disabled],
 #placesContext_cut[disabled],
 #context-cut[disabled] {
-  list-style-image: url("moz-icon://stock/gtk-cut?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/edit-cut.png");
 }
 
 #menu_copy,
@@ -260,48 +260,48 @@ menuitem:not([type]) {
 #context-copyaudiourl,
 #context-copylink,
 #context-copyemail {
-  list-style-image: url("moz-icon://stock/gtk-copy?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/edit-copy.png");
 }
 
 #menu_copy[disabled],
 #placesContext_copy[disabled],
 #context-copy[disabled] {
-  list-style-image: url("moz-icon://stock/gtk-copy?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/edit-copy.png");
 }
 
 #menu_paste,
 #placesContext_paste,
 #context-paste {
-  list-style-image: url("moz-icon://stock/gtk-paste?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/edit-paste.png");
 }
 
 #menu_paste[disabled],
 #placesContext_paste[disabled],
 #context-paste[disabled] {
-  list-style-image: url("moz-icon://stock/gtk-paste?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/edit-paste.png");
 }
 
 #menu_delete,
 #placesContext_delete,
 #placesContext_delete_history,
 #context-delete {
-  list-style-image: url("moz-icon://stock/gtk-delete?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/edit-delete.png");
 }
 
 #menu_delete[disabled],
 #placesContext_delete[disabled],
 #placesContext_delete_history[disabled],
 #context-delete[disabled] {
-  list-style-image: url("moz-icon://stock/gtk-delete?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/edit-delete.png");
 }
 
 #menu_selectAll,
 #context-selectall {
-  list-style-image: url("moz-icon://stock/gtk-select-all?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/edit-select-all.png");
 }
 
 #menu_find {
-  list-style-image: url("moz-icon://stock/gtk-find?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/edit-find.png");
 }
 
 #menu_find[disabled] {
@@ -314,7 +314,7 @@ menuitem:not([type]) {
 
 #menu_stop,
 #context-stop {
-  list-style-image: url("moz-icon://stock/gtk-stop?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/process-stop.png");
 }
 
 #menu_stop[disabled],
@@ -327,7 +327,7 @@ menuitem:not([type]) {
 #placesContext_reloadMicrosummary,
 #context-reload,
 #context-reloadframe {
-  list-style-image: url("moz-icon://stock/gtk-refresh?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/view-refresh.png");
 }
 
 #menu_reload[disabled],
@@ -349,46 +349,46 @@ menuitem:not([type]) {
 
 #historyMenuBack,
 #context-back {
-  list-style-image: url("moz-icon://stock/gtk-go-back-ltr?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/go-previous.png");
 }
 
 #historyMenuBack[disabled],
 #context-back[disabled] {
-  list-style-image: url("moz-icon://stock/gtk-go-back-ltr?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/go-previous.png");
 }
 
 #historyMenuBack[chromedir="rtl"],
 #context-back[chromedir="rtl"] {
-  list-style-image: url("moz-icon://stock/gtk-go-back-rtl?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/go-next.png");
 }
 
 #historyMenuBack[disabled][chromedir="rtl"],
 #context-back[disabled][chromedir="rtl"] {
-  list-style-image: url("moz-icon://stock/gtk-go-back-rtl?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/go-next.png");
 }
 
 #historyMenuForward,
 #context-forward {
-  list-style-image: url("moz-icon://stock/gtk-go-forward-ltr?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/go-next.png");
 }
 
 #historyMenuForward[disabled],
 #context-forward[disabled] {
-  list-style-image: url("moz-icon://stock/gtk-go-forward-ltr?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/go-next.png");
 }
 
 #historyMenuForward[chromedir="rtl"],
 #context-forward[chromedir="rtl"] {
-  list-style-image: url("moz-icon://stock/gtk-go-forward-rtl?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/go-previous.png");
 }
 
 #historyMenuForward[disabled][chromedir="rtl"],
 #context-forward[disabled][chromedir="rtl"] {
-  list-style-image: url("moz-icon://stock/gtk-go-forward-rtl?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/go-previous.png");
 }
 
 #historyMenuHome {
-  list-style-image: url("moz-icon://stock/gtk-home?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/go-home.png");
 }
 
 #menu_showAllHistory {
@@ -418,15 +418,15 @@ menuitem:not([type]) {
 
 #placesContext_show\:info,
 #context-metadata {
-  list-style-image: url("moz-icon://stock/gtk-properties?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/configure.png");
 }
 
 #sanitizeItem {
-  list-style-image: url("moz-icon://stock/gtk-clear?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/edit-clear.png");
 }
 
 #menu_openHelp {
-  list-style-image: url("moz-icon://stock/gtk-help?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/help-contents.png");
 }
 
 #aboutName {
@@ -472,49 +472,49 @@ toolbar[mode="full"] .toolbarbutton-menubutton-button {
 
 /* 24px primary toolbar buttons */
 #back-button {
-  list-style-image: url("moz-icon://stock/gtk-go-back-ltr?size=toolbar");
+  list-style-image: url("chrome://browser/skin/icons/24/go-previous.png");
 }
 #back-button[disabled="true"] {
   list-style-image: url("moz-icon://stock/gtk-go-back-ltr?size=toolbar&state=disabled");
 }
 
 #back-button[chromedir="rtl"] {
-  list-style-image: url("moz-icon://stock/gtk-go-back-rtl?size=toolbar");
+  list-style-image: url("chrome://browser/skin/icons/24/go-next.png");
 }
 #back-button[disabled="true"][chromedir="rtl"] {
   list-style-image: url("moz-icon://stock/gtk-go-back-rtl?size=toolbar&state=disabled");
 }
 
 #forward-button {
-  list-style-image: url("moz-icon://stock/gtk-go-forward-ltr?size=toolbar");
+  list-style-image: url("chrome://browser/skin/icons/24/go-next.png");
 }
 #forward-button[disabled="true"] {
   list-style-image: url("moz-icon://stock/gtk-go-forward-ltr?size=toolbar&state=disabled");
 }
 
 #forward-button[chromedir="rtl"] {
-  list-style-image: url("moz-icon://stock/gtk-go-forward-rtl?size=toolbar");
+  list-style-image: url("chrome://browser/skin/icons/24/go-previous.png");
 }
 #forward-button[disabled="true"][chromedir="rtl"] {
   list-style-image: url("moz-icon://stock/gtk-go-forward-rtl?size=toolbar&state=disabled");
 }
 
 #reload-button {
-  list-style-image: url("moz-icon://stock/gtk-refresh?size=toolbar");
+  list-style-image: url("chrome://browser/skin/icons/24/view-refresh.png");
 }
 #reload-button[disabled="true"] {
   list-style-image: url("moz-icon://stock/gtk-refresh?size=toolbar&state=disabled");
 }
 
 #stop-button {
-  list-style-image: url("moz-icon://stock/gtk-stop?size=toolbar");
+  list-style-image: url("chrome://browser/skin/icons/24/process-stop.png");
 }
 #stop-button[disabled="true"] {
   list-style-image: url("moz-icon://stock/gtk-stop?size=toolbar&state=disabled");
 }
 
 #home-button {
-  list-style-image: url("moz-icon://stock/gtk-home?size=toolbar");
+  list-style-image: url("chrome://browser/skin/icons/24/go-home.png");
 }
 #home-button[disabled="true"] {
   list-style-image: url("moz-icon://stock/gtk-home?size=toolbar&state=disabled");
@@ -542,7 +542,7 @@ toolbar[mode="full"] .toolbarbutton-menubutton-button {
 }
 
 #print-button {
-  list-style-image: url("moz-icon://stock/gtk-print?size=toolbar");
+  list-style-image: url("chrome://browser/skin/icons/24/document-print.png");
 }
 #print-button[disabled="true"] {
   list-style-image: url("moz-icon://stock/gtk-print?size=toolbar&state=disabled");
@@ -563,21 +563,21 @@ toolbar[mode="full"] .toolbarbutton-menubutton-button {
 }
 
 #cut-button {
-  list-style-image: url("moz-icon://stock/gtk-cut?size=toolbar");
+  list-style-image: url("chrome://browser/skin/icons/24/edit-cut.png");
 }
 #cut-button[disabled="true"] {
   list-style-image: url("moz-icon://stock/gtk-cut?size=toolbar&state=disabled");
 }
 
 #copy-button {
-  list-style-image: url("moz-icon://stock/gtk-copy?size=toolbar");
+  list-style-image: url("chrome://browser/skin/icons/24/edit-copy.png");
 }
 #copy-button[disabled="true"] {
   list-style-image: url("moz-icon://stock/gtk-copy?size=toolbar&state=disabled");
 }
 
 #paste-button {
-  list-style-image: url("moz-icon://stock/gtk-paste?size=toolbar");
+  list-style-image: url("chrome://browser/skin/icons/24/edit-paste.png");
 }
 #paste-button[disabled="true"] {
   list-style-image: url("moz-icon://stock/gtk-paste?size=toolbar&state=disabled");
@@ -595,54 +595,54 @@ toolbar[iconsize="small"] .toolbarbutton-1[type="menu-button"] {
 }
 
 toolbar[iconsize="small"] #back-button {
-  list-style-image: url("moz-icon://stock/gtk-go-back-ltr?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/go-previous.png");
 }
 .unified-nav-back[_moz-menuactive] {
-  list-style-image: url("moz-icon://stock/gtk-go-back-ltr?size=menu") !important;
+  list-style-image: url("chrome://browser/skin/icons/16/go-previous.png") !important;
 }
 toolbar[iconsize="small"] #back-button[disabled="true"] {
-  list-style-image: url("moz-icon://stock/gtk-go-back-ltr?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/go-previous.png");
 }
 
 toolbar[iconsize="small"] #back-button[chromedir="rtl"] {
-  list-style-image: url("moz-icon://stock/gtk-go-back-rtl?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/go-next.png");
 }
 menupopup[chromedir="rtl"] > .unified-nav-back[_moz-menuactive] {
-  list-style-image: url("moz-icon://stock/gtk-go-back-rtl?size=menu") !important;
+  list-style-image: url("chrome://browser/skin/icons/16/go-next.png") !important;
 }
 toolbar[iconsize="small"] #back-button[disabled="true"][chromedir="rtl"] {
-  list-style-image: url("moz-icon://stock/gtk-go-back-rtl?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/go-next.png");
 }
 
 toolbar[iconsize="small"] #forward-button {
-  list-style-image: url("moz-icon://stock/gtk-go-forward-ltr?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/go-next.png");
 }
 .unified-nav-forward[_moz-menuactive] {
-  list-style-image: url("moz-icon://stock/gtk-go-forward-ltr?size=menu") !important;
+  list-style-image: url("chrome://browser/skin/icons/16/go-next.png") !important;
 }
 toolbar[iconsize="small"] #forward-button[disabled="true"] {
-  list-style-image: url("moz-icon://stock/gtk-go-forward-ltr?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/go-next.png");
 }
 
 toolbar[iconsize="small"] #forward-button[chromedir="rtl"] {
-  list-style-image: url("moz-icon://stock/gtk-go-forward-rtl?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/go-previous.png");
 }
 menupopup[chromedir="rtl"] > .unified-nav-forward[_moz-menuactive] {
-  list-style-image: url("moz-icon://stock/gtk-go-forward-rtl?size=menu") !important;
+  list-style-image: url("chrome://browser/skin/icons/16/go-previous.png") !important;
 }
 toolbar[iconsize="small"] #forward-button[disabled="true"][chromedir="rtl"] {
-  list-style-image: url("moz-icon://stock/gtk-go-forward-rtl?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/go-previous.png");
 }
 
 toolbar[iconsize="small"] #stop-button {
-  list-style-image: url("moz-icon://stock/gtk-stop?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/process-stop.png");
 }
 toolbar[iconsize="small"] #stop-button[disabled="true"] {
   list-style-image: url("moz-icon://stock/gtk-stop?size=menu&state=disabled");
 }
 
 toolbar[iconsize="small"] #reload-button {
-  list-style-image: url("moz-icon://stock/gtk-refresh?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/view-refresh.png");
 }
 toolbar[iconsize="small"] #reload-button[disabled="true"] {
   list-style-image: url("moz-icon://stock/gtk-refresh?size=menu&state=disabled");
@@ -650,7 +650,7 @@ toolbar[iconsize="small"] #reload-button[disabled="true"] {
 
 toolbar[iconsize="small"] #home-button ,
 #home-button.bookmark-item {
-  list-style-image: url("moz-icon://stock/gtk-home?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/go-home.png");
 }
 toolbar[iconsize="small"] #home-button[disabled="true"] ,
 #home-button.bookmark-item[disabled="true"] {
@@ -679,7 +679,7 @@ toolbar[iconsize="small"] #bookmarks-button[disabled="true"] {
 }
 
 toolbar[iconsize="small"] #print-button {
-  list-style-image: url("moz-icon://stock/gtk-print?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/document-print.png");
 }
 toolbar[iconsize="small"] #print-button[disabled="true"] {
   list-style-image: url("moz-icon://stock/gtk-print?size=menu&state=disabled");
@@ -700,24 +700,24 @@ toolbar[iconsize="small"] #new-window-button[disabled="true"] {
 }
 
 toolbar[iconsize="small"] #cut-button {
-  list-style-image: url("moz-icon://stock/gtk-cut?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/edit-cut.png");
 }
 toolbar[iconsize="small"] #cut-button[disabled="true"] {
-  list-style-image: url("moz-icon://stock/gtk-cut?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/edit-cut.png");
 }
 
 toolbar[iconsize="small"] #copy-button {
-  list-style-image: url("moz-icon://stock/gtk-copy?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/edit-copy.png");
 }
 toolbar[iconsize="small"] #copy-button[disabled="true"] {
-  list-style-image: url("moz-icon://stock/gtk-copy?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/edit-copy.png");
 }
 
 toolbar[iconsize="small"] #paste-button {
-  list-style-image: url("moz-icon://stock/gtk-paste?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/edit-paste.png");
 }
 toolbar[iconsize="small"] #paste-button[disabled="true"] {
-  list-style-image: url("moz-icon://stock/gtk-paste?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/edit-paste.png");
 }
 
 /* Fullscreen window controls */
@@ -1149,15 +1149,15 @@ tabpanels {
 }
 
 #context_reloadTab {
-  list-style-image: url("moz-icon://stock/gtk-refresh?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/view-refresh.png");
 }
 
 #context_closeOtherTabs {
-  list-style-image: url("moz-icon://stock/gtk-clear?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/edit-clear.png");
 }
 
 #context_closeOtherTabs[disabled] {
-  list-style-image: url("moz-icon://stock/gtk-clear?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/edit-clear.png");
 }
 
 #context_undoCloseTab {
@@ -1167,7 +1167,7 @@ tabpanels {
 #context_closeTab {
   /*XXX Avoiding size=menu as some themes (e.g. Human) don't provide the icon
         at 16*16px (bug 426930), and upscaled images are ugly (bug 422179). */
-  list-style-image: url("moz-icon://stock/gtk-close?size=toolbar");
+  list-style-image: url("chrome://browser/skin/icons/24/dialog-close.png");
 }
 
 /* tabbrowser-tab focus ring */
@@ -1207,7 +1207,7 @@ tabpanels {
   -moz-margin-end: 6px;
   padding: 0px;
   border: none;
-  list-style-image: url("moz-icon://stock/gtk-close?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/dialog-close.png");
 }
 
 .tabbrowser-tab[selected="true"] > .tab-close-button {
@@ -1222,7 +1222,7 @@ tabpanels {
 
 /* Tabstrip new tab button */
 .tabs-newtab-button {
-  list-style-image: url("moz-icon://stock/gtk-add?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/list-add.png");
   border: none;
   margin-bottom: 1px;
 }
@@ -1238,7 +1238,7 @@ tabpanels {
 
 /* Tabstrip close button */
 .tabs-closebutton {
-  list-style-image: url("moz-icon://stock/gtk-close?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/dialog-close.png");
   border: none;
   margin-bottom: 1px;
 }

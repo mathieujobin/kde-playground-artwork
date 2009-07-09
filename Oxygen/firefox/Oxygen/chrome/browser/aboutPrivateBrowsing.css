@@ -26,7 +26,7 @@ body.normal > #errorPageContainer {
 #moreInfo {
   font-size: 110%; /* to match the value set in chrome://global/skin/netError.css */
   -moz-padding-start: 25px;
-  background: url("moz-icon://stock/gtk-dialog-info?size=menu") no-repeat top left;
+  background: url("chrome://browser/skin/icons/16/dialog-information.png") no-repeat top left;
 }
 
 body[dir="rtl"] #moreInfo {

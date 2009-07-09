@@ -249,9 +249,9 @@ menuitem:not([type]) {
 }
 
 #menu_selectall {
-  list-style-image: url("moz-icon://stock/gtk-select-all?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/edit-select-all.png");
 }
 
 #menu_copy {
-  list-style-image: url("moz-icon://stock/gtk-copy?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/edit-copy.png");
 }

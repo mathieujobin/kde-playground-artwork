@@ -156,7 +156,7 @@ richlistitem[selected="true"]:not([opType]) .descriptionCrop {
 
 .notifyBadge {
   -moz-margin-start: -2px;
-  list-style-image: url("moz-icon://stock/gtk-dialog-error?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/dialog-error.png");
 }
 
 .updateBadge,
@@ -274,7 +274,7 @@ richlistitem[opType="needs-uninstall"] .notifyBadge {
 .addonFailure {
   width: 16px;
   height: 16px;
-  list-style-image: url("moz-icon://stock/gtk-dialog-error?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/dialog-error.png");
 }
 
 .addonRating {

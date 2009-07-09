@@ -191,127 +191,127 @@ button[type="disclosure"][open="true"] {
  */
 
 button[icon="accept"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-ok?size=button");
+  list-style-image: url("chrome://browser/skin/icons/16/dialog-ok.png");
 }
 
 button[icon="accept"][disabled="true"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-ok?size=button&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/dialog-ok.png");
 }
 
 button[icon="cancel"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-cancel?size=button");
+  list-style-image: url("chrome://browser/skin/icons/16/dialog-cancel.png");
 }
 
 button[icon="cancel"][disabled="true"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-cancel?size=button&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/dialog-cancel.png");
 }
 
 button[icon="help"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-help?size=button");
+  list-style-image: url("chrome://browser/skin/icons/16/help-contents.png");
 }
 
 button[icon="help"][disabled="true"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-help?size=button&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/help-contents.png");
 }
 
 button[icon="open"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-open?size=button");
+  list-style-image: url("chrome://browser/skin/icons/16/document-open.png");
 }
 
 button[icon="open"][disabled="true"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-open?size=button&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/document-open.png");
 }
 
 button[icon="save"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-save?size=button");
+  list-style-image: url("chrome://browser/skin/icons/16/document-save.png");
 }
 
 button[icon="save"][disabled="true"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-save?size=button&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/document-save.png");
 }
 
 button[icon="find"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-find?size=button");
+  list-style-image: url("chrome://browser/skin/icons/16/edit-find.png");
 }
 
 button[icon="find"][disabled="true"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-find?size=button&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/edit-find.png");
 }
 
 button[icon="clear"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-clear?size=button");
+  list-style-image: url("chrome://browser/skin/icons/16/edit-clear.png");
 }
 
 button[icon="clear"][disabled="true"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-clear?size=button&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/edit-clear.png");
 }
 
 button[icon="yes"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-yes?size=button");
+  list-style-image: url("chrome://browser/skin/icons/16/dialog-ok.png");
 }
 
 button[icon="yes"][disabled="true"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-yes?size=button&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/dialog-ok.png");
 }
 
 button[icon="no"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-no?size=button");
+  list-style-image: url("chrome://browser/skin/icons/16/dialog-cancel.png");
 }
 
 button[icon="no"][disabled="true"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-no?size=button&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/dialog-cancel.png");
 }
 
 button[icon="apply"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-apply?size=button");
+  list-style-image: url("chrome://browser/skin/icons/16/dialog-ok-apply.png");
 }
 
 button[icon="apply"][disabled="true"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-apply?size=button&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/dialog-ok-apply.png");
 }
 
 button[icon="close"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-close?size=button");
+  list-style-image: url("chrome://browser/skin/icons/16/dialog-close.png");
 }
 
 button[icon="close"][disabled="true"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-close?size=button&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/dialog-close.png");
 }
 
 button[icon="print"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-print?size=button");
+  list-style-image: url("chrome://browser/skin/icons/16/document-print.png");
 }
 
 button[icon="print"][disabled="true"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-print?size=button&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/document-print.png");
 }
 
 button[icon="add"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-add?size=button");
+  list-style-image: url("chrome://browser/skin/icons/16/list-add.png");
 }
 
 button[icon="add"][disabled="true"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-add?size=button&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/list-add.png");
 }
 
 button[icon="remove"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-remove?size=button");
+  list-style-image: url("chrome://browser/skin/icons/16/list-remove.png");
 }
 
 button[icon="remove"][disabled="true"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-remove?size=button&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/list-remove.png");
 }
 
 button[icon="refresh"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-refresh?size=button");
+  list-style-image: url("chrome://browser/skin/icons/16/view-refresh.png");
 }
 
 button[icon="refresh"][disabled="true"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-refresh?size=button&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/view-refresh.png");
 }
 
 button[icon="revert"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-revert-to-saved?size=button");
+  list-style-image: url("chrome://browser/skin/icons/16/document-revert.png");
 }
 
 button[icon="revert"][disabled="true"] .button-icon {
@@ -319,65 +319,65 @@ button[icon="revert"][disabled="true"] .button-icon {
 }
 
 button[icon="go-forward"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-go-forward-ltr?size=button");
+  list-style-image: url("chrome://browser/skin/icons/16/go-next.png");
 }
 
 button[icon="go-forward"][disabled="true"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-go-forward-ltr?size=button&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/go-next.png");
 }
 
 button[icon="go-forward"][chromedir="rtl"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-go-forward-rtl?size=button");
+  list-style-image: url("chrome://browser/skin/icons/16/go-previous.png");
 }
 
 button[icon="go-forward"][chromedir="rtl"][disabled="true"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-go-forward-rtl?size=button&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/go-previous.png");
 }
 
 button[icon="go-back"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-go-back-ltr?size=button");
+  list-style-image: url("chrome://browser/skin/icons/16/go-previous.png");
 }
 
 button[icon="go-back"][disabled="true"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-go-back-ltr?size=button&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/go-previous.png");
 }
 
 button[icon="go-back"][chromedir="rtl"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-go-back-rtl?size=button");
+  list-style-image: url("chrome://browser/skin/icons/16/go-next.png");
 }
 
 button[icon="go-back"][chromedir="rtl"][disabled="true"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-go-back-rtl?size=button&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/go-next.png");
 }
 
 button[icon="properties"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-properties?size=button");
+  list-style-image: url("chrome://browser/skin/icons/16/configure.png");
 }
 
 button[icon="properties"][disabled="true"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-properties?size=button&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/configure.png");
 }
 
 button[icon="select-font"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-select-font?size=button");
+  list-style-image: url("chrome://browser/skin/icons/16/preferences-desktop-font.png");
 }
 
 button[icon="select-font"][disabled="true"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-select-font?size=button&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/preferences-desktop-font.png");
 }
 
 button[icon="select-color"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-color-picker?size=button");
+  list-style-image: url("chrome://browser/skin/icons/16/color-picker.png");
 }
 
 button[icon="select-color"][disabled="true"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-color-picker?size=button&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/color-picker.png");
 }
 
 button[icon="network"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-network?size=button");
+  list-style-image: url("chrome://browser/skin/icons/16/network-workgroup.png");
 }
 
 button[icon="network"][disabled="true"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-network?size=button&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/network-workgroup.png");
 }

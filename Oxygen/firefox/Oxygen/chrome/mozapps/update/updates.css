@@ -56,7 +56,7 @@ remotecontent {
   list-style-image: url("chrome://global/skin/icons/loading_16.png");
 }
 .remoteLoadingThrobber[state="error"] {
-  list-style-image: url("moz-icon://stock/gtk-dialog-error?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/dialog-error.png");
 }
 
 /**
@@ -113,7 +113,7 @@ remotecontent {
 }
 
 #pauseButton {
-  list-style-image: url("moz-icon://stock/gtk-media-pause?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/media-playback-pause.png");
   -moz-appearance: none;
   background-color: transparent;
   border: none;
@@ -133,7 +133,7 @@ remotecontent {
 }
 
 #pauseButton[paused="true"] {
-  list-style-image: url("moz-icon://stock/gtk-media-play?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/media-playback-play.png");
 }
 
 #pauseButton[paused="true"][disabled="true"] {
@@ -142,7 +142,7 @@ remotecontent {
 
 #verificationFailedIcon {
   margin-left: 5px;
-  list-style-image: url("moz-icon://stock/gtk-dialog-warning?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/dialog-warning.png");
 }
 
 /**
