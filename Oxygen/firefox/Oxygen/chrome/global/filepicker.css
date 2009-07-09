@@ -75,7 +75,7 @@ treechildren::-moz-tree-image(FilenameColumn, file) {
 /* up-button */
 
 .up-button {
-  list-style-image: url("moz-icon://stock/gtk-go-up?size=toolbar");
+  list-style-image: url("chrome://browser/skin/icons/24/go-up.png");
   max-width: 36px;
 }
 

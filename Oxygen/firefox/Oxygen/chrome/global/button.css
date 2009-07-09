@@ -315,7 +315,7 @@ button[icon="revert"] .button-icon {
 }
 
 button[icon="revert"][disabled="true"] .button-icon {
-  list-style-image: url("moz-icon://stock/gtk-revert-to-saved?size=button&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/document-revert.png");
 }
 
 button[icon="go-forward"] .button-icon {

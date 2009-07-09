@@ -168,8 +168,7 @@ menuitem:not([type]) {
 #menu_newNavigator,
 #context-openlink,
 #context-openframe {
-  list-style-image: url("chrome://browser/skin/Toolbar-small.png");
-  -moz-image-region: rect(0px 80px 16px 64px);
+  list-style-image: url("chrome://browser/skin/icons/16/window-new.png");
 }
 
 #placesContext_open\:newtab,
@@ -177,8 +176,7 @@ menuitem:not([type]) {
 #menu_newNavigatorTab,
 #context-openlinkintab,
 #context-openframeintab {
-  list-style-image: url("chrome://browser/skin/Toolbar-small.png");
-  -moz-image-region: rect(0px 64px 16px 48px);
+  list-style-image: url("chrome://browser/skin/icons/16/tab-new.png");
 }
 
 #menu_openFile {
@@ -210,7 +208,7 @@ menuitem:not([type]) {
 }
 
 #menu_printPreview {
-  list-style-image: url("moz-icon://stock/gtk-print-preview?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/document-print-preview.png");
 }
 
 #menu_print,
@@ -237,7 +235,7 @@ menuitem:not([type]) {
 }
 
 #menu_redo[disabled] {
-  list-style-image: url("moz-icon://stock/gtk-redo?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/edit-redo.png");
 }
 
 #menu_cut,
@@ -305,11 +303,11 @@ menuitem:not([type]) {
 }
 
 #menu_find[disabled] {
-  list-style-image: url("moz-icon://stock/gtk-find?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/edit-find.png");
 }
 
 #menu_preferences {
-  list-style-image: url("moz-icon://stock/gtk-preferences?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/configure.png");
 }
 
 #menu_stop,
@@ -319,7 +317,7 @@ menuitem:not([type]) {
 
 #menu_stop[disabled],
 #context-stop[disabled] {
-  list-style-image: url("moz-icon://stock/gtk-stop?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/process-stop.png");
 }
 
 #menu_reload,
@@ -332,19 +330,19 @@ menuitem:not([type]) {
 
 #menu_reload[disabled],
 #context-reload[disabled] {
-  list-style-image: url("moz-icon://stock/gtk-refresh?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/view-refresh.png");
 }
 
 #menu_zoomEnlarge {
-  list-style-image: url("moz-icon://stock/gtk-zoom-in?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/zoom-in.png");
 }
 
 #menu_zoomReduce {
-  list-style-image: url("moz-icon://stock/gtk-zoom-out?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/zoom-out.png");
 }
 
 #menu_zoomReset {
-  list-style-image: url("moz-icon://stock/gtk-zoom-100?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/zoom-original.png");
 }
 
 #historyMenuBack,
@@ -392,13 +390,11 @@ menuitem:not([type]) {
 }
 
 #menu_showAllHistory {
-  list-style-image: url("chrome://browser/skin/Toolbar-small.png");
-  -moz-image-region: rect(0px 32px 16px 16px);
+  list-style-image: url("chrome://browser/skin/icons/16/view-history.png");
 }
 
 #bookmarksShowAll {
-  list-style-image: url("chrome://browser/skin/Toolbar-small.png");
-  -moz-image-region: rect(0px 48px 16px 32px);
+  list-style-image: url("chrome://browser/skin/icons/16/bookmarks-organize.png");
 }
 
 #bookmarksToolbarFolderMenu {
@@ -406,14 +402,13 @@ menuitem:not([type]) {
 }
 
 #menu_openDownloads {
-  list-style-image: url("chrome://browser/skin/Toolbar-small.png");
-  -moz-image-region: rect(0px 16px 16px 0px);
+  list-style-image: url("chrome://browser/skin/icons/16/kget.png");
 }
 
 #menu_pageInfo,
 #context-viewinfo,
 #context-viewframeinfo {
-  list-style-image: url("moz-icon://stock/gtk-info?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/dialog-information.png");
 }
 
 #placesContext_show\:info,
@@ -430,7 +425,7 @@ menuitem:not([type]) {
 }
 
 #aboutName {
-  list-style-image: url("moz-icon://stock/gtk-about?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/help-about.png");
 }
 
 #javascriptConsole {
@@ -475,49 +470,49 @@ toolbar[mode="full"] .toolbarbutton-menubutton-button {
   list-style-image: url("chrome://browser/skin/icons/24/go-previous.png");
 }
 #back-button[disabled="true"] {
-  list-style-image: url("moz-icon://stock/gtk-go-back-ltr?size=toolbar&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/24/go-previous.png");
 }
 
 #back-button[chromedir="rtl"] {
   list-style-image: url("chrome://browser/skin/icons/24/go-next.png");
 }
 #back-button[disabled="true"][chromedir="rtl"] {
-  list-style-image: url("moz-icon://stock/gtk-go-back-rtl?size=toolbar&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/24/go-next.png");
 }
 
 #forward-button {
   list-style-image: url("chrome://browser/skin/icons/24/go-next.png");
 }
 #forward-button[disabled="true"] {
-  list-style-image: url("moz-icon://stock/gtk-go-forward-ltr?size=toolbar&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/24/go-next.png");
 }
 
 #forward-button[chromedir="rtl"] {
   list-style-image: url("chrome://browser/skin/icons/24/go-previous.png");
 }
 #forward-button[disabled="true"][chromedir="rtl"] {
-  list-style-image: url("moz-icon://stock/gtk-go-forward-rtl?size=toolbar&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/24/go-previous.png");
 }
 
 #reload-button {
   list-style-image: url("chrome://browser/skin/icons/24/view-refresh.png");
 }
 #reload-button[disabled="true"] {
-  list-style-image: url("moz-icon://stock/gtk-refresh?size=toolbar&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/24/view-refresh.png");
 }
 
 #stop-button {
   list-style-image: url("chrome://browser/skin/icons/24/process-stop.png");
 }
 #stop-button[disabled="true"] {
-  list-style-image: url("moz-icon://stock/gtk-stop?size=toolbar&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/24/process-stop.png");
 }
 
 #home-button {
   list-style-image: url("chrome://browser/skin/icons/24/go-home.png");
 }
 #home-button[disabled="true"] {
-  list-style-image: url("moz-icon://stock/gtk-home?size=toolbar&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/24/go-home.png");
 }
 
 #downloads-button {
@@ -545,7 +540,7 @@ toolbar[mode="full"] .toolbarbutton-menubutton-button {
   list-style-image: url("chrome://browser/skin/icons/24/document-print.png");
 }
 #print-button[disabled="true"] {
-  list-style-image: url("moz-icon://stock/gtk-print?size=toolbar&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/24/document-print.png");
 }
 
 #new-tab-button {
@@ -566,21 +561,21 @@ toolbar[mode="full"] .toolbarbutton-menubutton-button {
   list-style-image: url("chrome://browser/skin/icons/24/edit-cut.png");
 }
 #cut-button[disabled="true"] {
-  list-style-image: url("moz-icon://stock/gtk-cut?size=toolbar&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/24/edit-cut.png");
 }
 
 #copy-button {
   list-style-image: url("chrome://browser/skin/icons/24/edit-copy.png");
 }
 #copy-button[disabled="true"] {
-  list-style-image: url("moz-icon://stock/gtk-copy?size=toolbar&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/24/edit-copy.png");
 }
 
 #paste-button {
   list-style-image: url("chrome://browser/skin/icons/24/edit-paste.png");
 }
 #paste-button[disabled="true"] {
-  list-style-image: url("moz-icon://stock/gtk-paste?size=toolbar&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/24/edit-paste.png");
 }
 
 /* 16px primary toolbar buttons */
@@ -638,14 +633,14 @@ toolbar[iconsize="small"] #stop-button {
   list-style-image: url("chrome://browser/skin/icons/16/process-stop.png");
 }
 toolbar[iconsize="small"] #stop-button[disabled="true"] {
-  list-style-image: url("moz-icon://stock/gtk-stop?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/process-stop.png");
 }
 
 toolbar[iconsize="small"] #reload-button {
   list-style-image: url("chrome://browser/skin/icons/16/view-refresh.png");
 }
 toolbar[iconsize="small"] #reload-button[disabled="true"] {
-  list-style-image: url("moz-icon://stock/gtk-refresh?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/view-refresh.png");
 }
 
 toolbar[iconsize="small"] #home-button ,
@@ -654,7 +649,7 @@ toolbar[iconsize="small"] #home-button ,
 }
 toolbar[iconsize="small"] #home-button[disabled="true"] ,
 #home-button.bookmark-item[disabled="true"] {
-  list-style-image: url("moz-icon://stock/gtk-home?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/go-home.png");
 }
 
 toolbar[iconsize="small"] #downloads-button {
@@ -682,7 +677,7 @@ toolbar[iconsize="small"] #print-button {
   list-style-image: url("chrome://browser/skin/icons/16/document-print.png");
 }
 toolbar[iconsize="small"] #print-button[disabled="true"] {
-  list-style-image: url("moz-icon://stock/gtk-print?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/document-print.png");
 }
 
 toolbar[iconsize="small"] #new-tab-button {
@@ -813,12 +808,11 @@ toolbar[iconsize="small"] #paste-button[disabled="true"] {
 }
 
 #page-proxy-favicon:not([src]) {
-  list-style-image: url("chrome://global/skin/icons/folder-item.png");
-  -moz-image-region: rect(0px, 16px, 16px, 0px);
+  list-style-image: url("chrome://browser/skin/icons/16/text-html.png");
 }
 
 #page-proxy-favicon[pageproxystate="invalid"] {
-  -moz-image-region: rect(16px, 16px, 32px, 0px);
+  list-style-image: url("chrome://browser/skin/icons/16-disabled/text-html.png");
 }
 
 #urlbar-throbber {
@@ -1140,12 +1134,11 @@ tabpanels {
 }
 
 #context_newTab {
-  list-style-image: url("chrome://browser/skin/Toolbar-small.png");
-  -moz-image-region: rect(0px 64px 16px 48px);
+  list-style-image: url("chrome://browser/skin/icons/16/tab-new.png")
 }
 
 #context_newTab[disabled] {
-  -moz-image-region: rect(16px 64px 32px 48px);
+  list-style-image: url("chrome://browser/skin/icons/16/disabled/tab-new.png")
 }
 
 #context_reloadTab {

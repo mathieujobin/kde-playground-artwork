@@ -89,8 +89,7 @@ treechildren::-moz-tree-image(title, query, hostContainer, open) {
 }
 
 treechildren::-moz-tree-image(title, query, OrganizerQuery_History) {
-  list-style-image: url("chrome://browser/skin/Toolbar-small.png");
-  -moz-image-region: rect(0px 32px 16px 16px);
+  list-style-image: url("chrome://browser/skin/icons/16/view-history.png");
 }
 
 /* We want some queries to look like ordinary folders. This must come
@@ -168,7 +167,7 @@ menuitem[command="cmd_redo"] {
 }
 
 menuitem[command="cmd_redo"][disabled] {
-  list-style-image: url("moz-icon://stock/gtk-redo?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/edit-redo.png");
 }
 
 menuitem[command="cmd_selectAll"],
@@ -183,14 +182,12 @@ menuitem[cmd="cmd_selectAll"][disabled] {
 
 #placesContext_open\:newwindow,
 menuitem[command="placesCmd_open:window"] {
-  list-style-image: url("chrome://browser/skin/Toolbar-small.png");
-  -moz-image-region: rect(0px 80px 16px 64px);
+  list-style-image: url("chrome://browser/skin/icons/16/window-new.png");
 }
 
 #placesContext_open\:newtab,
 menuitem[command="placesCmd_open:tab"] {
-  list-style-image: url("chrome://browser/skin/Toolbar-small.png");
-  -moz-image-region: rect(0px 64px 16px 48px);
+  list-style-image: url("chrome://browser/skin/icons/16/tab-new.png");
 }
 
 #placesContext_show\:info,

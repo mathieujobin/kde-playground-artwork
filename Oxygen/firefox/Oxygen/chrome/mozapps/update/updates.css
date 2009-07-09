@@ -76,7 +76,7 @@ remotecontent {
 }
 
 #alertImage {
-  list-style-image: url("moz-icon://stock/gtk-dialog-warning?size=dnd");
+  list-style-image: url("chrome://browser/skin/icons/16/dialog-warning.png");
   margin-right: 5px;
 }
 
@@ -129,7 +129,7 @@ remotecontent {
 }
 
 #pauseButton[disabled="true"] {
-  list-style-image: url("moz-icon://stock/gtk-media-pause?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/media-playback-pause.png");
 }
 
 #pauseButton[paused="true"] {

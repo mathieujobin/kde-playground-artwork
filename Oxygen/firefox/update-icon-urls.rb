@@ -24,6 +24,7 @@ replaces = {
     "gtk-dialog-error" => "dialog-error",
     "gtk-dialog-warning" => "dialog-warning",
     "gtk-dialog-info" => "dialog-information",
+    "gtk-info" => "dialog-information",
     "gtk-close" => "dialog-close",
     "gtk-cancel" => "dialog-cancel",
     "gtk-no" => "dialog-cancel",
@@ -35,6 +36,7 @@ replaces = {
     "gtk-go-forward-rtl" => "go-previous",
     "gtk-go-back-ltr" => "go-previous",
     "gtk-go-back-rtl" => "go-next",
+    "gtk-go-up" => "go-up",
     "gtk-goto-first-ltr" => "go-first",
     "gtk-goto-first-rtl" => "go-last",
     "gtk-goto-last-ltr" => "go-last",
@@ -56,6 +58,7 @@ replaces = {
     "gtk-open" => "document-open",
     "gtk-save" => "document-save",
     "gtk-print" => "document-print",
+    "gtk-print-preview" => "document-print-preview",
     "gtk-save-as" => "document-save-as",
     "gtk-revert-to-saved" => "document-revert",
 
@@ -71,6 +74,7 @@ replaces = {
     "gtk-refresh" => "view-refresh",
 
     "gtk-properties" => "configure",
+    "gtk-preferences" => "configure",
 
     "gtk-file" => "text-x-generic",
     "gtk-directory" => "folder",
@@ -79,17 +83,28 @@ replaces = {
 
     "gtk-media-pause" => "media-playback-pause",
     "gtk-media-play" => "media-playback-play",
+
+    "gtk-help" => "help-about",
+    "gtk-about" => "help-about",
+
+    "gtk-zoom-in" => "zoom-in",
+    "gtk-zoom-out" => "zoom-out",
+    "gtk-zoom-100" => "zoom-original",
 }
 
 def rep(c,size,r,ry)
-    co = c
-#     p r
-#     p ry
-    c = c.gsub("(\"moz-icon://stock/#{r}?size=#{size}\")","(\"chrome://browser/skin/icons/#{ry}.png\")")
+    c = c.gsub(
+        "(\"moz-icon://stock/#{r}?size=#{size}\")",
+        "(\"chrome://browser/skin/icons/#{ry}.png\")"
+    )
 
-    if File.exist?('Oxygen/chrome/browser/icons/disabled/'+ry)
-        c = c.gsub("(\"moz-icon://stock/#{r}?size=#{size}&state=disabled\")","(\"chrome://browser/skin/icons/disabled/#{ry}.png\")")
+    if File.exist?("Oxygen/chrome/browser/icons/disabled/#{ry}.png")
+        c = c.gsub(
+            "(\"moz-icon://stock/#{r}?size=#{size}&state=disabled\")",
+            "(\"chrome://browser/skin/icons/disabled/#{ry}.png\")"
+        )
     end
+
     return c
 end
 
@@ -97,7 +112,7 @@ for file in Dir.glob("Oxygen/**/**.css")
     c = File.open(file).read
     replaces.each do | r, ryc |
         ry = "16/" + ryc
-        ["menu","button","dialog"].each do | size |
+        ["menu","button","dialog","dnd"].each do | size |
             c = rep(c,size,r,ry)
         end
 

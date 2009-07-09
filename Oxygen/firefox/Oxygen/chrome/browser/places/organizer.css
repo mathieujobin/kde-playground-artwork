@@ -10,14 +10,14 @@
   list-style-image: url("chrome://browser/skin/icons/24/go-previous.png");
 }
 #back-button[disabled="true"] {
-  list-style-image: url("moz-icon://stock/gtk-go-back-ltr?size=toolbar&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/24/go-previous.png");
 }
 
 #back-button[chromedir="rtl"] {
   list-style-image: url("chrome://browser/skin/icons/24/go-next.png");
 }
 #back-button[disabled="true"][chromedir="rtl"] {
-  list-style-image: url("moz-icon://stock/gtk-go-back-rtl?size=toolbar&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/24/go-next.png");
 }
 
 /* forward button */
@@ -26,14 +26,14 @@
   list-style-image: url("chrome://browser/skin/icons/24/go-next.png");
 }
 #forward-button[disabled="true"] {
-  list-style-image: url("moz-icon://stock/gtk-go-forward-ltr?size=toolbar&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/24/go-next.png");
 }
 
 #forward-button[chromedir="rtl"] {
   list-style-image: url("chrome://browser/skin/icons/24/go-previous.png");
 }
 #forward-button[disabled="true"][chromedir="rtl"] {
-  list-style-image: url("moz-icon://stock/gtk-go-forward-rtl?size=toolbar&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/24/go-previous.png");
 }
 
 /* Menu */
