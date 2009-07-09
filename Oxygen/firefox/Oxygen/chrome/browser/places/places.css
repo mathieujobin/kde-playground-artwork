@@ -89,7 +89,8 @@ treechildren::-moz-tree-image(title, query, hostContainer, open) {
 }
 
 treechildren::-moz-tree-image(title, query, OrganizerQuery_History) {
-  list-style-image: url("chrome://browser/skin/icons/16/view-history.png");
+  list-style-image: url("chrome://browser/skin/Toolbar-small.png");
+  -moz-image-region: rect(0px 32px 16px 16px);
 }
 
 /* We want some queries to look like ordinary folders. This must come
@@ -182,12 +183,14 @@ menuitem[cmd="cmd_selectAll"][disabled] {
 
 #placesContext_open\:newwindow,
 menuitem[command="placesCmd_open:window"] {
-  list-style-image: url("chrome://browser/skin/icons/16/window-new.png");
+  list-style-image: url("chrome://browser/skin/Toolbar-small.png");
+  -moz-image-region: rect(0px 80px 16px 64px);
 }
 
 #placesContext_open\:newtab,
 menuitem[command="placesCmd_open:tab"] {
-  list-style-image: url("chrome://browser/skin/icons/16/tab-new.png");
+  list-style-image: url("chrome://browser/skin/Toolbar-small.png");
+  -moz-image-region: rect(0px 64px 16px 48px);
 }
 
 #placesContext_show\:info,

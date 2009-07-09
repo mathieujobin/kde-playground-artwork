@@ -168,7 +168,8 @@ menuitem:not([type]) {
 #menu_newNavigator,
 #context-openlink,
 #context-openframe {
-  list-style-image: url("chrome://browser/skin/icons/16/window-new.png");
+  list-style-image: url("chrome://browser/skin/Toolbar-small.png");
+  -moz-image-region: rect(0px 80px 16px 64px);
 }
 
 #placesContext_open\:newtab,
@@ -176,7 +177,8 @@ menuitem:not([type]) {
 #menu_newNavigatorTab,
 #context-openlinkintab,
 #context-openframeintab {
-  list-style-image: url("chrome://browser/skin/icons/16/tab-new.png");
+  list-style-image: url("chrome://browser/skin/Toolbar-small.png");
+  -moz-image-region: rect(0px 64px 16px 48px);
 }
 
 #menu_openFile {
@@ -390,11 +392,13 @@ menuitem:not([type]) {
 }
 
 #menu_showAllHistory {
-  list-style-image: url("chrome://browser/skin/icons/16/view-history.png");
+  list-style-image: url("chrome://browser/skin/Toolbar-small.png");
+  -moz-image-region: rect(0px 32px 16px 16px);
 }
 
 #bookmarksShowAll {
-  list-style-image: url("chrome://browser/skin/icons/16/bookmarks-organize.png");
+  list-style-image: url("chrome://browser/skin/Toolbar-small.png");
+  -moz-image-region: rect(0px 48px 16px 32px);
 }
 
 #bookmarksToolbarFolderMenu {
@@ -402,7 +406,8 @@ menuitem:not([type]) {
 }
 
 #menu_openDownloads {
-  list-style-image: url("chrome://browser/skin/icons/16/kget.png");
+  list-style-image: url("chrome://browser/skin/Toolbar-small.png");
+  -moz-image-region: rect(0px 16px 16px 0px);
 }
 
 #menu_pageInfo,
@@ -808,11 +813,12 @@ toolbar[iconsize="small"] #paste-button[disabled="true"] {
 }
 
 #page-proxy-favicon:not([src]) {
-  list-style-image: url("chrome://browser/skin/icons/16/text-html.png");
+  list-style-image: url("chrome://global/skin/icons/folder-item.png");
+  -moz-image-region: rect(0px, 16px, 16px, 0px);
 }
 
 #page-proxy-favicon[pageproxystate="invalid"] {
-  list-style-image: url("chrome://browser/skin/icons/16-disabled/text-html.png");
+  -moz-image-region: rect(16px, 16px, 32px, 0px);
 }
 
 #urlbar-throbber {
@@ -1134,11 +1140,12 @@ tabpanels {
 }
 
 #context_newTab {
-  list-style-image: url("chrome://browser/skin/icons/16/tab-new.png")
+  list-style-image: url("chrome://browser/skin/Toolbar-small.png");
+  -moz-image-region: rect(0px 64px 16px 48px);
 }
 
 #context_newTab[disabled] {
-  list-style-image: url("chrome://browser/skin/icons/16/disabled/tab-new.png")
+  -moz-image-region: rect(16px 64px 32px 48px);
 }
 
 #context_reloadTab {

@@ -1,0 +1,80 @@
+Index: firefox/Oxygen/chrome/browser/browser.css
+===================================================================
+--- firefox.orig/Oxygen/chrome/browser/browser.css  2009-07-09 23:38:50.000000000 +0200
++++ firefox/Oxygen/chrome/browser/browser.css   2009-07-10 00:02:45.000000000 +0200
+@@ -168,8 +168,7 @@
+ #menu_newNavigator,
+ #context-openlink,
+ #context-openframe {
+-  list-style-image: url("chrome://browser/skin/Toolbar-small.png");
+-  -moz-image-region: rect(0px 80px 16px 64px);
++  list-style-image: url("chrome://browser/skin/icons/16/window-new.png");
+ }
+
+ #placesContext_open\:newtab,
+@@ -177,8 +176,7 @@
+ #menu_newNavigatorTab,
+ #context-openlinkintab,
+ #context-openframeintab {
+-  list-style-image: url("chrome://browser/skin/Toolbar-small.png");
+-  -moz-image-region: rect(0px 64px 16px 48px);
++  list-style-image: url("chrome://browser/skin/icons/16/tab-new.png");
+ }
+
+ #menu_openFile {
+@@ -392,13 +390,11 @@
+ }
+
+ #menu_showAllHistory {
+-  list-style-image: url("chrome://browser/skin/Toolbar-small.png");
+-  -moz-image-region: rect(0px 32px 16px 16px);
++  list-style-image: url("chrome://browser/skin/icons/16/view-history.png");
+ }
+
+ #bookmarksShowAll {
+-  list-style-image: url("chrome://browser/skin/Toolbar-small.png");
+-  -moz-image-region: rect(0px 48px 16px 32px);
++  list-style-image: url("chrome://browser/skin/icons/16/bookmarks-organize.png");
+ }
+
+ #bookmarksToolbarFolderMenu {
+@@ -406,8 +402,7 @@
+ }
+
+ #menu_openDownloads {
+-  list-style-image: url("chrome://browser/skin/Toolbar-small.png");
+-  -moz-image-region: rect(0px 16px 16px 0px);
++  list-style-image: url("chrome://browser/skin/icons/16/kget.png");
+ }
+
+ #menu_pageInfo,
+@@ -813,12 +808,11 @@
+ }
+
+ #page-proxy-favicon:not([src]) {
+-  list-style-image: url("chrome://global/skin/icons/folder-item.png");
+-  -moz-image-region: rect(0px, 16px, 16px, 0px);
++  list-style-image: url("chrome://browser/skin/icons/16/text-html.png");
+ }
+
+ #page-proxy-favicon[pageproxystate="invalid"] {
+-  -moz-image-region: rect(16px, 16px, 32px, 0px);
++  list-style-image: url("chrome://browser/skin/icons/16-disabled/text-html.png");
+ }
+
+ #urlbar-throbber {
+@@ -1140,12 +1134,11 @@
+ }
+
+ #context_newTab {
+-  list-style-image: url("chrome://browser/skin/Toolbar-small.png");
+-  -moz-image-region: rect(0px 64px 16px 48px);
++  list-style-image: url("chrome://browser/skin/icons/16/tab-new.png")
+ }
+
+ #context_newTab[disabled] {
+-  -moz-image-region: rect(16px 64px 32px 48px);
++  list-style-image: url("chrome://browser/skin/icons/16/disabled/tab-new.png")
+ }
+
+ #context_reloadTab {
