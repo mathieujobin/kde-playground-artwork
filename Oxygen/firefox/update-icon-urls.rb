@@ -82,7 +82,7 @@ replaces = {
     "gtk-stop" => "process-stop",
 
     "gtk-media-pause" => "media-playback-pause",
-    "gtk-media-play" => "media-playback-play",
+    "gtk-media-play" => "media-playback-start",
 
     "gtk-help" => "help-about",
     "gtk-about" => "help-about",
@@ -90,6 +90,8 @@ replaces = {
     "gtk-zoom-in" => "zoom-in",
     "gtk-zoom-out" => "zoom-out",
     "gtk-zoom-100" => "zoom-original",
+
+    "gtk-quit" => "application-exit",
 }
 
 def rep(c,size,r,ry)

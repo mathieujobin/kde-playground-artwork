@@ -133,11 +133,11 @@ remotecontent {
 }
 
 #pauseButton[paused="true"] {
-  list-style-image: url("chrome://browser/skin/icons/16/media-playback-play.png");
+  list-style-image: url("chrome://browser/skin/icons/16/media-playback-start.png");
 }
 
 #pauseButton[paused="true"][disabled="true"] {
-  list-style-image: url("moz-icon://stock/gtk-media-play?size=menu&state=disabled");
+  list-style-image: url("chrome://browser/skin/icons/disabled/16/media-playback-start.png");
 }
 
 #verificationFailedIcon {

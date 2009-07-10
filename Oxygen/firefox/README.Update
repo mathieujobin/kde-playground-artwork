@@ -1,0 +1,14 @@
+HOWTO Update
+================================================================================
+
+* unzip classic.jar (as found in chrome/classic.jar in latest Firefox)
+* Merge old and new
+  * It is best to diff for changed files between old and new base (e.g. 3.0's theme and 3.5's)
+    that way it is easier to track important changes in graphics
+  * CSS files can be replaced, they either get adopted by update-icon-urls.rb or
+    need manual intervention anyway
+* Run update-icon-urls.rb
+* Grep for reamining moz-icon URLs and check if we can replace them with Oxygen icons
+* If new icons were added, or if some where changed => run icon-disabler.rb
+* Replace moz-image-region values as appropriate (watch out for position changes!!!)
+

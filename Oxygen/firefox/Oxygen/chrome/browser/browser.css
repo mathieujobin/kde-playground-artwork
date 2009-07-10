@@ -192,7 +192,7 @@ menuitem:not([type]) {
 }
 
 #context-media-play {
-  list-style-image: url("chrome://browser/skin/icons/16/media-playback-play.png");
+  list-style-image: url("chrome://browser/skin/icons/16/media-playback-start.png");
 }
 
 #context-media-pause {
@@ -219,7 +219,7 @@ menuitem:not([type]) {
 }
 
 #menu_FileQuitItem {
-  list-style-image: url("moz-icon://stock/gtk-quit?size=menu");
+  list-style-image: url("chrome://browser/skin/icons/16/application-exit.png");
 }
 
 #menu_undo,
