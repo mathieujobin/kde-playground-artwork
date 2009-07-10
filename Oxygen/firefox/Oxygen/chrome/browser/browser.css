@@ -813,7 +813,8 @@ toolbar[iconsize="small"] #paste-button[disabled="true"] {
 }
 
 #page-proxy-favicon:not([src]) {
-  list-style-image: url("chrome://browser/skin/icons/16/text-html.png");
+  list-style-image: url("chrome://global/skin/icons/folder-item.png");
+  -moz-image-region: rect(0px, 16px, 16px, 0px);
 }
 
 #page-proxy-favicon[pageproxystate="invalid"] {
