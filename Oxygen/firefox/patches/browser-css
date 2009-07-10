@@ -1,7 +1,7 @@
 Index: firefox/Oxygen/chrome/browser/browser.css
 ===================================================================
---- firefox.orig/Oxygen/chrome/browser/browser.css	2009-07-10 17:10:40.000000000 +0200
-+++ firefox/Oxygen/chrome/browser/browser.css	2009-07-10 17:12:51.000000000 +0200
+--- firefox.orig/Oxygen/chrome/browser/browser.css	2009-07-10 17:14:14.000000000 +0200
++++ firefox/Oxygen/chrome/browser/browser.css	2009-07-10 17:52:20.000000000 +0200
 @@ -123,8 +123,7 @@
  
  /* Bookmark items */
@@ -98,3 +98,30 @@ Index: firefox/Oxygen/chrome/browser/browser.css
  }
  
  #context_reloadTab {
+@@ -1167,7 +1158,7 @@
+ #context_closeTab {
+   /*XXX Avoiding size=menu as some themes (e.g. Human) don't provide the icon
+         at 16*16px (bug 426930), and upscaled images are ugly (bug 422179). */
+-  list-style-image: url("chrome://browser/skin/icons/24/dialog-close.png");
++  list-style-image: url("chrome://browser/skin/icons/24/standardbutton-closetab-16.png");
+ }
+ 
+ /* tabbrowser-tab focus ring */
+@@ -1207,7 +1198,7 @@
+   -moz-margin-end: 6px;
+   padding: 0px;
+   border: none;
+-  list-style-image: url("chrome://browser/skin/icons/16/dialog-close.png");
++  list-style-image: url("chrome://browser/skin/icons/16/standardbutton-closetab-16.png");
+ }
+ 
+ .tabbrowser-tab[selected="true"] > .tab-close-button {
+@@ -1238,7 +1229,7 @@
+ 
+ /* Tabstrip close button */
+ .tabs-closebutton {
+-  list-style-image: url("chrome://browser/skin/icons/16/dialog-close.png");
++  list-style-image: url("chrome://browser/skin/icons/16/standardbutton-closetab-16.png");
+   border: none;
+   margin-bottom: 1px;
+ }
