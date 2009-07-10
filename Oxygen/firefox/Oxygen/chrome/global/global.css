@@ -100,15 +100,15 @@ window.dialog {
 }
 
 .message-icon {
-  list-style-image: url("chrome://browser/skin/icons/16/dialog-information.png");
+  list-style-image: url("chrome://browser/skin/icons/64/dialog-information.png");
 }
 
 .alert-icon {
-  list-style-image: url("chrome://browser/skin/icons/16/dialog-warning.png");
+  list-style-image: url("chrome://browser/skin/icons/64/dialog-warning.png");
 }
 
 .error-icon {
-  list-style-image: url("chrome://browser/skin/icons/16/dialog-error.png");
+  list-style-image: url("chrome://browser/skin/icons/64/dialog-error.png");
 }
 
 .question-icon {

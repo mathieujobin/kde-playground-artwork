@@ -114,12 +114,15 @@ for file in Dir.glob("Oxygen/**/**.css")
     c = File.open(file).read
     replaces.each do | r, ryc |
         ry = "16/" + ryc
-        ["menu","button","dialog","dnd"].each do | size |
+        ["menu","button","dnd"].each do | size |
             c = rep(c,size,r,ry)
         end
 
         ry = "24/" + ryc
         c = rep(c,"toolbar",r,ry)
+
+        ry = "64/" + ryc
+        c = rep(c,"dialog",r,ry)
     end
     File.new(file,"w").print(c)
 end
