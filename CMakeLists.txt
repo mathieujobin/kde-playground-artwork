@@ -13,9 +13,6 @@ add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} ${KDE4_INCLUDES})
 
 #macro_optional_add_subdirectory( cokoon )
-macro_optional_add_subdirectory( dekorator )
-macro_optional_add_subdirectory( kannasaver )
-macro_optional_add_subdirectory( smaragd )
 
 if(CMAKE_SOURCE_DIR STREQUAL "${CMAKE_CURRENT_SOURCE_DIR}")
     macro_display_feature_log()
