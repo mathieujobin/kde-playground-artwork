@@ -59,6 +59,7 @@
 #include "oxygenwindowmanager.h"
 
 #include <QtCore/QDebug>
+#include <QtCore/QEvent>
 #include <QtGui/QAbstractButton>
 #include <QtGui/QAbstractItemView>
 #include <QtGui/QApplication>
@@ -81,6 +82,7 @@
 #include <QtGui/QSplitterHandle>
 #include <QtGui/QStylePlugin>
 #include <QtGui/QStyleOption>
+#include <QtGui/QStyleOptionToolButton>
 #include <QtGui/QTextEdit>
 #include <QtGui/QToolBar>
 #include <QtGui/QToolBox>
