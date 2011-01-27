@@ -131,18 +131,16 @@ namespace Oxygen
                 active(false),
                 useOxygenShadows(false),
                 isShade(false),
-                hasTitleOutline(false),
                 hasBorder( true )
             {}
 
             //! constructor from int
             Key( int hash ):
-                index( hash>>5 ),
-                active( (hash>>4)&1 ),
-                useOxygenShadows( (hash>>3)&1 ),
-                isShade( (hash>>2)&1 ),
-                hasTitleOutline( (hash>>1)&1 ),
-                hasBorder( hash&1 )
+                index( hash>>4 ),
+                active( (hash>>3)&1 ),
+                useOxygenShadows( (hash>>2)&1 ),
+                isShade( (hash>>1)&1 ),
+                hasBorder( (hash)&1 )
             {}
 
             //! hash function
@@ -152,12 +150,11 @@ namespace Oxygen
                 // note this can be optimized because not all of the flag configurations are actually relevant
                 // allocate 3 empty bits for flags
                 return
-                    ( index << 5 ) |
-                    ( active << 4 ) |
-                    (useOxygenShadows << 3 ) |
-                    (isShade<<2) |
-                    (hasTitleOutline<<1) |
-                    (hasBorder<<0);
+                    ( index << 4 ) |
+                    ( active << 3 ) |
+                    (useOxygenShadows << 2 ) |
+                    (isShade<<1) |
+                    (hasBorder);
 
             }
 
@@ -165,23 +162,22 @@ namespace Oxygen
             bool active;
             bool useOxygenShadows;
             bool isShade;
-            bool hasTitleOutline;
             bool hasBorder;
 
         };
 
         //! get shadow matching client
-        TileSet* tileSet( const QColor&, const Key& );
+        TileSet* tileSet( const Key& );
 
         //! get shadow matching client and opacity
-        TileSet* tileSet( const QColor&, Key, qreal );
+        TileSet* tileSet( Key, qreal );
 
         //! simple pixmap
-        QPixmap shadowPixmap( const QColor& color, const Key& key ) const
-        { return shadowPixmap( color, key, key.active ); }
+        QPixmap shadowPixmap( const Key& key ) const
+        { return shadowPixmap( key, key.active ); }
 
         //! simple pixmap
-        QPixmap shadowPixmap( const QColor&, const Key&, bool active ) const;
+        QPixmap shadowPixmap( const Key&, bool active ) const;
 
         protected:
 
