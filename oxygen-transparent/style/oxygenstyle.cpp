@@ -115,13 +115,13 @@ namespace Oxygen
 
         //! returns list of valid keys
         QStringList keys() const
-        { return QStringList( QLatin1String( "Oxygen" ) ); }
+        { return QStringList( QLatin1String( "Oxygen Transparent" ) ); }
 
         //! create style
         QStyle *create( const QString &key )
         {
 
-            if( key.toLower() == QLatin1String( "oxygen" ) ) return new Style;
+            if( key.toLower() == QLatin1String( "oxygen transparent" ) ) return new Style;
             else return NULL;
         }
     };
@@ -175,6 +175,8 @@ namespace Oxygen
         CE_CapacityBar( newControlElement( "CE_CapacityBar" ) )
 
     {
+
+        QTextStream( stdout ) << "Oxygen::Style::Style - transparent" << endl;
 
         // use DBus connection to update on oxygen configuration change
         QDBusConnection dbus = QDBusConnection::sessionBus();

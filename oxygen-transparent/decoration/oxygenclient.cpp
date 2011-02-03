@@ -74,7 +74,7 @@ namespace Oxygen
 
     //___________________________________________
     QString Client::visibleName() const
-    { return i18n("Oxygen"); }
+    { return isActive() ? i18n("Oxygen Transparent"):""; }
 
     //___________________________________________
     void Client::init()
