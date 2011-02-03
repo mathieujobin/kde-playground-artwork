@@ -31,7 +31,7 @@ target_link_libraries(
     ${QT_QTGUI_LIBRARY}
     ${X11_X11_LIB}
     kdecorations
-    oxygenstyle
+    oxygentransparentstyle
   )
 
 install(TARGETS kwin_oxygen_transparent_config  DESTINATION ${PLUGIN_INSTALL_DIR} )
