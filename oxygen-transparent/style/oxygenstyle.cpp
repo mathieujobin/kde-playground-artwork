@@ -176,8 +176,6 @@ namespace Oxygen
 
     {
 
-        QTextStream( stdout ) << "Oxygen::Style::Style - transparent" << endl;
-
         // use DBus connection to update on oxygen configuration change
         QDBusConnection dbus = QDBusConnection::sessionBus();
         dbus.connect( QString(), "/OxygenStyle", "org.kde.Oxygen.Style", "reparseConfiguration", this, SLOT( oxygenConfigurationChanged( void ) ) );
