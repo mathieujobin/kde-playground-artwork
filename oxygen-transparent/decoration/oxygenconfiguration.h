@@ -52,7 +52,6 @@ namespace OxygenConfig
     static const QString NARROW_BUTTON_SPACING = "UseNarrowButtonSpacing";
     static const QString SHADOW_MODE = "ShadowMode";
     static const QString SHADOW_CACHE_MODE = "ShadowCacheMode";
-    static const QString DECO_BACKGROUND_OPACITY = "DecoBackgroundOpacity";
     static const QString BACKGROUND_OPACITY = "BackgroundOpacity";
     static const QString OPACITY_FROM_STYLE = "OpacityFromStyle";
 }

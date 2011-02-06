@@ -170,7 +170,7 @@ namespace Oxygen
         it is overwritten by the style ("common") opacity, if opacityFromStyle is set to true
         */
         setBackgroundOpacity(
-            group.readEntry( OxygenConfig::DECO_BACKGROUND_OPACITY,
+            group.readEntry( OxygenConfig::BACKGROUND_OPACITY,
             defaultConfiguration.backgroundOpacity() ) );
 
         setOpacityFromStyle(
@@ -218,7 +218,7 @@ namespace Oxygen
         if( frameBorder() != defaultConfiguration.frameBorder() ) group.writeEntry( OxygenConfig::FRAME_BORDER, frameBorderName( false ) );
         if( sizeGripMode() != defaultConfiguration.sizeGripMode() ) group.writeEntry( OxygenConfig::SIZE_GRIP_MODE, sizeGripModeName( false ) );
 
-        if( backgroundOpacity() != defaultConfiguration.backgroundOpacity() ) group.writeEntry( OxygenConfig::DECO_BACKGROUND_OPACITY, backgroundOpacity() );
+        if( backgroundOpacity() != defaultConfiguration.backgroundOpacity() ) group.writeEntry( OxygenConfig::BACKGROUND_OPACITY, backgroundOpacity() );
         if( opacityFromStyle() != defaultConfiguration.opacityFromStyle() ) group.writeEntry( OxygenConfig::OPACITY_FROM_STYLE, opacityFromStyle() );
 
         if( separatorMode() != defaultConfiguration.separatorMode() )
