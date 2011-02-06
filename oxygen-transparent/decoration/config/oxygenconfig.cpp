@@ -33,6 +33,9 @@
 #include "../oxygenconfiguration.h"
 #include "../oxygenshadowconfiguration.h"
 
+#include <QtDBus/QDBusConnection>
+#include <QtDBus/QDBusMessage>
+
 #include <KAboutData>
 #include <KAboutApplicationDialog>
 #include <KConfigGroup>
@@ -184,6 +187,9 @@ namespace Oxygen
         if( !userInterface_->expertMode() )
         { KGlobalSettings::emitChange( KGlobalSettings::SettingsChanged, 0 ); }
 
+        QDBusMessage message( QDBusMessage::createSignal("/OxygenWindeco",  "org.kde.Oxygen.Style", "reparseConfiguration") );
+        QDBusConnection::sessionBus().send(message);
+
     }
 
     //_______________________________________________________________________
@@ -195,7 +201,7 @@ namespace Oxygen
         // create shadow configuration
         ShadowConfiguration configuration( colorGroup );
         configuration.setShadowSize( ui.ui.shadowSize->value() );
-        configuration.setHorizontalOffset( 0.1*ui.ui.verticalOffset->value() );
+        configuration.setVerticalOffset( 0.1*ui.ui.verticalOffset->value() );
         configuration.setInnerColor( ui.ui.innerColor->color() );
         configuration.setOuterColor( ui.ui.outerColor->color() );
         configuration.setUseOuterColor( ui.ui.useOuterColor->isChecked() );

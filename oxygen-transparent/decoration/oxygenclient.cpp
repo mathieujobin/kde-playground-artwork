@@ -1196,7 +1196,7 @@ namespace Oxygen
 
             // for shaded maximized windows adjust frame and draw the bottom part of it
             helper().drawFloatFrame(
-                painter, frame.adjusted( -4, 0, 4, 0 ), backgroundColor( widget(), palette ),
+                painter, frame, backgroundColor( widget(), palette ),
                 !( compositingActive() || configuration().frameBorder() == Configuration::BorderNone ), isActive(),
                 KDecoration::options()->color(ColorTitleBar),
                 TileSet::Bottom
@@ -1437,7 +1437,6 @@ namespace Oxygen
 
         // painter
         QPainter painter(widget());
-        painter.setRenderHint(QPainter::Antialiasing);
         painter.setClipRegion( event->region() );
 
         // define frame
@@ -1447,7 +1446,7 @@ namespace Oxygen
         QColor color = palette.window().color();
 
         // draw shadows
-        if( compositingActive() )
+        if( compositingActive() && shadowCache().shadowSize() > 0 )
         {
 
             TileSet *tileSet( 0 );
@@ -1464,14 +1463,16 @@ namespace Oxygen
 
             }
 
-            if( !isMaximized() ) tileSet->render( frame.adjusted( 4, 4, -4, -4), &painter, TileSet::Ring);
-            else if( isShade() ) tileSet->render( frame.adjusted( 0, 4, 0, -4), &painter, TileSet::Bottom);
+            tileSet->render( frame, &painter, TileSet::Ring);
 
         }
 
         // adjust frame
-        qreal shadowSize( shadowCache().shadowSize() );
-        frame.adjust( shadowSize, shadowSize, -shadowSize, -shadowSize );
+        frame.adjust(
+            layoutMetric(LM_OuterPaddingLeft),
+            layoutMetric(LM_OuterPaddingTop),
+            -layoutMetric(LM_OuterPaddingRight),
+            -layoutMetric(LM_OuterPaddingBottom) );
 
         //  adjust mask
         if( compositingActive() || isPreview() )

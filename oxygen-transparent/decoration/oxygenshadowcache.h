@@ -27,13 +27,12 @@
 // IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////////
 
-#include "oxygendecohelper.h"
 #include "oxygenshadowconfiguration.h"
+#include "oxygendecohelper.h"
 
 #include <cmath>
 #include <QtCore/QCache>
 #include <QtGui/QRadialGradient>
-
 
 namespace Oxygen
 {
@@ -43,7 +42,7 @@ namespace Oxygen
         public:
 
         //! constructor
-        ShadowCache( DecoHelper& helper );
+        ShadowCache( DecoHelper& );
 
         //! destructor
         virtual ~ShadowCache( void )
@@ -111,11 +110,9 @@ namespace Oxygen
         {
             qreal activeSize( activeShadowConfiguration_.isEnabled() ? activeShadowConfiguration_.shadowSize():0 );
             qreal inactiveSize( inactiveShadowConfiguration_.isEnabled() ? inactiveShadowConfiguration_.shadowSize():0 );
-            qreal size( qMax( activeSize, inactiveSize ) );
 
             // even if shadows are disabled,
-            // you need a minimum size to allow corner rendering
-            return qMax( size, qreal(5.0) );
+            return qMax( activeSize, inactiveSize );
         }
 
         //! Key class to be used into QCache
@@ -129,16 +126,14 @@ namespace Oxygen
             explicit Key( void ):
                 index(0),
                 active(false),
-                useOxygenShadows(false),
                 isShade(false),
                 hasBorder( true )
             {}
 
             //! constructor from int
             Key( int hash ):
-                index( hash>>4 ),
-                active( (hash>>3)&1 ),
-                useOxygenShadows( (hash>>2)&1 ),
+                index( hash>>3 ),
+                active( (hash>>2)&1 ),
                 isShade( (hash>>1)&1 ),
                 hasBorder( (hash)&1 )
             {}
@@ -150,9 +145,8 @@ namespace Oxygen
                 // note this can be optimized because not all of the flag configurations are actually relevant
                 // allocate 3 empty bits for flags
                 return
-                    ( index << 4 ) |
-                    ( active << 3 ) |
-                    (useOxygenShadows << 2 ) |
+                    ( index << 3 ) |
+                    ( active << 2 ) |
                     (isShade<<1) |
                     (hasBorder);
 
@@ -160,7 +154,6 @@ namespace Oxygen
 
             int index;
             bool active;
-            bool useOxygenShadows;
             bool isShade;
             bool hasBorder;
 
@@ -240,14 +233,17 @@ namespace Oxygen
 
         };
 
-        private:
-
         //! draw gradient into rect
         /*! a separate method is used in order to properly account for corners */
         void renderGradient( QPainter&, const QRectF&, const QRadialGradient&, bool hasBorder = true ) const;
 
+        private:
+
         //! helper
         DecoHelper& helper_;
+
+        //! defines overlap between shadows and body
+        enum { overlap = 4 };
 
         //! caching enable state
         bool enabled_;

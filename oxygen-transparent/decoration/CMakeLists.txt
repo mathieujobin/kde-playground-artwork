@@ -13,8 +13,8 @@ set(kwin_oxygen_transparent_SRCS
      oxygenexception.cpp
      oxygenexceptionlist.cpp
      oxygenfactory.cpp
-     oxygenshadowconfiguration.cpp
      oxygenshadowcache.cpp
+     oxygenshadowconfiguration.cpp
      oxygensizegrip.cpp
      oxygentitleanimationdata.cpp
   )
