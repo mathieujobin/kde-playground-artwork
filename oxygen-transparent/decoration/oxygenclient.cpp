@@ -591,15 +591,16 @@ namespace Oxygen
             if( !hideTitleBar() ) height += configuration().buttonSize();
 
             const QWidget* window( isPreview() ? this->widget() : widget->window() );
-
-            if( compositingActive() && transparencyEnabled_ && !opaque )
-            {
-
-                QColor color = palette.color( widget->window()->backgroundRole() );
-                color.setAlpha( configuration().backgroundOpacity() );
-                helper().renderWindowBackground( painter, rect, widget, window, color, offset, height );
-
-            } else helper().renderWindowBackground( painter, rect, widget, window, palette, offset, height );
+//
+//             if( compositingActive() && transparencyEnabled_ && !opaque )
+//             {
+//
+//                 QColor color = palette.color( widget->window()->backgroundRole() );
+//                 color.setAlpha( configuration().backgroundOpacity() );
+//                 helper().renderWindowBackground( painter, rect, widget, window, color, offset, height );
+//
+//             } else
+                helper().renderWindowBackground( painter, rect, widget, window, palette, offset, height );
 
         }
 
@@ -1437,6 +1438,7 @@ namespace Oxygen
 
         // painter
         QPainter painter(widget());
+        painter.setRenderHint(QPainter::Antialiasing);
         painter.setClipRegion( event->region() );
 
         // define frame
