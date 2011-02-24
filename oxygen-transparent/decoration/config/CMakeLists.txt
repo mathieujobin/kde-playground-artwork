@@ -3,7 +3,6 @@ include_directories( ${KDEBASE_WORKSPACE_SOURCE_DIR}/kwin/lib ../libs/oxygen)
 
 set(kwin_oxygen_transparent_config_PART_SRCS
     ../oxygenconfiguration.cpp
-    ../oxygenshadowconfiguration.cpp
     ../oxygenexception.cpp
     ../oxygenexceptionlist.cpp
     oxygenconfig.cpp

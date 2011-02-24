@@ -53,6 +53,7 @@
 #include "oxygenargbhelper.h"
 #include "oxygenblurhelper.h"
 #include "oxygenframeshadow.h"
+#include "oxygenshadowcache.h"
 #include "oxygenstyleconfigdata.h"
 #include "oxygentransitions.h"
 #include "oxygenwidgetexplorer.h"
@@ -158,6 +159,7 @@ namespace Oxygen
         _doubleButtonHeight( 28 ),
         _showMnemonics( true ),
         _helper( new StyleHelper( "oxygen" ) ),
+        _shadowCache( new ShadowCache( *_helper ) ),
         _animations( new Animations( this ) ),
         _transitions( new Transitions( this ) ),
         _windowManager( new WindowManager( this ) ),
@@ -204,7 +206,10 @@ namespace Oxygen
 
     //______________________________________________________________
     Style::~Style( void )
-    { delete _helper; }
+    {
+        delete _shadowCache;
+        delete _helper;
+    }
 
     //______________________________________________________________
     void Style::polish( QApplication* app )
@@ -3495,7 +3500,7 @@ namespace Oxygen
             painter->setBrush( inputBrush );
 
             helper().fillHole( *painter, r.adjusted( 0, -1, 0, 0 ) );
-            drawPrimitive( PE_FrameLineEdit, panel, painter, widget );
+            drawFramePrimitive( panel, painter, widget );
 
             painter->restore();
 
@@ -7855,6 +7860,9 @@ namespace Oxygen
             StyleConfigData::maxCacheSize():0 );
 
         helper().setMaxCacheSize( cacheSize );
+
+        // shadow cache
+        shadowCache().readConfig( KConfig( "oxygenrc" ) );
 
         // reinitialize engines
         animations().setupEngines();
