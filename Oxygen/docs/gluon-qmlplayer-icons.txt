@@ -1,0 +1,15 @@
+For the Gluon QML/Touch player to show the game details to the user a few icons can help a
+lot to easily identify the actions. For an example see
+'http://djszapi.homelinux.net/gluon-game-client.pdf'. (Third page, third view)
+
+This is the list of needed icons at first glance:
+1. Highscores (games-highscores exists, thus a simple colour change might be
+enough since that orange colour is not the best choice)
+2. Achievements
+3. Rate & Comment
+4. Donate
+
+Note: These actions are more general than Gluon specific meaning that all the
+applications using the Open Collaboration Services (for instance over the attica
+Qt library) can benefit from this.
+
