@@ -1,0 +1,23 @@
+For the Gluon Creator (Designer IDE) to show the components to the user a few icons can help a
+lot to easily identify them. Check this screenshot out for further details:
+'http://djszapi.dyndns-home.com/gluoncreator.png'. (Top left dock under the Toolbar)
+
+The main problem is that there are already similar icons there, but because we need in smaller resolution like 16x16, 22x22, 32x32, those existing icons do not really fit well. (Not scaled for this smaller resolution).
+An example for this is the 'input-keyboard' icon. There is no need for so many keyboard buttons on the small icon.
+
+You can find a better example for an input keyboard icon here for instance:
+http://kde-look.org/content/preview.php?preview=1&id=6153&file1=6153-1.jpg&file2=6153-2.jpg&file3=6153-3.jpg&name=The+Reinhardt+Icon+Set (Reinhardt icon set). That icon seems simplier there and more recognizable in a small resolution.
+
+This is the list of needed icons:
+--- Input ---
+1. Mouse input
+2. Keyboard input
+3. Touch input
+4. Joystick input
+
+--- Audio ---
+1. Sound listener
+2. Sound emitter
+
+Note: These components are more general than Gluon specific meaning that all the
+applications using these kind of components can benefit from it.
