@@ -2,7 +2,7 @@ For the Gluon Creator (Designer IDE) to show the components to the user a few ic
 lot to easily identify them. Check this screenshot out for further details:
 'http://djszapi.dyndns-home.com/gluoncreator.png'. (Top left dock under the Toolbar)
 
-The main problem is that there are already similar icons there, but because we need in smaller resolution like 16x16, 22x22, 32x32, those existing icons do not really fit well. (Not scaled for this smaller resolution).
+The main problem is that there are already similar icons there, but because we need in smaller resolution like 16x16, 22x22, those existing icons do not really fit well. (Not scaled for this smaller resolution).
 An example for this is the 'input-keyboard' icon. There is no need for so many keyboard buttons on the small icon.
 
 You can find a better example for an input keyboard icon here for instance:
@@ -13,7 +13,7 @@ This is the list of needed icons:
 1. Mouse input
 2. Keyboard input
 3. Touch input
-4. Joystick input
+4. Joystick/Gamepad input
 
 --- Audio ---
 1. Sound listener
